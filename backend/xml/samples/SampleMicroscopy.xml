@@ -1,0 +1,323 @@
+<!--
+Please note that this ProtocolCollection is an artificial construct, and when this file is loaded
+via UnmarshalWorkflow, it is only the contents of the Collection, and NOT the collection itself, which is loaded.
+Normally, you would not be allowed an xmlns attribute in the ProtocolCollection.
+
+Please note that the most relevant part of a ProtocolCollection from the CISBAN point of view (the part that
+associates a raw data file (or files) to the workflow (or, in FuGE terminology, the Protocol), is done in the
+GenericProtocolApplication element. This element is NOT included here, because this is meant to be a re-usable
+workflow template, not a specific instance of that workflow.
+
+Finally, note that the GenericParameter may contain OntologyTerm_ref instances. The ontology term is included below the
+ProtocolCollection inside the OntologyCollection.
+
+These factors will be added as GenericParameters to COPIES of the below template "Image Capture". These specific
+image capture protocols should never be used within an experiment - they should always be copied, assigned new
+endurants and identifiables, and then given the appropriate parameters, then loaded as new protocols in the database.
+Similarly, no GenericActions for the top-level Experiment have been added, as these can only be added once
+concrete protocols have been made.
+-->
+<FuGE xmlns="http://fuge.org/core">
+    <ProtocolCollection>
+        <GenericProtocol
+                name="Confocal Microscope Image Capture (Component of CISBAN Microscopy and Imaging Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:73f50a1a-77a0-45bc-8cd0-9b1806606c1a"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:880ec3ae-7e21-48ff-8cd1-aec9ffb1fa11">
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:ea717c93-2722-441a-9d91-a216dd688f85"/>
+        </GenericProtocol>
+        <GenericProtocol
+                name="Widefield Microscope Image Capture (Component of CISBAN Microscopy and Imaging Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:732f8b6d-1162-4241-b0fe-5d52fb4d6092"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:837aec72-9826-4ccb-a0d5-bd49d1ffe297">
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:44c4774e-796b-4b11-b0ab-23ad211eaa0e"/>
+        </GenericProtocol>
+        <GenericProtocol name="CISBAN Microscopy and Imaging Investigation"
+                         endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:746ae9c6-9122-4384-9912-7ed11ae0ece2"
+                         identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:3dd78dfe-1131-4f94-989b-2140c800f7a8">
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:851e1081-95c3-4302-bf39-13b1955835b6"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:f4b03157-83bc-4d38-976f-dbc9b580d67e"
+                    name="Confocal Microscopy"
+                    actionOrdinal="1"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:880ec3ae-7e21-48ff-8cd1-aec9ffb1fa11"/>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:a20f6e60-bdb0-4a31-8aaf-7c14aad8ccff"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:052eb0d1-f46b-43e5-8163-9c9e36e44c0f"
+                    name="Widefield Microscopy"
+                    actionOrdinal="2"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:837aec72-9826-4ccb-a0d5-bd49d1ffe297"/>
+        </GenericProtocol>
+        <GenericEquipment name="Confocal Microscope"
+                          endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:b55a9466-1b0b-40c5-b905-45e0db0df6c9"
+                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:ea717c93-2722-441a-9d91-a216dd688f85"/>
+        <GenericEquipment name="Widefield Microscope"
+                          endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:1e51d372-cf1b-44b0-b54e-f422741b45d1"
+                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:44c4774e-796b-4b11-b0ab-23ad211eaa0e"/>
+    </ProtocolCollection>
+    <MaterialCollection>
+        <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
+        <!-- live vs fixed is currently an attribute of the material, but it may in fact be an attribute of the protocol. -->
+        <GenericMaterial
+                name="Material Characteristics Dummy (Component of CISBAN Microscopy and Imaging Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:573007d4-bcf0-4912-a649-ad8d9cda529b"
+                identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:b62a616f-508e-48da-8302-0c44ecf715fc">
+            <materialType
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:287a7a48-d7ca-44c7-9e1b-c37dfee46cee"/>
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:3d8aa524-d32b-4ffd-a46c-8a7ddc6da8e8"/>
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:59a8b811-d9b1-4424-af44-700b23dc8d6d"/>
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:5c51b515-e34f-4b88-af4c-e9c0f5a298d7"/>
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:3f0af4bb-9c34-4f60-8f7d-0edebeeb0aad"/>
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:660f3b04-6b27-41b9-938e-3661f6a78b10"/>
+        </GenericMaterial>
+    </MaterialCollection>
+    <OntologyCollection>
+        <OntologyIndividual termAccession="accession to come" term="Line 1"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:786c963d-fc0a-416c-ada6-df22ba33db17"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:02548a98-f3a2-403e-9e46-d8c4032c2d1a"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:287a7a48-d7ca-44c7-9e1b-c37dfee46cee"/>
+        <OntologyIndividual termAccession="accession to come" term="Line 2"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:786c963d-fc0a-416c-ada6-df22ba33db17"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:990fd20c-bc48-4a96-aa3f-e2c7b4d3e290"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:9a04895f-e04c-4c5c-a37d-8d89585c1bad"/>
+        <OntologyIndividual termAccession="accession to come" term="Line 3"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:786c963d-fc0a-416c-ada6-df22ba33db17"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:3e08c6d5-020f-4c37-8f42-406faf31f216"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:44b80641-7a2f-4066-8f77-00fbf56c1dae"/>
+        <OntologyIndividual termAccession="accession to come" term="Line 4"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:786c963d-fc0a-416c-ada6-df22ba33db17"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:4c6fb4aa-145c-4e52-ac92-4672ebb8165e"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:b89cbad3-8cb1-4ebe-8eac-5c408a6adcd6"/>
+        <!--mouse tissue-->
+        <OntologyIndividual termAccession="accession to come" term="Mouse tissue"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:786c963d-fc0a-416c-ada6-df22ba33db17"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:b175e946-1717-4f7b-a8c5-689d00cf562f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:35e5eda3-f5c6-4809-abcd-9bb52dac1e6e"/>
+        <!--human tissue-->
+        <OntologyIndividual termAccession="accession to come" term="Human tissue"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:786c963d-fc0a-416c-ada6-df22ba33db17"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:f923eb26-57c9-409b-b767-91e91d205a08"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:0957e80d-1914-4f4a-8b6b-03464cefb438"/>
+        <OntologySource ontologyURI="http://www.cisban.ac.uk"
+                        name="TvZ Cell Types"
+                        endurant="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:8d435947-b691-4e80-83c4-de71d5ea78bc"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:786c963d-fc0a-416c-ada6-df22ba33db17"/>
+        <!--pPA-GFP-->
+        <OntologyIndividual termAccession="accession to come" term="pPA-GFP"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:c14f7222-ef1d-4031-95fe-e510addb5fe5"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:3d8aa524-d32b-4ffd-a46c-8a7ddc6da8e8"/>
+        <!--pmt-PA-GFP-->
+        <OntologyIndividual termAccession="accession to come" term="pmt-PA-GFP"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:59686e91-2a84-4adc-a967-7d79a519c9c5"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:b4efbb12-f3b9-45d2-99e4-9622b12c8c8c"/>
+        <!--pp53-EGFP-->
+        <OntologyIndividual termAccession="accession to come" term="pp53-EGFP"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:7bcda77c-7cfd-416f-ac03-a7297d7fbb7b"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:d93c0a45-065f-4dea-b98a-b9e49076f1c5"/>
+        <!--pEGFP-N1-->
+        <OntologyIndividual termAccession="accession to come" term="pEGFP-N1"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:e89570af-78a6-44a7-99b9-7090a1957816"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:77f0dc41-8a28-4fb2-bc7d-173923261874"/>
+        <!--pAmcyan-N1-->
+        <OntologyIndividual termAccession="accession to come" term="pAmcyan-N1"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:5a12b98e-94e4-4353-b708-86f3cbda7bf8"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:2369658e-e4f8-4172-b131-a71d33413251"/>
+        <!--pAcGFP-C1-->
+        <OntologyIndividual termAccession="accession to come" term="pAcGFP-C1"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:f455f12e-7502-4198-bc24-3810e8cc582f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:77840a6d-8d47-4e2d-9409-6621021b5bd9"/>
+        <!--pAcGFP-UCP2-->
+        <OntologyIndividual termAccession="accession to come" term="pAcGFP-UCP2"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:170a4bca-e646-4aed-9ed5-391668785b90"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:2a421ce7-22ff-4659-84a8-2d7cd2a2ac48"/>
+        <!--pAcGFP-53BP1C-->
+        <OntologyIndividual termAccession="accession to come" term="pAcGFP-53BP1C"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:6d977ce1-f3bd-4068-88bb-b1a025617205"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:8bdb411f-f1a9-4afd-9b0d-6ea0ed60ba85"/>
+        <!--pD3cpv-->
+        <OntologyIndividual termAccession="accession to come" term="pD3cpv"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:917b44dc-659e-48bf-aebb-deab18a8b230"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:cfb847d7-3b89-4517-a642-3515a574b101"/>
+        <!--p4mt-D3cpv-->
+        <OntologyIndividual termAccession="accession to come" term="p4mt-D3cpv"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:ab312ba4-8d2b-4a0f-84f6-d915a18a3d1a"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:7e0bd998-63db-4c67-b75c-cb6cf9fc3ad0"/>
+        <OntologySource ontologyURI="http://www.cisban.ac.uk"
+                        name="TvZ DNA Constructs"
+                        endurant="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:7b35a3d9-b517-4dd2-ac62-de391957916b"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:31356bbf-708a-4519-a486-22e62b2830d7">
+            <descriptions>
+                <Description text="Instructions: If there has been transfection, please choose all that apply."/>
+            </descriptions>
+        </OntologySource>
+        <!--Fluorescent Dyes-->
+        <OntologyIndividual termAccession="accession to come" term="Alexa488"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:59a8b811-d9b1-4424-af44-700b23dc8d6d"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:cf2fca56-aab1-44ea-8e37-2eb0625d88cd"/>
+        <OntologyIndividual termAccession="accession to come" term="Alexa594"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:397619f5-e07d-470a-a104-5e8a869dc0be"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:e1067e5a-f493-45af-a88c-7e545f04cb78"/>
+        <OntologyIndividual termAccession="accession to come" term="Alexa633"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:67c644ba-fac1-4e90-bf04-e8688fd4c6e9"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:e9414815-9564-44bc-ae17-3765fa88d8c6"/>
+        <OntologyIndividual termAccession="accession to come" term="Cy3"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:c677bdc6-b01f-4bb5-a5a9-ce2662388769"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:70605c88-a984-47df-91bd-ec74df5dd4ad"/>
+        <OntologyIndividual termAccession="accession to come" term="Cy5"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:8b948049-afc8-44d5-a447-5a238e61505a"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:fba8e3f3-8ada-4766-b886-ceb72dd6ba11"/>
+        <OntologyIndividual termAccession="accession to come" term="DAPI"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:dfc231ad-51c8-46b1-9d81-dac12dcb5d03"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:39859c34-c53d-4740-b8db-d4944cd45a95"/>
+        <OntologyIndividual termAccession="accession to come" term="DHR"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:4fa49376-c15e-4a61-b8f5-93707b0370a9"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:8a5c280e-b2c5-4595-b0e7-d866f96b1502"/>
+        <OntologyIndividual termAccession="accession to come" term="Draq5"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:45e3130c-76d7-4f62-9706-079afcd4ed85"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:88666b0b-d808-4306-9c79-6abc566b5788"/>
+        <OntologyIndividual termAccession="accession to come" term="FITC"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:fa07ebdb-9150-4a10-812a-a06a8eb42308"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:499563a7-b455-4236-879b-f98b60827953"/>
+        <OntologyIndividual termAccession="accession to come" term="Fluo3"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:8532944c-068a-43a0-85cd-396e0f4d26c5"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:738f36a0-b53a-4f18-9c97-3c74b65aeb81"/>
+        <OntologyIndividual termAccession="accession to come" term="Hoechst"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:84430299-57cb-4d07-af11-00c7bd1fab0c"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:4d99690a-a0a3-4d21-bdc4-7f244879657f"/>
+        <OntologyIndividual termAccession="accession to come" term="JC-1"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:8d57f10e-3e90-42af-80de-e943a30b3754"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:66d67873-820d-465d-9229-75369c8f0a11"/>
+        <OntologyIndividual termAccession="accession to come" term="Mitosox"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:c2776402-c7cb-4a7b-bf43-f891355aed26"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:b709e8d0-e1ae-4218-8b10-62df26c123b1"/>
+        <OntologyIndividual termAccession="accession to come" term="Mitotracker far red"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:814f93b1-f030-4780-ab27-debbd44dbe67"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:678c6ca0-41ef-4c44-a082-d119c30429da"/>
+        <OntologyIndividual termAccession="accession to come" term="Mitotracker green"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:2da80510-3c9d-4098-afde-d9a08daf3904"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:e2a3ff55-3d82-453f-8aee-5ba685c5dff6"/>
+        <OntologyIndividual termAccession="accession to come" term="Mitotracker red"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:7581f771-eb00-4eaf-8038-5a38903a797c"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:95c1532a-3839-435e-9ca3-cc44177f419a"/>
+        <OntologyIndividual termAccession="accession to come" term="Mitotracker red-CMX-ROS"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:fe7ae71a-d937-4d7c-b801-0867f8e5963b"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:9bb22886-8c3a-43de-b99c-f3eb2676fc3b"/>
+        <OntologyIndividual termAccession="accession to come" term="Rhod2"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:5acf718f-9cfa-49e4-803c-6464144cdab9"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:794d0e65-adc2-405b-a788-15e9b6d1ec19"/>
+        <OntologyIndividual termAccession="accession to come" term="Rhod5"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:945a382b-2867-42a6-8b46-a77426bd0206"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:60558c6c-1079-488c-b07a-c02933361bc7"/>
+        <OntologyIndividual termAccession="accession to come" term="Rhodamine123"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:1b837600-199d-4f26-8a71-9bfdbf45e4d2"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:819c96b6-3169-41be-b001-79ba3198be05"/>
+        <OntologyIndividual termAccession="accession to come" term="TMRM"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:e3f91329-9626-42e2-8c1f-26ff8b05735c"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:c3fb4d79-1766-4964-8770-97ee2fba9617"/>
+        <OntologySource ontologyURI="http://www.cisban.ac.uk" name="TvZ Fluorescent Dyes"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:020105fb-1d07-4218-91ab-bc8ca76fed1f"
+                        endurant="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:fec6befe-09e8-4017-af04-07bbd4259ab1">
+            <descriptions>
+                <Description text="Instructions: If fluorescent dyes have been used, please choose all that apply."/>
+            </descriptions>
+        </OntologySource>
+        <!--Primary Antibodies-->
+        <OntologyIndividual termAccession="accession to come" term="rabbit anti human p38"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:f7b6db2d-f13c-4c3a-b529-c6285ce600fc"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:5c51b515-e34f-4b88-af4c-e9c0f5a298d7"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:9330766f-5475-437a-9bdc-36a110a8376b"/>
+        <OntologyIndividual termAccession="accession to come" term="rabbit anti human phospho-p38"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:f7b6db2d-f13c-4c3a-b529-c6285ce600fc"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:46eb245f-4df1-4dd1-8f20-7305f1e4def9"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:88717d3e-c31a-4798-8558-746a363bca13"/>
+        <OntologyIndividual termAccession="accession to come" term="rabbit anti human p53"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:f7b6db2d-f13c-4c3a-b529-c6285ce600fc"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:3a93a1c3-4b72-478f-8187-456bb4feab2f"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:2c182357-a16b-4cd6-bf80-3fe03b3bec2e"/>
+        <OntologyIndividual termAccession="accession to come" term="rabbit anti human S15p53"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:f7b6db2d-f13c-4c3a-b529-c6285ce600fc"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:46411eb3-78a6-4c07-82bb-38eda26f3ac9"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:5fa34470-7261-4a6a-8c0c-3885bdd95ce7"/>
+        <OntologyIndividual termAccession="accession to come" term="rabbit anti human g-H2A.X"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:f7b6db2d-f13c-4c3a-b529-c6285ce600fc"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:f5bcc2e1-53c2-4590-b808-6fffbc3ebe3f"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:616b7664-5bfc-41bb-92e5-fcb9a07fc591"/>
+        <OntologySource ontologyURI="http://www.cisban.ac.uk" name="TvZ Primary Antibodies"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:f7b6db2d-f13c-4c3a-b529-c6285ce600fc"
+                        endurant="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:a66f38bd-a4a0-4d47-92fd-2b2bcb0d5391">
+            <descriptions>
+                <Description text="Instructions: If primary antibodies have been used, please choose all that apply."/>
+            </descriptions>
+        </OntologySource>
+        <!--Secondary Antibodies-->
+        <OntologyIndividual termAccession="accession to come" term="goat anti rabbit IgG-FITC"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:87cb8b08-33ac-4f29-9db2-8d8d99981a13"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:3f0af4bb-9c34-4f60-8f7d-0edebeeb0aad"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:c86678f4-2c7c-4649-b47d-ba79e9ff1422"/>
+        <OntologyIndividual termAccession="accession to come" term="goat anti rabbit IgG-Alexa594"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:87cb8b08-33ac-4f29-9db2-8d8d99981a13"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:672fc852-6e54-404d-ad1a-85ab3fbb1828"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:b0c93216-a86c-4bc3-95b3-3404cef404eb"/>
+        <OntologySource ontologyURI="http://www.cisban.ac.uk" name="TvZ Secondary Antibodies"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:87cb8b08-33ac-4f29-9db2-8d8d99981a13"
+                        endurant="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:e091f753-557b-4b4d-b3e4-eabf4624bd5b">
+            <descriptions>
+                <Description
+                        text="Instructions: If secondary antibodies have been used, please choose all that apply."/>
+            </descriptions>
+        </OntologySource>
+        <OntologyIndividual termAccession="accession to come" term="live"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:fc88e6f1-f097-478f-9cff-26db3bbf8d51"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:660f3b04-6b27-41b9-938e-3661f6a78b10"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:900c2ad7-d7e2-4f91-8b45-f81d036cecfc"/>
+        <OntologyIndividual termAccession="accession to come" term="fixed"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:fc88e6f1-f097-478f-9cff-26db3bbf8d51"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:9aef7968-7d82-4ceb-9039-de8ded72016b"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:8042b063-e788-4f17-b4d9-5b6f744f643a"/>
+        <OntologySource ontologyURI="http://www.cisban.ac.uk" name="Fixed Status"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:fc88e6f1-f097-478f-9cff-26db3bbf8d51"
+                        endurant="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:4863468f-9c6e-4649-aa86-956eb829396d">
+            <descriptions>
+                <Description
+                        text="Instructions: Please choose whether your material was live or fixed."/>
+            </descriptions>
+        </OntologySource>
+    </OntologyCollection>
+</FuGE>

@@ -1,0 +1,8 @@
+<mappings name="PostgreSQLExtension">
+    <extends>PostgreSQL</extends>
+    <mapping>
+        <!--Allyson Lister 2/2007: This datatype::Date mapping has been changed from the original DATE to TIMESTAMP WITH TIME ZONE-->
+        <from>datatype::Date</from>
+        <to>TIMESTAMP WITH TIME ZONE</to>
+    </mapping>
+</mappings>

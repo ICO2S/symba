@@ -1,0 +1,68 @@
+<!-- This file is part of SyMBA.-->
+<!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
+<!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
+<!-- To view the full licensing information for this software and ALL other files contained-->
+<!-- in this distribution, please see LICENSE.txt-->
+<!-- $LastChangedDate:$-->
+<!-- $LastChangedRevision:$-->
+<!-- $Author:$-->
+<!-- $HeadURL:$-->
+
+<meta name="keywords"
+      content="Systems Biology, CISBAN, Computational Biology, Ageing, Ageing, Nutrition, Kirkwood, Biological Modelling, Biological Modelling"/>
+<meta name="The CISBAN homepage. CISBAN's aim is to advance understanding of the complex mechanisms underpinning the ageing process and of how these are affected by nutrition, through the field of research known as systems biology."/>
+<link rel="stylesheet" type="text/css" href="cisban.css"/>
+<title>SyMBA</title>
+
+<script type="text/javascript">
+
+    function popup( mylink, windowname )
+    {
+        if ( ! window.focus )return true;
+        var href;
+        if ( typeof(mylink) == 'string' )
+            href = mylink;
+        else
+            href = mylink.href;
+        window.open(href, windowname, 'width=400,height=200,scrollbars=yes');
+        return false;
+    }
+
+    function addTreatmentInput( filler, elementId ) {
+        var d = document.createElement("div");
+        var brElem = document.createElement("br");
+        var file = document.createElement("textarea");
+        file.setAttribute("rows", "5");
+        file.setAttribute("cols", "40");
+        var compositeName = filler + treatment_number;
+        file.setAttribute("name", compositeName);
+        var myLabel = document.createElement("label");
+        var prettyNumber = treatment_number + 1;
+        myLabel.setAttribute("for", compositeName);
+        myLabel.innerHTML = "Type, Dose and Length of Treatment " + prettyNumber + ": ";
+        d.appendChild(brElem);
+        d.appendChild(myLabel);
+        d.appendChild(file);
+        document.getElementById(elementId).appendChild(d);
+        treatment_number++;
+    }
+
+    // http://www.petefreitag.com/item/587.cfm
+    function addFileInput() {
+        var d = document.createElement("div");
+        var brElem = document.createElement("br");
+        var file = document.createElement("input");
+        file.setAttribute("type", "file");
+        file.setAttribute("type", "file");
+        file.setAttribute("name", "attachment" + upload_number);
+        var myLabel = document.createElement("label");
+        var prettyNumber = upload_number + 1;
+        myLabel.setAttribute("for", "attachment" + upload_number);
+        myLabel.innerHTML = "File " + prettyNumber + ":";
+        d.appendChild(brElem);
+        d.appendChild(myLabel);
+        d.appendChild(file);
+        document.getElementById("moreUploads").appendChild(d);
+        upload_number++;
+    }
+</script>

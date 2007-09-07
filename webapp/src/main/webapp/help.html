@@ -1,0 +1,372 @@
+<!-- This file is part of SyMBA.-->
+<!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
+<!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
+<!-- To view the full licensing information for this software and ALL other files contained-->
+<!-- in this distribution, please see LICENSE.txt-->
+<!-- $LastChangedDate:$-->
+<!-- $LastChangedRevision:$-->
+<!-- $Author:$-->
+<!-- $HeadURL:$-->
+
+<h2>Systems and Molecular Biology Data Archive (SyMBA): Help Page</h2>
+
+<a name="contents">
+    <ol>
+        <li><a href="#intro">Introduction to SyMBA</a></li>
+        <li><a href="#logon">Logging In</a></li>
+        <li><a href="#home">Your Home Page</a></li>
+        <li><a href="#personalData">Viewing and Modifying Your Details</a></li>
+        <li><a href="#detailsChanged">Confirmation of Successful Updating of Your Personal Details</a></li>
+        <li><a href="#search">Search SyMBA</a></li>
+        <li><a href="#whatIsAnExperiment">What is Considered a SyMBA Experiment?</a></li>
+        <li><a href="#newOrExist">Choosing Between a New or Existing Experiment for Your Data File</a></li>
+        <li><a href="#existingExperiment">Choosing an Existing Experiment</a></li>
+        <li><a href="#newExperiment">Creating a New Experiment</a></li>
+        <li><a href="#rawData">Depositing Data Files</a></li>
+        <li><a href="#protocol">Selecting a Protocol for Your Data File</a></li>
+        <li><a href="#confirmSubmission">Confirming Your Details</a>
+        <li><a href="#completeDeposition">Completion of Submission and Downloading Updated Data File</a>
+        <li><a href="#viewExperiments">Viewing Your Experiments</a>
+        <li><a href="#cisbanIdentifiers">What is the Identifier that Gets Assigned to My Data File?</a>
+        </li>
+    </ol>
+</a>
+
+<a name="intro"><h2 class="centered">Introduction to SyMBA</h2></a>
+
+<p>
+    The Centre for Integrated Systems Biology of Ageing and Nutrition (CISBAN) has developed a Data Archive and
+    Integrator
+    (SyMBA) that is based on the FuGE Object Model (FuGE-OM) and which archives, stores, and retrieves
+    raw high-throughput data. Until now, few published systems have successfully integrated multiple omics
+    data types and information about experiments in a single database. SyMBA is the first published
+    implementation of FuGE that includes a database back-end, expert and standard interfaces, and utilizes a
+    Life Science Identifier (LSID) Resolution and Assigning service to identify objects and provide programmatic
+    access to the database. Having a central data repository prevents deletion, loss, or accidental modification
+    of primary data, while giving convenient access to the data for publication and analysis. It also provides a
+    central location for storage of metadata for the high-throughput data sets, and will facilitate subsequent
+    data integration strategies.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ]</p>
+
+<a name="logon"><h2 class="centered">Logging In</h2></a>
+
+<p>
+    By restricting access to SyMBA, we ensure that our data is kept private until we are ready
+    to release it. Further, once SyMBA knows who you are, it can easily retrieve experimental
+    information and data sets owned by you, as well as automatically assign your name to data files
+    you have uploaded. Once logged in, a session specific to you is begun and
+    <em>will remain available until you log out or the session times out</em>.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="home"><h2 class="centered">Your Home Page</h2></a>
+
+<p>
+    Once you have successfully logged on, you will be presented with your home page. From this page you can
+    choose to do a variety of tasks, mainly centred around deposition and modification of data files and experimental
+    information. Your choices are:
+    <ul>
+        <li>
+            <strong>Deposit some Data.</strong> By following this link, you will be presented with a short series
+            of web pages that prompt you to deposit your data and add a few relevant bits of information about
+            the data file. Any primary data source as described in the CISBAN Data Policy
+            (username and password required) may be loaded into SyMBA. By storing our primary data here, we can
+            help prevent deletion, loss, or accidental modification of primary data, while giving convenient
+            access to the data for publication and analysis. Further, by providing extra information on
+            experimental conditions and protocols can provide useful when either viewing or searching for
+            specific data files, or when using the data files as input in further research projects.
+        </li>
+        <li>
+            <strong>View your saved experiments.</strong> This is a convenient shortcut to the most
+            commonly-used search. This link will take you to a view of all the experiments associated to you.
+        </li>
+        <li>
+            <strong>How to use this site.</strong> A link to this help page.
+        </li>
+        <li>
+            <strong>Update your personal details.</strong> If you want to either view or modify your personal
+            details, then follow this link.
+        </li>
+    </ul>
+</p>
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="personalData"><h2 class="centered">Viewing and Modifying Your Details</h2></a>
+
+<p>
+    Keeping up-to-date information about each of us is important for our research. Not only should the correct
+    person (or people) be associated with each data file and experiment that they were a part of, but each
+    change to the information about an experiment should be recorded: not just the time the change was made,
+    but also who performed the change. Finally, if we ever need to contact you about your experiment(s), a valid
+    email address, phone number or address is important.
+</p>
+
+<p>
+    Each text box on this page is pre-filled with the information currently held by SyMBA. In this way, you
+    can examine your information and change only those items that are incorrect or incomplete. <em>If you have
+    not made any changes,</em> pressing "Cancel" will return you to the home page. <em>If you have made
+    changes,</em> pressing "Enter" will store your changes in SyMBA.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="detailsChanged"><h2 class="centered">Confirmation of Successful Updating of Your Personal Details</h2></a>
+
+<p>
+    Upon reaching this screen, you have successfully updated your personal details. This confirmation page shows
+    you the changes you have just made in blue, and gives you the opportunity to either "Confirm" the changes and
+    return to your home page or to "Change" what you've just entered. For more information on why it is important
+    for SyMBA to have complete and up-to-date personal information for each of its users, please see the
+    explanation under <a href="#personalData">Viewing and Modifying Your Details</a>.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="search"><h2 class="centered">Search SyMBA</h2></a>
+
+<p>
+    SyMBA currently has only one built-in search. However, these are simple to implement and more will be added
+    over time. If you have any recommendations or suggestions as to the type of search you would like to perform,
+    please <a href="mailto:helpdesk@cisban.ac.uk">contact us</a>. The current search, run when you press the
+    "Show All" button, will show you a summary view of all of the experiments currently associated with you.
+</p>
+
+<p>
+    Please note: experiments that used to be associated with you but which have since been re-assigned to other
+    people will not show up with this search.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="whatIsAnExperiment"><h2 class="centered">What is Considered a SyMBA Experiment?</h2></a>
+
+<p>
+    When you are adding data to SyMBA, you will see "Experiment" used as a container for your data files.
+    But what is an experiment in the context of SyMBA, and how do your data files relate to it? A SyMBA experiment
+    is an overarching investigation that may contain many data files, of multiple data types. For instance,
+    if you are performing a large-scale experiment that will involve many microarray results as well as colony growth
+    images and 2D-gels, you do not have to create an experiment for each data type. Instead, create just one
+    experiment and add as many data files and data types as required. If you do not see a data type that is correct
+    for you, or the data type does not provide the correct identifying factors for your experiment (e.g. you are using
+    different strains in your experiment than the ones in SyMBA), then please
+    <a href="mailto:helpdesk@cisban.ac.uk">contact us</a>.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="newOrExist"><h2 class="centered">Choosing Between a New or Existing Experiment for Your Data File</h2></a>
+
+<p>
+    Choosing whether the data files you are about to deposit are part of an experiment you have already told SyMBA
+    about, or are part of an experiment not described to SyMBA before is the first step in the process of
+    providing SyMBA with experimental information. Just click on the answer appropriate for your situation. You
+    will be given the opportunity to either create a new experiment or select an existing experiment depending
+    on your answer here. It is important that you associate data files to the correct experiment: not
+    only will it help you organize your data files, it will also help others understand the full development
+    and scope of your experiment. Erroneous associations could lead to lost data files (i.e. you wouldn't know where
+    you put them) or incorrect conclusions about the data. For information and help on what the
+    SyMBA considers an experiment, please visit the
+    "<a href="#whatIsAnExperiment">What is considered a SyMBA Experiment?</a>" help section.
+</p>
+
+<p>
+    <strong>Important information about the Submission Process:</strong><br>
+    Your current stage in the submission process can be tracked in the top portion of this series of web pages.
+    Simply clicking on your choice of new or existing experiment will take you to
+    the next stage of the submission process. If you leave the submission process <em>at any stage before
+    the final confirmation screen,</em> you may loose all your work and have to re-submit. If you have
+    any questions or concerns, please <a href="mailto:helpdesk@cisban.ac.uk">contact us</a>.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="existingExperiment"><h2 class="centered">Choosing an Existing Experiment</h2></a>
+
+<p>
+    At this stage you are presented with a list of experiments you have already created within the archive.
+    Please select the one appropriate for your new data file. For information and help on what the
+    SyMBA considers an experiment, please visit the
+    "<a href="#whatIsAnExperiment">What is considered a SyMBA Experiment?</a>" help section.</p>
+<p>
+    <strong>Important information about the Submission Process:</strong><br>
+    Your current stage in the submission process can be tracked in the top portion of this series of web pages.
+    Once you have associated the correct protocol to each data file you have just uploaded, press "Submit" to
+    continue to the next stage of the submission process. Please press "Submit" only once. Pressing "Back" will
+    take you to the page you were on before this one. If you leave the submission process<em> at any stage before
+    the final confirmation screen, </em> you may loose all your work and have to re-submit. If you have
+    any questions or concerns, please <a href="mailto:helpdesk@cisban.ac.uk">contact us</a>.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="newExperiment"><h2 class="centered">Creating a New Experiment</h2></a>
+
+<p>
+    At this early stage of the data input process, either you have indicated that you wish to create a new
+    experiment (by clicking on "a new experiment" when asked if you wish to use an existing experiment or create
+    a new one), or SyMBA knows you have not yet created an experiment. For information and help on what the
+    SyMBA considers an experiment, please visit the
+    "<a href="#whatIsAnExperiment">What is considered a SyMBA Experiment?</a>" help section.
+</p>
+
+<p>
+    This page is asking for three things: an experiment name, a hypothesis and a conclusion. Only the
+    experiment name is required. The experiment name is a phrase that is relevant to you and which describes the
+    experiment. It can be as short or as long as you like, and does not have to be unique with your other experiment
+    names. This name will be used by SyMBA to refer to this experiment, so you may want it to be memorable.
+    The other two fields may be added now, or left blank. Future implementations of SyMBA will allow you to
+    re-edit these fields.
+</p>
+
+<p>
+    <strong>Important information about the Submission Process:</strong><br>
+    Your current stage in the submission process can be tracked in the top portion of this series of web pages.
+    Once you have associated the correct protocol to each data file you have just uploaded, press "Submit" to
+    continue to the next stage of the submission process. Please press "Submit" only once. Pressing "Back" will
+    take you to the page you were on before this one. If you leave the submission process<em> at any stage before
+    the final confirmation screen, </em> you may loose all your work and have to re-submit. If you have
+    any questions or concerns, please <a href="mailto:helpdesk@cisban.ac.uk">contact us</a>.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="rawData"><h2 class="centered">Depositing Data Files</h2></a>
+
+<p>
+    The deposition of data files is the third step in the process of providing SyMBA with experimental
+    information. While you are allowed to deposit as many data files as you like at this stage, each data file must be
+    of the same type (e.g. Microarray). If you have multiple files of different data types, then please go through
+    the data deposition process once per data type. This restriction allows only those experimental processes
+    (also known as protocols) to be chosen that are appropriate for the data file during the next stage of the
+    submission process. Additionally, all data files deposited at this stage <strong>WILL</strong> be associated
+    with the same experiment. Therefore, if you are depositing data files from different experiments, then
+    please go through the data deposition process once per experiment.
+</p>
+
+<p>
+    <strong>Important information about the Submission Process:</strong><br>
+    Your current stage in the submission process can be tracked in the top portion of this series of web pages.
+    Once you have added the location of each data file you wish to upload, press "Submit" to continue to the next
+    stage of the submission process. Please press "Submit" only once. Pressing "Back" will take you to the page
+    you were on before this one. If you leave the submission process<em> at any stage before the final confirmation
+    screen, </em> you may loose all your work and have to re-submit. If you have any questions or concerns,
+    please <a href="mailto:helpdesk@cisban.ac.uk">contact us</a>.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="protocol"><h2 class="centered">Selecting a Protocol for Your Data File</h2></a>
+
+<p>
+    The association of each data file with a protocol is the final step in the process of providing SyMBA
+    with experimental information. Each data file is the result of a measurement of one of your experimental
+    materials. We need to join together each data file with the exact procedure that was used to generate it.
+    On this page is a list of all of the data files you uploaded in the previous page. Each data file name
+    has, next to it, a list of appropriate protocols for the data type. These protocols were created in
+    the database with the consultation of the research groups within CISBAN, and are only useful in that context.
+    If your protocol is not present, or if you find an error or lack of important information, then please
+    <a href="mailto:helpdesk@cisban.ac.uk">contact us</a>.
+</p>
+
+<p>
+    <strong>Important information about the Submission Process:</strong><br>
+    Your current stage in the submission process can be tracked in the top portion of this series of web pages.
+    Once you have associated the correct protocol to each data file you have just uploaded, press "Submit" to
+    continue to the next stage of the submission process. Please press "Submit" only once. Pressing "Back" will
+    take you to the page you were on before this one. If you leave the submission process<em> at any stage before
+    the final confirmation screen, </em> you may loose all your work and have to re-submit. If you have
+    any questions or concerns, please <a href="mailto:helpdesk@cisban.ac.uk">contact us</a>.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="confirmSubmission"><h2 class="centered">Confirming Your Details</h2></a>
+
+<p>
+    All the information you have entered so far is stored in the web application, but has not yet
+    been loaded into the database. If you are happy with the data you have entered, then please
+    click the "CONFIRM ALL" button. Otherwise, following the links on each bit of information
+    will take you to the relevant form page, where you may re-enter any data you wish to change.
+</p>
+
+<p>
+    <strong>Important information about the Submission Process:</strong><br>
+    Your current stage in the submission process can be tracked in the top portion of this series of web pages.
+    You are at the final step of the process where it is possible to change what you've entered. Press "Confirm All"
+    to continue to the final stage of the submission process. Please press "Confirm All" only once.
+    If you leave the submission process<em> at any stage before
+    the final confirmation screen, </em> you may loose all your work and have to re-submit. If you have
+    any questions or concerns, please <a href="mailto:helpdesk@cisban.ac.uk">contact us</a>.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="completeDeposition"><h2 class="centered">Completion of Submission and Downloading Updated Data
+    File</h2></a>
+
+<p>
+    At this stage, your experimental data will have been stored in the archive. Before you continue, please
+    click on the "Download" button to download your file from the database. This is CISBAN policy, though
+    it may seem counter-intuitive. The reason we require that you download your file is so the CISBAN identifier
+    that has been generated for your data file can be automatically attached. It is very important that you
+    keep this CISBAN identifier with its associated data file.
+    For more information on why this is important, please see
+    the section of this help entitled
+    "<a href="#cisbanIdentifiers">What is the Identifier that Gets Assigned to My Data File?</a>".
+    Clicking on the "Download" button will not only start your download, but also return you to SyMBA
+    home page.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="viewExperiments"><h2 class="centered">Viewing Your Experiments</h2></a>
+
+<p>
+    After clicking on "View your saved experiments" on the home page, you will be presented with
+    a simplified version of all of your experimental information and data stored with SyMBA.
+    Currently you may view the basic information on the experiment, its protocols and its data files.
+    Further, you may choose to download any of your data files from this view: simply click on the
+    "Download This File" button next to the name of the data file. By clicking on the button labelled
+    "Add Data to this Experiment", you can go directly to the load data screen of the input form. Finally,
+    if you wish to view the FuGE-ML file for your experiment, you may click on the "show XML" button.
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+
+<a name="cisbanIdentifiers"><h2 class="centered">What is the Identifier that Gets Assigned to My Data File?</h2></a>
+
+<p>
+    When you upload a data file to SyMBA, in many other areas of the website it is referred to with an identifier
+    that will look something like this:
+</p>
+<p class="bigger">
+    Gre_MCA_0365
+</p>
+<p>
+    An identifier like this has been created to uniquely identify each one of your archived data files. When you finish
+    the loading process, you will be prompted to download the file you just provided. Doing this means you get back
+    a version of your file with this identifier as the filename. Any time you download one of your data files
+    from SyMBA, it will be named using this identifier. Keep track of this identifier, as it will
+    allow you to absolutely identifiy your data file on your local computer with the one in the database.
+</p>
+<p>
+    This identifier is created in the following manner:
+    <ol>
+        <li>
+            The first 3 characters are the first three characters of your last name.
+        </li>
+        <li>
+            The next 3 characters (after the first underscore, "_") are a three-letter acronym that stands for
+            the type of data the identifier belongs to. For example, "MCA" means Microarray.
+        </li>
+        <li>
+            The final 4 characters (after the second underscore) are a set of 4 random digits.
+        </li>
+    </ol>
+</p>
+
+<p class="centered">[ <a href="#contents">Help Contents</a> ] :: [ <a href="#intro">Introduction to SyMBA</a> ]</p>
+

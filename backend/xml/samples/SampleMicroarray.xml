@@ -1,0 +1,204 @@
+<!--
+Please note that this ProtocolCollection is an artificial construct, and when this file is loaded
+via UnmarshalWorkflow, it is only the contents of the Collection, and NOT the collection itself, which is loaded.
+Normally, you would not be allowed an xmlns attribute in the ProtocolCollection.
+
+Please note that the most relevant part of a ProtocolCollection from the CISBAN point of view (the part that
+associates a raw data file (or files) to the workflow (or, in FuGE terminology, the Protocol), is done in the
+GenericProtocolApplication element. This element is NOT included here, because this is meant to be a re-usable
+workflow template, not a specific instance of that workflow.
+
+Finally, note that the GenericParameter may contain OntologyTerm_ref instances. The ontology term is included below the
+ProtocolCollection inside the OntologyCollection.
+-->
+<FuGE xmlns="http://fuge.org/core">
+    <ProtocolCollection>
+        <GenericProtocol
+                name="mutant/WT Microarray Sample Preparation (Component of Example mutant/WT Microarray Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:4cdd7879-4e81-401f-a14b-e69a8ce76daa"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:82cb4ddd-2993-4d58-b0fa-a02681521f92">
+        </GenericProtocol>
+        <GenericProtocol name="mutant/WT Microarray Assay (Component of mutant/WT Microarray Time Series)"
+                         endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:71fbd89e-13c7-4ced-9d0d-199abf9956f2"
+                         identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47"/>
+        <GenericProtocol
+                name="mutant/WT Microarray Time Series (Component of Example mutant/WT Microarray Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:5ad00878-be2a-400f-8b6a-0724965ba4cb"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:d9248775-b438-4f5b-ab78-2c9810a4abdc">
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:f4291ac4-2707-4880-b5bb-7aa225f71dcc"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:db561d3d-dc28-4e67-9249-a2ba7d1bd183"
+                    name="Time Point 0"
+                    actionOrdinal="1"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47">
+                <GenericParameter name="Minutes after Inoculation"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:94ba74c6-b7cd-4bd6-a741-09e5bb8bd442"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:acc09bb3-b665-49d5-92e1-dec3ba461e32">
+                    <AtomicValue defaultValue="0"/>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:62eee36e-1a45-4eaa-b16b-aac317eea5d6"/>
+                </GenericParameter>
+            </GenericAction>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:cf987646-ac3b-466f-a286-c55f50d9e499"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:d400eb36-6faa-4ae3-b8e0-55171bada0e9"
+                    name="Time Point 60"
+                    actionOrdinal="2"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47">
+                <GenericParameter name="Minutes after Inoculation"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:a7d50919-c0c7-4117-9205-661ee88ce8c0"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:9952f23c-b6d6-490d-bd96-0668690aa9b4">
+                    <AtomicValue defaultValue="60"/>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:62eee36e-1a45-4eaa-b16b-aac317eea5d6"/>
+                </GenericParameter>
+            </GenericAction>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:537f1e3a-1ec7-4b29-bf8e-89fb18a70872"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:634b5aaf-5269-4378-9c39-13de40688b58"
+                    name="Time Point 90"
+                    actionOrdinal="3"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47">
+                <GenericParameter name="Minutes after Inoculation"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:5e0364b6-b09c-4080-8088-c7c3949e0790"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:8d63caef-f6cd-421b-b142-85b20d1fc44c">
+                    <AtomicValue defaultValue="90"/>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:62eee36e-1a45-4eaa-b16b-aac317eea5d6"/>
+                </GenericParameter>
+            </GenericAction>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:3d4903e6-5c08-4a2d-a564-4eccc18029f0"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:7d0d8161-f384-441f-8701-8966dccd24c7"
+                    name="Time Point 120"
+                    actionOrdinal="4"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47">
+                <GenericParameter name="Minutes after Inoculation"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:7eee6f1d-a3d2-4f34-8737-63cf8e71736b"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e1238f9a-ef4c-4dff-b204-19621d149ad3">
+                    <AtomicValue defaultValue="120"/>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:62eee36e-1a45-4eaa-b16b-aac317eea5d6"/>
+                </GenericParameter>
+            </GenericAction>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:72bb2203-f468-41c5-bc87-4c3ae47be2f6"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:218a48e8-9b01-47c4-9298-b7d81c603a3a"
+                    name="Time Point 150"
+                    actionOrdinal="5"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47">
+                <GenericParameter name="Minutes after Inoculation"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:6ee6091f-0ecc-462d-97ab-201c1a379122"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:5d08a06e-d52f-4687-8065-02408d3d2341">
+                    <AtomicValue defaultValue="150"/>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:62eee36e-1a45-4eaa-b16b-aac317eea5d6"/>
+                </GenericParameter>
+            </GenericAction>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:c1d3bf26-6171-4d7d-a61b-38e902b78583"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:02e58253-1bc0-48ee-b738-daa094141b3e"
+                    name="Time Point 180"
+                    actionOrdinal="6"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47">
+                <GenericParameter name="Minutes after Inoculation"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:4616f620-80fa-4b43-922d-504caab51604"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:bbcb8dd9-0175-4489-995a-8cacc077e38c">
+                    <AtomicValue defaultValue="180"/>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:62eee36e-1a45-4eaa-b16b-aac317eea5d6"/>
+                </GenericParameter>
+            </GenericAction>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:d7147ed5-7bab-424d-8ea3-4d2860bd64d8"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:015fa948-e073-4519-bb92-e9909c9e9754"
+                    name="Time Point 210"
+                    actionOrdinal="7"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47">
+                <GenericParameter name="Minutes after Inoculation"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:069d4e76-d464-4b16-a539-12105e7ed529"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:ff8d770f-54fa-4eea-a97e-87d1b29b8322">
+                    <AtomicValue defaultValue="210"/>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:62eee36e-1a45-4eaa-b16b-aac317eea5d6"/>
+                </GenericParameter>
+            </GenericAction>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:24584894-01de-4809-965f-068b64012cdf"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:151e0b44-94ae-4627-9423-28c87bb6770e"
+                    name="Time Point 240"
+                    actionOrdinal="8"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47">
+                <GenericParameter name="Minutes after Inoculation"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:c6d80427-0f57-42a0-a995-e074f376eab7"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f6fb8e71-253c-4ce8-a95f-eb0977dc9425">
+                    <AtomicValue defaultValue="240"/>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:62eee36e-1a45-4eaa-b16b-aac317eea5d6"/>
+                </GenericParameter>
+            </GenericAction>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:6fb1ceb2-5a39-44a1-baeb-2b37e8244353"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:bf07f1b0-fd2e-4ee1-992c-e113cba22875"
+                    name="Time Point 270"
+                    actionOrdinal="9"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47">
+                <GenericParameter name="Minutes after Inoculation"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:f363f9e4-c4f9-4780-a6cd-6fbc1f51c298"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:762b2929-1170-49ab-a4d0-4d93a04194e5">
+                    <AtomicValue defaultValue="270"/>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:62eee36e-1a45-4eaa-b16b-aac317eea5d6"/>
+                </GenericParameter>
+            </GenericAction>
+        </GenericProtocol>
+        <!-- If you change the name here you MUST change the appropriate line in LoadFuge-->
+        <GenericProtocol name="Example mutant/WT Microarray Investigation"
+                         endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:45774fc1-16f4-417d-a60e-17a3eea9e0c3"
+                         identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:767ff7d4-9fa5-4b46-bb38-105effb3822b">
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:8f1159cd-4e55-40ae-8dc2-6d25e31f2b27"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:d9a8e091-c7eb-4fa4-bd9c-93a502054427"
+                    name="Step Containing the mutant/WT Microarray Sample Preparation Protocol"
+                    actionOrdinal="1"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:82cb4ddd-2993-4d58-b0fa-a02681521f92"/>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:e0a3e317-40af-4591-9ed3-f4367d1fdb4a"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:b546c501-764e-4bbb-a7aa-cb85b370a0e0"
+                    name="Step Containing the mutant/WT Microarray Time Series Protocol for the Wild Type Strain"
+                    actionOrdinal="2"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:d9248775-b438-4f5b-ab78-2c9810a4abdc">
+                <GenericParameter name="Strain Type"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:2f979ffc-e67e-451f-be7b-ee92d4f3c002"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:82b3c2e6-4acd-42c7-a92d-0a1168a03b89">
+                    <ComplexValue>
+                        <_defaultValue
+                                OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:fa02d8b8-170f-4fd0-8a65-842c02a2ddb3"/>
+                    </ComplexValue>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:5175e266-e948-4ba3-8d18-c355d826de00"/>
+                </GenericParameter>
+            </GenericAction>
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:e0907f7c-2c8b-4a3f-ac5a-afae06cd846b"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:0ea5792e-4b7e-4afc-afcc-e667ee70dd10"
+                    name="Step Containing the mutant/WT Microarray Time Series Protocol for the Mutant Strain"
+                    actionOrdinal="3"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:d9248775-b438-4f5b-ab78-2c9810a4abdc">
+                <GenericParameter name="Strain Type"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:7bba1cc9-dded-4cf6-93e2-24b72b2e39e2"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:60a36f20-0274-42ec-8fc5-fcf286ee04b8">
+                    <ComplexValue>
+                        <_defaultValue
+                                OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:d2fb3a81-498e-4032-989f-cd43bf340d3e"/>
+                    </ComplexValue>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:5175e266-e948-4ba3-8d18-c355d826de00"/>
+                </GenericParameter>
+            </GenericAction>
+        </GenericProtocol>
+    </ProtocolCollection>
+    <OntologyCollection>
+        <OntologyIndividual termAccession="accession to come" term="minute"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:be8cea26-286c-4b29-8c55-4cf558095d3a"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:62eee36e-1a45-4eaa-b16b-aac317eea5d6"/>
+        <OntologyIndividual termAccession="accession to come" term="WT"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:8f97a98b-21f8-496c-b648-db9ced5ccf4c"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:fa02d8b8-170f-4fd0-8a65-842c02a2ddb3"/>
+        <OntologyIndividual termAccession="accession to come" term="mutant"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:33f1c9fc-c251-4087-a275-60d1ef3e0b05"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:d2fb3a81-498e-4032-989f-cd43bf340d3e"/>
+        <OntologyIndividual termAccession="accession to come" term="strain"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:52b96f4c-ed2e-47e9-aeeb-269edf2e0fdf"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:5175e266-e948-4ba3-8d18-c355d826de00"/>
+    </OntologyCollection>
+</FuGE>

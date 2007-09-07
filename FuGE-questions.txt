@@ -1,0 +1,36 @@
+1. In the following snippet of code, we can see that two Protocols are required to create a GPA. This is because
+AndroMDA seems to be erroneously generating an argument for this method from a connection between two abstract
+classes in the UML: ProtocolApplication to Protocol. (It should only generate the argument from the
+GenericProtocolApplication to Protocol association.)
+
+Temp fix: Deleted the association of ProtocolApplication to Protocol inside the UML. 
+
+    /**
+     * @see fugeOM.Common.Protocol.GenericProtocolApplicationDao#create(fugeOM.Common.Endurant, fugeOM.Common.Protocol.Protocol, java.lang.String, fugeOM.Common.Protocol.Protocol)
+     */
+    public fugeOM.Common.Describable create(
+        fugeOM.Common.Endurant endurant,
+        fugeOM.Common.Protocol.Protocol genericProtocol,
+        java.lang.String identifier,
+        fugeOM.Common.Protocol.Protocol protocol)
+    {
+        return (fugeOM.Common.Describable)this.create(TRANSFORM_NONE, endurant, genericProtocol, identifier, protocol);
+    }
+
+    /**
+     * @see fugeOM.Common.Protocol.GenericProtocolApplicationDao#create(int, fugeOM.Common.Endurant, fugeOM.Common.Protocol.Protocol, java.lang.String, fugeOM.Common.Protocol.Protocol)
+     */
+    public java.lang.Object create(
+        final int transform,
+        fugeOM.Common.Endurant endurant,
+        fugeOM.Common.Protocol.Protocol genericProtocol,
+        java.lang.String identifier,
+        fugeOM.Common.Protocol.Protocol protocol)
+    {
+        fugeOM.Common.Protocol.GenericProtocolApplication entity = new fugeOM.Common.Protocol.GenericProtocolApplicationImpl();
+        entity.setEndurant(endurant);
+        entity.setGenericProtocol(genericProtocol);
+        entity.setIdentifier(identifier);
+        entity.setProtocol(protocol);
+        return this.create(transform, entity);
+    }

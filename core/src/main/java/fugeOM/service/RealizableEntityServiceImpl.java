@@ -32,10 +32,10 @@ import java.util.List;
  * This file was modified from an original created by the FuGE (http://fuge.sf.net) Team. Further
  * information on licensing for FuGE code is available from LICENSE.txt
  *
- * $LastChangedDate: 2007-08-13 13:05:06 +0100 (Mon, 13 Aug 2007) $
- * $LastChangedRevision: 547 $
- * $Author: ally $
- * $HeadURL: https://metagenome.ncl.ac.uk/subversion/cisban/DataPortal/trunk/cisbandpi/core/src/main/java/fugeOM/service/RealizableEntityServiceImpl.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 

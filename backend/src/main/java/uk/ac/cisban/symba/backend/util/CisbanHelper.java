@@ -27,10 +27,10 @@ import java.util.Set;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate: 2007-08-20 10:46:40 +0100 (Mon, 20 Aug 2007) $
- * $LastChangedRevision: 549 $
- * $Author: olly $
- * $HeadURL: https://metagenome.ncl.ac.uk/subversion/cisban/DataPortal/trunk/cisbandpi/dpi/src/main/java/uk/ac/cisban/dpi/util/CisbanHelper.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 

@@ -25,10 +25,10 @@ import java.net.URISyntaxException;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate: 2007-08-14 10:21:38 +0100 (Tue, 14 Aug 2007) $
- * $LastChangedRevision: 548 $
- * $Author: ally $
- * $HeadURL: https://metagenome.ncl.ac.uk/subversion/cisban/DataPortal/trunk/cisbandpi/dpi/src/main/java/uk/ac/cisban/dpi/util/conversion/xml/PeopleUnmarshaler.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 

@@ -4,10 +4,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -282,6 +282,17 @@
                         </execution>
                     </executions>
                 </plugin>
+		<plugin>
+			<groupId>org.jvnet.jaxb2.maven2</groupId>
+			<artifactId>maven-jaxb2-plugin</artifactId>
+			<executions>
+				<execution>
+					<goals>
+						<goal>generate</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
                 <plugin>
                     <groupId>org.andromda.maven.plugins</groupId>
                     <artifactId>andromda-maven-plugin</artifactId>
@@ -426,11 +437,11 @@
                 -->
                 <!-- Allyson Lister (3 Jul 2007) changed this to add port number -->
                 <jdbc.url>
-                    jdbc:postgresql://yourmachine.your.url:5433/symba
+                    jdbc:postgresql://petrinets.ncl.ac.uk:5434/symba
                 </jdbc.url>
                 <!-- Allyson Lister (3 Jul 2007) changed this to add username and password -->
-                <jdbc.username>user</jdbc.username>
-                <jdbc.password>pass</jdbc.password>
+                <jdbc.username>dpi</jdbc.username>
+                <jdbc.password>c15b4n_dpi</jdbc.password>
                 <!--
                     Change exception sorder class name for appropriate database
                     For MySQL use: org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter
@@ -554,6 +565,17 @@
             <name>AndroMDA Repository</name>
             <url>http://team.andromda.org/maven2</url>
         </repository>
+	<repository>
+		<id>maven2-repository.dev.java.net</id>
+		<name>Java.net Maven 2 Repository</name>
+		<url>http://download.java.net/maven/2</url>
+	</repository>
+	<repository>
+		<id>maven-repository.dev.java.net</id>
+		<name>Java.net Maven 1 Repository (legacy)</name>
+		<url>http://download.java.net/maven/1</url>
+		<layout>legacy</layout>
+	</repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -561,6 +583,17 @@
             <name>AndroMDA Repository</name>
             <url>http://team.andromda.org/maven2</url>
         </pluginRepository>
+	<pluginRepository>
+		<id>maven2-repository.dev.java.net</id>
+		<name>Java.net Maven 2 Repository</name>
+		<url>http://download.java.net/maven/2</url>
+	</pluginRepository>
+	<pluginRepository>
+		<id>maven-repository.dev.java.net</id>
+		<name>Java.net Maven 1 Repository (legacy)</name>
+		<url>http://download.java.net/maven/1</url>
+		<layout>legacy</layout>
+	</pluginRepository>
     </pluginRepositories>
     <prerequisites>
         <maven>2.0.1</maven>

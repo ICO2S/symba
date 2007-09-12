@@ -3,10 +3,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -111,10 +111,10 @@ must go back to the login page--%>
     }
 
     // todo now set the variables. A bit temporary, but will do until a real properties file setup is done
-    scp.setDirectory( "/your/directory/for/data/" );
-    scp.setHostname( "yourmachine.your.url" );
-    scp.setUsername( "user" );
-    scp.setPassword( "pass" );
+    scp.setDirectory( "/data/dpi/sandbox/" );
+    scp.setHostname( "cisbclust.ncl.ac.uk" );
+    scp.setUsername( "dpi" );
+    scp.setPassword( "c15b4n_dpi" );
 
     // now get the counts
     counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );

@@ -42,9 +42,9 @@
 <!--url="jdbc:postgresql://localhost:5433/dpi_security"-->
 <sql:setDataSource
         driver="org.postgresql.Driver"
-        url="jdbc:postgresql://petrinets.ncl.ac.uk:5434/dpi_security"
-        user="dpi"
-        password="c15b4n_dpi"
+        url="jdbc:postgresql://yourmachine.your.domain:5433/dpi_security"
+        user="username	"
+        password="password"
         />
 
 <%--This searches the database for the username/password combination entered 
@@ -111,10 +111,10 @@ must go back to the login page--%>
     }
 
     // todo now set the variables. A bit temporary, but will do until a real properties file setup is done
-    scp.setDirectory( "/data/dpi/sandbox/" );
-    scp.setHostname( "cisbclust.ncl.ac.uk" );
-    scp.setUsername( "dpi" );
-    scp.setPassword( "c15b4n_dpi" );
+    scp.setDirectory( "/your/folder/" );
+    scp.setHostname( "your machine" );
+    scp.setUsername( "username" );
+    scp.setPassword( "password" );
 
     // now get the counts
     counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );

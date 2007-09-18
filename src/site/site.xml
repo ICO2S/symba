@@ -6,7 +6,8 @@
     <href>http://symba.sourceforge.net/</href>
   </bannerLeft>
   <bannerRight>
-    <src>http://maven.apache.org/images/maven-small.gif</src>
+    <src>images/symba-text.png</src>
+    <href>http://symba.sourceforge.net/</href>
   </bannerRight>
   <body>
     <links>

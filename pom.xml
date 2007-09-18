@@ -97,7 +97,7 @@
     <distributionManagement>
         <site>
             <id>shell.sf.net</id>
-            <url>scp://home/groups/s/sy/symba/test</url>
+            <url>scp://home/groups/s/sy/symba/test/</url>
         </site>
     </distributionManagement>
 

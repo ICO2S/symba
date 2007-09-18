@@ -22,6 +22,8 @@ public class MarshalXML {
             throw new java.lang.Exception(
                     "You must provide 3 arguments in this order: schema-file identifier output-xml-file" );
 
+        System.out.println( "Attempting to retrieve the following from the database: " + args[1] );
+
         XMLMarshaler marshaler = new XMLMarshaler( args[0] );
         marshaler.FuGEToJaxb2( args[1], args[2] );
     }

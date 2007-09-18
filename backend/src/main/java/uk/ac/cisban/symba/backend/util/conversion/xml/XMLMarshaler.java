@@ -100,11 +100,13 @@ public class XMLMarshaler {
             System.err.println( "START -- FuGE MARSHAL WARNING -- START " );
             System.err.println( "FuGE MARSHAL WARNING " );
             System.err.println(
-                    "FuGE MARSHAL WARNING: experiment is not present in the database. Exiting without marshaling." );
+                    "FuGE MARSHAL WARNING: Error retrieving experiment from the database. Exiting without marshaling." );
             System.err.println( "FuGE MARSHAL WARNING " );
             System.err.println( "END -- FuGE MARSHAL WARNING -- END " );
 
-            throw new java.lang.Exception( "FuGE object identifier not present in database" );
+            e.printStackTrace();
+
+            throw new java.lang.Exception( "Error retrieving experiment from the database" );
         }
         FuGEToJaxb2( fr, os );
     }

@@ -37,13 +37,11 @@
 <!-- using metagenome doesn't work properly - some problem with the metagenome tomcat server talking to-->
 <!-- the metagenome postgres instance. Changing to localhost solves the problem, but means that the-->
 <!-- tomcat instance has to be on metagenome in order to talk to the correct database!!! -->
-<!--url="jdbc:postgresql://metagenome:5433/dpi_security"-->
-<!--url="jdbc:postgresql://petrinets.ncl.ac.uk:5434/dpi_security"-->
 <!--url="jdbc:postgresql://localhost:5433/dpi_security"-->
 <sql:setDataSource
         driver="org.postgresql.Driver"
-        url="jdbc:postgresql://yourmachine.your.domain:5433/dpi_security"
-        user="username	"
+        url="jdbc:postgresql://yourmachine.your.domain:5433/symba_security"
+        user="username"
         password="password"
         />
 

@@ -1,16 +1,15 @@
 <classpath>
+  <classpathentry kind="src" path="jaxb2/src/main/java"/>
   <classpathentry kind="src" path="backend/src/main/java"/>
-  <classpathentry kind="src" path="webapp/src/main/java"/>
   <classpathentry kind="src" path="core/src/main/java"/>
   <classpathentry kind="src" path="core/target/src"/>
   <classpathentry kind="src" path="common/target/src"/>
-  <classpathentry kind="src" path="jaxb2/src/main/java"/>
-  <classpathentry kind="lib" path="/home/ollyshaw/symba/backend/src/main/lib/lsid-client-1.1.3.jar"/>
+  <classpathentry kind="src" path="webapp/src/main/java"/>
+  <classpathentry kind="lib" path="/media/share/unsynched/IdeaProjects/SyMBA/trunk/backend/src/main/lib/lsid-client-1.1.3.jar"/>
   <classpathentry kind="var" path="M2_REPOantlr/antlr/2.7.6rc1/antlr-2.7.6rc1.jar"/>
   <classpathentry kind="var" path="M2_REPOaopalliance/aopalliance/1.0/aopalliance-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPOasm/asm-attrs/1.5.3/asm-attrs-1.5.3.jar"/>
   <classpathentry kind="var" path="M2_REPOasm/asm/1.5.3/asm-1.5.3.jar"/>
-  <classpathentry kind="var" path="M2_REPOavalon-framework/avalon-framework/4.1.3/avalon-framework-4.1.3.jar"/>
   <classpathentry kind="var" path="M2_REPOaxis/axis-jaxrpc/1.4/axis-jaxrpc-1.4.jar"/>
   <classpathentry kind="var" path="M2_REPOaxis/axis-saaj/1.4/axis-saaj-1.4.jar"/>
   <classpathentry kind="var" path="M2_REPOaxis/axis/1.4/axis-1.4.jar"/>
@@ -19,26 +18,24 @@
   <classpathentry kind="var" path="M2_REPOcom/sun/xml/bind/jaxb-impl/2.1/jaxb-impl-2.1.jar"/>
   <classpathentry kind="var" path="M2_REPOcommons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar"/>
   <classpathentry kind="var" path="M2_REPOcommons-cli/commons-cli/1.0/commons-cli-1.0.jar"/>
-  <classpathentry kind="var" path="M2_REPOcommons-collections/commons-collections/3.2/commons-collections-3.2.jar"/>
+  <classpathentry kind="var" path="M2_REPOcommons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
   <classpathentry kind="var" path="M2_REPOcommons-digester/commons-digester/1.7/commons-digester-1.7.jar"/>
   <classpathentry kind="var" path="M2_REPOcommons-discovery/commons-discovery/0.4/commons-discovery-0.4.jar"/>
   <classpathentry kind="var" path="M2_REPOcommons-fileupload/commons-fileupload/1.2/commons-fileupload-1.2.jar"/>
   <classpathentry kind="var" path="M2_REPOcommons-io/commons-io/1.3/commons-io-1.3.jar"/>
   <classpathentry kind="var" path="M2_REPOcommons-jelly/commons-jelly-tags-interaction/1.1/commons-jelly-tags-interaction-1.1.jar"/>
-  <classpathentry kind="var" path="M2_REPOcommons-lang/commons-lang/2.3/commons-lang-2.3.jar"/>
-  <classpathentry kind="var" path="M2_REPOcommons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPOcommons-lang/commons-lang/2.1/commons-lang-2.1.jar"/>
+  <classpathentry kind="var" path="M2_REPOcommons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
   <classpathentry kind="var" path="M2_REPOdom4j/dom4j/1.6.1/dom4j-1.6.1.jar"/>
   <classpathentry kind="var" path="M2_REPOehcache/ehcache/1.1/ehcache-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPOjavax/activation/activation/1.1/activation-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPOjavax/servlet/jstl/1.1.2/jstl-1.1.2.jar"/>
-  <classpathentry kind="var" path="M2_REPOjavax/servlet/servlet-api/2.3/servlet-api-2.3.jar"/>
   <classpathentry kind="var" path="M2_REPOjavax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar"/>
   <classpathentry kind="var" path="M2_REPOjavax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar"/>
   <classpathentry kind="var" path="M2_REPOjboss/jboss-j2ee/3.2.3/jboss-j2ee-3.2.3.jar"/>
   <classpathentry kind="var" path="M2_REPOjdom/jdom/1.0/jdom-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPOjline/jline/0.9.5/jline-0.9.5.jar"/>
   <classpathentry kind="var" path="M2_REPOlog4j/log4j/1.2.12/log4j-1.2.12.jar"/>
-  <classpathentry kind="var" path="M2_REPOlogkit/logkit/1.0.1/logkit-1.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPOorg/andromda/andromda-core/3.2-SNAPSHOT/andromda-core-3.2-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPOorg/andromda/andromda-utils/3.2-SNAPSHOT/andromda-utils-3.2-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPOorg/andromda/metafacades/andromda-metafacades-uml/3.2-SNAPSHOT/andromda-metafacades-uml-3.2-SNAPSHOT.jar"/>

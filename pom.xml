@@ -1,13 +1,12 @@
-
 <!-- This file is part of SyMBA.-->
-<!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
-<!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
-<!-- To view the full licensing information for this software and ALL other files contained-->
-<!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate$-->
-<!-- $LastChangedRevision$-->
-<!-- $Author$-->
-<!-- $HeadURL$-->
+        <!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
+        <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
+        <!-- To view the full licensing information for this software and ALL other files contained-->
+        <!-- in this distribution, please see LICENSE.txt-->
+        <!-- $LastChangedDate$-->
+        <!-- $LastChangedRevision$-->
+        <!-- $Author$-->
+        <!-- $HeadURL$-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -18,7 +17,26 @@
     <packaging>pom</packaging>
     <version>7.09</version>
     <name>SyMBA</name>
-    <description>The SyMBA Project</description>
+    <url>http://symba.sourceforge.net</url>
+    <description>The Systems and Molecular Biology data Archive (SyMBA) Project. The Centre for Integrated Systems
+        Biology of Ageing and Nutrition (CISBAN) has developed a Systems and Molecular Biology Data and Metadata Archive
+        (SyMBA) based on the Functional Genomics Object Model (FuGE-OM) that archives, stores, and retrieves raw
+        high-throughput data. Until now, few published systems have successfully integrated both multiple omics data
+        types and information about experiments in a single database. An archive was needed at CISBAN, and an emerging
+        data standard such as FuGE provides a fast development time for the archive in the short term, and an export
+        format that is easy to extend and share in the longer term. A central data repository prevents deletion, loss,
+        or accidental modification of primary data, while giving convenient access to the data for standards-compliant
+        publication and analysis. SyMBA also provides a central location for storage of metadata for high-throughput
+        data sets, and will facilitate subsequent data integration strategies within the CISBAN. Use of SyMBA is not
+        limited to use within CISBAN, and we encourage other groups with similar needs to install, evaluate, and
+        contribute to the development of SyMBA.
+    </description>
+
+    <issueManagement>
+        <system>Tracker</system>
+        <url>http://sourceforge.net/tracker/?group_id=202680</url>
+    </issueManagement>
+
     <mailingLists>
         <mailingList>
             <name>SyMBA Developers</name>
@@ -35,60 +53,69 @@
         </mailingList>
     </mailingLists>
 
+    <scm>
+        <connection>scm:svn:https://symba.svn.sourceforge.net/svnroot/symba/</connection>
+        <developerConnection>scm:svn:https://symba.svn.sourceforge.net/svnroot/symba/</developerConnection>
+        <url>http://symba.svn.sourceforge.net/viewvc/symba/</url>
+    </scm>
+
     <licenses>
-      <license>
-        <name>GNU Lesser General Public License</name>
-        <url>http://www.gnu.org/copyleft/lesser.html</url>
-        <distribution>repo</distribution>
-      </license>
+        <license>
+            <name>GNU Lesser General Public License</name>
+            <url>http://www.gnu.org/copyleft/lesser.html</url>
+            <distribution>repo</distribution>
+        </license>
     </licenses>
 
     <developers>
-      <developer>
-        <id>allyson</id>
-        <name>Allyson Lister</name>
-        <email>a.l.lister@ncl.ac.uk</email>
-        <organization>CISBAN, Newcastle University</organization>
-        <organizationUrl>http://www.cisban.ac.uk</organizationUrl>
-        <roles>
-          <role>Developer</role>
-        </roles>
-        <timezone>0</timezone>
-        <properties></properties>
-      </developer>
-      <developer>
-        <id>olly</id>
-        <name>Olly Shaw</name>
-        <email>o.j.shaw@ncl.ac.uk</email>
-        <organization>CISBAN, Newcastle University</organization>
-        <organizationUrl>http://www.cisban.ac.uk</organizationUrl>
-        <roles>
-          <role>Developer</role>
-        </roles>
-        <timezone>0</timezone>
-        <properties></properties>
-      </developer>
+        <developer>
+            <id>allysonlister</id>
+            <name>Allyson Lister</name>
+            <email>allysonlister@users.sourceforge.net</email>
+            <organization>CISBAN, Newcastle University</organization>
+            <organizationUrl>http://www.cisban.ac.uk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>0</timezone>
+            <properties></properties>
+        </developer>
+        <developer>
+            <id>ollyshaw</id>
+            <name>Olly Shaw</name>
+            <email>ollyshaw@users.sourceforge.net</email>
+            <organization>CISBAN, Newcastle University</organization>
+            <organizationUrl>http://www.cisban.ac.uk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>0</timezone>
+            <properties></properties>
+        </developer>
     </developers>
 
-    <scm>
-        <connection></connection>
-        <url></url>
-    </scm>
+    <distributionManagement>
+        <site>
+            <id>shell.sf.net</id>
+            <url>scp://home/groups/s/sy/symba/test</url>
+        </site>
+    </distributionManagement>
+
     <organization>
-        <name></name>
-        <url></url>
+        <name>CISBAN</name>
+        <url>http://www.cisban.ac.uk</url>
     </organization>
-    <ciManagement>
-        <system>continuum</system>
-        <notifiers>
-            <notifier>
-                <type>mail</type>
-                <configuration>
-                    <address></address>
-                </configuration>
-            </notifier>
-        </notifiers>
-    </ciManagement>
+    <!--<ciManagement>-->
+        <!--<system>continuum</system>-->
+        <!--<notifiers>-->
+            <!--<notifier>-->
+                <!--<type>mail</type>-->
+                <!--<configuration>-->
+                    <!--<address></address>-->
+                <!--</configuration>-->
+            <!--</notifier>-->
+        <!--</notifiers>-->
+    <!--</ciManagement>-->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -282,17 +309,17 @@
                         </execution>
                     </executions>
                 </plugin>
-		<plugin>
-			<groupId>org.jvnet.jaxb2.maven2</groupId>
-			<artifactId>maven-jaxb2-plugin</artifactId>
-			<executions>
-				<execution>
-					<goals>
-						<goal>generate</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
+                <plugin>
+                    <groupId>org.jvnet.jaxb2.maven2</groupId>
+                    <artifactId>maven-jaxb2-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.andromda.maven.plugins</groupId>
                     <artifactId>andromda-maven-plugin</artifactId>
@@ -437,11 +464,11 @@
                 -->
                 <!-- Allyson Lister (3 Jul 2007) changed this to add port number -->
                 <jdbc.url>
-                    jdbc:postgresql://petrinets.ncl.ac.uk:5434/symba
+                    jdbc:postgresql://your.machine:5433/symba
                 </jdbc.url>
                 <!-- Allyson Lister (3 Jul 2007) changed this to add username and password -->
-                <jdbc.username>dpi</jdbc.username>
-                <jdbc.password>c15b4n_dpi</jdbc.password>
+                <jdbc.username>username</jdbc.username>
+                <jdbc.password>password</jdbc.password>
                 <!--
                     Change exception sorder class name for appropriate database
                     For MySQL use: org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter
@@ -565,17 +592,17 @@
             <name>AndroMDA Repository</name>
             <url>http://team.andromda.org/maven2</url>
         </repository>
-	<repository>
-		<id>maven2-repository.dev.java.net</id>
-		<name>Java.net Maven 2 Repository</name>
-		<url>http://download.java.net/maven/2</url>
-	</repository>
-	<repository>
-		<id>maven-repository.dev.java.net</id>
-		<name>Java.net Maven 1 Repository (legacy)</name>
-		<url>http://download.java.net/maven/1</url>
-		<layout>legacy</layout>
-	</repository>
+        <repository>
+            <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Maven 2 Repository</name>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+        <repository>
+            <id>maven-repository.dev.java.net</id>
+            <name>Java.net Maven 1 Repository (legacy)</name>
+            <url>http://download.java.net/maven/1</url>
+            <layout>legacy</layout>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -583,17 +610,17 @@
             <name>AndroMDA Repository</name>
             <url>http://team.andromda.org/maven2</url>
         </pluginRepository>
-	<pluginRepository>
-		<id>maven2-repository.dev.java.net</id>
-		<name>Java.net Maven 2 Repository</name>
-		<url>http://download.java.net/maven/2</url>
-	</pluginRepository>
-	<pluginRepository>
-		<id>maven-repository.dev.java.net</id>
-		<name>Java.net Maven 1 Repository (legacy)</name>
-		<url>http://download.java.net/maven/1</url>
-		<layout>legacy</layout>
-	</pluginRepository>
+        <pluginRepository>
+            <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Maven 2 Repository</name>
+            <url>http://download.java.net/maven/2</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>maven-repository.dev.java.net</id>
+            <name>Java.net Maven 1 Repository (legacy)</name>
+            <url>http://download.java.net/maven/1</url>
+            <layout>legacy</layout>
+        </pluginRepository>
     </pluginRepositories>
     <prerequisites>
         <maven>2.0.1</maven>
@@ -608,6 +635,10 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>changes-maven-plugin</artifactId>
+            </plugin>
+             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>

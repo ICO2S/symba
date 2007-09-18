@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+        <author email="allysonlister.AT.users.DOT.sourceforge.DOT.net">Allyson Lister</author>
+        <author email="ollyshaw.AT.users.DOT.sourceforge.DOT.net">Olly Shaw</author>
+        <title>SyMBA Technical Documentation</title>
+    </properties>
+    <meta name="keyword"
+          content="SyMBA, Systems Biology, Data Archive, CISBAN, FuGE, Computational Biology, Ageing, Aging, Nutrition, Kirkwood, Biological Modelling, Biological Modeling"/>
+    <body>
+        <section name="Current Release: 7.09 (stable)">
+
+            <p>
+                This page describes technical details of SyMBA. For more
+                general information please see the
+                <a href="index.html">home page</a>
+                .
+            </p>
+
+            <p>
+                <font color="red">There is currently a problem with the server running the SyMBA sandbox. It should be
+                    back up and running
+                    sometime next week. We apologize for any inconvenience.
+                </font>
+            </p>
+
+            <p>
+                We are pleased to announce that SyMBA is pretty stable and available in a
+                public sandbox version.
+                Please note that the configuration at this url, while representing the first stable release, remains a
+                sandbox
+                configuration, and any data you may upload to the server may be deleted at any time. We will, however,
+                try to send
+                out warning emails prior to any deletion of the database. As a sandbox implementation, it should not be
+                used as a
+                permanent archive for any data. If you wish to have an archive to store your high-throughput data,
+                please
+                <a href="mailto:symba-devel@lists.sourceforge.net">contact us</a>
+                to see if we could collaborate in any way.
+            </p>
+        </section>
+
+        <section name="References">
+
+            <p>
+                You may find the following useful:
+            </p>
+            <ul>
+                <li>
+                    <a href="http://www.cs.ncl.ac.uk/research/pubs/trs/abstract.php?number=1016">CS-TR:
+                        1016 Implementing the FuGE Object Model: a Systems Biology Data Portal and Integrator
+                    </a>
+                    ,
+                    <i>Lister, A. L., Jones, A. R., Pocock, M., Shaw, O., Wipat, A.</i>
+                    School of Computing Science, Newcastle University, Apr 2007.
+                </li>
+                <li>
+                    Jones AR, Pizarro A, Spellman P, Miller M; FuGE Working Group.
+                    <a href="http://www.liebertonline.com/doi/abs/10.1089/omi.2006.10.179">FuGE: Functional Genomics
+                        Experiment
+                        Object Model
+                    </a>
+                    , OMICS: A Journal of Integrative Biology, 2006 10:2 p179-184.
+                </li>
+            </ul>
+        </section>
+
+        <section name="Using the Sandbox">
+            <subsection name="Logging In">
+
+                <p>
+                    You will need a logon to access this database, which you may request
+                    from the
+                    <a href="mailto:symba-devel@lists.sourceforge.net">helpdesk</a>
+                    . This is a low-level of security that will
+                    only serve to prevent anonymous load on the database and to keep your sandbox area separate from
+                    others.
+                </p>
+            </subsection>
+
+            <subsection name="What we mean by a 'sandbox' release">
+
+                <p>
+                    We reserve the right to stop and restart the DPI server at any time, and to drop and re-create the
+                    database
+                    at any time. You should not attempt to use this service as a long-term, permanent store.
+                    However, we encourage you to upload data and create as many experiments as you like
+                    so that you may determine if this application may be of use to your own research group. We also
+                    appreciate
+                    you
+                    <a href="mailto:symba-devel@lists.sourceforge.net">contacting us</a>
+                    with any comments or questions you may have.
+                </p>
+
+                <p>
+                    Further, although we do have an LSID Resolution Service running via
+                    <a href="http://elephant.ncl.ac.uk:8081/authority">http://elephant.ncl.ac.uk:8081/authority</a>
+                    , and we
+                    do aim to ensure that object returned will always return the same thing, not every object identified
+                    with
+                    an LSID can currently be resolved via this service. This is still within the standard: if something
+                    resolves,
+                    it must always be to the same thing. However, you are free to test the LSID server now. More
+                    information on
+                    contacting the LSID Resolution Service will be added shortly, together with an example Java class.
+                </p>
+            </subsection>
+        </section>
+
+        <section name="Standards Used">
+
+            <p>
+                Our back-end, and the XML produced by the front-end, is completely
+                <a href="http://fuge.sourceforge.net">FuGE-compliant</a>
+                .
+                CISBAN is part of the
+                <a href="http://www.mged.org/Workgroups/rsbi/rsbi.html">RSBI Consortium</a>
+                , which
+                encourages the use of three main reporting standards
+                for biological investigations:
+                <a href="http://fuge.sourceforge.net">FuGE</a>
+                ,
+                <a href="http://obi.sourceforge.net">OBI</a>
+                , and
+                <a href="http://mibbi.sourceforge.net">MIBBI</a>
+                . FuGE is
+                a maturing standard data model for storing experimental metadata, OBI is a developing standard ontology
+                for
+                biological/biomedical experiments, and MIBBI is a new effort to standardize the minimum information
+                needed
+                to describe a biological experiment.
+            </p>
+        </section>
+        <section name="What does the release number mean?">
+
+            <p>
+                We have based the release numbering system on the
+                <a href="http://www.ubuntu.com">Ubuntu</a>
+                style. This
+                means that the number prefixing the "." is the year of the release, and the number after the "." is the
+                month of the release. Therefore, release 7.03 was released in March 2007. Finally, we add a comment
+                after
+                the release number detailing whether the release is a beta version or a stable version.
+            </p>
+        </section>
+        <section name="Does this project suit your needs?">
+
+            <p>
+                We are interested in collaboration with any group that may be able to make use of this project. Most
+                aspects
+                of the application are generic, and the main way of customizing the DPI is via creation and upload of
+                your
+                own experimental protocols.
+
+            </p>
+        </section>
+        <section name="What are we planning in future?">
+            <ul>
+                <li>A Protocol Wizard for adding protocols via the gui rather than the command line</li>
+                <li>An ontology term tracker that could automatically add terms to the interface, as this is the main
+                    way
+                    the experimental factors are stored.
+                </li>
+                <li>Upgrade of the system to FuGE Version 1 (and therefore UML 2), once it has been finalized.</li>
+                <li>Upgrade of the build system to Maven 2 (
+                    <font color="red">completed</font>
+                    )
+                    and AndroMDA 4.
+                </li>
+                <li>Download of the entire system so that others may install it for their own use.</li>
+                <li>An Administration page that allows a view of the entire contents of the database (those that aren't
+                    marked
+                    as private) from the front-end.
+                </li>
+            </ul>
+        </section>
+
+    </body>
+</document>

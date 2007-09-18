@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+        <author email="allysonlister.AT.users.DOT.sourceforge.DOT.net">Allyson Lister</author>
+        <author email="ollyshaw.AT.users.DOT.sourceforge.DOT.net">Olly Shaw</author>
+        <title>SyMBA</title>
+    </properties>
+    <meta name="keyword"
+          content="SyMBA, Systems Biology, Data Archive, CISBAN, FuGE, Computational Biology, Ageing, Aging, Nutrition, Kirkwood, Biological Modelling, Biological Modeling"/>
+    <body>
+        <section name="An Introduction to SyMBA">
+            <p>
+                <i>This page summarizes the current status of the SyMBA. SyMBA is available for viewing and testing
+                    shortly,
+                    and in a few weeks it should also be available for download. We welcome any comments or queries on
+                    the
+                    system, which should be sent to
+                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel@lists.sourceforge.net</a>
+                    .
+                </i>
+            </p>
+
+            <p>
+                <font color="red">There is currently a problem with the server running the SyMBA sandbox. It should be
+                    back up and running sometime next week. We apologize for any inconvenience.
+                </font>
+            </p>
+
+            <p>The Centre for Integrated Systems Biology of Ageing and Nutrition has developed a data archive and
+                integrator
+                (SyMBA) based on Milestone 3 of the
+                <a href="http://fuge.sourceforge.net">Functional Genomics Experiment (FuGE)</a>
+                Object Model (FuGE-OM), and which archives, stores, and retrieves raw high-throughput data. Until now,
+                few
+                published systems have successfully integrated multiple omics data types and information about
+                experiments
+                in a single database. SyMBA is the first published implementation of FuGE that includes a database
+                back-end,
+                expert and standard interfaces, and a Life Science Identifier (LSID) Resolution and Assigning service to
+                identify objects and provide programmatic access to the database. Having a central data repository
+                prevents
+                deletion, loss, or accidental modification of primary data, while giving convenient access to the data
+                for
+                publication and analysis. It also provides a central location for storage of metadata for the
+                high-throughput data sets, and will facilitate subsequent data integration strategies.
+            </p>
+
+            <p>SyMBA, or its previous incarnation as the CISBAN DPI, has been presented at:</p>
+            <ul>
+                <li>An
+                    <a href="http://nebc.nox.ac.uk/">NEBC</a>
+                    -
+                    <a href="http://www.ebi.ac.uk">EBI</a>
+                    Developer's Workshop,
+                    19-20th February 2007, which included presentations and discussions of the CISBAN DPI,
+                    <a href="http://www.omixed.org">omixed</a>
+                    ,
+                    <a href="http://mibbi.sourceforge.net">MIBBI</a>
+                    ,
+                    <a href="http://obi.sourceforge.net">OBI</a>
+                    ,
+                    <a href="http://msi-workgroups.sourceforge.net/">MSI</a>
+                    ,
+                    <a href="http://psidev.sourceforge.net">PSI</a>
+                    , and
+                    <a
+                            href="http://www.ebi.ac.uk/net-project/projects.html">BioMAP
+                    </a>
+                    ,
+                    among others. Participants were from NEBC, EBI,
+                    <a href="http://www.man.ac.uk">University of Manchester</a>
+                    , and
+                    <a href="http://www.ncl.ac.uk">Newcastle University</a>
+                    .
+                </li>
+                <li>
+                    <a href="http://www.neresc.ac.uk/">North East Regional e-Science Centre</a>
+                    /
+                    <a href="http://www.dcc.ac.uk">Digital
+                        Curation Centre
+                    </a>
+                    Collaborative Workshop - 5th February 2007
+                </li>
+                <li>The 3rd
+                    <a href="http://obi.sourceforge.net/">OBI</a>
+                    <a
+                            href="http://www.liai.org/obi/index.html">Workshop
+                    </a>
+                    , held
+                    from 29 January - 2 February 2007 at the
+                    <a href="http://www.liai.org">La Jolla Institute for Allergy and
+                        Immunology
+                    </a>
+                    in San Diego, California.
+                </li>
+                <li>The
+                    <a href="http://www.ebi.ac.uk/biomodels">2nd BioModels.net</a>
+                    <a href="http://www.ebi.ac.uk/biomodels/meetings/2ndTrainingCamp/2ndTrainingCamp.html">Training
+                        Camp
+                    </a>
+                    ,
+                    held from 13-15 January 2007 at the
+                    <a href="http://www.meeting.co.uk/index.html">Manchester Conference
+                        Centre
+                    </a>
+                    .
+                </li>
+            </ul>
+        </section>
+        <section name="Status: August 2007: Second Stable Release (7.09 stable)">
+
+            <p>
+                This is an incremental release that was mainly created to fix a few minor bugs, and to bring the code
+                up to a standard that could be deposited into the SourceForge Subversion repository. It is built with
+                Maven 2.0.7, an improvement on the earlier maven 1 build system.
+                At the same time as the sandbox release of 7.09 is published, the full code of SyMBA will be deposited
+                on SourceForge.
+            </p>
+
+            <p>
+                You will need a logon to access this database, which you may request
+                from the
+                <a href="mailto:symba-devel@lists.sourceforge.net">helpdesk</a>
+                . This is a simple method of security that
+                used to prevent anonymous load on the database and to keep your sandbox area separate from others.
+                For more information on the sandbox installation, please visit SyMBA's
+                <a href="details.html">technical documentation</a>
+                .
+            </p>
+        </section>
+
+        <section name="Further Information">
+
+            <ul>
+                <li>
+                    <a href="pastStatusReports.html">Past status reports</a>
+                </li>
+                <li>
+                    <a href="http://sourceforge.net/project/screenshots.php?group_id=202680">Screenshots</a>
+                    are available from the SourceForge website.
+                </li>
+                <li>SyMBA Summary Slides
+                    <a href="SyMBA-Aug2007.odp">(odp)</a>
+                    <a href="SyMBA-Aug2007.ppt">(ppt)</a>
+                    - August 2007
+                </li>
+                <li>
+                    <a href="http://fuge.sourceforge.net">FuGE</a>
+                    :
+                    <a href="http://www.ebi.ac.uk/biomodels/meetings/2ndTrainingCamp/FuGE-Jones-Jan-2007.ppt">Summary
+                        slides
+                    </a>
+                </li>
+                <!--            <li>
+                        <a href="downloads/CisbanGraphic1.pdf">Graphic of Data Flow</a> within the DPI
+                    </li>
+                -->
+            </ul>
+        </section>
+
+        <section name="External Resources Used">
+            <ul>
+                <li>
+                    <a href="http://www.andromda.org">AndroMDA</a>
+                    3.2-SNAPSHOT
+                </li>
+                <li>
+                    <a href="https://jaxb.dev.java.net/">JAXB</a>
+                    2.0
+                </li>
+                <li>
+                    <a href="http://maven.apache.org/">Maven</a>
+                    2.0.7
+                </li>
+                <li>
+                    <a href="http://www.hibernate.org/">Hibernate</a>
+                    3.0.5
+                </li>
+                <li>
+                    <a href="http://www.postgresql.org/">PostgreSQL</a>
+                    8.1-407
+                </li>
+            </ul>
+
+            <p>
+                <i>If you have any comments or queries, please contact us at
+                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel@lists.sourceforge.net</a>
+                    .
+                </i>
+            </p>
+        </section>
+    </body>
+</document>

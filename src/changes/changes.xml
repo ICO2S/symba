@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+        <title>SyMBA</title>
+        <author email="allysonlister.AT.users.DOT.sourceforge.DOT.net">Allyson Lister</author>        
+    </properties>
+    <body>
+        <!--<release version="current" description="Current work version">-->
+            <!--<action dev="Allyson Lister" type="add">-->
+                <!--A new cool feature.-->
+            <!--</action>-->
+        <!--</release>-->
+        <release version="7.09" date="2007-09-17" description="Upgrade to Maven 2, Promotion to SourceForge">
+            <action dev="Allyson Lister" type="add">
+                Upgraded from Maven1 to Maven2.
+            </action>
+            <!--<action dev="Allyson Lister" type="fix" issue="1254">-->
+            <!--<action dev="Allyson Lister" type="delete">-->
+                <!--Removed a feature that nobody liked.-->
+            <!--</action>-->
+        </release>
+    </body>
+</document>

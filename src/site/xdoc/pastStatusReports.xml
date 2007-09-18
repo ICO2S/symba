@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+        <author email="allysonlister.AT.users.DOT.sourceforge.DOT.net">Allyson Lister</author>
+        <author email="ollyshaw.AT.users.DOT.sourceforge.DOT.net">Olly Shaw</author>
+        <title>Past SyMBA/CISBAN DPI Status Reports</title>
+    </properties>
+    <meta name="keyword"
+          content="SyMBA, Systems Biology, Data Archive, CISBAN, FuGE, Computational Biology, Ageing, Aging, Nutrition, Kirkwood, Biological Modelling, Biological Modeling"/>
+    <body>
+
+        <section name="Past SyMBA/CISBAN DPI Status Reports">
+
+            <p>
+                Status reports that are no longer current may be found here.
+            </p>
+
+            <subsection name="Status: June 2007: First Stable Release (7.06 stable)">
+
+                <p>
+                    The following changes have been made to the DPI since 7.04:
+                    <ul>
+                        <li>
+                            <em>Removal of the RawData and associated classes.</em>
+                            As the location where the
+                            permanent database was to reside would not have the space required to store the
+                            high-throughput data, and
+                            because we wanted to decouple data storage from metadata storage, we now
+                            use a file store for the data. The database stores only experimental FuGE-standard metadata.
+                        </li>
+                        <li>
+                            <em>More complex Protocol display handling.</em>
+                            Much more complicated Protocols can now
+                            be handled by the front-end. While the FuGE database back-end has always been able to handle
+                            the full range
+                            of FuGE metadata, the front-end has been kept deliberately simple. However, work is
+                            progressing to enable
+                            the front-end to display more complex protocols when needed. This is the first step in the
+                            creation of
+                            a "Protocol Generation Wizard", which will be a method to create new Protocols for the
+                            database on the fly,
+                            via the front-end. Currently the only way to add new Protocols to the database is via XML
+                            upload directly to
+                            the database.
+                        </li>
+                    </ul>
+                </p>
+            </subsection>
+            <subsection name="Status: April 2007: Second Beta Release (7.04 beta)">
+
+                <p>
+                    The CISBAN Data Portal and Integrator is now available in a beta-stage
+                    <a href="http://elephant.ncl.ac.uk:8081/portal">public sandbox version</a>
+                    .
+                    Please note that this is not yet a stable release, and any data you may upload to the
+                    server may be deleted at any time. Major changes since last month include multiple-file upload
+                    facilities,
+                    and a more generic system for reading and displaying the protocols from the database.
+                    You will need a logon to access this database, which you may request
+                    from the
+                    <a href="mailto:symba-devel@lists.sourceforge.net">helpdesk</a>
+                    . This is low-level security that
+                    only serves to prevent anonymous load on the database and to keep your sandbox area separate from
+                    others.
+                    For more information on the sandbox DPI, please visit the DPI's
+                    <a href="index.html">technical documentation</a>
+                    .
+                </p>
+            </subsection>
+            <subsection name="Status: March 2007: First Beta Release">
+
+                <p>
+                    We are pleased to announce that the CISBAN Data Portal and Integrator is now available in a
+                    <a href="http://elephant.ncl.ac.uk:8081/portal">public sandbox version</a>
+                    .
+                    Please note that this release is still at an early beta stage, and any data you may upload to the
+                    server may be deleted at any time. You will need a logon to access this database, which you may
+                    request
+                    from the
+                    <a href="mailto:symba-devel@lists.sourceforge.net">helpdesk</a>
+                    . This is a low-level of security that will
+                    only serve to prevent anonymous load on the database and to keep your sandbox area separate from
+                    others.
+                    For more information on the sandbox DPI, please visit the DPI's
+                    <a href="index.html">technical documentation</a>
+                    .
+                </p>
+            </subsection>
+            <subsection name="Status: February 2007">
+
+                <p>
+                    We are on-track to get a sandbox version of the DPI out by the first week of March, and an initial
+                    download a
+                    week or two after that. I've now extended the UML further to include more queries over the database,
+                    and I've
+                    added a "friendly" identifier to the RawData class. This friendly ID is unique but optional, and
+                    will be used
+                    within CISBAN to have a shorter (than the LSID), biologist-friendly human-readable name that can be
+                    used by the
+                    biologist. I didn't use Identifiable.name for this purpose as it is non-unique and I didn't wish to
+                    change the
+                    purpose of that attribute from the standard. Also, a few more bugs in the FuGE-OM were discovered
+                    and fixed.
+                    Finally, we've now had two internal live demos which has provided us with a lot of useful feedback
+                    both in
+                    functionality and in look-and-feel. Work is progressing well.
+                </p>
+            </subsection>
+            <subsection name="Status: January 2007">
+
+                <p>
+                    The Milestone 3 FuGE-OM has been extended to include a set of classes whose sole purpose is to
+                    provide a basis
+                    for a versioning system conforming to the
+                    <a href="http://lsid.sourceforge.net">LSID specification</a>
+                    . XML
+                    marshaling and unmarshaling code has been added to and integrated into the FuGE Milestone 3 toolkit
+                    available
+                    from
+                    the
+                    <a href="http://fuge.sourceforge.net/dev/index.php">FuGE project development pages</a>
+                    . Testing using XML
+                    based on the FuGE-ML XSD (created with randomly-generated values) is progressing well. Similarly,
+                    the JSP-based
+                    front-end is well into development and will be finished in a matter of weeks.
+                </p>
+
+                <p>
+                    Back to the
+                    <a href="index.html">DPI home page</a>
+                    .
+                </p>
+
+            </subsection>
+
+        </section>
+    </body>
+</document>

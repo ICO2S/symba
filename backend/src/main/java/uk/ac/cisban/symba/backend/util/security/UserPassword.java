@@ -1,4 +1,4 @@
-package uk.ac.cisban.symba.webapp.util;
+package uk.ac.cisban.symba.backend.util.security;
 
 /*
  * This file is part of SyMBA.
@@ -7,10 +7,10 @@ package uk.ac.cisban.symba.webapp.util;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate:$
- * $LastChangedRevision:$
- * $Author:$
- * $HeadURL:$
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 

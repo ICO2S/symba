@@ -31,7 +31,6 @@
 
 <%-- This allows the page to talk to a database, now one on postgress--%>
 <!--url="jdbc:postgresql://localhost:5433/dpi_security"-->
-<!--url="jdbc:postgresql://elephant:5433/dpi_security"-->
 
 <!-- Note on metagenome: -->
 <!-- using metagenome doesn't work properly - some problem with the metagenome tomcat server talking to-->
@@ -40,9 +39,9 @@
 <!--url="jdbc:postgresql://localhost:5433/dpi_security"-->
 <sql:setDataSource
         driver="org.postgresql.Driver"
-        url="jdbc:postgresql://yourmachine.your.domain:5433/symba_security"
-        user="username"
-        password="password"
+        url="jdbc:postgresql://your.machine:5434/symba_security"
+        user=""
+        password=""
         />
 
 <%--This searches the database for the username/password combination entered 
@@ -109,10 +108,10 @@ must go back to the login page--%>
     }
 
     // todo now set the variables. A bit temporary, but will do until a real properties file setup is done
-    scp.setDirectory( "/your/folder/" );
-    scp.setHostname( "your machine" );
-    scp.setUsername( "username" );
-    scp.setPassword( "password" );
+    scp.setDirectory( "" );
+    scp.setHostname( "" );
+    scp.setUsername( "" );
+    scp.setPassword( "" );
 
     // now get the counts
     counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );

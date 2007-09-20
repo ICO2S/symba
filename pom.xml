@@ -199,17 +199,17 @@
             <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
-                <version>3.1</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
-                <version>2.1</version>
+                <version>2.3</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
-                <version>1.0.4</version>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>jboss</groupId>
@@ -464,11 +464,11 @@
                 -->
                 <!-- Allyson Lister (3 Jul 2007) changed this to add port number -->
                 <jdbc.url>
-                    jdbc:postgresql://your.machine:5433/symba
+                    jdbc:postgresql://your.machine:5434/symba
                 </jdbc.url>
                 <!-- Allyson Lister (3 Jul 2007) changed this to add username and password -->
-                <jdbc.username>username</jdbc.username>
-                <jdbc.password>password</jdbc.password>
+                <jdbc.username>user</jdbc.username>
+                <jdbc.password>pass</jdbc.password>
                 <!--
                     Change exception sorder class name for appropriate database
                     For MySQL use: org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter

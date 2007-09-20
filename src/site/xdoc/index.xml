@@ -11,19 +11,12 @@
         <section name="An Introduction to SyMBA">
             <p>
                 <i>This page summarizes the current status of the SyMBA. SyMBA is available for viewing and testing
-                    shortly,
-                    and in a few weeks it should also be available for download. We welcome any comments or queries on
-                    the
-                    system, which should be sent to
+                    via the <a href="http://bsu.ncl.ac.uk:8081/symba">sandbox installation</a> we have set up,
+                    and is also available for download via SourceForge's Subversion repository. We welcome any comments or queries on
+                    the system, which should be sent to
                     <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel@lists.sourceforge.net</a>
                     .
                 </i>
-            </p>
-
-            <p>
-                <font color="red">There is currently a problem with the server running the SyMBA sandbox. It should be
-                    back up and running sometime next week. We apologize for any inconvenience.
-                </font>
             </p>
 
             <p>The Centre for Integrated Systems Biology of Ageing and Nutrition has developed a data archive and
@@ -47,12 +40,17 @@
 
             <p>SyMBA, or its previous incarnation as the CISBAN DPI, has been presented at:</p>
             <ul>
+                <li>
+                    <a href="http://www.cisban.ac.uk">CISBAN</a> /
+                    <a href="http://csbe.bio.ed.ac.uk/">Centre for Systems Biology at Edinburgh (CSBE)</a> Technology
+                    Meeting, 22 August 2007.
+                </li>
                 <li>An
                     <a href="http://nebc.nox.ac.uk/">NEBC</a>
                     -
                     <a href="http://www.ebi.ac.uk">EBI</a>
                     Developer's Workshop,
-                    19-20th February 2007, which included presentations and discussions of the CISBAN DPI,
+                    19-20th February 2007, which included presentations and discussions of SyMBA,
                     <a href="http://www.omixed.org">omixed</a>
                     ,
                     <a href="http://mibbi.sourceforge.net">MIBBI</a>
@@ -120,10 +118,9 @@
             <p>
                 You will need a logon to access this database, which you may request
                 from the
-                <a href="mailto:symba-devel@lists.sourceforge.net">helpdesk</a>
-                . This is a simple method of security that
-                used to prevent anonymous load on the database and to keep your sandbox area separate from others.
-                For more information on the sandbox installation, please visit SyMBA's
+                <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a> mailing list. This is a simple method
+                 of security that used to prevent anonymous load on the database and to keep your sandbox area separate
+                 from others. For more information on the sandbox installation, please visit SyMBA's
                 <a href="details.html">technical documentation</a>
                 .
             </p>
@@ -151,10 +148,6 @@
                         slides
                     </a>
                 </li>
-                <!--            <li>
-                        <a href="downloads/CisbanGraphic1.pdf">Graphic of Data Flow</a> within the DPI
-                    </li>
-                -->
             </ul>
         </section>
 

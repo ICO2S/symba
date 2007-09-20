@@ -18,15 +18,8 @@
             </p>
 
             <p>
-                <font color="red">There is currently a problem with the server running the SyMBA sandbox. It should be
-                    back up and running
-                    sometime next week. We apologize for any inconvenience.
-                </font>
-            </p>
-
-            <p>
                 We are pleased to announce that SyMBA is pretty stable and available in a
-                public sandbox version.
+                <a href="http://bsu.ncl.ac.uk:8081/symba">public sandbox version</a>.
                 Please note that the configuration at this url, while representing the first stable release, remains a
                 sandbox
                 configuration, and any data you may upload to the server may be deleted at any time. We will, however,
@@ -71,7 +64,7 @@
                 <p>
                     You will need a logon to access this database, which you may request
                     from the
-                    <a href="mailto:symba-devel@lists.sourceforge.net">helpdesk</a>
+                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a> mailing list
                     . This is a low-level of security that will
                     only serve to prevent anonymous load on the database and to keep your sandbox area separate from
                     others.
@@ -81,7 +74,7 @@
             <subsection name="What we mean by a 'sandbox' release">
 
                 <p>
-                    We reserve the right to stop and restart the DPI server at any time, and to drop and re-create the
+                    We reserve the right to stop and restart the SyMBA server at any time, and to drop and re-create the
                     database
                     at any time. You should not attempt to use this service as a long-term, permanent store.
                     However, we encourage you to upload data and create as many experiments as you like
@@ -94,15 +87,12 @@
 
                 <p>
                     Further, although we do have an LSID Resolution Service running via
-                    <a href="http://elephant.ncl.ac.uk:8081/authority">http://elephant.ncl.ac.uk:8081/authority</a>
-                    , and we
-                    do aim to ensure that object returned will always return the same thing, not every object identified
-                    with
-                    an LSID can currently be resolved via this service. This is still within the standard: if something
-                    resolves,
-                    it must always be to the same thing. However, you are free to test the LSID server now. More
-                    information on
-                    contacting the LSID Resolution Service will be added shortly, together with an example Java class.
+                    <a href="http://metagenome.ncl.ac.uk:8081/authority">http://metagenome.ncl.ac.uk:8081/authority</a>
+                    , and we do aim to ensure that object returned will always return the same thing, not every object
+                    identified with an LSID can currently be resolved via this service. This is still within the
+                    standard: if something resolves, it must always be to the same thing. However, you are free to test
+                    the LSID server now. More information on contacting the LSID Resolution Service will be added
+                    shortly, together with an example Java class.
                 </p>
             </subsection>
         </section>
@@ -147,10 +137,8 @@
 
             <p>
                 We are interested in collaboration with any group that may be able to make use of this project. Most
-                aspects
-                of the application are generic, and the main way of customizing the DPI is via creation and upload of
-                your
-                own experimental protocols.
+                aspects of the application are generic, and the main way of customizing SyMBA is via creation and
+                upload of your own experimental protocols.
 
             </p>
         </section>

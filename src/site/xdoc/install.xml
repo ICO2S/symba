@@ -18,7 +18,7 @@ Thank you for your interest in the CISBAN Systems and Molecular Biology Archive
 <p>
 You can find more information, plus the latest version of this document, at
 <a href="http://symba.sourceforge.net" target="_blank" title="http://symba.sourceforge.net">http://symba.sourceforge.net</a>
-Contact us via email at helpdesk@cisban.ac.uk
+Contact us via email at symba-devel@lists.sourceforge.net
 </p>
 
 <source>
@@ -142,22 +142,22 @@ SyMBA.
               &lt;/settings&gt;
             </source>
 
-    <p>
     All sections are optional. However, depending on your circumstances, you may
-    wish to use one or more of these settings. The "localRepository" element
+    wish to use one or more of these settings.  The "localRepository" element
     names a location separate from the default home directory for the Maven2
     repository. This may be beneficial if you have limited space on your home
     directory, as this repository directory can grow quite large. The "proxies"
     element should only be used for those developers who must access the
     internet via a proxy. The "mirrors" section is useful to have in case the
     primary central Maven2 server is offline for some reason.
+  </li>
+    <li><b>Environment Variables and Settings for Maven.</b>
     Set up the environment variable M2_HOME to point to your maven installation
     directory, and then ensure that both $M2_HOME/bin and $JAVA_HOME/bin are
     present in your PATH. You may optionally specify M2_REPO, which is the
     location of your Maven2 repository, if neither in the default location nor
     stated in the <code>settings.xml</code> file.
-      </p>
-  </li>
+    </li>
   <li>
     <b>Test Maven2 (Part One). </b>You'll know if you've gotten this right if,
     when you run mvn --version, you something similar (but not necessarily
@@ -214,7 +214,37 @@ SyMBA.
     <li>
       Create a file called <code>pom.xml</code> in this directory with the following content.
               <source>
-                  &lt;project&gt;    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;    &lt;groupId&gt;samples.test&lt;/groupId&gt;    &lt;artifactId&gt;test&lt;/artifactId&gt;    &lt;version&gt;1.0&lt;/version&gt;    &lt;packaging&gt;jar&lt;/packaging&gt;    &lt;name&gt;test&lt;/name&gt;    &lt;build&gt;        &lt;defaultGoal&gt;compile&lt;/defaultGoal&gt;        &lt;plugins&gt;            &lt;plugin&gt;                &lt;groupId&gt;org.andromda.maven.plugins&lt;/groupId&gt;                &lt;artifactId&gt;andromdapp-maven-plugin&lt;/artifactId&gt;                &lt;version&gt;3.2&lt;/version&gt;            &lt;/plugin&gt;        &lt;/plugins&gt;    &lt;/build&gt;    &lt;repositories&gt;        &lt;repository&gt;            &lt;id&gt;andromda&lt;/id&gt;            &lt;name&gt;AndroMDA Repository&lt;/name&gt;            &lt;url&gt;http://team.andromda.org/maven2&lt;/url&gt;        &lt;/repository&gt;    &lt;/repositories&gt;    &lt;pluginRepositories&gt;        &lt;pluginRepository&gt;            &lt;id&gt;andromda&lt;/id&gt;            &lt;name&gt;AndroMDA Repository&lt;/name&gt;            &lt;url&gt;http://team.andromda.org/maven2&lt;/url&gt;        &lt;/pluginRepository&gt;    &lt;/pluginRepositories&gt;&lt;/project&gt;
+                  &lt;project&gt;
+                  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+                  &lt;groupId&gt;samples.test&lt;/groupId&gt;
+                  &lt;artifactId&gt;test&lt;/artifactId&gt;
+                  &lt;version&gt;1.0&lt;/version&gt;
+                  &lt;packaging&gt;jar&lt;/packaging&gt;
+                  &lt;name&gt;test&lt;/name&gt;
+                  &lt;build&gt;
+                  &lt;defaultGoal&gt;compile&lt;/defaultGoal&gt;
+                  &lt;plugins&gt;
+                  &lt;plugin&gt;
+                  &lt;groupId&gt;org.andromda.maven.plugins&lt;/groupId&gt;
+                  &lt;artifactId&gt;andromdapp-maven-plugin&lt;/artifactId&gt;
+                  &lt;version&gt;3.2&lt;/version&gt;
+                  &lt;/plugin&gt;
+                  &lt;/plugins&gt;
+                  &lt;/build&gt;
+                  &lt;repositories&gt;
+                  &lt;repository&gt;
+                  &lt;id&gt;andromda&lt;/id&gt;
+                  &lt;name&gt;AndroMDA Repository&lt;/name&gt;
+                  &lt;url&gt;http://team.andromda.org/maven2&lt;/url&gt;
+                  &lt;/repository&gt;
+                  &lt;/repositories&gt;
+                  &lt;pluginRepositories&gt;
+                  &lt;pluginRepository&gt;
+                  &lt;id&gt;andromda&lt;/id&gt;
+                  &lt;name&gt;AndroMDA Repository&lt;/name&gt;
+                  &lt;url&gt;http://team.andromda.org/maven2&lt;/url&gt;
+                  &lt;/pluginRepository&gt;
+                  &lt;/pluginRepositories&gt;&lt;/project&gt;
 </source>
   </li>
     <li>
@@ -297,7 +327,7 @@ SyMBA.
 <ol>
   <li>
     <b>Create an appropriate database. </b>Create a database inside
-    your chosen DBMS entitled ?symba?. If you wish an alternative name for your
+    your chosen DBMS entitled "symba". If you wish an alternative name for your
     database, modify the following elements in the
     top-level<code>pom.xml</code>,
     and add your username and password to the
@@ -431,7 +461,7 @@ SyMBA.
   <li>
     Once you have loaded your people into the SyMBA database, you will also need
     to tell your <b>symba_security</b> database about those people. The Java
-    class <b>uk.ac.cisban.symba.webapp.util.LoadPersonDB</b> will help you load
+    class <b>uk.ac.cisban.symba.backend.util.conversion.xml.SecurityPeopleLoader</b> will help you load
     people in, and create initial passwords for them.
   </li>
   <li>

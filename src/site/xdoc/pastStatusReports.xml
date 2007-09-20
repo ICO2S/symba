@@ -18,7 +18,7 @@
             <subsection name="Status: June 2007: First Stable Release (7.06 stable)">
 
                 <p>
-                    The following changes have been made to the DPI since 7.04:
+                    The following changes have been made to SyMBA since 7.04:
                     <ul>
                         <li>
                             <em>Removal of the RawData and associated classes.</em>
@@ -50,7 +50,7 @@
 
                 <p>
                     The CISBAN Data Portal and Integrator is now available in a beta-stage
-                    <a href="http://elephant.ncl.ac.uk:8081/portal">public sandbox version</a>
+                    <a href="http://bsu.ncl.ac.uk:8081/portal">public sandbox version</a>
                     .
                     Please note that this is not yet a stable release, and any data you may upload to the
                     server may be deleted at any time. Major changes since last month include multiple-file upload
@@ -58,12 +58,12 @@
                     and a more generic system for reading and displaying the protocols from the database.
                     You will need a logon to access this database, which you may request
                     from the
-                    <a href="mailto:symba-devel@lists.sourceforge.net">helpdesk</a>
+                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a> mailing list
                     . This is low-level security that
                     only serves to prevent anonymous load on the database and to keep your sandbox area separate from
                     others.
-                    For more information on the sandbox DPI, please visit the DPI's
-                    <a href="index.html">technical documentation</a>
+                    For more information on the sandbox SyMBA, please visit SyMBA's
+                    <a href="details.html">technical documentation</a>
                     .
                 </p>
             </subsection>
@@ -71,25 +71,25 @@
 
                 <p>
                     We are pleased to announce that the CISBAN Data Portal and Integrator is now available in a
-                    <a href="http://elephant.ncl.ac.uk:8081/portal">public sandbox version</a>
+                    <a href="http://bsu.ncl.ac.uk:8081/portal">public sandbox version</a>
                     .
                     Please note that this release is still at an early beta stage, and any data you may upload to the
                     server may be deleted at any time. You will need a logon to access this database, which you may
                     request
                     from the
-                    <a href="mailto:symba-devel@lists.sourceforge.net">helpdesk</a>
+                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a> mailing list
                     . This is a low-level of security that will
                     only serve to prevent anonymous load on the database and to keep your sandbox area separate from
                     others.
-                    For more information on the sandbox DPI, please visit the DPI's
-                    <a href="index.html">technical documentation</a>
+                    For more information on the sandbox SyMBA, please visit SyMBA's
+                    <a href="details.html">technical documentation</a>
                     .
                 </p>
             </subsection>
             <subsection name="Status: February 2007">
 
                 <p>
-                    We are on-track to get a sandbox version of the DPI out by the first week of March, and an initial
+                    We are on-track to get a sandbox version of SyMBA out by the first week of March, and an initial
                     download a
                     week or two after that. I've now extended the UML further to include more queries over the database,
                     and I've
@@ -127,7 +127,7 @@
 
                 <p>
                     Back to the
-                    <a href="index.html">DPI home page</a>
+                    <a href="index.html">SyMBA home page</a>
                     .
                 </p>
 

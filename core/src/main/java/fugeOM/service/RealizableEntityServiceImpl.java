@@ -46,6 +46,12 @@ import java.util.List;
 public class RealizableEntityServiceImpl
         extends fugeOM.service.RealizableEntityServiceBase {
 
+    private boolean verbose = false;
+
+    public void setVerbose( boolean verbose ) {
+        this.verbose = verbose;
+    }
+
     /**
      * @see fugeOM.service.RealizableEntityService#getDescribableOb(java.lang.Long)
      */
@@ -199,7 +205,9 @@ public class RealizableEntityServiceImpl
     protected java.lang.Object handleFindIdentifiable( java.lang.String fugeIdentifier )
             throws java.lang.Exception {
         Object obj = null;
-        System.out.println( "Searching for identifier = " + fugeIdentifier );
+        if ( verbose ) {
+            System.err.println( "Searching for identifier = " + fugeIdentifier );
+        }
         obj = getIdentifiableDao().getIdentifiable( fugeIdentifier );
 
         if ( obj == null ) {
@@ -213,7 +221,9 @@ public class RealizableEntityServiceImpl
      */
     protected java.lang.Object handleFindEndurant( java.lang.String endurantId )
             throws java.lang.Exception {
-        System.out.println( "Searching for fuge endurant identifier = " + endurantId );
+        if ( verbose ) {
+            System.err.println( "Searching for fuge endurant identifier = " + endurantId );
+        }
         Object obj = getEndurantDao().getEndurant( endurantId );
 
         if ( obj == null ) {
@@ -228,7 +238,9 @@ public class RealizableEntityServiceImpl
     protected java.lang.Object handleFindLatestByEndurant( java.lang.String endurantId )
             throws java.lang.Exception {
         Date date = new Date();
-        System.err.println( "Searching for latest identifiable for fuge endurant = " + endurantId );
+        if ( verbose ) {
+            System.err.println( "Searching for latest identifiable for fuge endurant = " + endurantId );
+        }
 
         Object obj = getIdentifiableDao().findByEndurantAndDate( endurantId, date );
 
@@ -289,9 +301,11 @@ public class RealizableEntityServiceImpl
      */
     protected java.lang.Object handleFindByIdAndDate( java.lang.String identifier, java.util.Date date )
             throws java.lang.Exception {
-        System.err.println(
-                "Searching for latest identifiable for fuge identifier = " + identifier + ", Using date = " +
-                        date.toString() );
+        if ( verbose ) {
+            System.err.println(
+                    "Searching for latest identifiable for fuge identifier = " + identifier + ", Using date = " +
+                            date.toString() );
+        }
 
         Object obj = getIdentifiableDao().FindByIdentifierAndDate( identifier, date );
 
@@ -562,10 +576,14 @@ public class RealizableEntityServiceImpl
                                                                        java.lang.String idenClassName,
                                                                        java.lang.String endurantClassName )
             throws java.lang.Exception {
-        System.out.println( "Creating Endurant Object = " + endurantIdentifier );
+        if ( verbose ) {
+            System.out.println( "Creating Endurant Object = " + endurantIdentifier );
+        }
         Object createdEndurant = handleCreateEndurantOb( endurantIdentifier, endurantClassName );
 
-        System.out.println( "Creating Endurant Object In Database = " + endurantIdentifier );
+        if ( verbose ) {
+            System.out.println( "Creating Endurant Object In Database = " + endurantIdentifier );
+        }
         handleCreateObInDB( endurantClassName, createdEndurant );
 
         if ( idenName != null )

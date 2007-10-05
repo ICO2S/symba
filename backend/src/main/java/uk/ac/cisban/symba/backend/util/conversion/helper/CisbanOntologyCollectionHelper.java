@@ -1,9 +1,12 @@
 package uk.ac.cisban.symba.backend.util.conversion.helper;
 
 import com.ibm.lsid.LSIDException;
+import fugeOM.Collection.FuGE;
 import fugeOM.Collection.OntologyCollection;
+import fugeOM.Collection.ProtocolCollection;
 import fugeOM.Common.Identifiable;
 import fugeOM.Common.Ontology.*;
+import fugeOM.Common.Protocol.*;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
 import fugeOM.util.generatedJAXB2.*;
@@ -436,6 +439,115 @@ public class CisbanOntologyCollectionHelper {
         }
         ontologyIndividual.setProperties( set );
         return ontologyIndividual;
+    }
+
+    public FuGE addRelevantOntologyTerms( FuGE fuge ) throws RealizableEntityServiceException {
+        OntologyCollection ontologyCollection = ( OntologyCollection ) reService.createDescribableOb(
+                "fugeOM.Collection.OntologyCollection" );
+
+        // many protocols contain ontology terms, so we need to add any mentioned terms to the OntologyCollection
+
+        // go through each of the protocols in the experiment. Currently, it is only in the Parameters of the
+        // Actions of the protocols, and in the Parameters of the Protocols themselves where we look for ontology terms
+        // start by making sure we won't lose any already-included ontology terms from the collection
+        Set<OntologyTerm> ontologyTerms;
+        if ( fuge.getOntologyCollection() != null ) {
+            ontologyTerms = ( Set<OntologyTerm> ) fuge.getOntologyCollection().getOntologyTerms();
+        } else {
+            ontologyTerms = new HashSet<OntologyTerm>();
+        }
+
+        ontologyTerms.addAll( addOntologyTermsFromProtocols( fuge.getProtocolCollection(), ontologyTerms ) );
+
+        ontologyCollection.setOntologyTerms( ontologyTerms );
+        // don't do any checking with ontology sources - just assume that those already present are correct.
+        // todo check for new ontology sources associated with the new ontology terms#
+        if ( fuge.getOntologyCollection()!= null && fuge.getOntologyCollection().getOntologySources() != null ) {
+            ontologyCollection.setOntologySources( fuge.getOntologyCollection().getOntologySources() );
+        }
+        // load the fuge object into the database
+        reService.createObInDB( "fugeOM.Collection.OntologyCollection", ontologyCollection );
+        fuge.setOntologyCollection( ontologyCollection );
+
+        return fuge;
+    }
+
+
+    private Set<OntologyTerm> addOntologyTermsFromProtocols( ProtocolCollection protocolCollection,
+                                                             Set<OntologyTerm> ontologyTerms ) throws RealizableEntityServiceException {
+
+        for ( Object obj : protocolCollection.getProtocols() ) {
+            if ( obj instanceof GenericProtocol ) {
+                // checking for generic parameters inside the protocol
+                for ( Object gpObj : ( ( GenericProtocol ) obj ).getProtocolParameters() ) {
+                    if ( gpObj instanceof GenericParameter ) {
+                        ontologyTerms.addAll(
+                                addOntologyTermsFromParameter(
+                                        ( GenericParameter ) gpObj, ontologyTerms ) );
+                    }
+                }
+                // checking for generic parameters inside the protocol's generic action
+                for ( Object gaObj : ( ( GenericProtocol ) obj ).getGenericActions() ) {
+                    for ( Object gpObj : ( ( GenericAction ) gaObj ).getParameters() ) {
+                        if ( gpObj instanceof GenericParameter ) {
+                            ontologyTerms.addAll(
+                                    addOntologyTermsFromParameter(
+                                            ( GenericParameter ) gpObj, ontologyTerms ) );
+                        }
+                    }
+                }
+            }
+        }
+        return ontologyTerms;
+    }
+
+    private Set<OntologyTerm> addOntologyTermsFromParameter( GenericParameter genericParameter,
+                                                             Set<OntologyTerm> ontologyTerms ) throws RealizableEntityServiceException {
+        if ( genericParameter.getUnit() != null ) {
+            boolean found = false;
+            for ( OntologyTerm ot : ontologyTerms ) {
+                if ( ot.getEndurant()
+                        .getIdentifier()
+                        .equals(
+                                genericParameter.getUnit()
+                                        .getEndurant().getIdentifier() ) ) {
+                    // this is already present - don't add
+                    found = true;
+                    break;
+                }
+            }
+            if ( !found ) {
+                ontologyTerms.add(
+                        ( OntologyTerm ) reService.findLatestByEndurant(
+                                genericParameter.getUnit()
+                                        .getEndurant().getIdentifier() ) );
+            }
+        }
+        if ( genericParameter.getDefaultValue() instanceof ComplexValue ) {
+            // complex values can have ontology terms as their value
+            DefaultValue dv = genericParameter.getDefaultValue();
+            if ( dv instanceof ComplexValue ) {
+                ComplexValue complexValue = ( ComplexValue ) dv;
+                // todo faster search algorithm
+                boolean found = false;
+                for ( OntologyTerm ot : ontologyTerms ) {
+                    if ( ot.getEndurant()
+                            .getIdentifier()
+                            .equals( complexValue.get_defaultValue().getEndurant().getIdentifier() ) ) {
+                        // this is already present - don't add
+                        found = true;
+                        break;
+                    }
+                }
+                if ( !found ) {
+                    System.err.println( "ADDING: " + complexValue.get_defaultValue().getEndurant().getIdentifier() );
+                    ontologyTerms.add(
+                            ( OntologyTerm ) reService.findLatestByEndurant(
+                                    complexValue.get_defaultValue().getEndurant().getIdentifier() ) );
+                }
+            }
+        }
+        return ontologyTerms;
     }
 
     // We are NOT printing the collection itself, just the contents of the collection.

@@ -100,13 +100,12 @@ public class CisbanGenericProtocolApplicationHelper {
             FugeOMCommonProtocolGenericProtocolApplicationType genericProtocolApplicationXML,
             GenericProtocolApplication genericProtocolApplication ) throws RealizableEntityServiceException {
 
-        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
-                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
-            System.out.println( "Found Output Materials directly before greedy get for GPA" );
-        } else {
-            System.out.println( "Found No Output Materials directly before greedy get for GPA" );
-
-        }
+//        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
+//                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
+//            System.out.println( "Found Output Materials directly before greedy get for GPA" );
+//        } else {
+//            System.out.println( "Found No Output Materials directly before greedy get for GPA" );
+//        }
 
         // get any lazily loaded objects
         genericProtocolApplication = ( GenericProtocolApplication ) reService.greedyGet( genericProtocolApplication );
@@ -130,13 +129,13 @@ public class CisbanGenericProtocolApplicationHelper {
             genericProtocolApplicationXML.getGenericOutputData().add( godXML );
         }
 
-        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
-                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
-            System.out.println( "Found Output Materials directly before marshaling" );
-        } else {
-            System.out.println( "Found No Output Materials directly before marshaling" );
-
-        }
+//        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
+//                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
+//            System.out.println( "Found Output Materials directly before marshaling" );
+//        } else {
+//            System.out.println( "Found No Output Materials directly before marshaling" );
+//
+//        }
 
         // input complete material
         for ( Object obj : genericProtocolApplication.getGenericInputCompleteMaterials() ) {
@@ -145,13 +144,13 @@ public class CisbanGenericProtocolApplicationHelper {
             gicmXML.setMaterialRef( material.getIdentifier() );
             genericProtocolApplicationXML.getGenericInputCompleteMaterials().add( gicmXML );
         }
-        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
-                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
-            System.out.println( "Found Output Materials directly before marshaling outputmaterials" );
-        } else {
-            System.out.println( "Found No Output Materials directly before marshaling outputmaterials" );
-
-        }
+//        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
+//                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
+//            System.out.println( "Found Output Materials directly before marshaling outputmaterials" );
+//        } else {
+//            System.out.println( "Found No Output Materials directly before marshaling outputmaterials" );
+//
+//        }
 
         // output material
         for ( Object obj : genericProtocolApplication.getGenericOutputMaterials() ) {
@@ -161,13 +160,13 @@ public class CisbanGenericProtocolApplicationHelper {
             genericProtocolApplicationXML.getGenericOutputMaterials().add( godXML );
         }
 
-        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
-                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
-            System.out.println( "Found Output Materials directly after marshaling" );
-        } else {
-            System.out.println( "Found No Output Materials directly after marshaling" );
-
-        }
+//        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
+//                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
+//            System.out.println( "Found Output Materials directly after marshaling" );
+//        } else {
+//            System.out.println( "Found No Output Materials directly after marshaling" );
+//
+//        }
 
         return genericProtocolApplicationXML;
     }
@@ -217,13 +216,13 @@ public class CisbanGenericProtocolApplicationHelper {
         // get any lazily loaded objects
         genericProtocolApplication = ( GenericProtocolApplication ) reService.greedyGet( genericProtocolApplication );
 
-        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
-                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
-            System.out.println( "Found Output Materials directly before get latest version for GPA" );
-        } else {
-            System.out.println( "Found No Output Materials directly before get latest version for GPA" );
-
-        }
+//        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
+//                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
+//            System.out.println( "Found Output Materials directly before get latest version for GPA" );
+//        } else {
+//            System.out.println( "Found No Output Materials directly before get latest version for GPA" );
+//
+//        }
 
         CisbanProtocolHelper cpr = new CisbanProtocolHelper( reService, ci );
         CisbanDataHelper cdat = new CisbanDataHelper( reService, ci );

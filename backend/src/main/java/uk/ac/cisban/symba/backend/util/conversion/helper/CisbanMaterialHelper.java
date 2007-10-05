@@ -64,7 +64,7 @@ public class CisbanMaterialHelper {
                     "fugeOM.Bio.Material.GenericMaterial",
                     System.err );
 
-            System.err.println( "gmaterial: " + gmaterial.getIdentifier() );
+//            System.err.println( "gmaterial: " + gmaterial.getIdentifier() );
 
             // set the material attributes.
             gmaterial = ( GenericMaterial ) unmarshalMaterialSpecific( materialXML, gmaterial );

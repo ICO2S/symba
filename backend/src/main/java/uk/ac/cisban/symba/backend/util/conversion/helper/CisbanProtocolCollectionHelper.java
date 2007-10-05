@@ -2,7 +2,10 @@ package uk.ac.cisban.symba.backend.util.conversion.helper;
 
 import com.ibm.lsid.LSIDException;
 import fugeOM.Collection.ProtocolCollection;
+import fugeOM.Collection.FuGE;
+import fugeOM.Collection.OntologyCollection;
 import fugeOM.Common.Protocol.*;
+import fugeOM.Common.Ontology.OntologyTerm;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
 import fugeOM.util.generatedJAXB2.*;
@@ -216,6 +219,75 @@ public class CisbanProtocolCollectionHelper {
 
         frXML.setProtocolCollection( protocolCollectionXML );
         return frXML;
+    }
+
+    // We go through all equipment referenced in the protocols in protocolSet, retrieving all present.
+    // These will get added to the experiment.
+    public Set<Equipment> addRelevantEquipment( FuGE fuge, Set<Protocol> protocolSet ) throws RealizableEntityServiceException {
+        Set<Equipment> equipmentSet;
+        if ( fuge.getProtocolCollection() != null && fuge.getProtocolCollection().getAllEquipment() != null ) {
+            equipmentSet = ( Set<Equipment> ) fuge.getProtocolCollection().getAllEquipment();
+        } else {
+            equipmentSet = new HashSet<Equipment>();
+        }
+
+        for ( Protocol obj : protocolSet ) {
+            if ( obj instanceof GenericProtocol ) {
+                GenericProtocol gp = ( GenericProtocol ) obj;
+                gp = ( GenericProtocol ) reService.greedyGet( gp );
+                if ( gp.getGenPrtclToEquip() != null ) {
+                    for ( Object equipObj : gp.getGenPrtclToEquip() ) {
+                        if ( equipObj instanceof GenericEquipment ) {
+                            if ( !equipmentSet.contains( equipObj ) ) {
+                                // the current equipment is not yet in the experiment. Add it.
+                                equipmentSet.add( ( GenericEquipment ) equipObj );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return equipmentSet;
+    }
+
+    // We go through all protocols in the database, retrieving all that have rdb.getDataType()
+    // in their name. These will get added to the experiment. 
+    public Set<Protocol> addRelevantProtocols( FuGE fuge, String protocolType ) throws RealizableEntityServiceException {
+        Set<Protocol> protocolSet;
+        if ( fuge.getProtocolCollection() != null ) {
+            protocolSet = ( Set<Protocol> ) fuge.getProtocolCollection().getProtocols();
+        } else {
+            protocolSet = new HashSet<Protocol>();
+        }
+
+        for ( Object obj : reService.getAllLatestGenericProtocols() ) {
+            if ( obj instanceof GenericProtocol ) {
+                GenericProtocol gp = ( GenericProtocol ) obj;
+                if ( gp.getName().trim().contains( protocolType ) ) {
+                    boolean matchFound = false;
+                    if ( fuge.getProtocolCollection() != null ) {
+                        for ( Object obj2 : fuge.getProtocolCollection().getProtocols() ) {
+                            if ( obj2 instanceof GenericProtocol ) {
+                                GenericProtocol gpSearch = ( GenericProtocol ) obj2;
+                                if ( gpSearch.getEndurant()
+                                        .getIdentifier().trim()
+                                        .equals( gp.getEndurant().getIdentifier().trim() ) ) {
+                                    matchFound = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if ( !matchFound ) {
+                        // the current protocol is not yet in the experiment. Add it.
+                        protocolSet.add( gp );
+                    }
+                }
+            }
+        }
+
+        return protocolSet;
     }
 
     public ProtocolCollection getLatestVersion(

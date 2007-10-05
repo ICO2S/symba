@@ -4,6 +4,7 @@ import com.ibm.lsid.LSIDException;
 import fugeOM.Bio.Investigation.Investigation;
 import fugeOM.Collection.FuGE;
 import fugeOM.Common.Description.Description;
+import fugeOM.Common.Protocol.Protocol;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
 import fugeOM.util.generatedJAXB2.FugeOMCollectionFuGEType;
@@ -11,6 +12,7 @@ import fugeOM.util.generatedJAXB2.FugeOMCollectionFuGEType;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Set;
 
 /*
  * This file is part of SyMBA.
@@ -215,6 +217,8 @@ public class CisbanFuGEHelper {
         return frXML;
     }
 
+    // you need to remember that the latest version of an experiment may have added Equipment
+    // and added Ontology Terms, just to name a few.
     public FuGE getLatestVersion( String endurantId ) throws RealizableEntityServiceException {
 
         FuGE fuge = null;
@@ -247,6 +251,7 @@ public class CisbanFuGEHelper {
         }
 
         if ( fuge.getMaterialCollection() != null ) {
+            // todo same sort of check as done in ontologies and protocols should happen here too.
             // For each item in the Referenceable Collection, make sure you are retrieving its latest version.
             fuge.setMaterialCollection( cmc.getLatestVersion( fuge.getMaterialCollection() ) );
         }
@@ -262,8 +267,27 @@ public class CisbanFuGEHelper {
         }
 
         if ( fuge.getProtocolCollection() != null ) {
+            // first, check for new protocols in the protocol collection. These happen when the underlying protocols
+            // are updated separately from the addition of data to a given experiment
+            // The top-level protocol is the one that doesn't have "Component" in the name
+            String protocolType = null;
+            for ( Object obj : fuge.getProtocolCollection().getProtocols() ) {
+                if ( !( ( Protocol ) obj ).getName().contains( "Component" ) ) {
+                    protocolType = ( ( Protocol ) obj ).getName();
+                    break;
+                }
+            }
+            if ( protocolType != null ) {
+                fuge.getProtocolCollection().setProtocols( cpc.addRelevantProtocols( fuge, protocolType ) );
+            }
+            fuge.getProtocolCollection().setAllEquipment(
+                    cpc.addRelevantEquipment(
+                            fuge, ( Set<Protocol> ) fuge.getProtocolCollection().getProtocols() ) );
             // For each item in the Protocol Collection, make sure you are retrieving its latest version.
             fuge.setProtocolCollection( cpc.getLatestVersion( fuge.getProtocolCollection() ) );
+            // then, check for new ontology terms in the protocols. These happen when the underlying protocols
+            // are updated separately from the addition of data to a given experiment
+            fuge = coc.addRelevantOntologyTerms( fuge );
         }
         return fuge;
     }

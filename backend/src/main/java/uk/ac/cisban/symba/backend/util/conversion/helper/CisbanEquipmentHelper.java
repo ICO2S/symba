@@ -83,6 +83,7 @@ public class CisbanEquipmentHelper {
 
             return genericEquipment;
         }
+        System.err.println( "Error processing XML Equipment class: Should be of type \"FugeOMCommonProtocolGenericEquipmentType\" and isn't" );
         return null;  // shouldn't get here as there is currently only one type of Equipment allowed.
     }
 

@@ -366,13 +366,13 @@ public class CisbanProtocolApplicationHelper {
         // determine what sort of protocol application it is
         if ( protocolApplication instanceof GenericProtocolApplication ) {
             protocolApplication = cgpa.getLatestVersion( ( GenericProtocolApplication ) protocolApplication, ci );
-            if ( ( ( GenericProtocolApplication ) protocolApplication ).getGenericOutputMaterials() != null &&
-                    !( ( GenericProtocolApplication ) protocolApplication ).getGenericOutputMaterials().isEmpty() ) {
-                System.out.println( "Found Output Materials directly after get latest version for GPA" );
-            } else {
-                System.out.println( "Found No Output Materials directly after get latest version for GPA" );
-
-            }
+//            if ( ( ( GenericProtocolApplication ) protocolApplication ).getGenericOutputMaterials() != null &&
+//                    !( ( GenericProtocolApplication ) protocolApplication ).getGenericOutputMaterials().isEmpty() ) {
+//                System.out.println( "Found Output Materials directly after get latest version for GPA" );
+//            } else {
+//                System.out.println( "Found No Output Materials directly after get latest version for GPA" );
+//
+//            }
         }
 
         return protocolApplication;

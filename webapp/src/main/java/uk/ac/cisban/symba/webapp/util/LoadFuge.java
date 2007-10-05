@@ -21,7 +21,10 @@ import fugeOM.Common.Protocol.*;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
 import uk.ac.cisban.symba.backend.util.CisbanHelper;
-
+import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper;
+import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper;
+import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanOntologyCollectionHelper;
+import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanProtocolCollectionHelper;
 
 import java.io.IOException;
 import java.util.Date;
@@ -35,10 +38,10 @@ import java.util.Set;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate:$
- * $LastChangedRevision:$
- * $Author:$
- * $HeadURL:$
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 public class LoadFuge {
@@ -469,162 +472,12 @@ public class LoadFuge {
         }
     }
 
-    // We go through all protocols in the database, retrieving all that have rdb.getDataType()
-    // in their name. These will get added to the experiment. Of those, the one whose GenericAction
-    // is stored from the form will get the data item added to it.
-    private Set<Protocol> retrieveRelevantProtocols( FuGE fuge ) throws RealizableEntityServiceException {
-        Set<Protocol> protocolSet;
-        if ( fuge.getProtocolCollection() != null ) {
-            protocolSet = ( Set<Protocol> ) fuge.getProtocolCollection().getProtocols();
-        } else {
-            protocolSet = new HashSet<Protocol>();
-        }
-
-        for ( Object obj : reService.getAllLatestGenericProtocols() ) {
-            if ( obj instanceof GenericProtocol ) {
-                GenericProtocol gp = ( GenericProtocol ) obj;
-                if ( gp.getName().trim().contains( rdb.getDataType().trim() ) ) {
-                    boolean matchFound = false;
-                    if ( fuge.getProtocolCollection() != null ) {
-                        for ( Object obj2 : fuge.getProtocolCollection().getProtocols() ) {
-                            if ( obj2 instanceof GenericProtocol ) {
-                                GenericProtocol gpSearch = ( GenericProtocol ) obj2;
-                                if ( gpSearch.getEndurant()
-                                        .getIdentifier().trim()
-                                        .equals( gp.getEndurant().getIdentifier().trim() ) ) {
-                                    matchFound = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if ( !matchFound ) {
-                        // the current protocol is not yet in the experiment. Add it.
-                        protocolSet.add( gp );
-                    }
-                }
-            }
-        }
-
-        return protocolSet;
-    }
-
-    // We go through all equipment referenced in the protocols in protocolSet, retrieving all present.
-    // These will get added to the experiment.
-    private Set setRelevantEquipment( FuGE fuge, Set<Protocol> protocolSet ) throws RealizableEntityServiceException {
-        Set<Equipment> equipmentSet;
-        if ( fuge.getProtocolCollection() != null && fuge.getProtocolCollection().getAllEquipment() != null ) {
-            equipmentSet = ( Set<Equipment> ) fuge.getProtocolCollection().getAllEquipment();
-        } else {
-            equipmentSet = new HashSet<Equipment>();
-        }
-
-        for ( Protocol obj : protocolSet ) {
-            if ( obj instanceof GenericProtocol ) {
-                GenericProtocol gp = ( GenericProtocol ) obj;
-                gp = ( GenericProtocol ) reService.greedyGet( gp );
-                if ( gp.getGenPrtclToEquip() != null ) {
-                    for ( Object equipObj : gp.getGenPrtclToEquip() ) {
-                        if ( equipObj instanceof GenericEquipment ) {
-                            if ( !equipmentSet.contains( equipObj ) ) {
-                                // the current equipment is not yet in the experiment. Add it.
-                                equipmentSet.add( ( Equipment ) equipObj );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return equipmentSet;
-    }
-
-    private FuGE setRelevantOntologyTerms( FuGE fuge ) throws RealizableEntityServiceException {
-        OntologyCollection ontologyCollection = ( OntologyCollection ) reService.createDescribableOb(
-                "fugeOM.Collection.OntologyCollection" );
-
-        // many protocols contain ontology terms, so we need to add any mentioned terms to the OntologyCollection
-
-        // go through each of the protocols in the experiment. Currently, it is only in the Parameters of the
-        // Actions of the protocols where we look for ontology terms
-        // start by making sure we won't lose any already-included ontology terms from the collection
-        Set<OntologyTerm> ontologyTerms;
-        if ( fuge.getOntologyCollection() != null ) {
-            ontologyTerms = ( Set<OntologyTerm> ) fuge.getOntologyCollection().getOntologyTerms();
-        } else {
-            ontologyTerms = new HashSet<OntologyTerm>();
-        }
-        for ( Object obj : fuge.getProtocolCollection().getProtocols() ) {
-            if ( obj instanceof GenericProtocol ) {
-                for ( Object gaObj : ( ( GenericProtocol ) obj ).getGenericActions() ) {
-                    for ( Object gpObj : ( ( GenericAction ) gaObj ).getParameters() ) {
-                        if ( ( ( GenericParameter ) gpObj ).getUnit() != null ) {
-                            boolean found = false;
-                            for ( OntologyTerm ot : ontologyTerms ) {
-                                if ( ot.getEndurant()
-                                        .getIdentifier()
-                                        .equals(
-                                                ( ( GenericParameter ) gpObj ).getUnit()
-                                                        .getEndurant().getIdentifier() ) ) {
-                                    // this is already present - don't add
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if ( !found ) {
-                                ontologyTerms.add(
-                                        ( OntologyTerm ) reService.findLatestByEndurant(
-                                                ( ( GenericParameter ) gpObj ).getUnit()
-                                                        .getEndurant().getIdentifier() ) );
-                            }
-                        }
-                        if ( ( ( GenericParameter ) gpObj ).getDefaultValue() instanceof ComplexValue ) {
-                            // complex values can have ontology terms as their value
-                            DefaultValue dv = ( ( GenericParameter ) gpObj ).getDefaultValue();
-                            if ( dv instanceof ComplexValue ) {
-                                ComplexValue complexValue = ( ComplexValue ) dv;
-                                // todo faster search algorithm
-                                boolean found = false;
-                                for ( OntologyTerm ot : ontologyTerms ) {
-                                    if ( ot.getEndurant()
-                                            .getIdentifier()
-                                            .equals( complexValue.get_defaultValue().getEndurant().getIdentifier() ) ) {
-                                        // this is already present - don't add
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if ( !found ) {
-                                    ontologyTerms.add(
-                                            ( OntologyTerm ) reService.findLatestByEndurant(
-                                                    complexValue.get_defaultValue().getEndurant().getIdentifier() ) );
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-//        String oiEndurant = "urn:lsid:cisban.cisbs.org:OntoIndvEndurant:be8cea26-286c-4b29-8c55-4cf558095d3a";
-
-        ontologyCollection.setOntologyTerms( ontologyTerms );
-
-        if ( fuge.getOntologyCollection() != null ) {
-            ontologyCollection.setOntologySources( fuge.getOntologyCollection().getOntologySources() );
-        }
-        // load the fuge object into the database
-        reService.createObInDB( "fugeOM.Collection.OntologyCollection", ontologyCollection );
-        fuge.setOntologyCollection( ontologyCollection );
-
-        return fuge;
-    }
-
-    // the default protocol loader - assumes no ontology terms associated
+    // the default protocol loader
     // if not Microarray protocol, rdib.getProtocolEndurant() does not get filled.
     // Also assumes a flat structure of only two levels:
     // all names must include the rdb.getDataType() in order to be found
-    // first-level protocol with Name beginning with "Complete", and contains a full list of steps
-    // second-level protocols are those referenced in the top-level protocol, and themselves have no actions
+    // first-level protocol contains a full list of steps
+    // second-level protocols are those referenced in the top-level protocol, containing the word "Component", and themselves have no actions
 
     private FuGE loadProtocols( FuGE fuge ) throws RealizableEntityServiceException, LSIDException {
 
@@ -635,20 +488,20 @@ public class LoadFuge {
         // We know which factors these are for because we don't give
         // the user the choice of protocols, but instead the choice of Actions available.
 
-        Set<Protocol> protocolSet = retrieveRelevantProtocols( fuge );
+        CisbanProtocolCollectionHelper cpc = new CisbanProtocolCollectionHelper(
+                reService, new CisbanIdentifiableHelper( reService, new CisbanDescribableHelper( reService ) ) );
+        // The GenericProtocol whose GenericAction is stored from the form will get the data item added to it.
+        Set<Protocol> protocolSet = cpc.addRelevantProtocols( fuge, rdb.getDataType().trim() );
 
         // the only thing we cannot figure out at runtime currently is which are "complex" protocols
         // and which are "simple" protocols. This is why there is hard-coding here.
         boolean treatSecondLevelAsAssay = false;
         GenericProtocol assayProtocol = null;
         // All Microarray Experiments are complex, and others are simple (currently)
-        if ( rdb.getDataType().contains( "CISBAN cdc13-1/WT Microarray Investigation" ) ) {
+        if ( rdb.getDataType().contains( "Example mutant/WT Microarray Investigation" ) ) {
+            // The next two are "real" CISBAN protocols, but this one is the particular example for the sandbox
             assayProtocol = ( GenericProtocol ) reService.findLatestByEndurant(
                     "urn:lsid:cisban.cisbs.org:GenProtocolEndurant:71fbd89e-13c7-4ced-9d0d-199abf9956f2" );
-            protocolSet.add( assayProtocol );
-        } else if ( rdb.getDataType().contains( "CISBAN MRC-5/BJ Microarray Investigation" ) ) {
-            assayProtocol = ( GenericProtocol ) reService.findLatestByEndurant(
-                    "urn:lsid:cisban.cisbs.org:GenProtocolEndurant:75cd0ae8-9577-41af-9fb6-58b0cb2262f3" );
             protocolSet.add( assayProtocol );
         } else {
             treatSecondLevelAsAssay = true;
@@ -656,8 +509,8 @@ public class LoadFuge {
 
         protocolCollection.setProtocols( protocolSet );
 
-        // Now retrieve all equipemnt associated with these protocols
-        protocolCollection.setAllEquipment( setRelevantEquipment( fuge, protocolSet ) );
+        // Now retrieve all equipment associated with these protocols
+        protocolCollection.setAllEquipment( cpc.addRelevantEquipment( fuge, protocolSet ) );
 
         // for each data file that has just been added, it must be assigned to the appropriate GenericAction
         // from the factor Protocol
@@ -705,7 +558,8 @@ public class LoadFuge {
             // there is a problem if there isn't a matching protocol
             if ( firstLevelParentProtocol == null ) {
                 System.err.println(
-                        "Error finding parent protocol for first-level action endurant " + rdib.getActionEndurant() );
+                        "Error finding parent protocol for first-level action endurant " +
+                                rdib.getActionEndurant() );
                 return fuge;
             }
 
@@ -939,7 +793,9 @@ public class LoadFuge {
                 if ( gpaOfSecondLevelParentProtocol.getId() != null ) {
                     // Assume this object has changed, assign a new LSID, and load into the database
                     helper.assignAndLoadIdentifiable(
-                            gpaOfSecondLevelParentProtocol, "fugeOM.Common.Protocol.GenericProtocolApplication", null );
+                            gpaOfSecondLevelParentProtocol,
+                            "fugeOM.Common.Protocol.GenericProtocolApplication",
+                            null );
                 } else {
                     helper.loadIdentifiable(
                             gpaOfSecondLevelParentProtocol,
@@ -1018,13 +874,18 @@ public class LoadFuge {
         reService.createObInDB( "fugeOM.Collection.ProtocolCollection", protocolCollection );
         fuge.setProtocolCollection( protocolCollection );
 
-        fuge = setRelevantOntologyTerms( fuge );
+
+        CisbanOntologyCollectionHelper och = new CisbanOntologyCollectionHelper(
+                reService, new CisbanIdentifiableHelper( reService, new CisbanDescribableHelper( reService ) ) );
+        fuge = och.addRelevantOntologyTerms( fuge );
 
         return fuge;
     }
 
     // this method assumes that the experiment is new, and not existing already in the database.
-    private FuGE loadProvider( FuGE fuge ) throws RealizableEntityServiceException, LSIDException {
+    private FuGE loadProvider
+            ( FuGE
+                    fuge ) throws RealizableEntityServiceException, LSIDException {
         // We will assign the current Person to be the Provider. The link between the Provider
         // and the Person is called a ContactRole.
 

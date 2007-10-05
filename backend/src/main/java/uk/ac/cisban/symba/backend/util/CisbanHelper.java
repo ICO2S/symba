@@ -38,7 +38,7 @@ import java.util.Set;
 
 // the front-end to contact the database, rather than using the reService methods directly.
 public class CisbanHelper {
-    private static final boolean DEFAULT_DEBUG = true;
+    private static final boolean DEFAULT_DEBUG = false;
     private static final Properties EMPTY_PROPS = new Properties();
 
     //     PRODUCTION SERVER
@@ -59,7 +59,7 @@ public class CisbanHelper {
         return new CisbanHelper( reService, assigner, domainName, debugValue );
     }
 
-    private final boolean debugValue;
+    private final boolean verbose;
     private final LSIDAssigner assigner;
     private final String domainName;
     private final RealizableEntityService reService;
@@ -71,11 +71,11 @@ public class CisbanHelper {
         this.reService = reService;
         this.assigner = assigner;
         this.domainName = domainName;
-        this.debugValue = debugValue;
+        this.verbose = debugValue;
     }
 
     private void printMessage( String s, PrintStream printStream ) {
-        if ( printStream != null && debugValue ) {
+        if ( printStream != null && verbose ) {
             printStream.println( s );
         }
     }

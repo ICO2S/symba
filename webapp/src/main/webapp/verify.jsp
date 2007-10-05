@@ -29,14 +29,7 @@
     </c:redirect>
 </c:if>
 
-<%-- This allows the page to talk to a database, now one on postgress--%>
-<!--url="jdbc:postgresql://localhost:5433/dpi_security"-->
-
-<!-- Note on metagenome: -->
-<!-- using metagenome doesn't work properly - some problem with the metagenome tomcat server talking to-->
-<!-- the metagenome postgres instance. Changing to localhost solves the problem, but means that the-->
-<!-- tomcat instance has to be on metagenome in order to talk to the correct database!!! -->
-<!--url="jdbc:postgresql://localhost:5433/dpi_security"-->
+<%-- This allows the page to talk to a database --%>
 <sql:setDataSource
         driver="org.postgresql.Driver"
         url="jdbc:postgresql://your.machine:5434/symba_security"

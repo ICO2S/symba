@@ -10,6 +10,28 @@
                 <!--A new cool feature.-->
             <!--</action>-->
         <!--</release>-->
+        <release version="7.10" date="2007-10-05" description="Bug Fixes, Installation Instruction Improvements">
+            <action dev="Allyson Lister" type="fix" issue="1799676">
+                SyMBA Bug Tracker post: "SyMBA help navigation button returns front page only". Fixed by removing the
+                requirement to log on to view the help pages.
+            </action>
+            <action dev="Allyson Lister" type="fix" issue="1799673">
+                SyMBA Bug Tracker post: "[why?] box on login page does not answer question". Fix for issue 1799676 also
+                resolved this bug.
+            </action>
+            <action dev="Allyson Lister" type="fix" issue="1799665">
+                SyMBA Bug Tracker post: "Link for 'SyMBA project Home Page' is incorrect". Erroneous URL fixed in
+                menu-static.html.
+            </action>
+            <action dev="Allyson Lister" type="fix" issue="1807553">
+                SyMBA Bug Tracker post: "bug with Sample Microarray in sandbox". Error in the LoadFuge class
+                caused erroneous loading, and therefore viewing, of the sample microarray protocols. Now fixed.
+            </action>
+            <action dev="Allyson Lister" type="add" issue="1807551">
+                SyMBA Feature Tracker post: "ability to turn on/off debug statments". This feature was added for both
+                RealizableEntityServiceImpl and CisbanHelper
+            </action>
+        </release>
         <release version="7.09" date="2007-09-17" description="Upgrade to Maven 2, Promotion to SourceForge">
             <action dev="Allyson Lister" type="add">
                 Upgraded from Maven1 to Maven2.

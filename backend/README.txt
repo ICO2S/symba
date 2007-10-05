@@ -4,7 +4,8 @@
 mvn exec:java -Dexec.mainClass="uk.ac.cisban.symba.backend.util.UnmarshalPeople" -Dexec.args="xml/samples/SamplePeople.xml"
 
 # Add workflow(s) to the SyMBA database
-mvn exec:java -Dexec.mainClass="uk.ac.cisban.symba.backend.util.UnmarshalWorkflow" -Dexec.args="out.txt xml/samples/SampleMicroarray.xml"
+mvn exec:java -Dexec.mainClass="uk.ac.cisban.symba.backend.util.UnmarshalWorkflow" -Dexec.args="out.html xml/samples/SampleMicroarray.xml"
+mvn exec:java -Dexec.mainClass="uk.ac.cisban.symba.backend.util.UnmarshalWorkflow" -Dexec.args="out.html xml/samples/SampleMicroarray.xml"
 
 # Unload a FuGE experiment into FuGE XML
 mvn exec:java -Dexec.mainClass="uk.ac.cisban.symba.backend.util.MarshalXML" -Dexec.args="../webapp/src/main/webapp/schemaFiles/FuGE_M3_test_13_07_2006.xsd your-identifier output-xml-file"

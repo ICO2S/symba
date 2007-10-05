@@ -142,6 +142,7 @@ public class IdentifiableDaoImpl
             queryObject.setParameter( "date", date );
             java.util.Set results = new java.util.LinkedHashSet( queryObject.list() );
             java.lang.Object result = null;
+            // todo possible removal of null check, as it should never be null
             if ( results != null && results.size() > 0 ) {
                 result = results.iterator().next();
             }

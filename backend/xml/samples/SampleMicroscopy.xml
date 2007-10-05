@@ -20,20 +20,20 @@ concrete protocols have been made.
 <FuGE xmlns="http://fuge.org/core">
     <ProtocolCollection>
         <GenericProtocol
-                name="Confocal Microscope Image Capture (Component of CISBAN Microscopy and Imaging Investigation)"
+                name="Confocal Microscope Image Capture (Component of Example Microscopy and Imaging Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:73f50a1a-77a0-45bc-8cd0-9b1806606c1a"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:880ec3ae-7e21-48ff-8cd1-aec9ffb1fa11">
             <genPrtclToEquip
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:ea717c93-2722-441a-9d91-a216dd688f85"/>
         </GenericProtocol>
         <GenericProtocol
-                name="Widefield Microscope Image Capture (Component of CISBAN Microscopy and Imaging Investigation)"
+                name="Widefield Microscope Image Capture (Component of Example Microscopy and Imaging Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:732f8b6d-1162-4241-b0fe-5d52fb4d6092"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:837aec72-9826-4ccb-a0d5-bd49d1ffe297">
             <genPrtclToEquip
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:44c4774e-796b-4b11-b0ab-23ad211eaa0e"/>
         </GenericProtocol>
-        <GenericProtocol name="CISBAN Microscopy and Imaging Investigation"
+        <GenericProtocol name="Example Microscopy and Imaging Investigation"
                          endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:746ae9c6-9122-4384-9912-7ed11ae0ece2"
                          identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:3dd78dfe-1131-4f94-989b-2140c800f7a8">
             <GenericAction
@@ -60,7 +60,7 @@ concrete protocols have been made.
         <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
         <!-- live vs fixed is currently an attribute of the material, but it may in fact be an attribute of the protocol. -->
         <GenericMaterial
-                name="Material Characteristics Dummy (Component of CISBAN Microscopy and Imaging Investigation)"
+                name="Material Characteristics Dummy (Component of Example Microscopy and Imaging Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:573007d4-bcf0-4912-a649-ad8d9cda529b"
                 identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:b62a616f-508e-48da-8302-0c44ecf715fc">
             <materialType

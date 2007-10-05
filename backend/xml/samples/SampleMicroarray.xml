@@ -20,7 +20,12 @@ ProtocolCollection inside the OntologyCollection.
         </GenericProtocol>
         <GenericProtocol name="mutant/WT Microarray Assay (Component of mutant/WT Microarray Time Series)"
                          endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:71fbd89e-13c7-4ced-9d0d-199abf9956f2"
-                         identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47"/>
+                         identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:14476baa-eb2b-41ec-a9be-1c721b99cd47">
+                        <descriptions>
+                <Description text="URL to further protocol information, for instance"/>
+            </descriptions>
+            <genPrtclToEquip GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:615db911-ee32-46fd-bed9-166e526a6e88"/>
+        </GenericProtocol>
         <GenericProtocol
                 name="mutant/WT Microarray Time Series (Component of Example mutant/WT Microarray Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:5ad00878-be2a-400f-8b6a-0724965ba4cb"
@@ -147,6 +152,15 @@ ProtocolCollection inside the OntologyCollection.
         <GenericProtocol name="Example mutant/WT Microarray Investigation"
                          endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:45774fc1-16f4-417d-a60e-17a3eea9e0c3"
                          identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:767ff7d4-9fa5-4b46-bb38-105effb3822b">
+            <GenericParameter name="Taxonomic Identification of Strain Used"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:070cd2e9-c449-4794-9cf0-676cf8716746"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:3b4fea92-1a21-4313-a299-49e9ba837569">
+                    <ComplexValue>
+                        <_defaultValue
+                                OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:fcd8b670-a0e2-4963-af05-c4f8bc958397"/>
+                    </ComplexValue>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:57d8fa66-a180-4a07-9743-ce8026709c28"/>
+                </GenericParameter>
             <GenericAction
                     endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:8f1159cd-4e55-40ae-8dc2-6d25e31f2b27"
                     identifier="urn:lsid:cisban.cisbs.org:GenericAction:d9a8e091-c7eb-4fa4-bd9c-93a502054427"
@@ -186,6 +200,9 @@ ProtocolCollection inside the OntologyCollection.
                 </GenericParameter>
             </GenericAction>
         </GenericProtocol>
+        <GenericEquipment name="Microarray Chip: Affymetrix XYZ"
+                          endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:2a583ff1-d669-4ddf-bf2a-719921c6f4b6"
+                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:615db911-ee32-46fd-bed9-166e526a6e88"/>
     </ProtocolCollection>
     <OntologyCollection>
         <OntologyIndividual termAccession="accession to come" term="minute"
@@ -197,8 +214,14 @@ ProtocolCollection inside the OntologyCollection.
         <OntologyIndividual termAccession="accession to come" term="mutant"
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:33f1c9fc-c251-4087-a275-60d1ef3e0b05"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:d2fb3a81-498e-4032-989f-cd43bf340d3e"/>
-        <OntologyIndividual termAccession="accession to come" term="strain"
+        <OntologyIndividual termAccession="accession to come" term="mutation state"
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:52b96f4c-ed2e-47e9-aeeb-269edf2e0fdf"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:5175e266-e948-4ba3-8d18-c355d826de00"/>
+        <OntologyIndividual termAccession="accession to come" term="strain"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:af6db223-3185-4371-9f26-613ce1e53ef7"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:57d8fa66-a180-4a07-9743-ce8026709c28"/>
+        <OntologyIndividual termAccession="accession to come" term="Some_Strain_Identifier"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:078118d8-6724-42b6-8856-d18c509509c3"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:fcd8b670-a0e2-4963-af05-c4f8bc958397"/>
     </OntologyCollection>
 </FuGE>

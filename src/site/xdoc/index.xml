@@ -19,23 +19,20 @@
                 </i>
             </p>
 
-            <p>The Centre for Integrated Systems Biology of Ageing and Nutrition has developed a data archive and
-                integrator
-                (SyMBA) based on Milestone 3 of the
+            <p>The Integrative Bioinformatics Group, headed by
+                <a href="http://www.cs.ncl.ac.uk/people/home.php?id=91">Neil Wipat</a> and part of The Centre for
+                Integrated Systems Biology of Ageing and Nutrition (CISBAN), has developed a data archive and
+                integrator (SyMBA) based on Milestone 3 of the
                 <a href="http://fuge.sourceforge.net">Functional Genomics Experiment (FuGE)</a>
                 Object Model (FuGE-OM), and which archives, stores, and retrieves raw high-throughput data. Until now,
-                few
-                published systems have successfully integrated multiple omics data types and information about
-                experiments
-                in a single database. SyMBA is the first published implementation of FuGE that includes a database
-                back-end,
-                expert and standard interfaces, and a Life Science Identifier (LSID) Resolution and Assigning service to
-                identify objects and provide programmatic access to the database. Having a central data repository
-                prevents
-                deletion, loss, or accidental modification of primary data, while giving convenient access to the data
-                for
-                publication and analysis. It also provides a central location for storage of metadata for the
-                high-throughput data sets, and will facilitate subsequent data integration strategies.
+                few published systems have successfully integrated multiple omics data types and information about
+                experiments in a single database. SyMBA is the first published implementation of FuGE that includes a
+                database back-end, expert and standard interfaces, and a Life Science Identifier (LSID) Resolution and
+                Assigning service to identify objects and provide programmatic access to the database. Having a central
+                data repository prevents deletion, loss, or accidental modification of primary data, while giving
+                convenient access to the data for publication and analysis. It also provides a central location for
+                storage of metadata for the high-throughput data sets, and will facilitate subsequent data integration
+                strategies.
             </p>
 
             <p>SyMBA, or its previous incarnation as the CISBAN DPI, has been presented at:</p>
@@ -105,14 +102,12 @@
                 </li>
             </ul>
         </section>
-        <section name="Status: August 2007: Second Stable Release (7.09 stable)">
+        <section name="Status: October 2007: 7.10">
 
             <p>
-                This is an incremental release that was mainly created to fix a few minor bugs, and to bring the code
-                up to a standard that could be deposited into the SourceForge Subversion repository. It is built with
-                Maven 2.0.7, an improvement on the earlier maven 1 build system.
-                At the same time as the sandbox release of 7.09 is published, the full code of SyMBA will be deposited
-                on SourceForge.
+                This is an incremental release that was mainly created to fix a few minor bugs and added a feature
+                (see the <a href="changes-report.html">Change Report</a>). The entire SyMBA project now runs wholly from 
+                SourceForge.
             </p>
 
             <p>

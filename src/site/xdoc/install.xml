@@ -297,28 +297,21 @@ SyMBA.
       <li>
         MySQL
         (<a href="http://dev.mysql.com/downloads/" target="_blank">http://dev.mysql.com/downloads/</a>).
-        phpMyAdmin (http://www.phpmyadmin.net/home_page/downloads.php) is
+        phpMyAdmin
+          (<a href="http://www.phpmyadmin.net/home_page/downloads.php">http://www.phpmyadmin.net/home_page/downloads.php</a>) is
         suggested as the GUI for MySQL. If using MySQL, the jdbc driver can be
         downloaded at:
-        http://dev.mysql.com/downloads/connector/j/3.1.html>
+        <a href="http://dev.mysql.com/downloads/connector/j/3.1.html">http://dev.mysql.com/downloads/connector/j/3.1.html</a>
       </li>
     </ul>
 
 </subsection>
   <subsection name="Checkout from Subversion">
 
-<ol>
-  <li>
-    <b>Create a new directoy for the project, change to this
-    directory and then checkout the SyMBA project</b> from the SourceForge svn
-    at: https://symba.svn.sourceforge.net/svnroot/symba:
-      <source>
-            svn co
-            https://symba.svn.sourceforge.net/svnroot/symba/trunk .
-      </source>
-
-  </li>
-</ol>
+<p>
+    <b>Instructions for Subversion checkout</b> are available on the 
+      <a href="source-repository.html">Source Repository</a> help page.
+</p>
 </subsection>
         </section>
 <section name="Local Setup">
@@ -329,7 +322,7 @@ SyMBA.
     <b>Create an appropriate database. </b>Create a database inside
     your chosen DBMS entitled "symba". If you wish an alternative name for your
     database, modify the following elements in the
-    top-level<code>pom.xml</code>,
+    top-level <code>pom.xml</code> located at <code>your-checkout/trunk/pom.xml</code>,
     and add your username and password to the
     pom:
     <source>
@@ -361,7 +354,7 @@ SyMBA.
   <li>
 
     <b>Tell the front-end about the jdbc connection url.</b> Modify the
-    following line (<b>bolded</b>) in verify.jsp:
+    following line (<b>bolded</b>) in <code>your-checkout/trunk/webapp/src/main/webapp/verify.jsp</code>:
 <source>
             &lt;sql:setDataSource
                 driver="org.postgresql.Driver"
@@ -587,6 +580,10 @@ SyMBA.
     templated in Java 1.5 style:
     <a href="http://galaxy.andromda.org/docs/andromda-metafacades/andromda-uml-metafacades/andromda-metafacades-uml14/namespace.html#enableTemplating" target="_blank">http://galaxy.andromda.org/docs/andromda-metafacades/andromda-uml-metafacades/andromda-metafacades-uml14/namespace.html#enableTemplating</a>
   </li>
+    <li>
+        Have proper error-checking in place for using different servers that have very different dates set.
+        This may result in problems with loading protocols from one server onto a database on a second server.
+    </li>
 </ul>
 </section>
 
@@ -595,7 +592,7 @@ SyMBA.
 
 [1]
 <a href="http://wiki.ficcs.org/ficcs/FuGE-to-XSD" target="_blank" title="http://wiki.ficcs.org/ficcs/FuGE-to-XSD, accessed 6 August 2007.">http://wiki.ficcs.org/ficcs/FuGE-to-XSD</a>,
-accessed 6 August 2007.
+accessed 6 August 2007.<br/>
 [2]
 <a href="http://galaxy.andromda.org/index.php?option=com_content&amp;task=view&amp;id=105&amp;Itemid=89" target="_blank" >http://galaxy.andromda.org/index.php?option=com_content&amp;task=view&amp;id=105&amp;Itemid=89</a>,
 accessed 6 August 2007.

@@ -81,12 +81,6 @@ must go back to the login page--%>
 <%
     validUser.startRe();
     validUser.setLsid( validUser.getLsid().trim() );
-    RealizableEntityService reService = validUser.getReService();
-//    List <Person>people = reService.getAllPeople();
-//    for (Person p: people)
-//      {
-//         System.out.println(p.getFirstName());
-//      }
     Person p = ( Person ) validUser.getReService().findLatestByEndurant( validUser.getLsid() );
     if ( p != null ) {
         System.out.println( "it's not null" );
@@ -110,27 +104,6 @@ must go back to the login page--%>
     counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );
     counter.setNumberOfDataFiles( validUser.getReService().countData() );
 %>
-
-
-<%--Code for the cookie code, will be implemented in the production version --%>
-<%--<c:choose>
-  <c:when test="${!empty param.remember}">
-    <ora:addCookie name="userName" 
-      value="${param.userName}"
-      maxAge="2592000" />
-    <ora:addCookie name="password" 
-      value="${param.password}"
-      maxAge="2592000" />
-  </c:when>
-  <c:otherwise>
-    <ora:addCookie name="userName" 
-      value="${param.userName}"
-      maxAge="0" />
-    <ora:addCookie name="password" 
-      value="${param.password}"
-      maxAge="0" />
-  </c:otherwise>
-</c:choose>--%>
 
 <%-- 
   Redirect to the main page or to the original URL, if

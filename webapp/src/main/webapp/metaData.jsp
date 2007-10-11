@@ -3,10 +3,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -68,13 +68,9 @@
     for ( int iii = 0; iii < rdb.getAllDataBeans().size(); iii++ ) {
         RawDataInfoBean info = rdb.getDataItem( iii );
         FileBean fileBean = rdb.getFileBean( iii );
-        System.out.println( "FILE objs NAME      " + fileBean.getAFile().getName() );
-        System.out.println( "RDB DATA TYPE IS      " + rdb.getDataType() );
         String selectDescName = "actionListDescription" + iii;
         String selectFactorName = "actionListFactor" + iii;
         String selectName = "actionList" + iii;
-//            out.println( "AL: selectName: " + selectName );
-//            System.out.println( "AL: selectName: " + selectName );
 
 %>
 <br/>
@@ -97,24 +93,18 @@
     // have output/input files.
     boolean hasOne = false;
     for ( Object obj : validUser.getReService().getAllLatestGenericProtocols() ) {
-        // System.out.println("I AM IN THE LOOP");
         GenericProtocol gp = ( GenericProtocol ) obj;
 //        out.println( "<p> Got gp " + gp.getName() + "</p>" );
         Set aSet = ( Set ) gp.getGenericActions();
         for ( int count = 1; count <= aSet.size(); count++ ) {
-            //System.out.println("I AM IN THE LOOP2");
             for ( Object obj2 : aSet ) {
-                //System.out.println("I AM IN THE LOOP3");
                 GenericAction ga = ( GenericAction ) obj2;
                 if ( count == ga.getActionOrdinal() ) {
 //                    out.println( "<p> Getting ga " + ga.getName() + "</p>" );
-                    // System.out.println("IS IT EQUAL????? "+ gp.getName() +gp.getName().length()+ "    "+ rdb.getDataType() +rdb.getDataType().length());
                     if ( gp.getName().trim().equals( rdb.getDataType().trim() ) ) {
                         String modified = ga.getName();
                         modified.trim();
-                        //System.out.println("IN THE IMPORTANT IF");
                         if ( modified.startsWith( "Step Containing the" ) ) {
-//                            System.out.println( "IN THE IMPORTANT IF" );
                             modified = modified.substring( 20 );
                         }
                         allFulls.add(
@@ -182,34 +172,32 @@
                         .substring( 0, genericMaterial.getName().indexOf( " Dummy" ) )
                         .trim();
 
-                // will store as the Material's name
+                // will store the Material's name
                 String matName = "materialName" + iii;
                 out.println( "<br>" );
-                out.println( "<label for=\"" + matName + "\">Name of this Material (e.g., PD Number): </label>" );
+                out.println( "<label for=\"" + matName + "\">Name/ID of this Material (optional): </label>" );
                 if ( rdb.getAllDataBeans() != null && rdb.getAllDataBeans().size() > iii &&
-                        rdb.getDataItem( iii ).getMicroscopyFactorsBean() != null ) {
+                        rdb.getDataItem( iii ).getMaterialFactorsBean() != null ) {
                     out.println(
                             "<input id=\"" + matName + "\" name=\"" + matName + "\" value=\"" +
-                                    rdb.getDataItem( iii ).getMicroscopyFactorsBean().getPdNumber() + "\"><br>" );
+                                    rdb.getDataItem( iii ).getMaterialFactorsBean().getMaterialName() + "\"><br>" );
                 } else {
                     out.println( "<input id=\"" + matName + "\" name=\"" + matName + "\"><br>" );
                 }
                 out.println( "<br>" );
                 out.println(
-                        "<p class=\"bigger\">Please enter some information about the " + displayName + ", starting" +
-                                "with treatment information. There should be a separate box for each treatment performed, " +
-                                "each containing a brief description, what the treatment was, the dose and length of treatment. " +
-                                "<em>NOTE: If you have already filled out the treatments, and are happy with them as displayed, " +
-                                "you do not need to re-enter the same text twice. All treatments already entered will " +
+                        "<p class=\"bigger\">Please enter some information about the " + displayName + ", starting " +
+                                "with treatment information. There should be a separate box for each treatment performed " +
+                                "(optional). <em>NOTE: All treatments already entered will " +
                                 "remain in the system. You may add additional treatments by entering them below.</em></p>" );
 
                 if ( rdb.getAllDataBeans() != null && rdb.getAllDataBeans().size() > iii &&
-                        rdb.getDataItem( iii ).getMicroscopyFactorsBean() != null &&
-                        rdb.getDataItem( iii ).getMicroscopyFactorsBean().getTreatmentInfo() != null &&
-                        !rdb.getDataItem( iii ).getMicroscopyFactorsBean().getTreatmentInfo().isEmpty() ) {
+                        rdb.getDataItem( iii ).getMaterialFactorsBean() != null &&
+                        rdb.getDataItem( iii ).getMaterialFactorsBean().getTreatmentInfo() != null &&
+                        !rdb.getDataItem( iii ).getMaterialFactorsBean().getTreatmentInfo().isEmpty() ) {
                     out.println( "<ol>" );
                     for ( String singleTreatment : rdb.getDataItem( iii )
-                            .getMicroscopyFactorsBean()
+                            .getMaterialFactorsBean()
                             .getTreatmentInfo() ) {
                         out.println( "<li>Treatment already recorded: " + singleTreatment + "</li>" );
                     }
@@ -252,8 +240,25 @@
                     List<OntologyTerm> ontologyTerms = genericList;
                     if ( !ontologyTerms.isEmpty() ) {
 
+                        // the ontology source for the material type may have a description which tells the user
+                        // how to select the correct ontology term. Check for that.
+                        OntologySource ontologySource = genericMaterial.getMaterialType().getOntologySource();
+                        ontologySource = ( OntologySource ) validUser.getReService()
+                                .findLatestByEndurant( ontologySource.getEndurant().getIdentifier() );
+
+                        // Never allow multiple choices for material types.
+                        boolean foundInstructions = false;
                         String matType = "materialType" + iii;
-                        out.println( "<label for=\"" + matType + "\">Please select your material type:</label>" );
+                        String instructions =  "<label for=\"" + matType + "\">Please select your material type:</label>" ;
+                        for ( Object descObj : ontologySource.getDescriptions() ) {
+                            Description desc = ( Description ) descObj;
+                            if ( desc.getText().startsWith( "Instructions: " ) ) {
+                                instructions =  "<label for=\"" + matType + "\">" + desc.getText().substring( 14 ) + "</label>";
+                                foundInstructions = true;
+                            }
+                        }
+
+                        out.println(instructions);
                         out.println( "<select name=\"" + matType + "\">" );
                         for ( OntologyTerm ot : ontologyTerms ) {
                             out.println(

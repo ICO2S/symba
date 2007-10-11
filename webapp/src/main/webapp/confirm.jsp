@@ -3,10 +3,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -147,40 +147,36 @@
             }
             out.println( modified );
             out.println( "</a>" );
-            out.println( " <!-- AL: Action Endurant: " + info.getActionEndurant() + "-->" );
             out.println( "</li>" );
-//                System.out.println( " AL: Action Endurant: " + info.getActionEndurant() );
         }
-        if ( info.getProtocolEndurant() != null ) {
-            out.println( "<!-- AL: Protocol Endurant: " + info.getProtocolEndurant() + "-->" );
-//                System.out.println( " AL: Protocol Endurant: " + info.getProtocolEndurant() );
-        }
-        if ( info.getMicroscopyFactorsBean() != null ) {
+        if ( info.getMaterialFactorsBean() != null ) {
             out.println( "<li>" );
             out.println( "You have provided information about the material used in the experiment. " );
             out.println( "This material has the following properties " );
             out.println( "<ul>" );
 
-            out.println( "<li>Name/Identifying Number: " );
-            out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-            out.println( info.getMicroscopyFactorsBean().getPdNumber() );
-            out.println( "</a>" );
-            out.println( "</li>" );
+            if ( info.getMaterialFactorsBean().getMaterialName() != null && info.getMaterialFactorsBean().getMaterialName().length() > 0) {
+                out.println( "<li>Name/Identifying Number: " );
+                out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+                out.println( info.getMaterialFactorsBean().getMaterialName() );
+                out.println( "</a>" );
+                out.println( "</li>" );
+            }
 
-            if ( info.getMicroscopyFactorsBean().getCellType() != null ) {
-                out.println( "<li>Cell Type: " );
+            if ( info.getMaterialFactorsBean().getMaterialType() != null ) {
+                out.println( "<li>Material Type: " );
                 out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
                 OntologyTerm ot = ( OntologyTerm ) validUser.getReService()
-                        .findLatestByEndurant( info.getMicroscopyFactorsBean().getCellType() );
+                        .findLatestByEndurant( info.getMaterialFactorsBean().getMaterialType() );
                 out.println( ot.getTerm() );
                 out.println( "</a>" );
                 out.println( "</li>" );
             }
 
-            if ( !info.getMicroscopyFactorsBean().getTreatmentInfo().isEmpty() ) {
+            if ( info.getMaterialFactorsBean().getTreatmentInfo() != null && !info.getMaterialFactorsBean().getTreatmentInfo().isEmpty() ) {
                 out.println( "<li>Treatments: " );
                 out.println( "<ol>" );
-                for ( String treatment : info.getMicroscopyFactorsBean().getTreatmentInfo() ) {
+                for ( String treatment : info.getMaterialFactorsBean().getTreatmentInfo() ) {
                     out.println( "<li>" );
                     out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
                     out.println( treatment );
@@ -190,11 +186,10 @@
                 out.println( "</ol>" );
                 out.println( "</li>" );
             }
-
-            if ( !info.getMicroscopyFactorsBean().getCharacteristics().isEmpty() ) {
+            if ( info.getMaterialFactorsBean().getCharacteristics() != null && !info.getMaterialFactorsBean().getCharacteristics().isEmpty() ) {
                 out.println( "<li>General Characteristics: " );
                 out.println( "<ol>" );
-                for ( String characteristics : info.getMicroscopyFactorsBean().getCharacteristics() ) {
+                for ( String characteristics : info.getMaterialFactorsBean().getCharacteristics() ) {
                     out.println( "<li>" );
                     out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
                     OntologyTerm ot = ( OntologyTerm ) validUser.getReService()

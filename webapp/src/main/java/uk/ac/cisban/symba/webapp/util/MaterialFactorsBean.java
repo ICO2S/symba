@@ -2,46 +2,42 @@ package uk.ac.cisban.symba.webapp.util;
 
 import java.util.ArrayList;
 
-/**
- * User: allyson
- * Date: 24-Apr-2007
+/*
+ * This file is part of SyMBA.
+ * SyMBA is covered under the GNU Lesser General Public License (LGPL).
+ * Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
+ * To view the full licensing information for this software and ALL other files contained
+ * in this distribution, please see LICENSE.txt
+ *
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
+ *
  */
-public class MicroscopyFactorsBean {
 
-    private String pdNumber;
+public class MaterialFactorsBean {
+
+    private String materialName;
 
     // Filled ONLY during loadFuge, to allow discussion between loadMaterial and loadProtocols
     private String createdMaterial;
 
-    // this should be a controlled vocabulary, but I haven't received that CV yet from Glyn,
-    // so currently just something that must be filled in manually.
-    private String cellType;
+    private String materialType;
 
     // free text for treatment type, dose and length of treatment. One String per treatment type
     private ArrayList<String> treatmentInfo;
 
-    // if isTransfection is true, the user must select one or more DNA constructs
-    // this should be a controlled vocabulary, but I haven't received that CV yet from Glyn,
-    // so currently just something that must be filled in manually.
-    // --
-    // if isFluorescent is true, they type of fluorescent dye must be defined - there may be one or more
-    // this should be a controlled vocabulary, but I haven't received that CV yet from Glyn,
-    // so currently just something that must be filled in manually.
-    // -
-    // if isAntibodies is true, then up to 3 primary and 3 secondary antibody types can be selected.
-    // this should be a controlled vocabulary, but I haven't received that CV yet from Glyn,
-    // so currently just something that must be filled in manually.
-    // --
     // these are all stored as Identifiers in the characteristics array.
     private ArrayList<String> characteristics;
 
 
-    public String getPdNumber() {
-        return pdNumber;
+    public String getMaterialName() {
+        return materialName;
     }
 
-    public void setPdNumber( String pdNumber ) {
-        this.pdNumber = pdNumber;
+    public void setMaterialName( String materialName ) {
+        this.materialName = materialName;
     }
 
     public String getCreatedMaterial() {
@@ -64,12 +60,12 @@ public class MicroscopyFactorsBean {
         this.treatmentInfo.add( singleTreatment );
     }
 
-    public String getCellType() {
-        return cellType;
+    public String getMaterialType() {
+        return materialType;
     }
 
-    public void setCellType( String cellType ) {
-        this.cellType = cellType;
+    public void setMaterialType( String materialType ) {
+        this.materialType = materialType;
     }
 
     public ArrayList<String> getCharacteristics() {

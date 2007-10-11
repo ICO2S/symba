@@ -345,13 +345,13 @@ public class LoadFuge {
         boolean hasMaterial = false;
         int iii = 0;
         for ( RawDataInfoBean rdib : rdb.getAllDataBeans() ) {
-            if ( rdib.getMicroscopyFactorsBean() != null && rdib.getMicroscopyFactorsBean().getPdNumber() != null ) {
+            if ( rdib.getMaterialFactorsBean() != null && rdib.getMaterialFactorsBean().getMaterialType() != null ) {
                 hasMaterial = true;
                 // the material needs to be made, and each ontology term needs to be added if it hasn't already been added
                 GenericMaterial genericMaterial = ( GenericMaterial ) reService.createIdentifiableAndEndurantObs(
                         helper.getLSID(
                                 "fugeOM.Bio.Material.GenericMaterial" ),
-                        rdib.getMicroscopyFactorsBean().getPdNumber(),
+                        rdib.getMaterialFactorsBean().getMaterialName(),
                         helper.getLSID( "fugeOM.Bio.Material.GenericMaterialEndurant" ),
                         "fugeOM.Bio.Material.GenericMaterial",
                         "fugeOM.Bio.Material.GenericMaterialEndurant" );
@@ -360,9 +360,9 @@ public class LoadFuge {
 
                 // todo proper algorithm
                 boolean matchFound = findMatchingEndurant(
-                        rdib.getMicroscopyFactorsBean().getCellType(), ontologyTerms );
+                        rdib.getMaterialFactorsBean().getMaterialType(), ontologyTerms );
                 // irrespective of whether or not we found a match, we still need to add the term to the new material
-                OntologyTerm termToAdd = ( OntologyTerm ) reService.findLatestByEndurant( rdib.getMicroscopyFactorsBean().getCellType() );
+                OntologyTerm termToAdd = ( OntologyTerm ) reService.findLatestByEndurant( rdib.getMaterialFactorsBean().getMaterialType() );
                 genericMaterial.setMaterialType( termToAdd );
                 // todo this won't catch cases where the ontology source was added at a later date
                 if ( !matchFound ) {
@@ -383,21 +383,23 @@ public class LoadFuge {
                 } else {
                     characteristics = ( Set<OntologyTerm> ) genericMaterial.getCharacteristics();
                 }
-                for ( String endurant : rdib.getMicroscopyFactorsBean().getCharacteristics() ) {
-                    // todo proper algorithm
-                    matchFound = findMatchingEndurant( endurant, ontologyTerms );
-                    // irrespective of whether or not we found a match, we still need to add the term to the new material
-                    termToAdd = ( OntologyTerm ) reService.findLatestByEndurant( endurant );
-                    characteristics.add( termToAdd );
-                    // todo this won't catch cases where the ontology source was added at a later date
-                    if ( !matchFound ) {
-                        // if we didn't find a match, both the OntologyTerm and its Source (if present) need to be added
-                        // to the fuge entry, which means added to the ontologyTerms and ontologySources.
-                        ontologyTerms.add( termToAdd );
-                        if ( termToAdd.getOntologySource() != null ) {
-                            ontologySources.add(
-                                    ( OntologySource ) reService.findLatestByEndurant(
-                                            termToAdd.getOntologySource().getEndurant().getIdentifier() ) );
+                if ( rdib.getMaterialFactorsBean().getCharacteristics() != null ) {
+                    for ( String endurant : rdib.getMaterialFactorsBean().getCharacteristics() ) {
+                        // todo proper algorithm
+                        matchFound = findMatchingEndurant( endurant, ontologyTerms );
+                        // irrespective of whether or not we found a match, we still need to add the term to the new material
+                        termToAdd = ( OntologyTerm ) reService.findLatestByEndurant( endurant );
+                        characteristics.add( termToAdd );
+                        // todo this won't catch cases where the ontology source was added at a later date
+                        if ( !matchFound ) {
+                            // if we didn't find a match, both the OntologyTerm and its Source (if present) need to be added
+                            // to the fuge entry, which means added to the ontologyTerms and ontologySources.
+                            ontologyTerms.add( termToAdd );
+                            if ( termToAdd.getOntologySource() != null ) {
+                                ontologySources.add(
+                                        ( OntologySource ) reService.findLatestByEndurant(
+                                                termToAdd.getOntologySource().getEndurant().getIdentifier() ) );
+                            }
                         }
                     }
                 }
@@ -411,21 +413,23 @@ public class LoadFuge {
                 } else {
                     descriptions = ( Set<Description> ) genericMaterial.getDescriptions();
                 }
-                for ( String treatmentDesc : rdib.getMicroscopyFactorsBean().getTreatmentInfo() ) {
-                    Description description = ( Description ) reService.createDescribableOb(
-                            "fugeOM.Common.Description.Description" );
-                    description.setText( "Treatment: " + treatmentDesc );
-                    reService.createObInDB( "fugeOM.Common.Description.Description", description );
-                    descriptions.add( description );
+                if ( rdib.getMaterialFactorsBean().getTreatmentInfo() != null ) {
+                    for ( String treatmentDesc : rdib.getMaterialFactorsBean().getTreatmentInfo() ) {
+                        Description description = ( Description ) reService.createDescribableOb(
+                                "fugeOM.Common.Description.Description" );
+                        description.setText( "Treatment: " + treatmentDesc );
+                        reService.createObInDB( "fugeOM.Common.Description.Description", description );
+                        descriptions.add( description );
+                    }
                 }
                 genericMaterial.setDescriptions( descriptions );
 
-                // a final step for this rdib microscopy info: add the material to the list of materials after storing
+                // a final step for this rdib material info: add the material to the list of materials after storing
                 helper.loadIdentifiable( genericMaterial, auditor, "fugeOM.Bio.Material.GenericMaterial", System.out );
 
-                MicroscopyFactorsBean mfb = rdib.getMicroscopyFactorsBean();
+                MaterialFactorsBean mfb = rdib.getMaterialFactorsBean();
                 mfb.setCreatedMaterial( genericMaterial.getEndurant().getIdentifier() );
-                rdib.setMicroscopyFactorsBean( mfb );
+                rdib.setMaterialFactorsBean( mfb );
                 rdb.setDataItem( rdib, iii );
 
                 materials.add( genericMaterial );
@@ -675,11 +679,11 @@ public class LoadFuge {
 
                 }
 
-                if ( rdib.getMicroscopyFactorsBean() != null ) {
+                if ( rdib.getMaterialFactorsBean() != null ) {
                     // add the material
                     Set set2 = new HashSet();
-                    set2.add( reService.findLatestByEndurant( rdib.getMicroscopyFactorsBean().getCreatedMaterial() ) );
-                    System.out.println( "Received lsid: " + rdib.getMicroscopyFactorsBean().getCreatedMaterial() );
+                    set2.add( reService.findLatestByEndurant( rdib.getMaterialFactorsBean().getCreatedMaterial() ) );
+                    System.out.println( "Received lsid: " + rdib.getMaterialFactorsBean().getCreatedMaterial() );
                     gpaOfSecondLevelParentProtocol.setGenericInputCompleteMaterials( set2 );
                 }
 
@@ -757,10 +761,10 @@ public class LoadFuge {
                 Set set = new HashSet();
                 set.add( reService.findLatestByEndurant( rdib.getEndurantLsid() ) );
                 assayGPA.setGenericOutputData( set );
-                if ( rdib.getMicroscopyFactorsBean() != null ) {
+                if ( rdib.getMaterialFactorsBean() != null ) {
                     // add the material
                     Set set2 = new HashSet();
-                    set2.add( reService.findLatestByEndurant( rdib.getMicroscopyFactorsBean().getCreatedMaterial() ) );
+                    set2.add( reService.findLatestByEndurant( rdib.getMaterialFactorsBean().getCreatedMaterial() ) );
                     assayGPA.setGenericInputCompleteMaterials( set2 );
                 }
                 // load into the database

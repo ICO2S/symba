@@ -9,10 +9,10 @@ import java.io.*;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate:$
- * $LastChangedRevision:$
- * $Author:$
- * $HeadURL:$
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 
@@ -29,7 +29,7 @@ public class RawDataInfoBean implements Serializable {
     private String factorChoice;
 
     // this will only be filled if it is a Microscopy protocol
-    private MicroscopyFactorsBean microscopyFactorsBean;
+    private MaterialFactorsBean materialFactorsBean;
 
     public RawDataInfoBean() {
     }
@@ -39,11 +39,8 @@ public class RawDataInfoBean implements Serializable {
     }
 
     public void setAfile( File afile ) throws IOException {
-        System.out.println( "RUNNING SETA FILE" );
 
         this.afile = afile;
-        System.out.println( "RUNNING SETA FILE ~CAN READ " + afile.getAbsolutePath() );
-        if ( afile.canRead() ) System.out.println( "RUNNING SETA FILE ~CAN READ" );
         byte[] local = new byte[( int ) afile.length()];
         DataInputStream dis = new DataInputStream( new FileInputStream( afile ) );
         dis.readFully( local );
@@ -127,11 +124,11 @@ public class RawDataInfoBean implements Serializable {
         this.factorChoice = factorChoice;
     }
 
-    public MicroscopyFactorsBean getMicroscopyFactorsBean() {
-        return microscopyFactorsBean;
+    public MaterialFactorsBean getMaterialFactorsBean() {
+        return materialFactorsBean;
     }
 
-    public void setMicroscopyFactorsBean( MicroscopyFactorsBean microscopyFactorsBean ) {
-        this.microscopyFactorsBean = microscopyFactorsBean;
+    public void setMaterialFactorsBean( MaterialFactorsBean materialFactorsBean ) {
+        this.materialFactorsBean = materialFactorsBean;
     }
 }

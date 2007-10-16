@@ -204,6 +204,16 @@ ProtocolCollection inside the OntologyCollection.
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:2a583ff1-d669-4ddf-bf2a-719921c6f4b6"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:615db911-ee32-46fd-bed9-166e526a6e88"/>
     </ProtocolCollection>
+    <MaterialCollection>
+        <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
+        <GenericMaterial
+                name="Material Characteristics Dummy (Component of Example mutant/WT Microarray Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:1e940e53-7218-413f-9b01-483d9a2ea23e"
+                identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d9f088d8-7fc4-4246-8386-2d098903f248">
+            <materialType
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:6a26470d-c90d-4756-8587-b980abea20ce"/>
+        </GenericMaterial>
+    </MaterialCollection>
     <OntologyCollection>
         <OntologyIndividual termAccession="accession to come" term="minute"
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:be8cea26-286c-4b29-8c55-4cf558095d3a"
@@ -217,11 +227,35 @@ ProtocolCollection inside the OntologyCollection.
         <OntologyIndividual termAccession="accession to come" term="mutation state"
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:52b96f4c-ed2e-47e9-aeeb-269edf2e0fdf"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:5175e266-e948-4ba3-8d18-c355d826de00"/>
-        <OntologyIndividual termAccession="accession to come" term="strain"
+        <OntologyIndividual termAccession="accession to come" term="strain background"
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:af6db223-3185-4371-9f26-613ce1e53ef7"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:57d8fa66-a180-4a07-9743-ce8026709c28"/>
         <OntologyIndividual termAccession="accession to come" term="Some_Strain_Identifier"
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:078118d8-6724-42b6-8856-d18c509509c3"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:fcd8b670-a0e2-4963-af05-c4f8bc958397"/>
+        <OntologyIndividual termAccession="accession to come" term="Wild Type 1"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:6103cb4a-b8be-4c3e-bde7-86f91be574f4"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:34778c5f-87e9-4485-9355-0e1b8f87ec94"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:6a26470d-c90d-4756-8587-b980abea20ce"/>
+        <OntologyIndividual termAccession="accession to come" term="Wild Type 2"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:6103cb4a-b8be-4c3e-bde7-86f91be574f4"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:e1fbc45b-c971-4bd2-8bf1-09a071cc6bc3"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:90a0ad27-f6b7-45a9-b549-c691e85db180"/>
+        <OntologyIndividual termAccession="accession to come" term="Mutant 1"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:6103cb4a-b8be-4c3e-bde7-86f91be574f4"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:ff9c092e-b46c-4fe8-b681-8df7962e7aa4"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:f7d294eb-296d-4957-9058-2a4ff1d7159a"/>
+        <OntologyIndividual termAccession="accession to come" term="Mutant 2"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:6103cb4a-b8be-4c3e-bde7-86f91be574f4"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:d790c384-0cb4-4465-a42e-d5d52b7e7de6"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:d7e127b5-f0b8-47e5-bef0-a04f1746695b"/>
+        <OntologySource ontologyURI="http://www.cisban.ac.uk"
+                        name="strain name CV"
+                        endurant="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:fd04bbe6-9847-4c6d-957c-5e0e60fdf9ed"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:6103cb4a-b8be-4c3e-bde7-86f91be574f4">
+            <descriptions>
+                <Description text="Instructions: Please select which strain was used in the creation of this data file."/>
+            </descriptions>
+        </OntologySource>
     </OntologyCollection>
 </FuGE>

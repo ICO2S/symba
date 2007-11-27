@@ -1,12 +1,12 @@
 <!-- This file is part of SyMBA.-->
-        <!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
-        <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
-        <!-- To view the full licensing information for this software and ALL other files contained-->
-        <!-- in this distribution, please see LICENSE.txt-->
-        <!-- $LastChangedDate$-->
-        <!-- $LastChangedRevision$-->
-        <!-- $Author$-->
-        <!-- $HeadURL$-->
+<!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
+<!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
+<!-- To view the full licensing information for this software and ALL other files contained-->
+<!-- in this distribution, please see LICENSE.txt-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -15,7 +15,7 @@
     <groupId>fugeOM</groupId>
     <artifactId>SyMBA</artifactId>
     <packaging>pom</packaging>
-    <version>7.10</version>
+    <version>7.11</version>
     <name>SyMBA</name>
     <url>http://symba.sourceforge.net</url>
     <description>The Systems and Molecular Biology data Archive (SyMBA) Project. The Centre for Integrated Systems
@@ -97,7 +97,7 @@
     <distributionManagement>
         <site>
             <id>shell.sf.net</id>
-            <url>scp://home/groups/s/sy/symba/test/</url>
+            <url>scp://shell.sf.net/home/groups/s/sy/symba/test/</url>
         </site>
     </distributionManagement>
 
@@ -106,29 +106,29 @@
         <url>http://www.cisban.ac.uk</url>
     </organization>
     <!--<ciManagement>-->
-        <!--<system>continuum</system>-->
-        <!--<notifiers>-->
-            <!--<notifier>-->
-                <!--<type>mail</type>-->
-                <!--<configuration>-->
-                    <!--<address></address>-->
-                <!--</configuration>-->
-            <!--</notifier>-->
-        <!--</notifiers>-->
+    <!--<system>continuum</system>-->
+    <!--<notifiers>-->
+    <!--<notifier>-->
+    <!--<type>mail</type>-->
+    <!--<configuration>-->
+    <!--<address></address>-->
+    <!--</configuration>-->
+    <!--</notifier>-->
+    <!--</notifiers>-->
     <!--</ciManagement>-->
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.andromda.profiles.uml14</groupId>
                 <artifactId>andromda-profile</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <type>xml.zip</type>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.andromda</groupId>
                 <artifactId>andromda-core</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <exclusions>
                     <exclusion>
                         <groupId>xml-apis</groupId>
@@ -151,35 +151,35 @@
             <dependency>
                 <groupId>org.andromda.translationlibraries</groupId>
                 <artifactId>andromda-ocl-translation-core</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.andromda.translationlibraries</groupId>
                 <artifactId>andromda-ocl-validation-library</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.andromda.cartridges</groupId>
                 <artifactId>andromda-spring-cartridge</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.andromda.cartridges</groupId>
                 <artifactId>andromda-hibernate-cartridge</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.andromda.cartridges</groupId>
                 <artifactId>andromda-java-cartridge</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.andromda.translationlibraries</groupId>
                 <artifactId>andromda-ocl-query-library</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <scope>runtime</scope>
             </dependency>
             <!-- This dependency provides the ability to implement your
@@ -188,7 +188,7 @@
             <dependency>
                 <groupId>org.andromda</groupId>
                 <artifactId>andromda-script-wrappers</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
@@ -295,7 +295,7 @@
                 <plugin>
                     <groupId>org.andromda.maven.plugins</groupId>
                     <artifactId>andromda-multi-source-plugin</artifactId>
-                    <version>3.2-SNAPSHOT</version>
+                    <version>3.2</version>
                     <executions>
                         <execution>
                             <goals>
@@ -323,12 +323,12 @@
                 <plugin>
                     <groupId>org.andromda.maven.plugins</groupId>
                     <artifactId>andromda-maven-plugin</artifactId>
-                    <version>3.2-SNAPSHOT</version>
+                    <version>3.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.andromda.maven.plugins</groupId>
                     <artifactId>andromdapp-maven-plugin</artifactId>
-                    <version>3.2-SNAPSHOT</version>
+                    <version>3.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -493,7 +493,7 @@
                         <plugin>
                             <groupId>org.andromda.maven.plugins</groupId>
                             <artifactId>andromdapp-maven-plugin</artifactId>
-                            <version>3.2-SNAPSHOT</version>
+                            <version>3.2</version>
                             <!-- provides the injection of the script wrapper support into the class files (this should only
                                  be done when developing locally), uncomment this executions element to enable
                             <executions>
@@ -637,8 +637,18 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>changes-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>changes-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <issueLinkTemplate>http://sourceforge.net/support/tracker.php?aid=%ISSUE%</issueLinkTemplate>
+                </configuration>
             </plugin>
-             <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>

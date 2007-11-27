@@ -5,7 +5,7 @@
     <parent>
         <groupId>fugeOM</groupId>
         <artifactId>SyMBA</artifactId>
-        <version>7.10</version>
+        <version>7.11</version>
     </parent>
     <artifactId>backend</artifactId>
     <packaging>jar</packaging>
@@ -14,12 +14,12 @@
         <dependency>
             <groupId>fugeOM</groupId>
             <artifactId>core</artifactId>
-            <version>7.10</version>
+            <version>7.11</version>
         </dependency>
         <dependency>
             <groupId>fugeOM</groupId>
             <artifactId>jaxb2</artifactId>
-            <version>7.10</version>
+            <version>7.11</version>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>

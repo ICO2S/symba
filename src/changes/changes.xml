@@ -10,6 +10,12 @@
                 <!--A new cool feature.-->
             <!--</action>-->
         <!--</release>-->
+        <release version="7.11" date="2007-11-23" description="Update from Andromda 3.2-SNAPSHOT to Andromda 3.2">
+            <action dev="Allyson Lister" type="update">
+                As the latest Andromda snapshot is now 3.3-SNAPSHOT, it is no longer appropriate to be using
+                3.2-SNAPSHOT. Therefore, we have upgraded the Andromda plugin to version 3.2.
+            </action>
+        </release>
         <release version="7.10" date="2007-10-05" description="Bug Fixes, Installation Instruction Improvements">
             <action dev="Allyson Lister" type="fix" issue="1799676">
                 SyMBA Bug Tracker post: "SyMBA help navigation button returns front page only". Fixed by removing the

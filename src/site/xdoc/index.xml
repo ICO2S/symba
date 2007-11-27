@@ -11,7 +11,7 @@
         <section name="An Introduction to SyMBA">
             <p>
                 <i>This page summarizes the current status of the SyMBA. SyMBA is available for viewing and testing
-                    via the <a href="http://bsu.ncl.ac.uk:8081/symba">sandbox installation</a> we have set up,
+                    via the <a href="http://www.cisban.ac.uk/symba-sandbox">sandbox installation</a> we have set up,
                     and is also available for download via SourceForge's Subversion repository. We welcome any comments or queries on
                     the system, which should be sent to
                     <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel@lists.sourceforge.net</a>
@@ -37,6 +37,11 @@
 
             <p>SyMBA, or its previous incarnation as the CISBAN DPI, has been presented at:</p>
             <ul>
+                <li>
+                    <a href="http://www.cisbs.org/CISB07Programme">CISB07 Meeting</a>,
+                    <a href="http://www.life.org.uk/">Centre For Life</a>, Newcastle, 19-20 November 2007. Hosted by
+                    <a href="http://www.cisban.ac.uk">CISBAN</a>, <a href="http://www.ncl.ac.uk">Newcastle University</a>.
+                </li>
                 <li>
                     <a href="http://www.cisban.ac.uk">CISBAN</a> /
                     <a href="http://csbe.bio.ed.ac.uk/">Centre for Systems Biology at Edinburgh (CSBE)</a> Technology
@@ -102,14 +107,19 @@
                 </li>
             </ul>
         </section>
-        <section name="Status: October 2007: 7.10">
+        <section name="Status: November 2007: 7.11">
 
             <p>
-                This is an incremental release that was mainly created to fix a few minor bugs and added a feature
-                (see the <a href="changes-report.html">Change Report</a>). The entire SyMBA project now runs wholly from 
-                SourceForge.
+                The main feature of this release is the upgrading of the Andromda plugin from 3.2-SNAPSHOT to 3.2
+                (see the <a href="changes-report.html">Change Report</a>).
             </p>
-
+            <br/><br/>
+            <p>
+                <font color="green">There is, however, a bug when running Andromda with Java 6</font>. Please do not try
+                to develop SyMBA with Java 6 yet. I have submitted my question to the
+                <a href="http://galaxy.andromda.org/forum/viewtopic.php?t=5337">Andromda forum</a>.
+            </p>
+            <br/><br/>
             <p>
                 You will need a logon to access this database, which you may request
                 from the
@@ -131,10 +141,7 @@
                     <a href="http://sourceforge.net/project/screenshots.php?group_id=202680">Screenshots</a>
                     are available from the SourceForge website.
                 </li>
-                <li>SyMBA Summary Slides
-                    <a href="SyMBA-Aug2007.odp">(odp)</a>
-                    <a href="SyMBA-Aug2007.ppt">(ppt)</a>
-                    - August 2007
+                <li><a href="SyMBA-November2007.pdf">Summary Slides</a> - November 2007
                 </li>
                 <li>
                     <a href="http://fuge.sourceforge.net">FuGE</a>
@@ -150,7 +157,7 @@
             <ul>
                 <li>
                     <a href="http://www.andromda.org">AndroMDA</a>
-                    3.2-SNAPSHOT
+                    3.2
                 </li>
                 <li>
                     <a href="https://jaxb.dev.java.net/">JAXB</a>

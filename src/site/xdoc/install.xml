@@ -331,8 +331,20 @@ SyMBA.
 
             &lt;<code>jdbc.username</code>&gt;&lt;/<code>jdbc.username</code>&gt;
             &lt;jdbc.password&gt;&lt;/jdbc.password&gt;
+
+        &lt;jdbc.driver.jar&gt;
+        &lt;/jdbc.driver.jar&gt;
       </source>
   </li>
+    <li>
+      <b>Point Maven at the correct jdbc jar. </b>Modify the following element in the
+      top-level <code>pom.xml</code> located at <code>your-checkout/trunk/pom.xml</code>,
+      and point it to the appropriate location for your jdbc jar:
+      <source>
+          &lt;jdbc.driver.jar&gt;
+          &lt;/jdbc.driver.jar&gt;
+        </source>
+    </li>
   <li>
     <b>Create an appropriate login database.</b> Create a login
     database inside your chosen DBMS entitled "symba_security", or anything else
@@ -481,110 +493,6 @@ SyMBA.
   <a href="http://maven.apache.org" target="_blank">Maven</a>
 
   website.
-</section>
-  <section name="Future plans">
-
-
-<ul>
-  <li>
-    <font color="#33cc00">completed</font> - Propogation to sourceforge.net,
-    including the subversion repository there
-  </li>
-  <li>
-    <font color="#33cc00">completed</font> - inclusion of other interested
-    programmers once SyMBA is a sourceforge project
-  </li>
-
-  <li>
-    upgrading to FuGE Version 1, which also means upgrading the following:
-  </li>
-  <ul>
-    <li>
-      <font color="#33cc00">completed</font> - maven 1.0.2 to maven 2
-    </li>
-    <li>
-      andromda 3.2-SNAPSHOT to andromda 4
-    </li>
-
-    <li>
-      UML 1.4 to UML 2
-    </li>
-  </ul>
-  <li>
-    Increased Search facilities including:
-  </li>
-  <ul>
-    <li>
-
-      friendly names
-    </li>
-    <li>
-      experiment names
-    </li>
-    <li>
-      hypotheses
-    </li>
-    <li>
-      conclusions
-    </li>
-
-    <li>
-      joining these searches together
-    </li>
-    <li>
-      pre-loading of correct file type, filename, multi-select menus if you go
-      back to a page, or to select at the beginning of a deposition
-    </li>
-    <li>
-      linking of experiments together
-    </li>
-
-  </ul>
-  <li>
-    Expandable hierarchy of Experiment List, rather than just a table view
-  </li>
-  <li>
-    Creation of the front-end "Protocol Wizard", which will simplify addition of
-    Protocols to SyMBA. Currently protocols can only be loaded directly from the
-    command line into the database.
-  </li>
-  <li>
-    Admin pages, for example the Protocol Wizard might need to be restricted to
-    users with admin access.
-
-  </li>
-  <li>
-    Color-coding the experiment list by protocol/workflow type
-  </li>
-  <li>
-    Re-build LSID authority (and add notes) from http://lsids.sourceforge.net
-  </li>
-  <li>
-    Unit tests as part of maven that will check:
-  </li>
-
-  <ul>
-    <li>
-      database connections (security and standard database)
-    </li>
-    <li>
-      ssh connection to file store
-    </li>
-    <li>
-      lsid authority connection
-
-    </li>
-  </ul>
-  <li>
-    set this namespace property to get all code to be
-    templated in Java 1.5 style:
-    <a href="http://galaxy.andromda.org/docs/andromda-metafacades/andromda-uml-metafacades/andromda-metafacades-uml14/namespace.html#enableTemplating" target="_blank">http://galaxy.andromda.org/docs/andromda-metafacades/andromda-uml-metafacades/andromda-metafacades-uml14/namespace.html#enableTemplating</a>
-  </li>
-    <li>
-        Have proper error-checking in place for using different servers that have very different dates set.
-        This may result in problems with loading protocols from one server onto a database on a second server.
-    </li>
-</ul>
 </section>
 
 <section name="Resources used in the creation of this document">

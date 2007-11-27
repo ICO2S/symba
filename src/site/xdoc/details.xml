@@ -8,7 +8,7 @@
     <meta name="keyword"
           content="SyMBA, Systems Biology, Data Archive, CISBAN, FuGE, Computational Biology, Ageing, Aging, Nutrition, Kirkwood, Biological Modelling, Biological Modeling"/>
     <body>
-        <section name="Current Release: 7.10 (stable)">
+        <section name="Current Release: 7.11">
 
             <p>
                 This page describes technical details of SyMBA. For more
@@ -18,14 +18,12 @@
             </p>
 
             <p>
-                We are pleased to announce that SyMBA is pretty stable and available in a
-                <a href="http://bsu.ncl.ac.uk:8081/symba">public sandbox version</a>.
+                SyMBA is available to play with and test in a
+                <a href="http://www.cisban.ac.uk/symba-sandbox">public sandbox version</a>.
                 Please note that the configuration at this url, while representing the first stable release, remains a
-                sandbox
-                configuration, and any data you may upload to the server may be deleted at any time. We will, however,
-                try to send
-                out warning emails prior to any deletion of the database. As a sandbox implementation, it should not be
-                used as a
+                sandbox configuration, and any data you upload to the server may be viewed by SyMBA developers or may
+                be deleted at any time, without warning. We will, however, try to send out warning emails prior to any
+                deletion of the database. As a sandbox implementation, it should not be used as a
                 permanent archive for any data. If you wish to have an archive to store your high-throughput data,
                 please
                 <a href="mailto:symba-devel@lists.sourceforge.net">contact us</a>
@@ -39,6 +37,11 @@
                 You may find the following useful:
             </p>
             <ul>
+                <li>
+                    <a href="http://www.nature.com/nbt/journal/v25/n10/full/nbt1347.html">The Functional Genomics
+                        Experiment model (FuGE): an extensible framework for standards in functional genomics</a>,
+                    Andrew R Jones et al., Nature Biotechnology 25, 1127 - 1133 (2007). doi:10.1038/nbt1347
+                </li>
                 <li>
                     <a href="http://www.cs.ncl.ac.uk/research/pubs/trs/abstract.php?number=1016">CS-TR:
                         1016 Implementing the FuGE Object Model: a Systems Biology Data Portal and Integrator
@@ -142,26 +145,5 @@
 
             </p>
         </section>
-        <section name="What are we planning in future?">
-            <ul>
-                <li>A Protocol Wizard for adding protocols via the gui rather than the command line</li>
-                <li>An ontology term tracker that could automatically add terms to the interface, as this is the main
-                    way
-                    the experimental factors are stored.
-                </li>
-                <li>Upgrade of the system to FuGE Version 1 (and therefore UML 2), once it has been finalized.</li>
-                <li>Upgrade of the build system to Maven 2 (
-                    <font color="red">completed</font>
-                    )
-                    and AndroMDA 4.
-                </li>
-                <li>Download of the entire system so that others may install it for their own use.</li>
-                <li>An Administration page that allows a view of the entire contents of the database (those that aren't
-                    marked
-                    as private) from the front-end.
-                </li>
-            </ul>
-        </section>
-
     </body>
 </document>

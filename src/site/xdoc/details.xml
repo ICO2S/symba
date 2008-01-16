@@ -20,7 +20,7 @@
             <p>
                 SyMBA is available to play with and test in a
                 <a href="http://www.cisban.ac.uk/symba-sandbox">public sandbox version</a>.
-                Please note that the configuration at this url, while representing the first stable release, remains a
+                Please note that the configuration at this url, while representing the current stable release, remains a
                 sandbox configuration, and any data you upload to the server may be viewed by SyMBA developers or may
                 be deleted at any time, without warning. We will, however, try to send out warning emails prior to any
                 deletion of the database. As a sandbox implementation, it should not be used as a
@@ -104,19 +104,17 @@
 
             <p>
                 Our back-end, and the XML produced by the front-end, is completely
-                <a href="http://fuge.sourceforge.net">FuGE-compliant</a>
-                .
+                <a href="http://fuge.sourceforge.net">FuGE-compliant</a>.
                 CISBAN is part of the
-                <a href="http://www.mged.org/Workgroups/rsbi/rsbi.html">RSBI Consortium</a>
-                , which
+                <a href="http://www.mged.org/Workgroups/rsbi/rsbi.html">RSBI Consortium</a>,
+                which
                 encourages the use of three main reporting standards
                 for biological investigations:
-                <a href="http://fuge.sourceforge.net">FuGE</a>
-                ,
-                <a href="http://obi.sourceforge.net">OBI</a>
-                , and
-                <a href="http://mibbi.sourceforge.net">MIBBI</a>
-                . FuGE is
+                <a href="http://fuge.sourceforge.net">FuGE</a>,
+                <a href="http://obi.sourceforge.net">OBI</a>,
+                and
+                <a href="http://mibbi.sourceforge.net">MIBBI</a>.
+                FuGE is
                 a maturing standard data model for storing experimental metadata, OBI is a developing standard ontology
                 for
                 biological/biomedical experiments, and MIBBI is a new effort to standardize the minimum information
@@ -146,4 +144,4 @@
             </p>
         </section>
     </body>
-</document>
+</document>                                                              

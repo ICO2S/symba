@@ -19,7 +19,9 @@
                     <font color="#33cc00">completed, release 7.10</font> - inclusion of other interested programmers
                     once SyMBA is a sourceforge project
                 </li>
-
+                <li>
+                    add the description of each data file to the display screen
+                </li>
                 <li>
                     upgrading to FuGE Version 1
                 </li>

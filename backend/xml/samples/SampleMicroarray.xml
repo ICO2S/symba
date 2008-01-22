@@ -173,7 +173,7 @@ ProtocolCollection inside the OntologyCollection.
                     name="Step Containing the mutant/WT Microarray Time Series Protocol for the Wild Type Strain"
                     actionOrdinal="2"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:d9248775-b438-4f5b-ab78-2c9810a4abdc">
-                <GenericParameter name="Strain Type"
+                <GenericParameter name="Mutation State"
                                   endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:2f979ffc-e67e-451f-be7b-ee92d4f3c002"
                                   identifier="urn:lsid:cisban.cisbs.org:GenericParameter:82b3c2e6-4acd-42c7-a92d-0a1168a03b89">
                     <ComplexValue>
@@ -189,7 +189,7 @@ ProtocolCollection inside the OntologyCollection.
                     name="Step Containing the mutant/WT Microarray Time Series Protocol for the Mutant Strain"
                     actionOrdinal="3"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:d9248775-b438-4f5b-ab78-2c9810a4abdc">
-                <GenericParameter name="Strain Type"
+                <GenericParameter name="Mutation State"
                                   endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:7bba1cc9-dded-4cf6-93e2-24b72b2e39e2"
                                   identifier="urn:lsid:cisban.cisbs.org:GenericParameter:60a36f20-0274-42ec-8fc5-fcf286ee04b8">
                     <ComplexValue>

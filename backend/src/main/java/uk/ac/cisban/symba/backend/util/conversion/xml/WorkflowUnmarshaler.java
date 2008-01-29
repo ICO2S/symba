@@ -1,16 +1,14 @@
 package uk.ac.cisban.symba.backend.util.conversion.xml;
 
 import com.ibm.lsid.LSIDException;
+import fugeOM.Collection.DataCollection;
 import fugeOM.Collection.MaterialCollection;
 import fugeOM.Collection.OntologyCollection;
 import fugeOM.Collection.ProtocolCollection;
 import fugeOM.ServiceLocator;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
-import fugeOM.util.generatedJAXB2.FugeOMCollectionFuGEType;
-import fugeOM.util.generatedJAXB2.FugeOMCollectionMaterialCollectionType;
-import fugeOM.util.generatedJAXB2.FugeOMCollectionOntologyCollectionType;
-import fugeOM.util.generatedJAXB2.FugeOMCollectionProtocolCollectionType;
+import fugeOM.util.generatedJAXB2.*;
 import uk.ac.cisban.symba.backend.util.conversion.helper.*;
 
 import javax.xml.bind.JAXBContext;
@@ -87,7 +85,7 @@ public class WorkflowUnmarshaler {
             }
 
             if ( fuGEType.getMaterialCollection() != null ) {
-                // retrieve the materials
+                // retrieve the material dummies
                 FugeOMCollectionMaterialCollectionType collectionXML = fuGEType.getMaterialCollection();
                 MaterialCollection materialCollection = ( MaterialCollection ) reService
                         .createDescribableOb( "fugeOM.Collection.MaterialCollection" );
@@ -97,6 +95,19 @@ public class WorkflowUnmarshaler {
                 // unmarshall the jaxb object - by accessing this method we do NOT load the MaterialCollection into the
                 // database. We are only interested in the contents of the collection.
                 materialCollection = cmc.unmarshalCollectionContents( collectionXML, materialCollection );
+            }
+
+            if ( fuGEType.getDataCollection() != null ) {
+                // retrieve the external data dummies
+                FugeOMCollectionDataCollectionType collectionXML = fuGEType.getDataCollection();
+                DataCollection collection = ( DataCollection ) reService
+                        .createDescribableOb( "fugeOM.Collection.DataCollection" );
+                // get and store all information in the database
+                CisbanDataCollectionHelper collectionHelper = new CisbanDataCollectionHelper( reService, ci );
+
+                // unmarshall the jaxb object - by accessing this method we do NOT load the MaterialCollection into the
+                // database. We are only interested in the contents of the collection.
+                collection = collectionHelper.unmarshalCollectionContents( collectionXML, collection );
             }
 
             // retrieve the protocols

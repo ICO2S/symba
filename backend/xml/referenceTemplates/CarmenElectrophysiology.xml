@@ -1,0 +1,93 @@
+<!--
+Please note that this ProtocolCollection is an artificial construct, and when this file is loaded
+via UnmarshalWorkflow, it is only the contents of the Collection, and NOT the collection itself, which is loaded.
+Normally, you would not be allowed an xmlns attribute in the ProtocolCollection.
+
+Please note that the most relevant part of a ProtocolCollection from the CISBAN point of view (the part that
+associates a raw data file (or files) to the workflow (or, in FuGE terminology, the Protocol), is done in the
+GenericProtocolApplication element. This element is NOT included here, because this is meant to be a re-usable
+workflow template, not a specific instance of that workflow.
+
+Finally, note that the GenericParameter may contain OntologyTerm_ref instances. The ontology term is included below the
+ProtocolCollection inside the OntologyCollection.
+
+These factors will be added as GenericParameters to COPIES of the below template "Image Capture". These specific
+image capture protocols should never be used within an experiment - they should always be copied, assigned new
+endurants and identifiables, and then given the appropriate parameters, then loaded as new protocols in the database.
+Similarly, no GenericActions for the top-level Experiment have been added, as these can only be added once
+concrete protocols have been made.
+-->
+<FuGE xmlns="http://fuge.org/core">
+    <ProtocolCollection>
+        <GenericProtocol
+                name="Recording Protocol (Component of Carmen Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:fdb27c11-50f3-40e6-93b3-a1a27384c0a8"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3">
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
+
+        </GenericProtocol>
+
+        <GenericProtocol name="Carmen Electrophysiology Investigation"
+                         endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3bbbbbfd-9d00-4703-9b8e-833f6aa6671e"
+                         identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:7ca81fef-e300-4868-9c71-aa971d5d3a01">
+            <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:1cf2dc7a-3838-4feb-890c-9d4328251fc4"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:47cc40ae-9d37-46a6-9e7b-c66df2f114e0"
+                    name="Step Containing the Recording Protocol"
+                    actionOrdinal="1"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3"/>
+
+
+        </GenericProtocol>
+        <GenericEquipment name="Electrode"
+                          endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:6b6e7a48-3cd5-4bad-873c-687e2fe9023c"
+                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
+        <GenericEquipment name="Amplifier"
+                          endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:c6759d86-cd3f-48e6-b36e-3d2fcbf88c51"
+                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
+    </ProtocolCollection>
+    <DataCollection>
+        <ExternalData
+                name="Time series data Dummy (Component of CARMEN Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:ExternalDataEndurant:b37404ef-45ee-42a9-ac99-8dd8c42eb951"
+                identifier="urn:lsid:cisban.cisbs.org:ExternalData:d0954cc4-e497-4dae-8009-6162e94cfeae">
+            <fileFormat
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:ce8c1824-f39c-47ab-b21d-6f788b3da5e1"/>
+
+        </ExternalData>
+    </DataCollection>
+
+
+    <OntologyCollection>
+        <OntologyIndividual termAccession="accession to come" term="mcd"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:bad1f12f-2f6a-4b65-974d-e4b989684816"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:ce8c1824-f39c-47ab-b21d-6f788b3da5e1"/>
+        <OntologyIndividual termAccession="accession to come" term="matlab"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:7e34b7e3-ea4a-431c-b2e6-7e60636ef961"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:8a4050ce-4e91-4499-bdea-1f9624616075"/>
+        <OntologyIndividual termAccession="accession to come" term="neuroexplorer"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:6e2bc825-2d3a-4252-8a12-57ebb0538bf0"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:de096a98-fb1f-4570-888d-f83948c56f06"/>
+        <OntologyIndividual termAccession="accession to come" term="tiff stack"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:1b078b75-9b8e-4cef-ba07-06092102404d"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:02e0a293-0ff3-49be-96cd-83da0edb5cd7"/>
+
+        <OntologyIndividual termAccession="accession to come" term="neurolynx"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:a6125c2a-31f9-456d-8c61-3dedbb9590ff"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:ffcb7958-24be-4462-88a8-98b0fd4f8a9c"/>
+
+        <OntologySource ontologyURI="http://www.carmen.org.uk"
+                        name="Times series data format"
+                        endurant="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:6b58dac0-ed16-4ee0-877f-1b9184a2f054"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"/>
+
+    </OntologyCollection>
+</FuGE>

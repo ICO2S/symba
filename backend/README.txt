@@ -10,6 +10,9 @@ mvn exec:java -Dexec.mainClass="uk.ac.cisban.symba.backend.util.UnmarshalWorkflo
 # Unload a FuGE experiment into FuGE XML
 mvn exec:java -Dexec.mainClass="uk.ac.cisban.symba.backend.util.MarshalXML" -Dexec.args="../webapp/src/main/webapp/schemaFiles/FuGE_M3_test_13_07_2006.xsd your-identifier output-xml-file"
 
+# Write out 5 LSIDs based on the namespace of your choice
+mvn exec:java -Dexec.mainClass="uk.ac.cisban.symba.backend.util.RetrieveLsid" -Dexec.args="GenericProtocol"
+
 # These are simpler than trying to run them from the "java" command, as you inherit the classpath used in mvn.
 
 # To add svn properties to a bunch of files (you may wish to change the extension)

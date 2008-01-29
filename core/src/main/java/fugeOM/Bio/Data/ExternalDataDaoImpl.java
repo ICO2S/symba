@@ -4,6 +4,8 @@
  * You can (and have to!) safely modify it by hand.
  */
 package fugeOM.Bio.Data;
+
+import java.util.List;
 /*
  * This file is part of SyMBA.
  * SyMBA is covered under the GNU Lesser General Public License (LGPL).
@@ -23,4 +25,14 @@ package fugeOM.Bio.Data;
  */
 public class ExternalDataDaoImpl
         extends fugeOM.Bio.Data.ExternalDataDaoBase {
+    public List getAllLatest( final int transform ) {
+        // Retrieves the latest version of all generic materials in the database
+        return super.getAllLatest(
+                transform,
+                "select eds from fugeOM.Bio.Data.ExternalData as eds " +
+                        "join eds.auditTrail as audits " +
+                        "where audits.date = (select max(internalaudits.date) from fugeOM.Bio.Data.ExternalData as internaled " +
+                        "  join internaled.auditTrail as internalaudits " +
+                        "  where internaled.endurant.id = eds.endurant.id)" );
+    }
 }

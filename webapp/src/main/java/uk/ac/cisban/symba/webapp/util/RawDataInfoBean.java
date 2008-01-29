@@ -27,6 +27,7 @@ public class RawDataInfoBean implements Serializable {
     private String friendlyId;
     private String dataName;
     private String factorChoice;
+    private String fileFormat;
 
     // this will only be filled if it is a Microscopy protocol
     private MaterialFactorsBean materialFactorsBean;
@@ -106,6 +107,7 @@ public class RawDataInfoBean implements Serializable {
         this.actionEndurant = "";
         this.workflowName = "";
         this.dataName = "";
+        this.fileFormat = "";
     }
 
     public String getDataName() {
@@ -130,5 +132,13 @@ public class RawDataInfoBean implements Serializable {
 
     public void setMaterialFactorsBean( MaterialFactorsBean materialFactorsBean ) {
         this.materialFactorsBean = materialFactorsBean;
+    }
+
+    public String getFileFormat() {
+        return fileFormat;
+    }
+
+    public void setFileFormat( String fileFormat ) {
+        this.fileFormat = fileFormat;
     }
 }

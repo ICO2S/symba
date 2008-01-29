@@ -13,17 +13,26 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%@ page import="fugeOM.Bio.Data.ExternalData" %>
 <%@ page import="fugeOM.Bio.Material.GenericMaterial" %>
+<%@ page import="fugeOM.Collection.FuGE" %>
+<%@ page import="fugeOM.Common.Audit.Person" %>
 <%@ page import="fugeOM.Common.Description.Description" %>
 <%@ page import="fugeOM.Common.Ontology.OntologySource" %>
 <%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
 <%@ page import="fugeOM.Common.Protocol.GenericAction" %>
 <%@ page import="fugeOM.Common.Protocol.GenericProtocol" %>
-<%@ page import="uk.ac.cisban.symba.webapp.util.RawDataInfoBean" %>
-<%@ page import="uk.ac.cisban.symba.webapp.util.FileBean" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.Set" %>
+<%@ page import="org.apache.commons.fileupload.FileItem" %>
+<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.xml.XMLMarshaler" %>
+<%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.io.StringWriter" %>
+<%@ page import="java.util.*" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
 </jsp:useBean>
@@ -316,7 +325,70 @@
                     ontoCount++;
                 }
 
-                // only allow one generic material per experiment, for now only!
+                // only allow one dummy generic material per experiment, for now only!
+                break;
+            }
+
+        }
+
+        // we also allow developers to have a file format for their ExternalData associated with the experiment.
+        // Search the ExternalData for dummies named with the name of the current experiment.
+        for ( Object obj : validUser.getReService().getAllLatestExternalData() ) {
+            ExternalData externalData = ( ExternalData ) validUser.getReService().greedyGet( obj );
+            if ( externalData.getName().trim().contains( rdb.getDataType().trim() ) &&
+                    externalData.getName().trim().contains( "Dummy" ) ) {
+                // The displayName is just the name for this group of questions we are about to give to the user.
+                // Should be something like "File Formats".
+                String displayName = externalData.getName()
+                        .substring( 0, externalData.getName().indexOf( " Dummy" ) )
+                        .trim();
+
+
+                // Now, retrieve the file format (singular). It references an OntologyTerm, which in turn is associated
+                // with an OntologySource. Instead of displaying just the referenced OntologyTerm, a pull-down menu
+                // should be displayed of ALL of the OntologyTerms in the database associated with that OntologySource.
+                if ( externalData.getFileFormat() != null ) {
+                    out.println( "<br>" );
+                    out.println( "<p class=\"bigger\">Next, please choose the correct file format.</p>" );
+                    List genericList = validUser.getReService()
+                            .getAllLatestTermsWithSource(
+                                    externalData.getFileFormat()
+                                            .getOntologySource()
+                                            .getEndurant().getIdentifier() );
+                    List<OntologyTerm> ontologyTerms = genericList;
+                    if ( !ontologyTerms.isEmpty() ) {
+
+                        // the ontology source for the file format may have a description which tells the user
+                        // how to select the correct ontology term. Check for that.
+                        OntologySource ontologySource = externalData.getFileFormat().getOntologySource();
+                        ontologySource = ( OntologySource ) validUser.getReService()
+                                .findLatestByEndurant( ontologySource.getEndurant().getIdentifier() );
+
+                        // Never allow multiple choices for material types.
+                        boolean foundInstructions = false;
+                        String fileFormat = "fileFormat" + iii;
+                        String instructions =  "<label for=\"" + fileFormat + "\">Please select your file format:</label>" ;
+                        for ( Object descObj : ontologySource.getDescriptions() ) {
+                            Description desc = ( Description ) descObj;
+                            if ( desc.getText().startsWith( "Instructions: " ) ) {
+                                instructions =  "<label for=\"" + fileFormat + "\">" + desc.getText().substring( 14 ) + "</label>";
+                                foundInstructions = true;
+                            }
+                        }
+
+                        out.println(instructions);
+                        out.println( "<select name=\"" + fileFormat + "\">" );
+                        for ( OntologyTerm ot : ontologyTerms ) {
+                            out.println(
+                                    "<option value= \"" + ot.getEndurant().getIdentifier() + "\">" + ot.getTerm() +
+                                            "</option>" );
+                        }
+                        out.println( "</select>" );
+                        out.println( "<br>" );
+                    }
+                }
+
+                // only allow one dummy external data per experiment, for now only!
                 break;
             }
 

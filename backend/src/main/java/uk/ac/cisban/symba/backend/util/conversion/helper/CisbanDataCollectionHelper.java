@@ -54,6 +54,16 @@ public class CisbanDataCollectionHelper {
         // set describable information
         datColl = ( DataCollection ) cd.unmarshalDescribable( datCollXML, datColl );
 
+        datColl = unmarshalCollectionContents(datCollXML, datColl);
+
+        // load the fuge object into the database
+        reService.createObInDB( "fugeOM.Collection.DataCollection", datColl );
+
+        return datColl;
+    }
+
+    public DataCollection unmarshalCollectionContents( FugeOMCollectionDataCollectionType datCollXML,
+                                                        DataCollection datColl ) throws URISyntaxException, RealizableEntityServiceException, LSIDException {
         // Create collection of data for addition to the data collection
         Set<Data> datas = new HashSet<Data>();
 
@@ -66,9 +76,6 @@ public class CisbanDataCollectionHelper {
 
         // Add the set of generic datas to the Data collection
         datColl.setAllData( datas );
-
-        // load the fuge object into the database
-        reService.createObInDB( "fugeOM.Collection.DataCollection", datColl );
 
         return datColl;
     }

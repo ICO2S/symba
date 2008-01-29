@@ -124,10 +124,11 @@
                 </li>
             </ul>
         </section>
-        <section name="Status: November 2007: 7.11">
+        <section name="Status: January 2008: 8.01">
 
             <p>
-                The main feature of this release is the upgrading of the Andromda plugin from 3.2-SNAPSHOT to 3.2
+                The CARMEN neuroscience project required a modification to the way the Protocol Templates are
+                handled by the SyMBA webapp. All code changes for this release reflect this need.
                 (see the <a href="changes-report.html">Change Report</a>).
             </p>
             <br/><br/>

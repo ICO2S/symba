@@ -280,6 +280,55 @@ public class LoadFuge {
                     "fugeOM.Bio.Data.ExternalData",
                     "fugeOM.Bio.Data.ExternalDataEndurant" );
             externalData.setLocation( fileLSID );
+            if (rdib.getFileFormat() != null) {
+
+                // we will be updating the ontology collection.
+
+                OntologyCollection ontologyCollection = ( OntologyCollection ) reService.createDescribableOb(
+                        "fugeOM.Collection.OntologyCollection" );
+
+                Set<OntologyTerm> ontologyTerms;
+                Set<OntologySource> ontologySources;
+                if ( fuge.getOntologyCollection() == null ) {
+                    ontologyTerms = new HashSet<OntologyTerm>();
+                    ontologySources = new HashSet<OntologySource>();
+                } else {
+                    if ( fuge.getOntologyCollection().getOntologyTerms() != null ) {
+                        ontologyTerms = ( Set<OntologyTerm> ) fuge.getOntologyCollection().getOntologyTerms();
+                    } else {
+                        ontologyTerms = new HashSet<OntologyTerm>();
+                    }
+                    if ( fuge.getOntologyCollection().getOntologySources() != null ) {
+                        ontologySources = ( Set<OntologySource> ) fuge.getOntologyCollection().getOntologySources();
+                    } else {
+                        ontologySources = new HashSet<OntologySource>();
+                    }
+                }
+                // todo proper algorithm
+                boolean matchFound = findMatchingEndurant(rdib.getFileFormat(), ontologyTerms );
+                // irrespective of whether or not we found a match, we still need to add the term to the new material
+                OntologyTerm termToAdd = ( OntologyTerm ) reService.findLatestByEndurant( rdib.getFileFormat() );
+
+                externalData.setFileFormat( termToAdd );
+
+                // todo this won't catch cases where the ontology source was added at a later date
+                if ( !matchFound ) {
+                    // if we didn't find a match, both the OntologyTerm and its Source (if present) need to be added
+                    // to the fuge entry, which means added to the ontologyTerms and ontologySources.
+                    ontologyTerms.add( termToAdd );
+                    if ( termToAdd.getOntologySource() != null ) {
+                        ontologySources.add(
+                                ( OntologySource ) reService.findLatestByEndurant(
+                                        termToAdd.getOntologySource().getEndurant().getIdentifier() ) );
+                    }
+                    ontologyCollection.setOntologyTerms( ontologyTerms );
+                    ontologyCollection.setOntologySources( ontologySources );
+             
+                    // load the fuge object into the database
+                    reService.createObInDB( "fugeOM.Collection.OntologyCollection", ontologyCollection );
+                    fuge.setOntologyCollection( ontologyCollection );
+                }
+            }
 
             // load the external data into the database
             helper.loadIdentifiable( externalData, auditor, "fugeOM.Bio.Data.ExternalData", System.out );

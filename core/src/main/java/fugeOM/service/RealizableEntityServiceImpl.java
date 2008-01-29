@@ -449,6 +449,20 @@ public class RealizableEntityServiceImpl
     }
 
     /**
+     * @see fugeOM.service.RealizableEntityService#getAllLatestExternalData()
+     */
+    protected java.util.List handleGetAllLatestExternalData()
+            throws java.lang.Exception {
+        // Retrieves the latest version of all generic materials in the database.
+        List genericList = getExternalDataDao().getAllLatest();
+
+        if ( genericList == null ) {
+            throw new java.lang.Exception( "Error trying to retrieve all current external data items." );
+        }
+        return genericList;
+    }
+
+    /**
      * @see fugeOM.service.RealizableEntityService#getAllPeople()
      */
     protected java.util.List handleGetAllPeople()

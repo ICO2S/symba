@@ -15,7 +15,7 @@
     <groupId>fugeOM</groupId>
     <artifactId>SyMBA</artifactId>
     <packaging>pom</packaging>
-    <version>7.11</version>
+    <version>8.01</version>
     <name>SyMBA</name>
     <url>http://symba.sourceforge.net</url>
     <description>The Systems and Molecular Biology data Archive (SyMBA) Project. The Centre for Integrated Systems

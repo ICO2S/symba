@@ -15,6 +15,15 @@
                 Status reports that are no longer current may be found here.
             </p>
 
+            <subsection name="Status: November 2007: 7.11">
+
+                <p>
+                    The main feature of this release is the upgrading of the Andromda plugin from 3.2-SNAPSHOT to 3.2
+                    (see the <a href="changes-report.html">Change Report</a>).
+                </p>
+                <br/><br/>
+            </subsection>
+            
             <subsection name="Status: October 2007: 7.10">
 
                 <p>

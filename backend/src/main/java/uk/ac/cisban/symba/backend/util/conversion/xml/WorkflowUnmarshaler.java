@@ -105,7 +105,7 @@ public class WorkflowUnmarshaler {
                 // get and store all information in the database
                 CisbanDataCollectionHelper collectionHelper = new CisbanDataCollectionHelper( reService, ci );
 
-                // unmarshall the jaxb object - by accessing this method we do NOT load the MaterialCollection into the
+                // unmarshall the jaxb object - by accessing this method we do NOT load the DataCollection into the
                 // database. We are only interested in the contents of the collection.
                 collection = collectionHelper.unmarshalCollectionContents( collectionXML, collection );
             }

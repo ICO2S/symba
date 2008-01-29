@@ -51,9 +51,10 @@ concrete protocols have been made.
     </ProtocolCollection>
     <DataCollection>
         <ExternalData
-                name="Time series data Dummy (Component of CARMEN Electrophysiology Investigation)"
+                name="Time series data Dummy (Component of Carmen Electrophysiology Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:ExternalDataEndurant:b37404ef-45ee-42a9-ac99-8dd8c42eb951"
-                identifier="urn:lsid:cisban.cisbs.org:ExternalData:d0954cc4-e497-4dae-8009-6162e94cfeae">
+                identifier="urn:lsid:cisban.cisbs.org:ExternalData:d0954cc4-e497-4dae-8009-6162e94cfeae"
+                location="file:///dummy">
             <fileFormat
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:ce8c1824-f39c-47ab-b21d-6f788b3da5e1"/>
 

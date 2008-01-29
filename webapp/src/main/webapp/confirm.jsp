@@ -149,6 +149,13 @@
             out.println( "</a>" );
             out.println( "</li>" );
         }
+        if (info.getFileFormat() != null) {
+            out.println( "<li>You have specified a file format for the external data file: " );
+            out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+            out.println( info.getFileFormat());
+            out.println( "</a>" );
+            out.println( "</li>" );
+        }
         if ( info.getMaterialFactorsBean() != null ) {
             out.println( "<li>" );
             out.println( "You have provided information about the material used in the experiment. " );

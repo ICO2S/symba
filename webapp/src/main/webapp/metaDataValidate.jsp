@@ -89,6 +89,12 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     if ( pos < 0 ) mfb.addTreatmentInfo( item.getString() );
                     temp.setMaterialFactorsBean( mfb );
                     rdb.setDataItem( temp, number );
+            } else if ( item.getFieldName().startsWith( "fileFormat" ) ) {
+                int number = Integer.valueOf( item.getFieldName().substring( 10 ) );
+                // take what is already there, and add only those fields that have not been made yet
+                RawDataInfoBean temp = rdb.getDataItem( number );
+                temp.setFileFormat( item.getString() );
+                rdb.setDataItem( temp, number );
             } else if ( item.getFieldName().startsWith( "materialType" ) ) {
                 int number = Integer.valueOf( item.getFieldName().substring( 12 ) );
                 // take what is already there, and add only those fields that have not been made yet

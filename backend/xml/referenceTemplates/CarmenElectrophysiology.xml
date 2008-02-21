@@ -38,16 +38,33 @@ concrete protocols have been made.
                     identifier="urn:lsid:cisban.cisbs.org:GenericAction:47cc40ae-9d37-46a6-9e7b-c66df2f114e0"
                     name="Step Containing the Recording Protocol"
                     actionOrdinal="1"
-                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3"/>
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3">
 
+            <GenericParameter name="Sampling Rate Dummy (Component of Carmen Electrophysiology Investigation)"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:339ec38d-4d67-43dc-91ed-177c79c4be25"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7">
+                    <AtomicValue defaultValue="0"/>
+                    <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:77fb941a-e1cf-473a-92a3-e190f77df5a3"/>
+                </GenericParameter>
+                   </GenericAction>
 
         </GenericProtocol>
         <GenericEquipment name="Electrode"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:6b6e7a48-3cd5-4bad-873c-687e2fe9023c"
-                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
+                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8">
+            <make OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OnntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
+               <descriptions>Dummy</descriptions>
+            <annotations OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:7d568bc8-23cd-4622-bfde-26358544c086"/>
+            </GenericEquipment>
+
+
+
         <GenericEquipment name="Amplifier"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:c6759d86-cd3f-48e6-b36e-3d2fcbf88c51"
-                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
+                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965">
+                        <make OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OnntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
+        </GenericEquipment>
+
     </ProtocolCollection>
     <DataCollection>
         <ExternalData
@@ -85,10 +102,37 @@ concrete protocols have been made.
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:a6125c2a-31f9-456d-8c61-3dedbb9590ff"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:ffcb7958-24be-4462-88a8-98b0fd4f8a9c"/>
 
+         <OntologyIndividual termAccession="accession to come" term="Hz"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:e012ca0f-8238-45da-96fd-1139707f157b"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:77fb941a-e1cf-473a-92a3-e190f77df5a3"/>
+
+         <OntologyIndividual termAccession="accession to come" term="Multi Channel Systems"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OnntologySource:80441996-dd20-49ab-9409-7689b5836e43"
+                            endurant="urn:lsid:cisban.cisbs.org:OnntologyIndvEndurant:880ee8f7-aedc-4941-8257-45c052884b1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OnntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
+
+        <OntologyIndividual termAccession="accession to come" term="Two dimensional array"
+                                    OntologySource_ref="urn:lsid:cisban.cisbs.org:OnntologySource:468ab0fe-54e4-4c9b-9410-2bb276f2a6e6"
+
+                                    endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:20aff400-c40a-4189-8fe8-aea3d8d062e8"
+                                    identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:7d568bc8-23cd-4622-bfde-26358544c086"/>
+
+
+
         <OntologySource ontologyURI="http://www.carmen.org.uk"
                         name="Times series data format"
                         endurant="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:6b58dac0-ed16-4ee0-877f-1b9184a2f054"
                         identifier="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"/>
+
+        <OntologySource ontologyURI="http://www.carmen.org.uk"
+                        name="Electrode configuration"
+                        endurant="urn:lsid:cisban.cisbs.org:OnntologySourceEndurant:42f83e52-880d-42bd-b754-937590be435f"
+                        identifier="urn:lsid:cisban.cisbs.org:OnntologySource:468ab0fe-54e4-4c9b-9410-2bb276f2a6e6"/>
+
+        <OntologySource ontologyURI="http://www.carmen.org.uk"
+                        name="Manufacturer"
+                        endurant="urn:lsid:cisban.cisbs.org:OnntologySourceEndurant:c0a3f035-4280-49d4-ba33-03dd3b36af5f"
+                        identifier="urn:lsid:cisban.cisbs.org:OnntologySource:80441996-dd20-49ab-9409-7689b5836e43"/>
 
     </OntologyCollection>
 </FuGE>

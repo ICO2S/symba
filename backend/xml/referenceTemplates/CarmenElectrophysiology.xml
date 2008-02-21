@@ -30,6 +30,43 @@ concrete protocols have been made.
 
         </GenericProtocol>
 
+
+        <GenericProtocol
+                name="Task Protocol (Component of Carmen Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3bd0bac3-7fcf-496c-be2a-0ba93a30b2b8"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e">
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
+
+        </GenericProtocol>
+
+
+              <GenericProtocol
+                name="Stimulus Protocol (Component of Carmen Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:b9b420fd-1893-4e04-80d4-1e8fa6025ab5"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:aaef5e92-76af-4cb6-aeff-03f7aa77dbe9">
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
+
+        </GenericProtocol>
+
+                        <GenericProtocol
+                name="Behavioural event Protocol (Component of Carmen Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3789951a-3c94-47b4-8203-941814a722c0"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa">
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
+
+        </GenericProtocol>
+
+
+
         <GenericProtocol name="Carmen Electrophysiology Investigation"
                          endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3bbbbbfd-9d00-4703-9b8e-833f6aa6671e"
                          identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:7ca81fef-e300-4868-9c71-aa971d5d3a01">

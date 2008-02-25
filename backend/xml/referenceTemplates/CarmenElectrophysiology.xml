@@ -43,6 +43,28 @@ concrete protocols have been made.
         </GenericProtocol>
 
 
+         <MaterialCollection>
+        <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
+        <GenericMaterial
+                name="Material Characteristics Dummy (Component of Carmen Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:4a34375a-0c7c-4563-ab1d-a2509a5466bb"
+                identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d46bed62-21f6-4d27-b7c0-942abb124032">
+            <materialType
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:943066e5-bbd4-45ed-b0c3-d71e7ec8640d"/>
+
+             <materialType
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:f1b24b4b-1aa5-4d18-a104-831b681d3b2a"/>
+
+            <materialType
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a76ba6fc-0018-4817-bb2c-8cf3b7a1904e"/>
+
+            <materialType
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:0b645454-8506-4f0e-b824-d6648c1f0126"/>
+
+        </GenericMaterial>
+    </MaterialCollection>
+
+
         <GenericProtocol
                 name="Stimulus Protocol (Component of Carmen Electrophysiology Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:b9b420fd-1893-4e04-80d4-1e8fa6025ab5"
@@ -140,6 +162,13 @@ concrete protocols have been made.
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:a6125c2a-31f9-456d-8c61-3dedbb9590ff"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:ffcb7958-24be-4462-88a8-98b0fd4f8a9c"/>
 
+         <OntologyIndividual termAccession="accession to come" term="mousey mousey"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:22885ca0-63c5-42d0-a865-307a697cb948"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:943066e5-bbd4-45ed-b0c3-d71e7ec8640d"/>
+
+
+
         <OntologyIndividual termAccession="accession to come" term="Hz"
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:e012ca0f-8238-45da-96fd-1139707f157b"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:77fb941a-e1cf-473a-92a3-e190f77df5a3"/>
@@ -151,9 +180,23 @@ concrete protocols have been made.
 
         <OntologyIndividual termAccession="accession to come" term="Two dimensional array"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OnntologySource:468ab0fe-54e4-4c9b-9410-2bb276f2a6e6"
-
                             endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:20aff400-c40a-4189-8fe8-aea3d8d062e8"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:7d568bc8-23cd-4622-bfde-26358544c086"/>
+
+        <OntologyIndividual termAccession="accession to come" term="eye ball"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:1d234420-b6fe-4669-b04b-464fa0bdcdd6"
+                            endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:5f7c80b8-5885-4c47-b3db-b596f8cf349e"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:f1b24b4b-1aa5-4d18-a104-831b681d3b2a"/>
+
+        <OntologyIndividual termAccession="accession to come" term="frontal lobe"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:68c65d87-8b81-4067-b2e2-dda455490305"
+                            endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:c5822354-d20e-4797-99e2-623d89d3e731"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:a76ba6fc-0018-4817-bb2c-8cf3b7a1904e"/>
+
+         <OntologyIndividual termAccession="accession to come" term="a brain cell"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:40f5cde6-6468-4f0a-8c37-1d85261e91fa"
+                            endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:17519283-9046-4b21-b029-162d752b50be"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:0b645454-8506-4f0e-b824-d6648c1f0126"/>
 
 
         <OntologySource ontologyURI="http://www.carmen.org.uk"
@@ -170,6 +213,28 @@ concrete protocols have been made.
                         name="Manufacturer"
                         endurant="urn:lsid:cisban.cisbs.org:OnntologySourceEndurant:c0a3f035-4280-49d4-ba33-03dd3b36af5f"
                         identifier="urn:lsid:cisban.cisbs.org:OnntologySource:80441996-dd20-49ab-9409-7689b5836e43"/>
+
+         <OntologySource ontologyURI="http://www.carmen.org.uk"
+                        name="Species"
+                        endurant="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:52199178-0d02-4eb1-9d95-4108cdec9c41"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"/>
+
+         <OntologySource ontologyURI="http://www.carmen.org.uk"
+                        name="Organ"
+                        endurant="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:08875e3d-96c9-4b5d-8439-5556d7fb9d45"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:1d234420-b6fe-4669-b04b-464fa0bdcdd6"/>
+
+         <OntologySource ontologyURI="http://www.carmen.org.uk"
+                        name="Brain area"
+                        endurant="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:095051d9-03dc-48fa-ad78-8a518129656d"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:68c65d87-8b81-4067-b2e2-dda455490305"/>
+
+        <OntologySource ontologyURI="http://www.carmen.org.uk"
+                        name="Cell type"
+                        endurant="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:1d4e1d95-872a-4833-8e9a-ea93610ca44c"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:40f5cde6-6468-4f0a-8c37-1d85261e91fa"/>
+
+        
 
     </OntologyCollection>
 </FuGE>

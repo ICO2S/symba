@@ -46,7 +46,7 @@ concrete protocols have been made.
          <MaterialCollection>
         <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
         <GenericMaterial
-                name="Material Characteristics Dummy (Component of Carmen Electrophysiology Investigation)"
+                name="Material Characteristics Dummy (Component of Recording Protocol)"
                 endurant="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:4a34375a-0c7c-4563-ab1d-a2509a5466bb"
                 identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d46bed62-21f6-4d27-b7c0-942abb124032">
             <materialType

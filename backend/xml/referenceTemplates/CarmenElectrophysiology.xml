@@ -95,7 +95,7 @@ concrete protocols have been made.
                     endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:1cf2dc7a-3838-4feb-890c-9d4328251fc4"
                     identifier="urn:lsid:cisban.cisbs.org:GenericAction:47cc40ae-9d37-46a6-9e7b-c66df2f114e0"
                     name="Step Containing the Recording Protocol Dummy"
-                    actionOrdinal="1"
+                    actionOrdinal="3"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3">
 
                 <GenericParameter name="Sampling Rate Dummy (Component of Carmen Electrophysiology Investigation)"
@@ -105,6 +105,34 @@ concrete protocols have been made.
                     <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:77fb941a-e1cf-473a-92a3-e190f77df5a3"/>
                 </GenericParameter>
             </GenericAction>
+
+             <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:1ceb560e-2951-4246-abfb-4dcd0b389056"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:5d5ce126-ceef-495a-9e44-0fe4a934b4d0"
+                    name="Step Containing the Stimulus Protocol Dummy"
+                    actionOrdinal="1"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:aaef5e92-76af-4cb6-aeff-03f7aa77dbe9">
+            </GenericAction>
+
+             <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GeneriActionEndurant:5c13cd95-11b8-40d3-b7c6-7ad16dcecd95"
+                    identifier="urn:lsid:cisban.cisbs.org:GeneriAction:1f58054a-5d8a-4e5f-93bb-a81921bfb98a"
+                    name="Step Containing the Task Protocol Dummy"
+                    actionOrdinal="1"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e">
+            </GenericAction>
+
+             <GenericAction
+                    endurant="urn:lsid:cisban.cisbs.org:GeneriActionEndurant:6ea76645-73bf-4030-a765-f862cc199785"
+                    identifier="urn:lsid:cisban.cisbs.org:GeneriAction:4aaa934a-a224-4ffb-a16d-0771f0519b73"
+                    name="Step Containing the Behavioural event Protocol Dummy"
+                    actionOrdinal="2"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa">
+            </GenericAction>
+
+
+
+
 
         </GenericProtocol>
         <GenericEquipment name="Electrode"

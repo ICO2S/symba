@@ -42,29 +42,6 @@ concrete protocols have been made.
 
         </GenericProtocol>
 
-
-         <MaterialCollection>
-        <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
-        <GenericMaterial
-                name="Material Characteristics Dummy (Component of Recording Protocol)"
-                endurant="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:4a34375a-0c7c-4563-ab1d-a2509a5466bb"
-                identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d46bed62-21f6-4d27-b7c0-942abb124032">
-            <materialType
-                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:943066e5-bbd4-45ed-b0c3-d71e7ec8640d"/>
-
-             <materialType
-                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:f1b24b4b-1aa5-4d18-a104-831b681d3b2a"/>
-
-            <materialType
-                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a76ba6fc-0018-4817-bb2c-8cf3b7a1904e"/>
-
-            <materialType
-                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:0b645454-8506-4f0e-b824-d6648c1f0126"/>
-
-        </GenericMaterial>
-    </MaterialCollection>
-
-
         <GenericProtocol
                 name="Stimulus Protocol (Component of Carmen Electrophysiology Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:b9b420fd-1893-4e04-80d4-1e8fa6025ab5"
@@ -88,17 +65,16 @@ concrete protocols have been made.
         </GenericProtocol>
 
 
-        <GenericProtocol name="Carmen Electrophysiology Investigation Dummy"
+        <GenericProtocol name="Carmen Electrophysiology Investigation"
                          endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3bbbbbfd-9d00-4703-9b8e-833f6aa6671e"
                          identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:7ca81fef-e300-4868-9c71-aa971d5d3a01">
             <GenericAction
                     endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:1cf2dc7a-3838-4feb-890c-9d4328251fc4"
                     identifier="urn:lsid:cisban.cisbs.org:GenericAction:47cc40ae-9d37-46a6-9e7b-c66df2f114e0"
-                    name="Step Containing the Recording Protocol Dummy"
-                    actionOrdinal="3"
+                    name="Step Containing the Recording Protocol"
+                    actionOrdinal="4"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3">
-
-                <GenericParameter name="Sampling Rate Dummy (Component of Carmen Electrophysiology Investigation)"
+                <GenericParameter name="Sampling Rate"
                                   endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:339ec38d-4d67-43dc-91ed-177c79c4be25"
                                   identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7">
                     <AtomicValue defaultValue="0"/>
@@ -106,35 +82,31 @@ concrete protocols have been made.
                 </GenericParameter>
             </GenericAction>
 
-             <GenericAction
+            <GenericAction
                     endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:1ceb560e-2951-4246-abfb-4dcd0b389056"
                     identifier="urn:lsid:cisban.cisbs.org:GenericAction:5d5ce126-ceef-495a-9e44-0fe4a934b4d0"
-                    name="Step Containing the Stimulus Protocol Dummy"
-                    actionOrdinal="1"
+                    name="Step Containing the Stimulus Protocol"
+                    actionOrdinal="2"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:aaef5e92-76af-4cb6-aeff-03f7aa77dbe9">
             </GenericAction>
 
-             <GenericAction
+            <GenericAction
                     endurant="urn:lsid:cisban.cisbs.org:GeneriActionEndurant:5c13cd95-11b8-40d3-b7c6-7ad16dcecd95"
                     identifier="urn:lsid:cisban.cisbs.org:GeneriAction:1f58054a-5d8a-4e5f-93bb-a81921bfb98a"
-                    name="Step Containing the Task Protocol Dummy"
+                    name="Step Containing the Task Protocol"
                     actionOrdinal="1"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e">
             </GenericAction>
 
-             <GenericAction
+            <GenericAction
                     endurant="urn:lsid:cisban.cisbs.org:GeneriActionEndurant:6ea76645-73bf-4030-a765-f862cc199785"
                     identifier="urn:lsid:cisban.cisbs.org:GeneriAction:4aaa934a-a224-4ffb-a16d-0771f0519b73"
-                    name="Step Containing the Behavioural event Protocol Dummy"
-                    actionOrdinal="2"
+                    name="Step Containing the Behavioural event Protocol"
+                    actionOrdinal="3"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa">
             </GenericAction>
-
-
-
-
-
         </GenericProtocol>
+
         <GenericEquipment name="Electrode"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:6b6e7a48-3cd5-4bad-873c-687e2fe9023c"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8">
@@ -153,7 +125,36 @@ concrete protocols have been made.
             <make OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OnntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
         </GenericEquipment>
 
+        <GenericProtocolApplication
+                Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3"
+                name="Parameters Associated with Creating the Data File Dummy for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:e3388dc8-371c-4f2f-bdb9-24f52a96983e"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:bb550d13-b25b-42d6-8b37-1260df6a770f">
+              <AtomicParameterValue Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7" value="1"/>
+        </GenericProtocolApplication>
+
+
     </ProtocolCollection>
+    <MaterialCollection>
+        <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
+        <GenericMaterial
+                name="Material Characteristics Dummy for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:4a34375a-0c7c-4563-ab1d-a2509a5466bb"
+                identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d46bed62-21f6-4d27-b7c0-942abb124032">
+            <materialType
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:943066e5-bbd4-45ed-b0c3-d71e7ec8640d"/>
+
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:f1b24b4b-1aa5-4d18-a104-831b681d3b2a"/>
+
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a76ba6fc-0018-4817-bb2c-8cf3b7a1904e"/>
+
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:0b645454-8506-4f0e-b824-d6648c1f0126"/>
+
+        </GenericMaterial>
+    </MaterialCollection>
     <DataCollection>
         <ExternalData
                 name="Time series data Dummy (Component of Carmen Electrophysiology Investigation)"
@@ -190,11 +191,10 @@ concrete protocols have been made.
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:a6125c2a-31f9-456d-8c61-3dedbb9590ff"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:ffcb7958-24be-4462-88a8-98b0fd4f8a9c"/>
 
-         <OntologyIndividual termAccession="accession to come" term="mousey mousey"
+        <OntologyIndividual termAccession="accession to come" term="mousey mousey"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:22885ca0-63c5-42d0-a865-307a697cb948"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:943066e5-bbd4-45ed-b0c3-d71e7ec8640d"/>
-
 
 
         <OntologyIndividual termAccession="accession to come" term="Hz"
@@ -221,7 +221,7 @@ concrete protocols have been made.
                             endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:c5822354-d20e-4797-99e2-623d89d3e731"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:a76ba6fc-0018-4817-bb2c-8cf3b7a1904e"/>
 
-         <OntologyIndividual termAccession="accession to come" term="a brain cell"
+        <OntologyIndividual termAccession="accession to come" term="a brain cell"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:40f5cde6-6468-4f0a-8c37-1d85261e91fa"
                             endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:17519283-9046-4b21-b029-162d752b50be"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:0b645454-8506-4f0e-b824-d6648c1f0126"/>
@@ -242,17 +242,17 @@ concrete protocols have been made.
                         endurant="urn:lsid:cisban.cisbs.org:OnntologySourceEndurant:c0a3f035-4280-49d4-ba33-03dd3b36af5f"
                         identifier="urn:lsid:cisban.cisbs.org:OnntologySource:80441996-dd20-49ab-9409-7689b5836e43"/>
 
-         <OntologySource ontologyURI="http://www.carmen.org.uk"
+        <OntologySource ontologyURI="http://www.carmen.org.uk"
                         name="Species"
                         endurant="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:52199178-0d02-4eb1-9d95-4108cdec9c41"
                         identifier="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"/>
 
-         <OntologySource ontologyURI="http://www.carmen.org.uk"
+        <OntologySource ontologyURI="http://www.carmen.org.uk"
                         name="Organ"
                         endurant="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:08875e3d-96c9-4b5d-8439-5556d7fb9d45"
                         identifier="urn:lsid:cisban.cisbs.org:OntologySource:1d234420-b6fe-4669-b04b-464fa0bdcdd6"/>
 
-         <OntologySource ontologyURI="http://www.carmen.org.uk"
+        <OntologySource ontologyURI="http://www.carmen.org.uk"
                         name="Brain area"
                         endurant="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:095051d9-03dc-48fa-ad78-8a518129656d"
                         identifier="urn:lsid:cisban.cisbs.org:OntologySource:68c65d87-8b81-4067-b2e2-dda455490305"/>
@@ -262,7 +262,6 @@ concrete protocols have been made.
                         endurant="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:1d4e1d95-872a-4833-8e9a-ea93610ca44c"
                         identifier="urn:lsid:cisban.cisbs.org:OntologySource:40f5cde6-6468-4f0a-8c37-1d85261e91fa"/>
 
-        
 
     </OntologyCollection>
 </FuGE>

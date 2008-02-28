@@ -60,9 +60,26 @@ concrete protocols have been made.
         <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
         <!-- live vs fixed is currently an attribute of the material, but it may in fact be an attribute of the protocol. -->
         <GenericMaterial
-                name="Material Characteristics Dummy (Component of Example Microscopy and Imaging Investigation)"
+                name="Material Characteristics Dummy for Confocal Microscope Image Capture (Component of Example Microscopy and Imaging Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:573007d4-bcf0-4912-a649-ad8d9cda529b"
                 identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:b62a616f-508e-48da-8302-0c44ecf715fc">
+            <materialType
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:287a7a48-d7ca-44c7-9e1b-c37dfee46cee"/>
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:3d8aa524-d32b-4ffd-a46c-8a7ddc6da8e8"/>
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:59a8b811-d9b1-4424-af44-700b23dc8d6d"/>
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:5c51b515-e34f-4b88-af4c-e9c0f5a298d7"/>
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:3f0af4bb-9c34-4f60-8f7d-0edebeeb0aad"/>
+            <characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:660f3b04-6b27-41b9-938e-3661f6a78b10"/>
+        </GenericMaterial>
+        <GenericMaterial
+                name="Material Characteristics Dummy for Widefield Microscope Image Capture (Component of Example Microscopy and Imaging Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:673007d4-bcf0-4912-a649-ad8d9cda529c"
+                identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:c62a616f-508e-48da-8302-0c44ecf715fd">
             <materialType
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:287a7a48-d7ca-44c7-9e1b-c37dfee46cee"/>
             <characteristics

@@ -1,11 +1,9 @@
 package uk.ac.cisban.symba.backend.util.conversion.helper;
 
 import com.ibm.lsid.LSIDException;
-import fugeOM.Collection.ProtocolCollection;
 import fugeOM.Collection.FuGE;
-import fugeOM.Collection.OntologyCollection;
+import fugeOM.Collection.ProtocolCollection;
 import fugeOM.Common.Protocol.*;
-import fugeOM.Common.Ontology.OntologyTerm;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
 import fugeOM.util.generatedJAXB2.*;
@@ -223,7 +221,8 @@ public class CisbanProtocolCollectionHelper {
 
     // We go through all equipment referenced in the protocols in protocolSet, retrieving all present.
     // These will get added to the experiment.
-    public Set<Equipment> addRelevantEquipment( FuGE fuge, Set<Protocol> protocolSet ) throws RealizableEntityServiceException {
+    public Set<Equipment> addRelevantEquipment( FuGE fuge,
+                                                Set<Protocol> protocolSet ) throws RealizableEntityServiceException {
         Set<Equipment> equipmentSet;
         if ( fuge.getProtocolCollection() != null && fuge.getProtocolCollection().getAllEquipment() != null ) {
             equipmentSet = ( Set<Equipment> ) fuge.getProtocolCollection().getAllEquipment();
@@ -251,9 +250,15 @@ public class CisbanProtocolCollectionHelper {
         return equipmentSet;
     }
 
-    // We go through all protocols in the database, retrieving all that have rdb.getDataType()
-    // in their name. These will get added to the experiment. 
-    public Set<Protocol> addRelevantProtocols( FuGE fuge, String protocolType ) throws RealizableEntityServiceException {
+    // We go through all protocols in the database, retrieving all that are directly associated (via GenericAction)
+    // with the top-level investigation id'ed in protocolEndurantIdentifier. These will get added to the experiment.
+    // In SyMBA, the protocolEndurantIdentifier is the endurant identifier.
+    // only works for generic protocols
+    public Set<Protocol> addRelevantProtocols( FuGE fuge,
+                                               String protocolEndurantIdentifier ) throws RealizableEntityServiceException {
+
+        Protocol abstractProtocol = ( Protocol ) reService.findLatestByEndurant( protocolEndurantIdentifier );
+
         Set<Protocol> protocolSet;
         if ( fuge.getProtocolCollection() != null ) {
             protocolSet = ( Set<Protocol> ) fuge.getProtocolCollection().getProtocols();
@@ -261,33 +266,57 @@ public class CisbanProtocolCollectionHelper {
             protocolSet = new HashSet<Protocol>();
         }
 
-        for ( Object obj : reService.getAllLatestGenericProtocols() ) {
-            if ( obj instanceof GenericProtocol ) {
-                GenericProtocol gp = ( GenericProtocol ) obj;
-                if ( gp.getName().trim().contains( protocolType ) ) {
-                    boolean matchFound = false;
-                    if ( fuge.getProtocolCollection() != null ) {
-                        for ( Object obj2 : fuge.getProtocolCollection().getProtocols() ) {
-                            if ( obj2 instanceof GenericProtocol ) {
-                                GenericProtocol gpSearch = ( GenericProtocol ) obj2;
-                                if ( gpSearch.getEndurant()
-                                        .getIdentifier().trim()
-                                        .equals( gp.getEndurant().getIdentifier().trim() ) ) {
-                                    matchFound = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if ( !matchFound ) {
-                        // the current protocol is not yet in the experiment. Add it.
-                        protocolSet.add( gp );
+        if ( !( abstractProtocol instanceof GenericProtocol ) ) {
+            return protocolSet;
+        }
+
+        GenericProtocol topLevelProtocol = ( GenericProtocol ) abstractProtocol;
+
+        // Assume that, if there is already something in the protocol collection, it must at a minimum
+        // already contain the top-level protocol
+        if ( protocolSet.isEmpty() ) {
+            protocolSet.add( topLevelProtocol );
+        }
+
+        protocolSet.addAll( getChildProtocols( topLevelProtocol, protocolSet ) );
+
+        return protocolSet;
+    }
+
+    // Works similarly to addRelevantProtocols, but does not initialize the Set<Protocol> with values from the
+    // top-level investigation.
+    public Set<Protocol> getChildProtocols( GenericProtocol parentProtocol, Set<Protocol> alreadyAddedProtocols ) {
+
+        if ( alreadyAddedProtocols == null ) {
+            alreadyAddedProtocols = new HashSet<Protocol>();
+        }
+
+        for ( Object obj : parentProtocol.getGenericActions() ) {
+            GenericAction genericAction = ( GenericAction ) obj;
+            System.out.println( "Investigating genericAction.getName() = " + genericAction.getName() );
+            // add the generic protocol referenced by the generic action.
+            GenericProtocol genericProtocol = ( GenericProtocol ) genericAction.getGenProtocolRef();
+            boolean matchFound = false;
+            for ( Protocol protocol : alreadyAddedProtocols ) {
+                if ( protocol instanceof GenericProtocol ) {
+                    GenericProtocol gpSearch = ( GenericProtocol ) protocol;
+                    if ( gpSearch.getEndurant()
+                            .getIdentifier().trim()
+                            .equals( genericProtocol.getEndurant().getIdentifier().trim() ) ) {
+                        matchFound = true;
+                        System.err.println( "Match Found" );
+                        break;
                     }
                 }
             }
+            if ( !matchFound ) {
+                // the current protocol is not yet in the experiment. Add it, and any actions that may be present
+                // within this protocol.
+                alreadyAddedProtocols.add( genericProtocol );
+                alreadyAddedProtocols.addAll( getChildProtocols( genericProtocol, alreadyAddedProtocols ) );
+            }
         }
-
-        return protocolSet;
+        return alreadyAddedProtocols;
     }
 
     public ProtocolCollection getLatestVersion(

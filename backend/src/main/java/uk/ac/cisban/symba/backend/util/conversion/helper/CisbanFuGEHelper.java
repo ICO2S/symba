@@ -273,7 +273,7 @@ public class CisbanFuGEHelper {
             String protocolType = null;
             for ( Object obj : fuge.getProtocolCollection().getProtocols() ) {
                 if ( !( ( Protocol ) obj ).getName().contains( "Component" ) ) {
-                    protocolType = ( ( Protocol ) obj ).getName();
+                    protocolType = ( ( Protocol ) obj ).getEndurant().getIdentifier();
                     break;
                 }
             }
@@ -283,6 +283,7 @@ public class CisbanFuGEHelper {
             fuge.getProtocolCollection().setAllEquipment(
                     cpc.addRelevantEquipment(
                             fuge, ( Set<Protocol> ) fuge.getProtocolCollection().getProtocols() ) );
+            // todo should we really re-get all equipment? If so, should do the same for material, software. etc...
             // For each item in the Protocol Collection, make sure you are retrieving its latest version.
             fuge.setProtocolCollection( cpc.getLatestVersion( fuge.getProtocolCollection() ) );
             // then, check for new ontology terms in the protocols. These happen when the underlying protocols

@@ -31,9 +31,21 @@ public class OntologyTermDaoImpl
                 transform,
                 "select ontologyTerms from fugeOM.Common.Ontology.OntologyTerm as ontologyTerms " +
                         "join ontologyTerms.auditTrail as audits " +
-                        "where audits.date = (select max(internalaudits.date) from fugeOM.Common.Ontology.OntologyTerm as internalgm " +
-                        "  join internalgm.auditTrail as internalaudits " +
-                        "  where internalgm.endurant.id = ontologyTerms.endurant.id)" +
+                        "where audits.date = (select max(internalaudits.date) from fugeOM.Common.Ontology.OntologyTerm as internalterms " +
+                        "  join internalterms.auditTrail as internalaudits " +
+                        "  where internalterms.endurant.id = ontologyTerms.endurant.id)" +
                         "and ontologyTerms.ontologySource.endurant.identifier = :sourceEndurant", sourceEndurant );
+    }
+
+    public java.util.List getAllLatestUnsourced( final int transform ) {
+        // Retrieves all latest versions of those Ontology Terms that do not have an OntologySource
+        return super.getAllLatestUnsourced(
+                transform,
+                "select ontologyTerms from fugeOM.Common.Ontology.OntologyTerm as ontologyTerms " +
+                        "join ontologyTerms.auditTrail as audits " +
+                        "where audits.date = (select max(internalaudits.date) from fugeOM.Common.Ontology.OntologyTerm as internalterms " +
+                        "                     join internalterms.auditTrail as internalaudits " +
+                        "                     where internalterms.endurant.id = sources.endurant.id) " +
+                        "and ontologyTerms.ontologySource is null");
     }
 }

@@ -23,4 +23,14 @@ package fugeOM.Common.Ontology;
  */
 public class OntologySourceDaoImpl
         extends fugeOM.Common.Ontology.OntologySourceDaoBase {
+    public java.util.List getAllLatest( final int transform ) {
+        // Retrieves all latest versions of the Ontology Sources
+        return super.getAllLatest(
+                transform,
+                "select sources from fugeOM.Common.Ontology.OntologySource as sources " +
+                        "join sources.auditTrail as audits " +
+                        "where audits.date = (select max(internalaudits.date) from fugeOM.Common.Ontology.OntologySource as internalsources " +
+                        "                     join internalsources.auditTrail as internalaudits " +
+                        "                     where internalsources.endurant.id = sources.endurant.id)");
+    }
 }

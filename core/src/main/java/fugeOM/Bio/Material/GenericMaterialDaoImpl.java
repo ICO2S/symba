@@ -35,4 +35,18 @@ public class GenericMaterialDaoImpl
                         "  join internalgm.auditTrail as internalaudits " +
                         "  where internalgm.endurant.id = gms.endurant.id)" );
     }
+
+    public List getAllLatestDummies( final int transform ) {
+        // Retrieves the latest version of all generic materials in the database with the dummy string present in the name
+        String dummy = "% Dummy%";
+        return super.getAllLatestDummies(
+                transform,
+                "select gms from fugeOM.Bio.Material.GenericMaterial as gms " +
+                        "join gms.auditTrail as audits " +
+                        "where gms.name like \'" + dummy + "\' " +
+                        "and " +
+                        "audits.date = (select max(internalaudits.date) from fugeOM.Bio.Material.GenericMaterial as internalgm " +
+                        "  join internalgm.auditTrail as internalaudits " +
+                        "  where internalgm.endurant.id = gms.endurant.id)" );
+    }
 }

@@ -437,10 +437,18 @@ public class RealizableEntityServiceImpl
     /**
      * @see fugeOM.service.RealizableEntityService#getAllLatestGenericMaterials()
      */
-    protected java.util.List handleGetAllLatestGenericMaterials()
+    protected java.util.List handleGetAllLatestGenericMaterials( boolean onlyDummies )
             throws java.lang.Exception {
-        // Retrieves the latest version of all generic materials in the database.
-        List genericList = getGenericMaterialDao().getAllLatest();
+
+        List genericList;
+
+        if ( onlyDummies ) {
+            // Retrieves the latest version of all generic materials containing " Dummy" in the name in the database.
+            genericList = getGenericMaterialDao().getAllLatestDummies();
+        } else {
+            // Retrieves the latest version of all generic materials in the database.
+            genericList = getGenericMaterialDao().getAllLatest();
+        }
 
         if ( genericList == null ) {
             throw new java.lang.Exception( "Error trying to retrieve all current generic materials." );
@@ -620,6 +628,81 @@ public class RealizableEntityServiceImpl
             throws java.lang.Exception {
         // counts all ExternalDataEndurants.
         return getExternalDataEndurantDao().countAll();
+    }
+
+    /**
+     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentWithName()
+     */
+    protected List handleGetAllLatestExperimentIdsWithName( String investigationName ) throws Exception {
+        // Retrieves the latest version of all generic materials in the database.
+        List genericList = getFuGEDao().getAllLatestIdsWithName( investigationName );
+
+        if ( genericList == null ) {
+            throw new java.lang.Exception(
+                    "Error trying to retrieve all current FuGE investigation items with provided investigation name: " +
+                            investigationName );
+        }
+        return genericList;
+    }
+
+    /**
+     * @see fugeOM.service.RealizableEntityService#getAllLatestOntologySources()
+     */
+    protected List handleGetAllLatestOntologySources() throws Exception {
+        // Retrieves the latest version of all generic materials in the database.
+        List genericList = getOntologySourceDao().getAllLatest();
+
+        if ( genericList == null ) {
+            throw new java.lang.Exception(
+                    "Error trying to retrieve all current Ontology Sources." );
+        }
+        return genericList;
+    }
+
+    /**
+     * @see fugeOM.service.RealizableEntityService#getAllLatestUnsourcedOntologyTerms()
+     */
+    protected List handleGetAllLatestUnsourcedOntologyTerms() throws Exception {
+        // Retrieves the latest version of all generic materials in the database.
+        List genericList = getOntologyTermDao().getAllLatestUnsourced();
+
+        if ( genericList == null ) {
+            throw new java.lang.Exception(
+                    "Error trying to retrieve all current unsourced Ontology Terms." );
+        }
+        return genericList;
+    }
+
+    /**
+     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentIdsWithOntologyTerm()
+     */
+    protected List handleGetAllLatestExperimentIdsWithOntologyTerm( String endurantId ) throws Exception {
+        // Retrieves a list of fuge object ids that have the provided OntologyTerm
+        List genericList = getFuGEDao().getAllLatestIdsWithOntologyTerm( endurantId );
+
+        if ( genericList == null ) {
+            throw new java.lang.Exception(
+                    "Error trying to retrieve all current FuGE investigation items with provided OntologyTerm: " +
+                            endurantId );
+        }
+        return genericList;
+    }
+
+    protected List handleGetAllLatestGenericProtocolApplications( boolean onlyDummies ) throws Exception {
+        List genericList;
+
+        if ( onlyDummies ) {
+            // Retrieves the latest version of all generic PAs containing " Dummy" in the name in the database.
+            genericList = getGenericProtocolApplicationDao().getAllLatestDummies();
+        } else {
+            // Retrieves the latest version of all generic PAs in the database.
+            genericList = getGenericProtocolApplicationDao().getAllLatest();
+        }
+
+        if ( genericList == null ) {
+            throw new java.lang.Exception( "Error trying to retrieve all current generic protocol applications." );
+        }
+        return genericList;
     }
 
 }

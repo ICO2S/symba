@@ -21,7 +21,7 @@
 <jsp:useBean id="experiment" class="uk.ac.cisban.symba.webapp.util.ExperimentBean" scope="session">
 </jsp:useBean>
 
-<jsp:useBean id="rdb" class="uk.ac.cisban.symba.webapp.util.RawDataBean" scope="session">
+<jsp:useBean id="investigationBean" class="uk.ac.cisban.symba.webapp.util.InvestigationBean" scope="session">
 </jsp:useBean>
 
 <jsp:useBean id="counter" class="uk.ac.cisban.symba.webapp.util.CounterBean" scope="application">
@@ -95,13 +95,13 @@
     This experiment has the following data file(s) for your
     <%
         out.println( " <a class=\"bigger\" href=\"rawData.jsp\">" );
-        out.println( rdb.getDataType() );
+        out.println( investigationBean.getTopLevelProtocolName() );
         out.println( "</a>:" );
     %>
 </p>
 <%
-    for ( int iii = 0; iii < rdb.getAllDataBeans().size(); iii++ ) {
-        RawDataInfoBean info = rdb.getDataItem( iii );
+    for ( int iii = 0; iii < investigationBean.getAllDataBeans().size(); iii++ ) {
+        RawDataInfoBean info = investigationBean.getDataItem( iii );
         out.println( "<hr/>" );
         out.println( "<p class=\"bigger\">Information for " );
         out.println( " <a class=\"bigger\" href=\"rawData.jsp\">" );
@@ -153,6 +153,13 @@
             out.println( "<li>You have specified a file format for the external data file: " );
             out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
             out.println( info.getFileFormat());
+            out.println( "</a>" );
+            out.println( "</li>" );
+        }
+         if (info.getAtomicValue() != null) {
+            out.println( "<li>You have specified a value for one of the GenericParameters for this step in the workflow: " );
+            out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+            out.println( info.getAtomicValue());
             out.println( "</a>" );
             out.println( "</li>" );
         }

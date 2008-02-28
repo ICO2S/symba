@@ -3,10 +3,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -16,9 +16,9 @@
 
 <%--Imports so we can use the person object and the data portal utils --%>
 <%@ page import="fugeOM.Collection.FuGE" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.util.List" %>
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.util.*" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
 </jsp:useBean>
@@ -35,16 +35,32 @@
 
 <div id="Content">
     <%
-        List ids = validUser.getReService().getAllLatestExpIdsWithContact( validUser.getEndurantLsid() );
+        List<String> ids;
+        if ( request.getParameter( "experimentName" ) != null &&
+                request.getParameter( "experimentName" ).length() > 0 ) {
+            ids = validUser.getReService()
+                    .getAllLatestExperimentIdsWithName( request.getParameter( "experimentName" ) );
+            out.println( "<h3>Search Term: " + request.getParameter( "experimentName" ) + "</h3>" );
+        } else if ( request.getParameter( "ontologyTerm" ) != null &&
+                request.getParameter( "ontologyTerm" ).length() > 0 ) {
+            ids = validUser.getReService()
+                    .getAllLatestExperimentIdsWithOntologyTerm( request.getParameter( "ontologyTerm" ) );
+            out.println( "<h3>Search Term: " + request.getParameter( "ontologyTerm" ) + "</h3>" );
+        } else {
+            ids = validUser.getReService().getAllLatestExpIdsWithContact( validUser.getEndurantLsid() );
+        }
         if ( ids.isEmpty() ) {
     %>
 
     <h2>
-        You have no experiments at the moment. If you wish, you may <a class="bigger" href="newOrExisting.jsp">deposit
-        some data</a>.
+        You have no experiments at the moment, or your search term returned no results.
+        If you wish, you may <a class="bigger" href="newOrExisting.jsp">deposit
+        some data</a>, or go to the <a href="search.jsp">Search Page</a> to search the database.
     </h2>
     <%
     } else {
+        out.println( "<h3>" + ids.size() + " Experiments Retrieved</h3>" );
+        out.println("For further searches, please visit our <a href=\"search.jsp\">Search Page</a><br/>");
     %>
     <h2>Your Data is shown below <a
             href="help.jsp#viewExperiments"

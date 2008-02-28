@@ -20,13 +20,15 @@
 <%@ page import="fugeOM.Common.Description.Description" %>
 <%@ page import="fugeOM.Common.Ontology.OntologySource" %>
 <%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
-<%@ page import="fugeOM.Common.Protocol.GenericAction" %>
-<%@ page import="fugeOM.Common.Protocol.GenericProtocol" %>
+<%@ page import="fugeOM.Common.Protocol.*" %>
 <%@ page import="org.apache.commons.fileupload.FileItem" %>
 <%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
 <%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
 <%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper" %>
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanProtocolCollectionHelper" %>
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.xml.XMLMarshaler" %>
 <%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
 <%@ page import="java.io.File" %>
@@ -37,7 +39,7 @@
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
 </jsp:useBean>
 
-<jsp:useBean id="rdb" class="uk.ac.cisban.symba.webapp.util.RawDataBean" scope="session">
+<jsp:useBean id="investigationBean" class="uk.ac.cisban.symba.webapp.util.InvestigationBean" scope="session">
 </jsp:useBean>
 
 <%-- The correct doctype and html elements are stored here --%>
@@ -74,12 +76,10 @@
 <form ENCTYPE="multipart/form-data" name="selectProt" action="metaDataValidate.jsp" method="post">
 <%
     //        todo this entire page needs generification
-    for ( int iii = 0; iii < rdb.getAllDataBeans().size(); iii++ ) {
-        RawDataInfoBean info = rdb.getDataItem( iii );
-        FileBean fileBean = rdb.getFileBean( iii );
+    for ( int iii = 0; iii < investigationBean.getAllDataBeans().size(); iii++ ) {
+        RawDataInfoBean info = investigationBean.getDataItem( iii );
+        FileBean fileBean = investigationBean.getFileBean( iii );
         String selectDescName = "actionListDescription" + iii;
-        String selectFactorName = "actionListFactor" + iii;
-        String selectName = "actionList" + iii;
 
 %>
 <br/>
@@ -97,86 +97,73 @@
 <br>
 
 <%
-    List<String> allFulls = new ArrayList<String>();
-    // Print out any protocol that is a component of a larger protocol, and can therefore
-    // have output/input files.
-    boolean hasOne = false;
-    for ( Object obj : validUser.getReService().getAllLatestGenericProtocols() ) {
-        GenericProtocol gp = ( GenericProtocol ) obj;
-//        out.println( "<p> Got gp " + gp.getName() + "</p>" );
-        Set aSet = ( Set ) gp.getGenericActions();
-        for ( int count = 1; count <= aSet.size(); count++ ) {
-            for ( Object obj2 : aSet ) {
-                GenericAction ga = ( GenericAction ) obj2;
-                if ( count == ga.getActionOrdinal() ) {
-//                    out.println( "<p> Getting ga " + ga.getName() + "</p>" );
-                    if ( gp.getName().trim().equals( rdb.getDataType().trim() ) ) {
-                        String modified = ga.getName();
-                        modified.trim();
-                        if ( modified.startsWith( "Step Containing the" ) ) {
-                            modified = modified.substring( 20 );
-                        }
-                        allFulls.add(
-                                "<option value= \"" + ga.getEndurant().getIdentifier() + "\">" +
-                                        modified +
-                                        "</option>" );
-                    } else if ( gp.getName().trim().contains( "Component of " + rdb.getDataType().trim() ) ) {
-                        if ( !hasOne ) {
-%>
-<label for="<% out.print(selectFactorName); %>">Please select your factor:</label>
-<select name="<% out.print(selectFactorName); %>">
-    <%
-                                hasOne = true;
-                            }
+
+        // sometimes, we may get GenericParameters from Dummy GPAs associated with the experiment. This is how we
+        // differentiate GenericParameters that are not meant to be changed (== no Dummy GPA) from those that are
+        // meant to be changed (== has dummy GPA). Search the GPAs
+        // for dummies named with the addition of "XXX Dummy YYY SomeProtocol", where XXX and YYY may be anything, and
+        // where SomeProtocol may ONLY be the exact, full protocol name of the GenericAction selected for this data file.
+        //
+        // Only currently valid for AtomicValues.
+        for ( Object obj : validUser.getReService().getAllLatestGenericProtocolApplications( true ) ) {
+            GenericProtocolApplication genericProtocolApplication = ( GenericProtocolApplication ) validUser.getReService()
+                    .greedyGet( obj );
+//            out.println(
+//                    "Comparing current GenericProtocolApplication name (" +
+//                            genericProtocolApplication.getName().trim() +
+//                            ") with info.getChosenChildProtocolName() (" + info.getChosenChildProtocolName() +
+//                            ")<br/>" );
+            if ( genericProtocolApplication.getName().trim().contains( info.getChosenChildProtocolName() ) ) {
+                // The displayName is just the name for this group of questions we are about to give to the user.
+                // Should be something like "Parameters Associated with Creating the Data File".
+//                out.println( "Match Found<br/>" );
+//                out.println( "Number of Parameters" + genericProtocolApplication.getParameterValues().size() + "<br/>" );
+                // Now provide the choices requested in the dummy GenericParameter. Currently, only an AtomicValue
+                // with a fixed unit type is allowed.
+                for ( Object obj2 : genericProtocolApplication.getParameterValues() ) {
+                    if ( obj2 instanceof AtomicParameterValue ) {
+                        GenericParameter genericParameter = ( GenericParameter ) ( ( AtomicParameterValue ) obj2 ).getParameter();
+                        if ( genericParameter.getDefaultValue() instanceof AtomicValue ) {
+                            String displayName = genericParameter.getName().trim();
+
+                            String value = "defaultGenericParameterValue" + iii;
+                            String valueIdentifier = "defaultGenericParameterValueIdentifier" + iii;
+                            String instructions =
+                                    "<label for=\"" + value + "\">Please fill in the value of the " + displayName +
+                                            ", in " +
+                                            ( ( OntologyTerm ) validUser.getReService().findLatestByEndurant(
+                                                    genericParameter.getUnit()
+                                                            .getEndurant().getIdentifier() ) ).getTerm() +
+                                            "</label>";
+                            out.println( instructions );
+                            out.println( "<input id=\"" + value + "\" name=\"" + value + "\"><br>" );
                             out.println(
-                                    "<option value= \"" + ga.getEndurant().getIdentifier() + "\">" +
-                                            ga.getName() +
-                                            "</option>" );
+                                    "<input type=\"hidden\" name=\"" + valueIdentifier + "\" value=\"" +
+                                            genericParameter.getIdentifier() + "\"><br>" );
+
+                            break; // todo only expects one generic parameter dummy per generic action.
                         }
-                        break;
                     }
                 }
             }
         }
-        if ( hasOne ) {
-    %>
-</select>
-<%
-    }
-%>
-<br>
-<%
-    boolean hasLabel = false;
-    for ( String s : allFulls ) {
-        if ( !hasLabel ) {
-%>
-<label for="<% out.print(selectName); %>">Please select your factor:</label>
-<select name="<% out.print(selectName); %>">
 
-    <%
-                hasLabel = true;
-            }
-            out.println( s );
-        }
-        if ( hasLabel ) {
-    %>
-</select>
-<%
-        } else {
-            out.println(
-                    "<p class=\"bigger\">There has been an error listing all of the factors important to your data " +
-                            "file. Please contact the <a href=\"mailto:helpdesk@cisban.ac.uk\">helpdesk</a>, " +
-                            "letting us know what workflow you were trying to associate with your data file</p>" );
-        }
+        out.println( "<br>" );
+        out.println( "<br>" );
 
         // sometimes, we may get factors from Materials associated with the experiment. Search the materials
-        // for dummies named with the name of the current experiment.
-        for ( Object obj : validUser.getReService().getAllLatestGenericMaterials() ) {
+        // for dummies named with the addition of "XXX Dummy YYY SomeProtocol", where XXX and YYY may be anything, and
+        // where SomeProtocol may ONLY be the exact, full protocol name of the GenericAction selected for this data file.
+        for ( Object obj : validUser.getReService().getAllLatestGenericMaterials( true ) ) {
             GenericMaterial genericMaterial = ( GenericMaterial ) validUser.getReService().greedyGet( obj );
-            if ( genericMaterial.getName().trim().contains( rdb.getDataType().trim() ) &&
-                    genericMaterial.getName().trim().contains( "Dummy" ) ) {
+//            out.println(
+//                    "Comparing current Material name (" + genericMaterial.getName().trim() +
+//                            ") with info.getChosenChildProtocolName() (" + info.getChosenChildProtocolName() +
+//                            ")<br/>" );
+            if ( genericMaterial.getName().trim().contains( info.getChosenChildProtocolName() ) ) {
                 // The displayName is just the name for this group of questions we are about to give to the user.
                 // Should be something like "Material Characteristics".
+//                out.println( "Match Found<br/>" );
                 String displayName = genericMaterial.getName()
                         .substring( 0, genericMaterial.getName().indexOf( " Dummy" ) )
                         .trim();
@@ -185,27 +172,36 @@
                 String matName = "materialName" + iii;
                 out.println( "<br>" );
                 out.println( "<label for=\"" + matName + "\">Name/ID of this Material (optional): </label>" );
-                if ( rdb.getAllDataBeans() != null && rdb.getAllDataBeans().size() > iii &&
-                        rdb.getDataItem( iii ).getMaterialFactorsBean() != null ) {
+                if ( investigationBean.getAllDataBeans() != null &&
+                        investigationBean.getAllDataBeans().size() > iii &&
+                        investigationBean.getDataItem( iii ).getMaterialFactorsBean() != null ) {
                     out.println(
                             "<input id=\"" + matName + "\" name=\"" + matName + "\" value=\"" +
-                                    rdb.getDataItem( iii ).getMaterialFactorsBean().getMaterialName() + "\"><br>" );
+                                    investigationBean.getDataItem( iii )
+                                            .getMaterialFactorsBean()
+                                            .getMaterialName() +
+                                    "\"><br>" );
                 } else {
                     out.println( "<input id=\"" + matName + "\" name=\"" + matName + "\"><br>" );
                 }
                 out.println( "<br>" );
                 out.println(
-                        "<p class=\"bigger\">Please enter some information about the " + displayName + ", starting " +
+                        "<p class=\"bigger\">Please enter some information about the " + displayName +
+                                ", starting " +
                                 "with treatment information. There should be a separate box for each treatment performed " +
                                 "(optional). <em>NOTE: All treatments already entered will " +
                                 "remain in the system. You may add additional treatments by entering them below.</em></p>" );
 
-                if ( rdb.getAllDataBeans() != null && rdb.getAllDataBeans().size() > iii &&
-                        rdb.getDataItem( iii ).getMaterialFactorsBean() != null &&
-                        rdb.getDataItem( iii ).getMaterialFactorsBean().getTreatmentInfo() != null &&
-                        !rdb.getDataItem( iii ).getMaterialFactorsBean().getTreatmentInfo().isEmpty() ) {
+                if ( investigationBean.getAllDataBeans() != null &&
+                        investigationBean.getAllDataBeans().size() > iii &&
+                        investigationBean.getDataItem( iii ).getMaterialFactorsBean() != null &&
+                        investigationBean.getDataItem( iii ).getMaterialFactorsBean().getTreatmentInfo() != null &&
+                        !investigationBean.getDataItem( iii )
+                                .getMaterialFactorsBean()
+                                .getTreatmentInfo()
+                                .isEmpty() ) {
                     out.println( "<ol>" );
-                    for ( String singleTreatment : rdb.getDataItem( iii )
+                    for ( String singleTreatment : investigationBean.getDataItem( iii )
                             .getMaterialFactorsBean()
                             .getTreatmentInfo() ) {
                         out.println( "<li>Treatment already recorded: " + singleTreatment + "</li>" );
@@ -258,16 +254,19 @@
                         // Never allow multiple choices for material types.
                         boolean foundInstructions = false;
                         String matType = "materialType" + iii;
-                        String instructions =  "<label for=\"" + matType + "\">Please select your material type:</label>" ;
+                        String instructions =
+                                "<label for=\"" + matType + "\">Please select your material type:</label>";
                         for ( Object descObj : ontologySource.getDescriptions() ) {
                             Description desc = ( Description ) descObj;
                             if ( desc.getText().startsWith( "Instructions: " ) ) {
-                                instructions =  "<label for=\"" + matType + "\">" + desc.getText().substring( 14 ) + "</label>";
+                                instructions =
+                                        "<label for=\"" + matType + "\">" + desc.getText().substring( 14 ) +
+                                                "</label>";
                                 foundInstructions = true;
                             }
                         }
 
-                        out.println(instructions);
+                        out.println( instructions );
                         out.println( "<select name=\"" + matType + "\">" );
                         for ( OntologyTerm ot : ontologyTerms ) {
                             out.println(
@@ -328,21 +327,19 @@
                 // only allow one dummy generic material per experiment, for now only!
                 break;
             }
-
         }
 
         // we also allow developers to have a file format for their ExternalData associated with the experiment.
         // Search the ExternalData for dummies named with the name of the current experiment.
         for ( Object obj : validUser.getReService().getAllLatestExternalData() ) {
             ExternalData externalData = ( ExternalData ) validUser.getReService().greedyGet( obj );
-            if ( externalData.getName().trim().contains( rdb.getDataType().trim() ) &&
+            if ( externalData.getName().trim().contains( investigationBean.getTopLevelProtocolName().trim() ) &&
                     externalData.getName().trim().contains( "Dummy" ) ) {
                 // The displayName is just the name for this group of questions we are about to give to the user.
                 // Should be something like "File Formats".
                 String displayName = externalData.getName()
                         .substring( 0, externalData.getName().indexOf( " Dummy" ) )
                         .trim();
-
 
                 // Now, retrieve the file format (singular). It references an OntologyTerm, which in turn is associated
                 // with an OntologySource. Instead of displaying just the referenced OntologyTerm, a pull-down menu
@@ -364,19 +361,18 @@
                         ontologySource = ( OntologySource ) validUser.getReService()
                                 .findLatestByEndurant( ontologySource.getEndurant().getIdentifier() );
 
-                        // Never allow multiple choices for material types.
-                        boolean foundInstructions = false;
                         String fileFormat = "fileFormat" + iii;
-                        String instructions =  "<label for=\"" + fileFormat + "\">Please select your file format:</label>" ;
+                        String instructions =
+                                "<label for=\"" + fileFormat + "\">Please select your file format:</label>";
                         for ( Object descObj : ontologySource.getDescriptions() ) {
                             Description desc = ( Description ) descObj;
                             if ( desc.getText().startsWith( "Instructions: " ) ) {
-                                instructions =  "<label for=\"" + fileFormat + "\">" + desc.getText().substring( 14 ) + "</label>";
-                                foundInstructions = true;
+                                instructions = "<label for=\"" + fileFormat + "\">" + desc.getText().substring( 14 ) +
+                                        "</label>";
                             }
                         }
 
-                        out.println(instructions);
+                        out.println( instructions );
                         out.println( "<select name=\"" + fileFormat + "\">" );
                         for ( OntologyTerm ot : ontologyTerms ) {
                             out.println(
@@ -397,8 +393,8 @@
 
 %>
 <br>
-<input type="submit" value="Submit" name="submit"></input>
-<input type="button" value="Back" onclick="history.go(-1)"></input>
+<input type="submit" value="Submit" name="submit"/>
+<input type="button" value="Back" onclick="history.go(-1)"/>
 </form>
 <br>
 

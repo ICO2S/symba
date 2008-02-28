@@ -3,17 +3,17 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <%@ page import="uk.ac.cisban.symba.webapp.util.FileBean" %>
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
-<jsp:useBean id="rdb" class="uk.ac.cisban.symba.webapp.util.RawDataBean" scope="session">
+<jsp:useBean id="investigationBean" class="uk.ac.cisban.symba.webapp.util.InvestigationBean" scope="session">
 </jsp:useBean>
 
 <%-- The correct doctype and html elements are stored here --%>
@@ -49,7 +49,7 @@
     </p>
 
     <%
-        for ( FileBean fileBean : rdb.getAllFileBeans() ) {
+        for ( FileBean fileBean : investigationBean.getAllFileBeans() ) {
     %>
 
     <a href="temp/<% out.print(fileBean.getAFile().getName()); %>"

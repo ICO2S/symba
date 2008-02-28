@@ -28,6 +28,10 @@ public class RawDataInfoBean implements Serializable {
     private String dataName;
     private String factorChoice;
     private String fileFormat;
+    private String atomicValue; // todo only allows a single generic parameter, who is identified with the identifier in atomicValueIdentifier
+    private String atomicValueIdentifier;
+    private String chosenChildProtocolName;
+    private String chosenChildProtocolIdentifier; // In the case of SyMBA, this is the endurant's identifier.
 
     // this will only be filled if it is a Microscopy protocol
     private MaterialFactorsBean materialFactorsBean;
@@ -108,6 +112,10 @@ public class RawDataInfoBean implements Serializable {
         this.workflowName = "";
         this.dataName = "";
         this.fileFormat = "";
+        this.atomicValue = "";
+        this.atomicValueIdentifier = "";
+        this.chosenChildProtocolName = "";
+        this.chosenChildProtocolIdentifier = "";
     }
 
     public String getDataName() {
@@ -140,5 +148,36 @@ public class RawDataInfoBean implements Serializable {
 
     public void setFileFormat( String fileFormat ) {
         this.fileFormat = fileFormat;
+    }
+
+    public String getAtomicValue() {
+        return atomicValue;
+    }
+
+    public void setAtomicValue( String atomicValue ) {
+        this.atomicValue = atomicValue;
+    }
+    public String getChosenChildProtocolName() {
+        return chosenChildProtocolName;
+    }
+
+    public void setChosenChildProtocolName( String chosenChildProtocolName ) {
+        this.chosenChildProtocolName = chosenChildProtocolName;
+    }
+
+    public String getChosenChildProtocolIdentifier() {
+        return chosenChildProtocolIdentifier;
+    }
+
+    public void setChosenChildProtocolIdentifier( String chosenChildProtocolIdentifier ) {
+        this.chosenChildProtocolIdentifier = chosenChildProtocolIdentifier;
+    }
+
+    public String getAtomicValueIdentifier() {
+        return atomicValueIdentifier;
+    }
+
+    public void setAtomicValueIdentifier( String atomicValueIdentifier ) {
+        this.atomicValueIdentifier = atomicValueIdentifier;
     }
 }

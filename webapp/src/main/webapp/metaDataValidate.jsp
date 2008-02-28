@@ -29,7 +29,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<jsp:useBean id="rdb" class="uk.ac.cisban.symba.webapp.util.RawDataBean" scope="session">
+<jsp:useBean id="investigationBean" class="uk.ac.cisban.symba.webapp.util.InvestigationBean" scope="session">
 </jsp:useBean>
 
 <%
@@ -45,41 +45,43 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 int number = Integer.valueOf( item.getFieldName().substring( 21 ) );
 //                System.out.println( "number = " + number );
                 // take what is already there, and add only those fields that have not been made yet
-                RawDataInfoBean temp = rdb.getDataItem( number );
+                RawDataInfoBean temp = investigationBean.getDataItem( number );
                 temp.setDataName( item.getString() );
-                rdb.setDataItem( temp, number );
-            } else if ( item.getFieldName().startsWith( "actionListFactor" ) ) {
-                int number = Integer.valueOf( item.getFieldName().substring( 16 ) );
+                investigationBean.setDataItem( temp, number );
+            } else if ( item.getFieldName().startsWith( "defaultGenericParameterValueIdentifier" ) ) {
+                // this section needs to go in front of the defaultGenericParameterValue section, otherwise
+                // that section will accidentally take this field.
+                int number = Integer.valueOf( item.getFieldName().substring( 38 ) );
 //                System.out.println( "number = " + number );
                 // take what is already there, and add only those fields that have not been made yet
-                RawDataInfoBean temp = rdb.getDataItem( number );
-                temp.setFactorChoice( item.getString() );
-                rdb.setDataItem( temp, number );
-            } else if ( item.getFieldName().startsWith( "actionList" ) ) {
-                int number = Integer.valueOf( item.getFieldName().substring( 10 ) );
+                RawDataInfoBean temp = investigationBean.getDataItem( number );
+                temp.setAtomicValueIdentifier( item.getString() );
+                investigationBean.setDataItem( temp, number );
+            } else if ( item.getFieldName().startsWith( "defaultGenericParameterValue" ) ) {
+                int number = Integer.valueOf( item.getFieldName().substring( 28 ) );
 //                System.out.println( "number = " + number );
                 // take what is already there, and add only those fields that have not been made yet
-                RawDataInfoBean temp = rdb.getDataItem( number );
-                temp.setActionEndurant( item.getString() );
-                rdb.setDataItem( temp, number );
+                RawDataInfoBean temp = investigationBean.getDataItem( number );
+                temp.setAtomicValue( item.getString() );
+                investigationBean.setDataItem( temp, number );
             } else if ( item.getFieldName().startsWith( "materialName" ) ) {
                 if ( item.getString() != null && item.getString().length() > 0 ) {
                     int number = Integer.valueOf( item.getFieldName().substring( 12 ) );
                     // take what is already there, and add only those fields that have not been made yet
-                    RawDataInfoBean temp = rdb.getDataItem( number );
+                    RawDataInfoBean temp = investigationBean.getDataItem( number );
                     if ( temp.getMaterialFactorsBean() == null )
                         temp.setMaterialFactorsBean( new MaterialFactorsBean() );
                     MaterialFactorsBean mfb = temp.getMaterialFactorsBean();
                     mfb.setMaterialName( item.getString() );
                     temp.setMaterialFactorsBean( mfb );
-                    rdb.setDataItem( temp, number );
+                    investigationBean.setDataItem( temp, number );
                 }
             } else if ( item.getFieldName().startsWith( "treatment" ) && item.getString().length() > 0 ) {
                     // will generate new array each time (unless there are *no* treatments at all,
                     // to prevent old choices from being copied multiple times into the array.
                     int number = Integer.valueOf(item.getFieldName().substring( 9, item.getFieldName().lastIndexOf( '-' ) ) );
                     // take what is already there, and add only those fields that have not been made yet
-                    RawDataInfoBean temp = rdb.getDataItem( number );
+                    RawDataInfoBean temp = investigationBean.getDataItem( number );
                     if ( temp.getMaterialFactorsBean() == null ) {
                         temp.setMaterialFactorsBean( new MaterialFactorsBean() );
                     }
@@ -88,23 +90,23 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     int pos = Collections.binarySearch( mfb.getTreatmentInfo(), item.getString() );
                     if ( pos < 0 ) mfb.addTreatmentInfo( item.getString() );
                     temp.setMaterialFactorsBean( mfb );
-                    rdb.setDataItem( temp, number );
+                    investigationBean.setDataItem( temp, number );
             } else if ( item.getFieldName().startsWith( "fileFormat" ) ) {
                 int number = Integer.valueOf( item.getFieldName().substring( 10 ) );
                 // take what is already there, and add only those fields that have not been made yet
-                RawDataInfoBean temp = rdb.getDataItem( number );
+                RawDataInfoBean temp = investigationBean.getDataItem( number );
                 temp.setFileFormat( item.getString() );
-                rdb.setDataItem( temp, number );
+                investigationBean.setDataItem( temp, number );
             } else if ( item.getFieldName().startsWith( "materialType" ) ) {
                 int number = Integer.valueOf( item.getFieldName().substring( 12 ) );
                 // take what is already there, and add only those fields that have not been made yet
-                RawDataInfoBean temp = rdb.getDataItem( number );
+                RawDataInfoBean temp = investigationBean.getDataItem( number );
                 if ( temp.getMaterialFactorsBean() == null )
                     temp.setMaterialFactorsBean( new MaterialFactorsBean() );
                 MaterialFactorsBean mfb = temp.getMaterialFactorsBean();
                 mfb.setMaterialType( item.getString() );
                 temp.setMaterialFactorsBean( mfb );
-                rdb.setDataItem( temp, number );
+                investigationBean.setDataItem( temp, number );
             } else if ( item.getFieldName().startsWith( "characteristic" ) ) {
                 // each characteristic cannot be empty
                 if ( item.getString() == null || item.getString().length() == 0 ) {
@@ -119,7 +121,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                         item.getFieldName().substring(
                                 14, item.getFieldName().lastIndexOf( '-' ) ) );
                 // take what is already there, and add only those fields that have not been made yet
-                RawDataInfoBean temp = rdb.getDataItem( number );
+                RawDataInfoBean temp = investigationBean.getDataItem( number );
                 if ( temp.getMaterialFactorsBean() == null )
                     temp.setMaterialFactorsBean( new MaterialFactorsBean() );
                 MaterialFactorsBean mfb = temp.getMaterialFactorsBean();
@@ -127,7 +129,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 int pos = Collections.binarySearch( mfb.getCharacteristics(), item.getString() );
                 if ( pos < 0 ) mfb.addCharacteristic( item.getString() );
                 temp.setMaterialFactorsBean( mfb );
-                rdb.setDataItem( temp, number );
+                investigationBean.setDataItem( temp, number );
             } else {
                 continue;
             }

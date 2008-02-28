@@ -3,10 +3,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <%@ page import="org.apache.commons.fileupload.FileItem" %>
 <%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
@@ -38,16 +38,16 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 </jsp:useBean>
 
 <%--One of the properties in the previous form belongs in the RawDataBean--%>
-<jsp:useBean id="rdb"
-             class="uk.ac.cisban.symba.webapp.util.RawDataBean" scope="session">
+<jsp:useBean id="investigationBean"
+             class="uk.ac.cisban.symba.webapp.util.InvestigationBean" scope="session">
 </jsp:useBean>
 
 
 <%
-    // to ensure that there are no problems with the files, delete all files from the rdb
+    // to ensure that there are no problems with the files, delete all files from the investigationBean
     // if any are present.
-    rdb.setAllFileBeans( new ArrayList<FileBean>() );
-    rdb.setAllDataBeans( new ArrayList<RawDataInfoBean>() );
+    investigationBean.setAllFileBeans( new ArrayList<FileBean>() );
+    investigationBean.setAllDataBeans( new ArrayList<RawDataInfoBean>() );
 
     // now start the form handling
     System.out.println( ServletFileUpload.isMultipartContent( request ) );
@@ -55,34 +55,37 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
     ServletFileUpload upload = new ServletFileUpload( factory );
     List items = upload.parseRequest( request );
 
-    // first, iterate through looking for the data type field
+    // first, iterate through looking for the investigation details field
     Iterator itr = items.iterator();
-    String expType = null;
+    String investigationName = null;
+    String investigationIdentifier = null; 
     while ( itr.hasNext() ) {
         FileItem item = ( FileItem ) itr.next();
-        if ( item.isFormField() && item.getFieldName().equals( "dataType" ) ) {
+        if ( item.isFormField() && item.getFieldName().equals( "investigationType" ) ) {
             // currently only one non-file field
-//            System.out.println( "doing field" );
-            System.out.println( item.getFieldName() );
-            System.out.println( item.getString() );
-            // set the experimental data type
-            expType = item.getString();
-//            System.out.println( "done doing field" );
+            // set the experimental investigation type
+            investigationName = item.getString().substring(0, item.getString().indexOf("::Identifier::"));
+            System.err.println( "Investigation Name:" + investigationName + "END");
+            investigationIdentifier = item.getString().substring(item.getString().indexOf("::Identifier::") + 14);
+            System.err.println( "Investigation Identifier:" + investigationIdentifier  + "END");
         }
     }
 
-    // set the data type in the bean
-    rdb.setDataType( expType );
+    // set the investigation details in the bean
+    investigationBean.setTopLevelProtocolName( investigationName );
+    investigationBean.setTopLevelProtocolIdentifier( investigationIdentifier );
     // sort out the 3-letter code for the friendly identifiers
     String threeLetterCode;
-    if ( rdb.getDataType().contains( "Microarray" ) ) {
+    if ( investigationBean.getTopLevelProtocolName().contains( "Microarray" ) ) {
         threeLetterCode = "MCA";
-    } else if ( rdb.getDataType().contains( "Proteomic Analysis" ) ) {
+    } else if ( investigationBean.getTopLevelProtocolName().contains( "Proteomic Analysis" ) ) {
         threeLetterCode = "2DG";
-    } else if ( rdb.getDataType().contains( "Yeast Robot" ) ) {
+    } else if ( investigationBean.getTopLevelProtocolName().contains( "Yeast Robot" ) ) {
         threeLetterCode = "YST";
-    } else if ( rdb.getDataType().contains( "Microscopy" ) ) {
+    } else if ( investigationBean.getTopLevelProtocolName().contains( "Microscopy" ) ) {
         threeLetterCode = "MIC";
+    } else if ( investigationBean.getTopLevelProtocolName().contains( "Carmen" ) ) {
+        threeLetterCode = "CAR";
     } else {
         threeLetterCode = "DEF";
     }
@@ -120,15 +123,15 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             localFileBean.setAFile( afile );
             //System.out.println( item.getName() );
 
-            rdb.addFile( localFileBean );
-            rdb.addDataItem( localRdib );
+            investigationBean.addFile( localFileBean );
+            investigationBean.addDataItem( localRdib );
 
             System.out.println( "done doing file" );
             //TODO make a listener, read line by line
         }
     }
 
-    if ( rdb.getAllFileBeans().isEmpty() ) {
+    if ( investigationBean.getAllFileBeans().isEmpty() ) {
 %>
 
 <c:redirect url="rawData.jsp">
@@ -138,7 +141,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 <%
 } else {
 %>
-<c:redirect url="metaData.jsp">
+<c:redirect url="ChooseAction.jsp">
     <c:param name="msg"
              value="You have entered some data"/>
 </c:redirect>

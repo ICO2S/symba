@@ -3,12 +3,33 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
+<%@ page import="fugeOM.Bio.Data.ExternalData" %>
+<%@ page import="fugeOM.Bio.Material.GenericMaterial" %>
+<%@ page import="fugeOM.Collection.FuGE" %>
+<%@ page import="fugeOM.Common.Audit.Person" %>
+<%@ page import="fugeOM.Common.Description.Description" %>
+<%@ page import="fugeOM.Common.Ontology.OntologySource" %>
+<%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
+<%@ page import="fugeOM.Common.Protocol.AtomicValue" %>
+<%@ page import="fugeOM.Common.Protocol.GenericAction" %>
+<%@ page import="fugeOM.Common.Protocol.GenericParameter" %>
 <%@ page import="fugeOM.Common.Protocol.GenericProtocol" %>
+<%@ page import="org.apache.commons.fileupload.FileItem" %>
+<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.xml.XMLMarshaler" %>
+<%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.io.StringWriter" %>
+<%@ page import="java.util.*" %>
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -52,24 +73,45 @@
         <br/>
     </c:if>
 
-    <p class="bigger">All submitted files must be of the same data type and belong to the same experiment, large data
-        files may take some time to upload</p>
+    <p class="bigger">All submitted files must be of the same investigation type and belong to the same experiment. Large data
+        files may take some time to upload.</p>
 
 
     <form ENCTYPE="multipart/form-data" action="rawDataVerify.jsp" method="post">
 
         <br>
-        <label for="dataType">Investigation Type: </label>
+        <label for="investigationType">Investigation Type: </label>
 
-        <select name="dataType">
+        <select name="investigationType">
             <%
+                // There may be Protocol Dummies. How to ensure that non-dummy version of dummies don't
+                // show up here? A pre-filtering step is done, where only those that should be used are kept.
+                Map<String,String> topLevelNames = new HashMap<String,String>();
+                Set<String> dummies = new HashSet<String>();
                 for ( Object obj : validUser.getReService().getAllLatestGenericProtocols() ) {
                     GenericProtocol gp = ( GenericProtocol ) obj;
                     if ( !gp.getName().contains( "Component" ) ) {
-            %>
-            <option value="<%out.println(gp.getName());%>"><%out.println( gp.getName() );%></option>
-            <%
+                        if (gp.getName().contains(" Dummy")) {
+                            dummies.add( gp.getName());
+                        }
+                        topLevelNames.put(gp.getName(), gp.getEndurant().getIdentifier());
                     }
+                }
+                // If there are any with " Dummy", remove all that don't have the " Dummy" and then remove the
+                // word "Dummy" before displaying.
+                for( String currentDummy : dummies ) {
+                    String fixedName = currentDummy.substring( 0, currentDummy.indexOf( " Dummy" ) ) + currentDummy.substring( currentDummy.indexOf( " Dummy" ) + 6 );
+                    topLevelNames.remove(fixedName);
+                    // now rename the existing dummy key by removing and adding with the new name
+                    String value = topLevelNames.get(currentDummy);
+                    topLevelNames.remove( currentDummy);
+                    topLevelNames.put( fixedName, value);
+
+                }
+
+                // Now add the option element to the HTML
+                for (String key : topLevelNames.keySet()) {
+                    out.println("<option value=\"" + key + "::Identifier::" + topLevelNames.get(key) + "\">" + key + "</option>");
                 }
             %>
         </select><br>

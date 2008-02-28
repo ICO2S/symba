@@ -3,10 +3,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -41,8 +41,8 @@
 
     <ul>
         <li><a class="bigger" href="newOrExisting.jsp">Deposit some data (using a new or existing experiment)</a></li>
-        <li><a class="bigger" href="view.jsp">View your saved experiments</a></li>
-
+        <li><a class="bigger" href="view.jsp">View all of your saved experiments</a></li>
+        <li><a class="bigger" href="search.jsp">Search Experiments</a></li>
         <li><a class="bigger" href="helpBordered.jsp">How to use this site</a></li>
         <li><a class="bigger" href="personalData.jsp">Update your personal details</a></li>
     </ul>

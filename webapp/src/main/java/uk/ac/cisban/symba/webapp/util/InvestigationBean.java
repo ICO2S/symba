@@ -15,14 +15,16 @@ import java.util.List;
 /**
  * @author ollyshaw
  */
-public class RawDataBean implements Serializable {
+public class InvestigationBean implements Serializable {
 
     private List<RawDataInfoBean> allDataBeans;
     private List<FileBean> allFileBeans;
-    private String dataType;
+    private String topLevelProtocolName;
+    private String topLevelProtocolIdentifier; // In the case of SyMBA, this is the endurant's identifier.
 
-    public RawDataBean() {
+    public InvestigationBean() {
         allDataBeans = new ArrayList<RawDataInfoBean>();
+        allFileBeans = new ArrayList<FileBean>();
     }
 
     public List<RawDataInfoBean> getAllDataBeans() {
@@ -33,12 +35,12 @@ public class RawDataBean implements Serializable {
         this.allDataBeans = allDataBeans;
     }
 
-    public String getDataType() {
-        return dataType;
+    public String getTopLevelProtocolName() {
+        return topLevelProtocolName;
     }
 
-    public void setDataType( String dataType ) {
-        this.dataType = dataType;
+    public void setTopLevelProtocolName( String topLevelProtocolName ) {
+        this.topLevelProtocolName = topLevelProtocolName;
     }
 
     public List<FileBean> getAllFileBeans() {
@@ -72,6 +74,16 @@ public class RawDataBean implements Serializable {
     public void clear() {
         this.allDataBeans = new ArrayList<RawDataInfoBean>();
         this.allFileBeans = new ArrayList<FileBean>();
-        this.dataType = "";
+        this.topLevelProtocolName = "";
+        this.topLevelProtocolIdentifier = "";
     }
+
+    public String getTopLevelProtocolIdentifier() {
+        return topLevelProtocolIdentifier;
+    }
+
+    public void setTopLevelProtocolIdentifier( String topLevelProtocolIdentifier ) {
+        this.topLevelProtocolIdentifier = topLevelProtocolIdentifier;
+    }
+
 }

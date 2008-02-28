@@ -21,6 +21,7 @@ import fugeOM.Common.Protocol.*;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
 import uk.ac.cisban.symba.backend.util.CisbanHelper;
+import uk.ac.cisban.symba.backend.util.RetrieveSimple;
 import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper;
 import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper;
 import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanOntologyCollectionHelper;
@@ -48,7 +49,7 @@ public class LoadFuge {
     private final CisbanHelper helper;
     private final RealizableEntityService reService;
     private final ExperimentBean eb;
-    private final RawDataBean rdb;
+    private final InvestigationBean rdb;
     private final ScpBean scp;
     private final PersonBean pb;
     private Person auditor;
@@ -56,7 +57,7 @@ public class LoadFuge {
     /**
      * Creates a new instance of LoadFuge
      */
-    public LoadFuge( ExperimentBean eb, RawDataBean rdb, PersonBean pb, ScpBean scp ) {
+    public LoadFuge( ExperimentBean eb, InvestigationBean rdb, PersonBean pb, ScpBean scp ) {
         this.pb = pb;
         this.reService = pb.getReService();
         this.helper = CisbanHelper.create( reService );
@@ -209,7 +210,7 @@ public class LoadFuge {
 
         if ( investigation.getId() != null ) {
             // Assume this object has changed, assign a new LSID and getNewAuditTrail( person ), and load into the database
-            helper.assignAndLoadIdentifiable( investigation, "fugeOM.Bio.Investigation.Investigation", null );
+            helper.assignAndLoadIdentifiable( investigation, auditor, "fugeOM.Bio.Investigation.Investigation", null );
         } else {
             helper.loadIdentifiable( investigation, auditor, "fugeOM.Bio.Investigation.Investigation", null );
         }
@@ -254,7 +255,6 @@ public class LoadFuge {
             if ( !isAuthenticated )
                 throw new IOException( "Authentication failed." );
 
-            // todo /home/tester should be a global variable
             String directoryForFile = scp.getDirectory() + "/data";
             Session sess = conn.openSession();
             sess.execCommand( "mkdir -p " + directoryForFile );
@@ -280,7 +280,7 @@ public class LoadFuge {
                     "fugeOM.Bio.Data.ExternalData",
                     "fugeOM.Bio.Data.ExternalDataEndurant" );
             externalData.setLocation( fileLSID );
-            if (rdib.getFileFormat() != null) {
+            if ( rdib.getFileFormat() != null ) {
 
                 // we will be updating the ontology collection.
 
@@ -305,7 +305,7 @@ public class LoadFuge {
                     }
                 }
                 // todo proper algorithm
-                boolean matchFound = findMatchingEndurant(rdib.getFileFormat(), ontologyTerms );
+                boolean matchFound = findMatchingEndurant( rdib.getFileFormat(), ontologyTerms );
                 // irrespective of whether or not we found a match, we still need to add the term to the new material
                 OntologyTerm termToAdd = ( OntologyTerm ) reService.findLatestByEndurant( rdib.getFileFormat() );
 
@@ -323,7 +323,7 @@ public class LoadFuge {
                     }
                     ontologyCollection.setOntologyTerms( ontologyTerms );
                     ontologyCollection.setOntologySources( ontologySources );
-             
+
                     // load the fuge object into the database
                     reService.createObInDB( "fugeOM.Collection.OntologyCollection", ontologyCollection );
                     fuge.setOntologyCollection( ontologyCollection );
@@ -528,10 +528,9 @@ public class LoadFuge {
     // the default protocol loader
     // if not Microarray protocol, rdib.getProtocolEndurant() does not get filled.
     // Also assumes a flat structure of only two levels:
-    // all names must include the rdb.getDataType() in order to be found
+    // all names must include the rdb.getTopLevelProtocolName() in order to be found
     // first-level protocol contains a full list of steps
     // second-level protocols are those referenced in the top-level protocol, containing the word "Component", and themselves have no actions
-
     private FuGE loadProtocols( FuGE fuge ) throws RealizableEntityServiceException, LSIDException {
 
         ProtocolCollection protocolCollection = ( ProtocolCollection ) reService
@@ -544,14 +543,14 @@ public class LoadFuge {
         CisbanProtocolCollectionHelper cpc = new CisbanProtocolCollectionHelper(
                 reService, new CisbanIdentifiableHelper( reService, new CisbanDescribableHelper( reService ) ) );
         // The GenericProtocol whose GenericAction is stored from the form will get the data item added to it.
-        Set<Protocol> protocolSet = cpc.addRelevantProtocols( fuge, rdb.getDataType().trim() );
+        Set<Protocol> protocolSet = cpc.addRelevantProtocols( fuge, rdb.getTopLevelProtocolIdentifier().trim() );
 
         // the only thing we cannot figure out at runtime currently is which are "complex" protocols
         // and which are "simple" protocols. This is why there is hard-coding here.
         boolean treatSecondLevelAsAssay = false;
         GenericProtocol assayProtocol = null;
         // All Microarray Experiments are complex, and others are simple (currently)
-        if ( rdb.getDataType().contains( "Example mutant/WT Microarray Investigation" ) ) {
+        if ( rdb.getTopLevelProtocolName().contains( "Example mutant/WT Microarray Investigation" ) ) {
             // The next two are "real" CISBAN protocols, but this one is the particular example for the sandbox
             assayProtocol = ( GenericProtocol ) reService.findLatestByEndurant(
                     "urn:lsid:cisban.cisbs.org:GenProtocolEndurant:71fbd89e-13c7-4ced-9d0d-199abf9956f2" );
@@ -563,7 +562,9 @@ public class LoadFuge {
         protocolCollection.setProtocols( protocolSet );
 
         // Now retrieve all equipment associated with these protocols
-        protocolCollection.setAllEquipment( cpc.addRelevantEquipment( fuge, protocolSet ) );
+        protocolCollection.setAllEquipment(
+                cpc.addRelevantEquipment(
+                        fuge, ( Set<Protocol> ) protocolCollection.getProtocols() ) );
 
         // for each data file that has just been added, it must be assigned to the appropriate GenericAction
         // from the factor Protocol
@@ -619,7 +620,8 @@ public class LoadFuge {
             // there is a problem if there isn't a matching protocol and we aren't treating the second level as an assay
             if ( !treatSecondLevelAsAssay && secondLevelParentProtocol == null ) {
                 System.err.println(
-                        "Error finding parent protocol for first-level action endurant " + rdib.getFactorChoice() );
+                        "Error finding parent protocol and not treating second level as an assay for first-level action endurant " +
+                                rdib.getFactorChoice() );
                 return fuge;
             }
 
@@ -715,10 +717,28 @@ public class LoadFuge {
             // if we are treating the factor GPA as an assay, then add the output here
             // and load into the database.
             if ( treatSecondLevelAsAssay ) {
-                // add the data
-                Set set = new HashSet();
-                set.add( reService.findLatestByEndurant( rdib.getEndurantLsid() ) );
+                // add the data, using a temporary set as it expects a collection.
+                Set<ExternalData> set = new HashSet<ExternalData>();
+                set.add( ( ExternalData ) reService.findLatestByEndurant( rdib.getEndurantLsid() ) );
+
+                // add the output data
                 gpaOfSecondLevelParentProtocol.setGenericOutputData( set );
+
+                // add any deviations from the parameter values, if the associated action has any parameters.
+                // Currently only set up to store one parameter change, and therefore we know that if there
+                // is a new parameter (rdib.getAtomicValue()) then it goes in this GPA.
+                // todo currently only assumes that there will be only one parameter total, if we need to change parameters
+                if ( rdib.getAtomicValue() != null && rdib.getAtomicValue().length() > 0 ) {
+                    Set<AtomicParameterValue> pvSet = new HashSet<AtomicParameterValue>();
+                    AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
+                            "fugeOM.Common.Protocol.AtomicParameterValue" );
+                    atomicParameterValue.setValue( rdib.getAtomicValue() );
+                    atomicParameterValue.setParameter( ( GenericParameter ) reService.findIdentifiable( rdib.getAtomicValueIdentifier() ) );
+                    reService.createObInDB( "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
+                    pvSet.add( atomicParameterValue );
+                    gpaOfSecondLevelParentProtocol.setParameterValues( pvSet );
+                }
+
                 // Print out the types of material present here
                 if ( gpaOfSecondLevelParentProtocol.getGenericOutputMaterials() != null &&
                         !gpaOfSecondLevelParentProtocol.getGenericOutputMaterials().isEmpty() ) {
@@ -728,6 +748,7 @@ public class LoadFuge {
 
                 }
 
+                // add the material
                 if ( rdib.getMaterialFactorsBean() != null ) {
                     // add the material
                     Set set2 = new HashSet();
@@ -810,6 +831,23 @@ public class LoadFuge {
                 Set set = new HashSet();
                 set.add( reService.findLatestByEndurant( rdib.getEndurantLsid() ) );
                 assayGPA.setGenericOutputData( set );
+
+                // add any deviations from the parameter values, if the associated action has any parameters.
+                // Currently only set up to store one parameter change, and therefore we know that if there
+                // is a new parameter (rdib.getAtomicValue()) then it goes in this GPA.
+                // todo currently only assumes that there will be only one parameter total, if we need to change parameters
+                if ( rdib.getAtomicValue() != null && rdib.getAtomicValue().length() > 0 ) {
+                    Set<AtomicParameterValue> pvSet = new HashSet<AtomicParameterValue>();
+                    AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
+                            "fugeOM.Common.Protocol.AtomicParameterValue" );
+                    atomicParameterValue.setValue( rdib.getAtomicValue() );
+                    atomicParameterValue.setParameter( ( GenericParameter ) reService.findIdentifiable( rdib.getAtomicValueIdentifier() ) );
+                    reService.createObInDB( "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
+                    pvSet.add( atomicParameterValue );
+                    assayGPA.setParameterValues( pvSet );
+                }
+
+                // add the material
                 if ( rdib.getMaterialFactorsBean() != null ) {
                     // add the material
                     Set set2 = new HashSet();
@@ -918,6 +956,14 @@ public class LoadFuge {
             }
         }
         protocolCollection.setAllProtocolApps( allGPAs );
+//        System.err.println( "ABOUT TO PRINT OUT PROTOCOL COLLECTION MATERIAL INFO DIRECTLY AFTER SETTING GPAs" );
+//        RetrieveSimple retrieveSimple = new RetrieveSimple();
+//        try {
+//            retrieveSimple.runSimpleRetrieval( reService, protocolCollection );
+//        } catch ( Exception e ) {
+//            e.printStackTrace();
+//            System.err.println( "Error trying to print out the material contents of the fuge protocol collection." );
+//        }
 
         if ( fuge.getProtocolCollection() != null ) {
             protocolCollection.setAllSoftwares( fuge.getProtocolCollection().getAllSoftwares() );
@@ -927,12 +973,23 @@ public class LoadFuge {
         reService.createObInDB( "fugeOM.Collection.ProtocolCollection", protocolCollection );
         fuge.setProtocolCollection( protocolCollection );
 
+//        System.err.println( "ABOUT TO PRINT OUT PROTOCOL COLLECTION MATERIAL INFO DIRECTLY AFTER LOADING INTO DB" );
+//        try {
+//            retrieveSimple.runSimpleRetrieval( reService, fuge.getProtocolCollection() );
+//        } catch ( Exception e ) {
+//            e.printStackTrace();
+//            System.err.println( "Error trying to print out the material contents of the fuge protocol collection." );
+//        }
 
         CisbanOntologyCollectionHelper och = new CisbanOntologyCollectionHelper(
                 reService, new CisbanIdentifiableHelper( reService, new CisbanDescribableHelper( reService ) ) );
         fuge = och.addRelevantOntologyTerms( fuge );
 
         return fuge;
+    }
+
+    private String removeDummyString( String name ) {
+        return name.substring( 0, name.indexOf( " Dummy" ) ) + name.substring( name.indexOf( " Dummy" ) + 6 );
     }
 
     // this method assumes that the experiment is new, and not existing already in the database.

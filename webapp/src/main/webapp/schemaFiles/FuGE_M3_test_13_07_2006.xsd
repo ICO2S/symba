@@ -66,7 +66,7 @@
                         <xsd:annotation>
                             <xsd:documentation>This is a reference to an object (or its subclasses) of type:
                                 <p>
-                                    The data type of the Parameter such as Boolean, integer, String
+                                    The investigation details of the Parameter such as Boolean, integer, String
                                     and can include a specification of whether the parameter can
                                     accept range or other complex value types.
                                 </p>
@@ -1883,7 +1883,7 @@
                     <xsd:annotation>
                         <xsd:documentation>
                             <p>
-                                An optional data type attribute which should be either one of
+                                An optional investigation details attribute which should be either one of
                                 the CORBA Any types or one of the XML Schema simple types.
                             </p>
                             <p>

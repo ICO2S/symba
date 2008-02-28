@@ -42,10 +42,10 @@ public class CisbanHelper {
     private static final Properties EMPTY_PROPS = new Properties();
 
     //     PRODUCTION SERVER
-        private static final LSIDAssigner DEFAULT_ASSIGNER = new LSIDAssigner(
-               new SOAPLocation( "http://metagenome.ncl.ac.uk:8081/authority/assigning" ) );
+    private static final LSIDAssigner DEFAULT_ASSIGNER = new LSIDAssigner(
+            new SOAPLocation( "http://metagenome.ncl.ac.uk:8081/authority/assigning" ) );
 
-         
+
     private static final String DEFAULT_DOMAIN_NAME = "cisban.cisbs.org";
 
     public static CisbanHelper create( RealizableEntityService reService ) {
@@ -82,16 +82,31 @@ public class CisbanHelper {
 
     public Endurant getOrCreateEndurant( String endurantId,
                                          String className,
-                                         PrintStream printStream ) throws RealizableEntityServiceException {
+                                         PrintStream printStream ) throws RealizableEntityServiceException, LSIDException {
         Endurant endurant;
         try {
             endurant = ( Endurant ) reService.findEndurant( endurantId );
             printMessage( "Endurant found, object loaded: " + endurantId, printStream );
         } catch ( fugeOM.service.RealizableEntityServiceException e ) {
             printMessage( "Endurant not yet in database: creating now: " + endurantId, printStream );
-            endurant = ( Endurant ) reService.createEndurantOb( endurantId, className );
-            loadDescribable( endurant, className, printStream );
+            endurant = createAndLoadEndurant( endurantId, className, printStream );
         }
+        return endurant;
+    }
+
+    // creates a new endurant object and loads it into the database without performing any checks.
+    private Endurant createAndLoadEndurant( String endurantId,
+                                            String className,
+                                            PrintStream printStream ) throws RealizableEntityServiceException, LSIDException {
+        Endurant endurant;
+
+        if ( endurantId == null ) {
+            endurant = ( Endurant ) reService.createEndurantOb( getLSID( className ), className );
+        } else {
+            endurant = ( Endurant ) reService.createEndurantOb( endurantId, className );
+        }
+        loadDescribable( endurant, className, printStream );
+
         return endurant;
     }
 
@@ -209,10 +224,10 @@ public class CisbanHelper {
         return fuge;
     }
 
-    public void assignAndLoadIdentifiable( Identifiable i,
-                                           Person p,
-                                           String className,
-                                           PrintStream printStream ) throws RealizableEntityServiceException, LSIDException {
+    public Identifiable assignAndLoadIdentifiable( Identifiable i,
+                                                   Person p,
+                                                   String className,
+                                                   PrintStream printStream ) throws RealizableEntityServiceException, LSIDException {
         String lsid = getLSID( className );
 
         // set the new LSID
@@ -222,6 +237,8 @@ public class CisbanHelper {
         i.setId( null );
 
         loadIdentifiable( i, p, className, printStream );
+
+        return i;
     }
 
     public String getLSID( String className ) throws LSIDException {
@@ -289,6 +306,24 @@ public class CisbanHelper {
         reService.createObInDB( "fugeOM.Common.Audit.Audit", auditInstance );
         auditTrail.add( auditInstance );
         return auditTrail;
+    }
+
+    // Here we want a standalone copy of the object - everything remains the same EXCEPT the endurant, identifier
+    // and id. Then the new object is loaded into the database.
+    public Identifiable overwriteIdsAndLoad( Identifiable identifiable,
+                                             String endurantClassName,
+                                             String identifiableClassName,
+                                             Person person ) throws RealizableEntityServiceException, LSIDException {
+
+        // create a new endurant object and load it in the database
+        Endurant endurant = createAndLoadEndurant( null, endurantClassName, null);
+
+        // overwrite the existing endurant in identifiable with the new one
+        identifiable.setEndurant( endurant );
+
+        // Load the newly-identified object after assigning a new identifier and setting id to null
+        assignAndLoadIdentifiable( identifiable, person, identifiableClassName, null );
+        return identifiable;
     }
 }
 

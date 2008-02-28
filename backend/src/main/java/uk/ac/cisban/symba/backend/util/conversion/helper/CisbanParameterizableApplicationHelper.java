@@ -1,9 +1,8 @@
 package uk.ac.cisban.symba.backend.util.conversion.helper;
 
 import fugeOM.Common.Describable;
-import fugeOM.Common.Protocol.Parameter;
-import fugeOM.Common.Protocol.ParameterValue;
-import fugeOM.Common.Protocol.ParameterizableApplication;
+import fugeOM.Common.Ontology.OntologyTerm;
+import fugeOM.Common.Protocol.*;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
 import fugeOM.util.generatedJAXB2.*;
@@ -46,14 +45,52 @@ public class CisbanParameterizableApplicationHelper {
         Set<ParameterValue> parameterValues = new HashSet<ParameterValue>();
         for ( JAXBElement<? extends FugeOMCommonProtocolParameterValueType> elementXML : parameterizableApplicationXML.getParameterValue() ) {
             FugeOMCommonProtocolParameterValueType pvalueXML = elementXML.getValue();
-            ParameterValue pvalue = ( ParameterValue ) reService.createDescribableOb(
-                    "fugeOM.Common.Protocol.ParameterValue" );
-            pvalue = ( ParameterValue ) cd.unmarshalDescribable( pvalueXML, pvalue );
-            // Set the object to exactly the object is that is associated
-            // with this version group.
-            pvalue.setParameter( ( Parameter ) reService.findIdentifiable( pvalueXML.getParameterRef() ) );
-            reService.createObInDB( "fugeOM.Common.Protocol.ParameterValue", pvalue );
-            parameterValues.add( pvalue );
+
+            if ( pvalueXML instanceof FugeOMCommonProtocolAtomicParameterValueType ) {
+                AtomicParameterValue pvalue = ( AtomicParameterValue ) reService.createDescribableOb(
+                        "fugeOM.Common.Protocol.AtomicParameterValue" );
+                pvalue = ( AtomicParameterValue ) cd.unmarshalDescribable( pvalueXML, pvalue );
+                // Set the object to exactly the object is that is associated
+                // with this version group.
+                pvalue.setParameter( ( Parameter ) reService.findIdentifiable( pvalueXML.getParameterRef() ) );
+                pvalue.setValue( ( ( FugeOMCommonProtocolAtomicParameterValueType ) pvalueXML ).getValue() );
+                reService.createObInDB( "fugeOM.Common.Protocol.AtomicParameterValue", pvalue );
+                parameterValues.add( pvalue );
+            } else if ( pvalueXML instanceof FugeOMCommonProtocolComplexParameterValueType ) {
+                ComplexParameterValue pvalue = ( ComplexParameterValue ) reService.createDescribableOb(
+                        "fugeOM.Common.Protocol.ComplexParameterValue" );
+                pvalue = ( ComplexParameterValue ) cd.unmarshalDescribable( pvalueXML, pvalue );
+                // Set the object to exactly the object is that is associated
+                // with this version group.
+                pvalue.setParameter( ( Parameter ) reService.findIdentifiable( pvalueXML.getParameterRef() ) );
+                pvalue.setParameterValue(
+                        ( OntologyTerm ) reService.findIdentifiable(
+                                ( ( FugeOMCommonProtocolComplexParameterValueType ) pvalueXML ).getParameterValue().getOntologyTermRef() ) );
+                reService.createObInDB( "fugeOM.Common.Protocol.ComplexParameterValue", pvalue );
+                parameterValues.add( pvalue );
+            } else if ( pvalueXML instanceof FugeOMCommonProtocolBooleanParameterValueType ) {
+                BooleanParameterValue pvalue = ( BooleanParameterValue ) reService.createDescribableOb(
+                        "fugeOM.Common.Protocol.BooleanParameterValue" );
+                pvalue = ( BooleanParameterValue ) cd.unmarshalDescribable( pvalueXML, pvalue );
+                // Set the object to exactly the object is that is associated
+                // with this version group.
+                pvalue.setParameter( ( Parameter ) reService.findIdentifiable( pvalueXML.getParameterRef() ) );
+                pvalue.setValue( ( ( FugeOMCommonProtocolBooleanParameterValueType ) pvalueXML ).isValue() );
+                reService.createObInDB( "fugeOM.Common.Protocol.BooleanParameterValue", pvalue );
+                parameterValues.add( pvalue );
+            } else if ( pvalueXML instanceof FugeOMCommonProtocolRangeParameterValueType ) {
+                RangeParameterValue pvalue = ( RangeParameterValue ) reService.createDescribableOb(
+                        "fugeOM.Common.Protocol.RangeParameterValue" );
+                pvalue = ( RangeParameterValue ) cd.unmarshalDescribable( pvalueXML, pvalue );
+                // Set the object to exactly the object is that is associated
+                // with this version group.
+                pvalue.setParameter( ( Parameter ) reService.findIdentifiable( pvalueXML.getParameterRef() ) );
+                pvalue.setLowValue( ( ( FugeOMCommonProtocolRangeParameterValueType ) pvalueXML ).getLowValue() );
+                pvalue.setHighValue( ( ( FugeOMCommonProtocolRangeParameterValueType ) pvalueXML ).getHighValue() );
+                reService.createObInDB( "fugeOM.Common.Protocol.RangeParameterValue", pvalue );
+                parameterValues.add( pvalue );
+            }
+
         }
         parameterizableApplication.setParameterValues( parameterValues );
 
@@ -65,15 +102,54 @@ public class CisbanParameterizableApplicationHelper {
     // exactly the objects asked for.
     public FugeOMCommonProtocolParameterizableApplicationType marshalParameterizableApplication(
             FugeOMCommonProtocolParameterizableApplicationType parameterizableApplicationXML,
-            ParameterizableApplication parameterizableApplication ) {
+            ParameterizableApplication parameterizableApplication ) throws URISyntaxException {
 
         for ( Object obj : parameterizableApplication.getParameterValues() ) {
             ParameterValue pvalue = ( ParameterValue ) obj;
-            FugeOMCommonProtocolParameterValueType pvalueXML = new FugeOMCommonProtocolParameterValueType();
-            pvalueXML.setParameterRef( pvalue.getParameter().getIdentifier() );
-            JAXBElement<? extends FugeOMCommonProtocolParameterValueType> element = ( new ObjectFactory() ).createParameterValue(
-                    pvalueXML );
-            parameterizableApplicationXML.getParameterValue().add( element );
+
+            if ( pvalue instanceof AtomicParameterValue ) {
+                FugeOMCommonProtocolAtomicParameterValueType pvalueXML = new FugeOMCommonProtocolAtomicParameterValueType();
+                pvalueXML = ( FugeOMCommonProtocolAtomicParameterValueType ) cd.marshalDescribable( pvalueXML, pvalue );
+
+                pvalueXML.setParameterRef( pvalue.getParameter().getIdentifier() );
+                pvalueXML.setValue( ( ( AtomicParameterValue ) pvalue ).getValue() );
+                JAXBElement<? extends FugeOMCommonProtocolAtomicParameterValueType> element = ( new ObjectFactory() ).createAtomicParameterValue(
+                        pvalueXML );
+                parameterizableApplicationXML.getParameterValue().add( element );
+            } else if ( pvalue instanceof ComplexParameterValue ) {
+                FugeOMCommonProtocolComplexParameterValueType pvalueXML = new FugeOMCommonProtocolComplexParameterValueType();
+
+                pvalueXML = ( FugeOMCommonProtocolComplexParameterValueType ) cd.marshalDescribable(
+                        pvalueXML, pvalue );
+                pvalueXML.setParameterRef( pvalue.getParameter().getIdentifier() );
+                FugeOMCommonProtocolComplexParameterValueType.ParameterValue temp = new FugeOMCommonProtocolComplexParameterValueType.ParameterValue();
+                temp.setOntologyTermRef( ( ( ComplexParameterValue ) pvalue ).getParameterValue().getIdentifier() );
+                pvalueXML.setParameterValue( temp );
+                JAXBElement<? extends FugeOMCommonProtocolComplexParameterValueType> element = ( new ObjectFactory() ).createComplexParameterValue(
+                        pvalueXML );
+                parameterizableApplicationXML.getParameterValue().add( element );
+            } else if ( pvalue instanceof BooleanParameterValue ) {
+                FugeOMCommonProtocolBooleanParameterValueType pvalueXML = new FugeOMCommonProtocolBooleanParameterValueType();
+
+                pvalueXML = ( FugeOMCommonProtocolBooleanParameterValueType ) cd.marshalDescribable(
+                        pvalueXML, pvalue );
+                pvalueXML.setParameterRef( pvalue.getParameter().getIdentifier() );
+                pvalueXML.setValue( ( ( BooleanParameterValue ) pvalue ).getValue() );
+                JAXBElement<? extends FugeOMCommonProtocolBooleanParameterValueType> element = ( new ObjectFactory() ).createBooleanParameterValue(
+                        pvalueXML );
+                parameterizableApplicationXML.getParameterValue().add( element );
+            } else if ( pvalue instanceof RangeParameterValue ) {
+                FugeOMCommonProtocolRangeParameterValueType pvalueXML = new FugeOMCommonProtocolRangeParameterValueType();
+
+                pvalueXML = ( FugeOMCommonProtocolRangeParameterValueType ) cd.marshalDescribable( pvalueXML, pvalue );
+                pvalueXML.setParameterRef( pvalue.getParameter().getIdentifier() );
+                pvalueXML.setLowValue( ( ( RangeParameterValue ) pvalue ).getLowValue() );
+                pvalueXML.setHighValue( ( ( RangeParameterValue ) pvalue ).getHighValue() );
+                JAXBElement<? extends FugeOMCommonProtocolRangeParameterValueType> element = ( new ObjectFactory() ).createRangeParameterValue(
+                        pvalueXML );
+                parameterizableApplicationXML.getParameterValue().add( element );
+            }
+
         }
         return parameterizableApplicationXML;
     }

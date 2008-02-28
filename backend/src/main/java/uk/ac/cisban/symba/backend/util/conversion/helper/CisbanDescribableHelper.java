@@ -488,12 +488,13 @@ public class CisbanDescribableHelper {
         Set<OntologyTerm> set3 = new HashSet<OntologyTerm>();
 
         // load all the latest versions into the new set.
-        for ( Object obj : describable.getAnnotations() ) {
-            Identifiable identifiable = ( Identifiable ) obj;
-            identifiable = ( Identifiable ) reService.findLatestByEndurant( identifiable.getEndurant().getIdentifier() );
-            set3.add( ( OntologyTerm ) ci.getLatestVersion( identifiable ) );
-        }
-        describable.setAnnotations( set3 );
+// todo why isn't this working?
+//        for ( Object obj : describable.getAnnotations() ) {
+//            Identifiable identifiable = ( Identifiable ) obj;
+//            identifiable = ( Identifiable ) reService.findLatestByEndurant( identifiable.getEndurant().getIdentifier() );
+//            set3.add( ( OntologyTerm ) ci.getLatestVersion( identifiable ) );
+//        }
+//        describable.setAnnotations( set3 );
 
         // ensure the external uri is also completely up to date.
         if ( describable.getExturi() != null ) {

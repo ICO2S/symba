@@ -21,7 +21,6 @@ import fugeOM.Common.Protocol.*;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
 import uk.ac.cisban.symba.backend.util.CisbanHelper;
-import uk.ac.cisban.symba.backend.util.RetrieveSimple;
 import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper;
 import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper;
 import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanOntologyCollectionHelper;
@@ -739,6 +738,80 @@ public class LoadFuge {
                     gpaOfSecondLevelParentProtocol.setParameterValues( pvSet );
                 }
 
+                // add any deviations from the zero or more generic parameters associated with the equipment associated
+                // with the protocol assigned to this data item
+                if ( !rdib.getGenericEquipmentInfo().isEmpty() ) {
+                    Set<EquipmentApplication> eaSet = ( Set<EquipmentApplication> ) gpaOfSecondLevelParentProtocol.getEquipmentApplications();
+
+                    for ( String equipmentKey : ( rdib.getGenericEquipmentInfo() ).keySet() ) {
+                        // Now we can create an EquipmentApplication in the GPA of the second-level (assay)protocol that is
+                        // associated with the correct Equipment object. However, make sure we don't delete any existing
+                        // EquipmentApplications by adding to them rather than by creating a new collection.
+
+                        EquipmentApplication application = ( EquipmentApplication ) reService.createIdentifiableAndEndurantObs(
+                                helper.getLSID( "fugeOM.Common.Protocol.EquipmentApplication" ),
+                                "Application of " +
+                                        ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getEquipmentName() +
+                                        " Equipment",
+                                helper.getLSID( "fugeOM.Common.Protocol.EquipAppEndurant" ),
+                                "fugeOM.Common.Protocol.EquipmentApplication",
+                                "fugeOM.Common.Protocol.EquipAppEndurant" );
+                        application.setAppliedEquipment( ( Equipment ) reService.findLatestByEndurant( equipmentKey ) );
+
+                        // now add the appropriate changes to the original equipment as parameters. We assume that if
+                        // there is a value in getGenericEquipmentInfo, that a new parameterValue set must be made and
+                        // further, will be non-empty
+                        Set<ComplexParameterValue> pvSet = new HashSet<ComplexParameterValue>();
+                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndTerms() != null &&
+                                !( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                        .getParameterAndTerms()
+                                        .isEmpty() ) {
+                            for ( String parameterKey : ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                    .getParameterAndTerms()
+                                    .keySet() ) {
+                                ComplexParameterValue complexParameterValue = ( ComplexParameterValue ) reService.createDescribableOb(
+                                        "fugeOM.Common.Protocol.ComplexParameterValue" );
+                                complexParameterValue.setParameterValue(
+                                        ( OntologyTerm ) reService.findLatestByEndurant(
+                                                ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                                        .getParameterAndTerms().get( parameterKey ) ) );
+                                complexParameterValue.setParameter(
+                                        ( GenericParameter ) reService.findLatestByEndurant(
+                                                parameterKey ) );
+                                reService.createObInDB(
+                                        "fugeOM.Common.Protocol.ComplexParameterValue", complexParameterValue );
+                                pvSet.add( complexParameterValue );
+                            }
+                        }
+                        application.setParameterValues( pvSet );
+
+                        // add any descriptions. As this is a brand-new EA, there will be no existing descriptions
+                        Set<Description> descriptions = new HashSet<Description>();
+                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getFreeTextDescription() != null &&
+                                ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                        .getFreeTextDescription()
+                                        .length() > 0 ) {
+                            Description description = ( Description ) reService.createDescribableOb(
+                                    "fugeOM.Common.Description.Description" );
+                            description.setText( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getFreeTextDescription() );
+                            reService.createObInDB( "fugeOM.Common.Description.Description", description );
+                            descriptions.add( description );
+                        }
+                        application.setDescriptions( descriptions );
+
+                        // load equipment application into database
+                        helper.loadIdentifiable(
+                                application,
+                                auditor,
+                                "fugeOM.Common.Protocol.EquipmentApplication",
+                                System.out );
+                        eaSet.add( application );
+
+                    }
+                    // add the list of EquipmentApplication objects to the assay protocol
+                    gpaOfSecondLevelParentProtocol.setEquipmentApplications( eaSet );
+                }
+
                 // Print out the types of material present here
                 if ( gpaOfSecondLevelParentProtocol.getGenericOutputMaterials() != null &&
                         !gpaOfSecondLevelParentProtocol.getGenericOutputMaterials().isEmpty() ) {
@@ -845,6 +918,80 @@ public class LoadFuge {
                     reService.createObInDB( "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
                     pvSet.add( atomicParameterValue );
                     assayGPA.setParameterValues( pvSet );
+                }
+
+                // add any deviations from the zero or more generic parameters associated with the equipment associated
+                // with the protocol assigned to this data item
+                if ( !rdib.getGenericEquipmentInfo().isEmpty() ) {
+                    Set<EquipmentApplication> eaSet = ( Set<EquipmentApplication> ) assayGPA.getEquipmentApplications();
+
+                    for ( String equipmentKey : ( rdib.getGenericEquipmentInfo() ).keySet() ) {
+                        // Now we can create an EquipmentApplication in the GPA of the second-level (assay)protocol that is
+                        // associated with the correct Equipment object. However, make sure we don't delete any existing
+                        // EquipmentApplications by adding to them rather than by creating a new collection.
+
+                        EquipmentApplication application = ( EquipmentApplication ) reService.createIdentifiableAndEndurantObs(
+                                helper.getLSID( "fugeOM.Common.Protocol.EquipmentApplication" ),
+                                "Application of " +
+                                        ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getEquipmentName() +
+                                        " Equipment",
+                                helper.getLSID( "fugeOM.Common.Protocol.EquipAppEndurant" ),
+                                "fugeOM.Common.Protocol.EquipmentApplication",
+                                "fugeOM.Common.Protocol.EquipAppEndurant" );
+                        application.setAppliedEquipment( ( Equipment ) reService.findLatestByEndurant( equipmentKey ) );
+
+                        // now add the appropriate changes to the original equipment as parameters. We assume that if
+                        // there is a value in getGenericEquipmentInfo, that a new parameterValue set must be made and
+                        // further, will be non-empty
+                        Set<ComplexParameterValue> pvSet = new HashSet<ComplexParameterValue>();
+                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndTerms() != null &&
+                                !( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                        .getParameterAndTerms()
+                                        .isEmpty() ) {
+                            for ( String parameterKey : ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                    .getParameterAndTerms()
+                                    .keySet() ) {
+                                ComplexParameterValue complexParameterValue = ( ComplexParameterValue ) reService.createDescribableOb(
+                                        "fugeOM.Common.Protocol.ComplexParameterValue" );
+                                complexParameterValue.setParameterValue(
+                                        ( OntologyTerm ) reService.findLatestByEndurant(
+                                                ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                                        .getParameterAndTerms().get( parameterKey ) ) );
+                                complexParameterValue.setParameter(
+                                        ( GenericParameter ) reService.findLatestByEndurant(
+                                                parameterKey ) );
+                                reService.createObInDB(
+                                        "fugeOM.Common.Protocol.ComplexParameterValue", complexParameterValue );
+                                pvSet.add( complexParameterValue );
+                            }
+                        }
+                        application.setParameterValues( pvSet );
+
+                        // add any descriptions. As this is a brand-new EA, there will be no existing descriptions
+                        Set<Description> descriptions = new HashSet<Description>();
+                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getFreeTextDescription() != null &&
+                                ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                        .getFreeTextDescription()
+                                        .length() > 0 ) {
+                            Description description = ( Description ) reService.createDescribableOb(
+                                    "fugeOM.Common.Description.Description" );
+                            description.setText( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getFreeTextDescription() );
+                            reService.createObInDB( "fugeOM.Common.Description.Description", description );
+                            descriptions.add( description );
+                        }
+                        application.setDescriptions( descriptions );
+
+                        // load equipment application into database
+                        helper.loadIdentifiable(
+                                application,
+                                auditor,
+                                "fugeOM.Common.Protocol.EquipmentApplication",
+                                System.out );
+                        eaSet.add( application );
+
+                    }
+                    // add the list of EquipmentApplication objects to the assay protocol
+                    assayGPA.setEquipmentApplications( eaSet );
                 }
 
                 // add the material
@@ -986,10 +1133,6 @@ public class LoadFuge {
         fuge = och.addRelevantOntologyTerms( fuge );
 
         return fuge;
-    }
-
-    private String removeDummyString( String name ) {
-        return name.substring( 0, name.indexOf( " Dummy" ) ) + name.substring( name.indexOf( " Dummy" ) + 6 );
     }
 
     // this method assumes that the experiment is new, and not existing already in the database.

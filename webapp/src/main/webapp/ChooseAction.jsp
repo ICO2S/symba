@@ -202,6 +202,7 @@
 <input type="submit" value="Submit"/>
 <input type="button" value="Back" onclick="history.go(-1)"/>
 </form>
+<br/>
 <jsp:include page="helpAndComments.jsp"/>
 
 </div>

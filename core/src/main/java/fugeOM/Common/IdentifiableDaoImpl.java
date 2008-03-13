@@ -31,14 +31,14 @@ public class IdentifiableDaoImpl
     protected String handleFindLatestIdByIdentifier( java.lang.String identifiableIdentifier ) {
         // SHOULD only return one, unless there are two latest objects for the endurant with the same timestamp.
         String queryString = "select i.identifier from fugeOM.Common.Identifiable as i " +
-                "join i.auditTrail as audits " +
+                "join i.auditTrail as audit " +
                 "where i.endurant.identifier = (select iden.endurant.identifier " +
                 "                                 from fugeOM.Common.Identifiable as iden " +
                 "                                where iden.identifier = :identifier) " +
                 "and " +
-                "audits.date = (select max(internalaudits.date) " +
+                "audit.date = (select max(internalaudit.date) " +
                 "                 from fugeOM.Common.Identifiable as iden " +
-                "                 join iden.auditTrail as internalaudits " +
+                "                 join iden.auditTrail as internalaudit " +
                 "                where iden.endurant.id = i.endurant.id)";
         try {
             // should only return one object
@@ -69,11 +69,11 @@ public class IdentifiableDaoImpl
     protected java.lang.String handleFindLatestIdByEndurant( java.lang.String endurantIdentifier ) {
         // SHOULD only return one, unless there are two latest objects for the endurant with the same timestamp.
         String queryString = "select i.identifier from fugeOM.Common.Identifiable as i " +
-                "join i.auditTrail as audits " +
+                "join i.auditTrail as audit " +
                 "where i.endurant.identifier = :identifier " +
                 "and " +
-                "audits.date = (select max(internalaudits.date) from fugeOM.Common.Identifiable as iden " +
-                "               join iden.auditTrail as internalaudits " +
+                "audit.date = (select max(internalaudit.date) from fugeOM.Common.Identifiable as iden " +
+                "               join iden.auditTrail as internalaudit " +
                 "               where iden.endurant.id = i.endurant.id)";
         try {
             // should only return one object
@@ -102,11 +102,11 @@ public class IdentifiableDaoImpl
                 "                                 from fugeOM.Common.Identifiable as iden " +
                 "                                where iden.identifier = :identifier) " +
                 "and " +
-                "audit.date = (select max(internalaudits.date) " +
+                "audit.date = (select max(internalaudit.date) " +
                 "                from fugeOM.Common.Identifiable as iden " +
-                "                join iden.auditTrail as internalaudits " +
+                "                join iden.auditTrail as internalaudit " +
                 "               where iden.endurant.id = i.endurant.id " +
-                "                 and internalaudits.date <= :date) ";
+                "                 and internalaudit.date <= :date) ";
         try {
             org.hibernate.Query queryObject = super.getSession( false ).createQuery( queryString );
             queryObject.setParameter( "identifier", identifier );

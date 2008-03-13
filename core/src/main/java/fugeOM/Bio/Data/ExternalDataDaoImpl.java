@@ -26,13 +26,25 @@ import java.util.List;
 public class ExternalDataDaoImpl
         extends fugeOM.Bio.Data.ExternalDataDaoBase {
     public List getAllLatest( final int transform ) {
-        // Retrieves the latest version of all generic materials in the database
+        // Retrieves the latest version of all external data in the database
         return super.getAllLatest(
                 transform,
-                "select eds from fugeOM.Bio.Data.ExternalData as eds " +
-                        "join eds.auditTrail as audits " +
-                        "where audits.date = (select max(internalaudits.date) from fugeOM.Bio.Data.ExternalData as internaled " +
-                        "  join internaled.auditTrail as internalaudits " +
-                        "  where internaled.endurant.id = eds.endurant.id)" );
+                "select ed from fugeOM.Bio.Data.ExternalData as ed " +
+                        "join ed.auditTrail as audit " +
+                        "where audit.date = (select max(internalaudit.date) from fugeOM.Bio.Data.ExternalData as internaled " +
+                        "  join internaled.auditTrail as internalaudit " +
+                        "  where internaled.endurant.id = ed.endurant.id)" );
+    }
+    public List getAllLatestDummies( final int transform ) {
+        // Retrieves the latest version of all external data in the database with the dummy string present in the name
+        String dummy = "% Dummy%";
+        return super.getAllLatestDummies(
+                transform,
+                "select ed from fugeOM.Bio.Data.ExternalData as ed " +
+                        "join ed.auditTrail as audit " +
+                        "where ed.name like \'" + dummy + "\' " +
+                        "and audit.date = (select max(internalaudit.date) from fugeOM.Bio.Data.ExternalData as internaled " +
+                        "  join internaled.auditTrail as internalaudit " +
+                        "  where internaled.endurant.id = ed.endurant.id)" );
     }
 }

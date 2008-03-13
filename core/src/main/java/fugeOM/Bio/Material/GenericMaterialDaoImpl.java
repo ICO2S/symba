@@ -30,9 +30,9 @@ public class GenericMaterialDaoImpl
         return super.getAllLatest(
                 transform,
                 "select gms from fugeOM.Bio.Material.GenericMaterial as gms " +
-                        "join gms.auditTrail as audits " +
-                        "where audits.date = (select max(internalaudits.date) from fugeOM.Bio.Material.GenericMaterial as internalgm " +
-                        "  join internalgm.auditTrail as internalaudits " +
+                        "join gms.auditTrail as audit " +
+                        "where audit.date = (select max(internalaudit.date) from fugeOM.Bio.Material.GenericMaterial as internalgm " +
+                        "  join internalgm.auditTrail as internalaudit " +
                         "  where internalgm.endurant.id = gms.endurant.id)" );
     }
 
@@ -42,11 +42,11 @@ public class GenericMaterialDaoImpl
         return super.getAllLatestDummies(
                 transform,
                 "select gms from fugeOM.Bio.Material.GenericMaterial as gms " +
-                        "join gms.auditTrail as audits " +
+                        "join gms.auditTrail as audit " +
                         "where gms.name like \'" + dummy + "\' " +
                         "and " +
-                        "audits.date = (select max(internalaudits.date) from fugeOM.Bio.Material.GenericMaterial as internalgm " +
-                        "  join internalgm.auditTrail as internalaudits " +
+                        "audit.date = (select max(internalaudit.date) from fugeOM.Bio.Material.GenericMaterial as internalgm " +
+                        "  join internalgm.auditTrail as internalaudit " +
                         "  where internalgm.endurant.id = gms.endurant.id)" );
     }
 }

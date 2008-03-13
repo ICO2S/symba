@@ -30,9 +30,9 @@ public class OntologyTermDaoImpl
         return super.getAllLatestWithSource(
                 transform,
                 "select ontologyTerms from fugeOM.Common.Ontology.OntologyTerm as ontologyTerms " +
-                        "join ontologyTerms.auditTrail as audits " +
-                        "where audits.date = (select max(internalaudits.date) from fugeOM.Common.Ontology.OntologyTerm as internalterms " +
-                        "  join internalterms.auditTrail as internalaudits " +
+                        "join ontologyTerms.auditTrail as audit " +
+                        "where audit.date = (select max(internalaudit.date) from fugeOM.Common.Ontology.OntologyTerm as internalterms " +
+                        "  join internalterms.auditTrail as internalaudit " +
                         "  where internalterms.endurant.id = ontologyTerms.endurant.id)" +
                         "and ontologyTerms.ontologySource.endurant.identifier = :sourceEndurant", sourceEndurant );
     }
@@ -42,10 +42,10 @@ public class OntologyTermDaoImpl
         return super.getAllLatestUnsourced(
                 transform,
                 "select ontologyTerms from fugeOM.Common.Ontology.OntologyTerm as ontologyTerms " +
-                        "join ontologyTerms.auditTrail as audits " +
-                        "where audits.date = (select max(internalaudits.date) from fugeOM.Common.Ontology.OntologyTerm as internalterms " +
-                        "                     join internalterms.auditTrail as internalaudits " +
-                        "                     where internalterms.endurant.id = sources.endurant.id) " +
+                        "join ontologyTerms.auditTrail as audit " +
+                        "where audit.date = (select max(internalaudit.date) from fugeOM.Common.Ontology.OntologyTerm as internalterms " +
+                        "                     join internalterms.auditTrail as internalaudit " +
+                        "                     where internalterms.endurant.id = ontologyTerms.endurant.id) " +
                         "and ontologyTerms.ontologySource is null");
     }
 }

@@ -30,10 +30,10 @@ public class GenericProtocolApplicationDaoImpl
         return super.getAllLatest(
                 transform,
                 "select gpas from fugeOM.Common.Protocol.GenericProtocolApplication as gpas " +
-                        "join gpas.auditTrail as audits " +
+                        "join gpas.auditTrail as audit " +
                         "where " +
-                        "audits.date = (select max(internalaudits.date) from fugeOM.Common.Protocol.GenericProtocolApplication as internalgpa " +
-                        "  join internalgpa.auditTrail as internalaudits " +
+                        "audit.date = (select max(internalaudit.date) from fugeOM.Common.Protocol.GenericProtocolApplication as internalgpa " +
+                        "  join internalgpa.auditTrail as internalaudit " +
                         "  where internalgpa.endurant.id = gpas.endurant.id)");
     }
 
@@ -43,11 +43,11 @@ public class GenericProtocolApplicationDaoImpl
         return super.getAllLatestDummies(
                 transform,
                 "select gpas from fugeOM.Common.Protocol.GenericProtocolApplication as gpas " +
-                        "join gpas.auditTrail as audits " +
+                        "join gpas.auditTrail as audit " +
                         "where gpas.name like \'" + dummy + "\' " +
                         "and " +
-                        "audits.date = (select max(internalaudits.date) from fugeOM.Common.Protocol.GenericProtocolApplication as internalgpa " +
-                        "  join internalgpa.auditTrail as internalaudits " +
+                        "audit.date = (select max(internalaudit.date) from fugeOM.Common.Protocol.GenericProtocolApplication as internalgpa " +
+                        "  join internalgpa.auditTrail as internalaudit " +
                         "  where internalgpa.endurant.id = gpas.endurant.id)" );
     }
 }

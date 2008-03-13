@@ -28,9 +28,9 @@ public class PersonDaoImpl
         return super.getAllLatest(
                 transform,
                 "select contacts from fugeOM.Common.Audit.Person as contacts " +
-                        "join contacts.auditTrail as audits " +
-                        "where audits.date = (select max(internalaudits.date) from fugeOM.Common.Audit.Person as internalc " +
-                        "  join internalc.auditTrail as internalaudits " +
+                        "join contacts.auditTrail as audit " +
+                        "where audit.date = (select max(internalaudit.date) from fugeOM.Common.Audit.Person as internalc " +
+                        "  join internalc.auditTrail as internalaudit " +
                         "  where internalc.endurant.id = contacts.endurant.id)" );
     }
 }

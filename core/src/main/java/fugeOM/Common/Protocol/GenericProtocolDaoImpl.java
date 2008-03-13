@@ -30,9 +30,9 @@ public class GenericProtocolDaoImpl
         return super.getAllLatest(
                 transform,
                 "select gps from fugeOM.Common.Protocol.GenericProtocol as gps " +
-                        "join gps.auditTrail as audits " +
-                        "where audits.date = (select max(internalaudits.date) from fugeOM.Common.Protocol.GenericProtocol as internalgp " +
-                        "  join internalgp.auditTrail as internalaudits " +
+                        "join gps.auditTrail as audit " +
+                        "where audit.date = (select max(internalaudit.date) from fugeOM.Common.Protocol.GenericProtocol as internalgp " +
+                        "  join internalgp.auditTrail as internalaudit " +
                         "  where internalgp.endurant.id = gps.endurant.id)" );
     }
 }

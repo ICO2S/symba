@@ -28,9 +28,9 @@ public class OntologySourceDaoImpl
         return super.getAllLatest(
                 transform,
                 "select sources from fugeOM.Common.Ontology.OntologySource as sources " +
-                        "join sources.auditTrail as audits " +
-                        "where audits.date = (select max(internalaudits.date) from fugeOM.Common.Ontology.OntologySource as internalsources " +
-                        "                     join internalsources.auditTrail as internalaudits " +
+                        "join sources.auditTrail as audit " +
+                        "where audit.date = (select max(internalaudit.date) from fugeOM.Common.Ontology.OntologySource as internalsources " +
+                        "                     join internalsources.auditTrail as internalaudit " +
                         "                     where internalsources.endurant.id = sources.endurant.id)");
     }
 }

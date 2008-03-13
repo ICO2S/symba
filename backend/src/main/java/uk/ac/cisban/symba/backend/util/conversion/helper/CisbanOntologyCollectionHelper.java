@@ -458,11 +458,14 @@ public class CisbanOntologyCollectionHelper {
         }
 
         ontologyTerms.addAll( addOntologyTermsFromProtocols( fuge.getProtocolCollection(), ontologyTerms ) );
+        ontologyTerms.addAll(
+                addOntologyTermsFromEquipment(
+                        ( Set<Equipment> ) fuge.getProtocolCollection().getAllEquipment(), ontologyTerms ) );
 
         ontologyCollection.setOntologyTerms( ontologyTerms );
         // don't do any checking with ontology sources - just assume that those already present are correct.
         // todo check for new ontology sources associated with the new ontology terms#
-        if ( fuge.getOntologyCollection()!= null && fuge.getOntologyCollection().getOntologySources() != null ) {
+        if ( fuge.getOntologyCollection() != null && fuge.getOntologyCollection().getOntologySources() != null ) {
             ontologyCollection.setOntologySources( fuge.getOntologyCollection().getOntologySources() );
         }
         // load the fuge object into the database
@@ -470,6 +473,39 @@ public class CisbanOntologyCollectionHelper {
         fuge.setOntologyCollection( ontologyCollection );
 
         return fuge;
+    }
+
+    private Set<OntologyTerm> addOntologyTermsFromEquipment( Set<Equipment> allEquipment,
+                                                             Set<OntologyTerm> ontologyTerms ) throws RealizableEntityServiceException {
+        for ( Equipment equipment : allEquipment ) {
+            if ( equipment instanceof GenericEquipment ) {
+                // checking for generic parameters inside the protocol
+                for ( Object gpObj : equipment.getParameters() ) {
+                    if ( gpObj instanceof GenericParameter ) {
+                        ontologyTerms.addAll(
+                                addOntologyTermsFromParameter(
+                                        ( GenericParameter ) gpObj, ontologyTerms ) );
+                    }
+                }
+                // checking for ontology terms elsewhere in the GenericEquipment
+                if ( equipment.getMake() != null ) {
+                    ontologyTerms = addOntologyTermIfFound(
+                            ontologyTerms, equipment.getMake().getEndurant().getIdentifier() );
+                }
+                if ( equipment.getModel() != null ) {
+                    ontologyTerms = addOntologyTermIfFound(
+                            ontologyTerms, equipment.getModel().getEndurant().getIdentifier() );
+                }
+                if ( equipment.getAnnotations() != null && !equipment.getAnnotations().isEmpty() ) {
+                    for ( Object obj : equipment.getAnnotations() ) {
+                        OntologyTerm ot = ( OntologyTerm ) obj;
+                        ontologyTerms = addOntologyTermIfFound(
+                                ontologyTerms, ot.getEndurant().getIdentifier() );
+                    }
+                }
+            }
+        }
+        return ontologyTerms;
     }
 
 
@@ -528,24 +564,27 @@ public class CisbanOntologyCollectionHelper {
             DefaultValue dv = genericParameter.getDefaultValue();
             if ( dv instanceof ComplexValue ) {
                 ComplexValue complexValue = ( ComplexValue ) dv;
-                // todo faster search algorithm
-                boolean found = false;
-                for ( OntologyTerm ot : ontologyTerms ) {
-                    if ( ot.getEndurant()
-                            .getIdentifier()
-                            .equals( complexValue.get_defaultValue().getEndurant().getIdentifier() ) ) {
-                        // this is already present - don't add
-                        found = true;
-                        break;
-                    }
-                }
-                if ( !found ) {
-                    System.err.println( "ADDING: " + complexValue.get_defaultValue().getEndurant().getIdentifier() );
-                    ontologyTerms.add(
-                            ( OntologyTerm ) reService.findLatestByEndurant(
-                                    complexValue.get_defaultValue().getEndurant().getIdentifier() ) );
-                }
+                ontologyTerms = addOntologyTermIfFound(
+                        ontologyTerms, complexValue.get_defaultValue().getEndurant().getIdentifier() );
             }
+        }
+        return ontologyTerms;
+    }
+
+    private Set<OntologyTerm> addOntologyTermIfFound( Set<OntologyTerm> ontologyTerms,
+                                                      String endurantId ) throws RealizableEntityServiceException {
+        // todo faster search algorithm
+        boolean found = false;
+        for ( OntologyTerm ot : ontologyTerms ) {
+            if ( ot.getEndurant().getIdentifier().equals( endurantId ) ) {
+                // this is already present - don't add
+                found = true;
+                break;
+            }
+        }
+        if ( !found ) {
+            System.err.println( "ADDING: " + endurantId );
+            ontologyTerms.add( ( OntologyTerm ) reService.findLatestByEndurant( endurantId ) );
         }
         return ontologyTerms;
     }

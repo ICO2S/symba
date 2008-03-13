@@ -105,6 +105,13 @@ public class CisbanProtocolApplicationHelper {
                 application = ( EquipmentApplication ) ci.unmarshalIdentifiable( typeXML, application );
                 application
                         .setAppliedEquipment( ( Equipment ) reService.findIdentifiable( typeXML.getEquipmentRef() ) );
+
+                if ( typeXML.getParameterValue() != null && typeXML.getParameterValue().size() > 0 ) {
+
+                    application = ( EquipmentApplication ) cparapp.unmarshalParameterizableApplication(
+                            typeXML, application );
+                }
+
                 if ( application.getId() != null ) {
                     helper.assignAndLoadIdentifiable(
                             application, "fugeOM.Common.Protocol.EquipmentApplication", System.err );
@@ -206,6 +213,12 @@ public class CisbanProtocolApplicationHelper {
                 typeXML = ( FugeOMCommonProtocolEquipmentApplicationType ) ci
                         .marshalIdentifiable( typeXML, application );
                 typeXML.setEquipmentRef( application.getAppliedEquipment().getIdentifier() );
+                if ( application.getParameterValues() != null && application.getParameterValues().size() > 0 ) {
+
+                    typeXML = ( FugeOMCommonProtocolEquipmentApplicationType ) cparapp
+                            .marshalParameterizableApplication(
+                                    typeXML, application );
+                }
                 genericProtocolApplicationXML.getEquipmentApplication().add( typeXML );
             }
             for ( Object o : protocolApplication.getActionApplications() ) {

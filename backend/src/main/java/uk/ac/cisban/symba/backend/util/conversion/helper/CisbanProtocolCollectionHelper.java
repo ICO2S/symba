@@ -220,15 +220,18 @@ public class CisbanProtocolCollectionHelper {
     }
 
     // We go through all equipment referenced in the protocols in protocolSet, retrieving all present.
-    // These will get added to the experiment.
+    // These will get added to the experiment. ALWAYS ignore Dummy Equipment, if present.
     public Set<Equipment> addRelevantEquipment( FuGE fuge,
                                                 Set<Protocol> protocolSet ) throws RealizableEntityServiceException {
-        Set<Equipment> equipmentSet;
+
+        Set equipmentSet;
+
         if ( fuge.getProtocolCollection() != null && fuge.getProtocolCollection().getAllEquipment() != null ) {
             equipmentSet = ( Set<Equipment> ) fuge.getProtocolCollection().getAllEquipment();
         } else {
             equipmentSet = new HashSet<Equipment>();
         }
+
 
         for ( Protocol obj : protocolSet ) {
             if ( obj instanceof GenericProtocol ) {
@@ -237,9 +240,11 @@ public class CisbanProtocolCollectionHelper {
                 if ( gp.getGenPrtclToEquip() != null ) {
                     for ( Object equipObj : gp.getGenPrtclToEquip() ) {
                         if ( equipObj instanceof GenericEquipment ) {
-                            if ( !equipmentSet.contains( equipObj ) ) {
-                                // the current equipment is not yet in the experiment. Add it.
-                                equipmentSet.add( ( GenericEquipment ) equipObj );
+                            if ( !( ( GenericEquipment ) equipObj ).getName().contains( " Dummy" ) ) {
+                                if ( !equipmentSet.contains( equipObj ) ) {
+                                    // the current equipment is not yet in the experiment. Add it.
+                                    equipmentSet.add( ( GenericEquipment ) equipObj );
+                                }
                             }
                         }
                     }

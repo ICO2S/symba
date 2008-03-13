@@ -4,6 +4,7 @@ import com.ibm.lsid.LSIDException;
 import fugeOM.Common.Ontology.OntologyTerm;
 import fugeOM.Common.Protocol.Equipment;
 import fugeOM.Common.Protocol.GenericEquipment;
+import fugeOM.Common.Protocol.GenericParameter;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
 import fugeOM.util.generatedJAXB2.*;
@@ -11,6 +12,8 @@ import uk.ac.cisban.symba.backend.util.CisbanHelper;
 
 import javax.xml.bind.JAXBElement;
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
 
 /*
  * This file is part of SyMBA.

@@ -48,7 +48,7 @@ public class CisbanGenericEquipmentHelper {
             genericParameters.add( ( GenericParameter ) cp.unmarshalParameter( genericParameterXML ) );
         }
         if ( !genericParameters.isEmpty() )
-            genericEquipment.setEquipmentParameters( genericParameters );
+            genericEquipment.setParameters( genericParameters );
 
         Set<GenericEquipment> genericEquipments = new HashSet<GenericEquipment>();
         for ( FugeOMCommonProtocolGenericEquipmentType.GenericEquipmentParts referencedXML : genericEquipmentXML.getGenericEquipmentParts() ) {
@@ -79,7 +79,7 @@ public class CisbanGenericEquipmentHelper {
 
         // set any GenericEquipment-specific traits
 
-        for ( Object obj : genericEquipment.getEquipmentParameters() ) {
+        for ( Object obj : genericEquipment.getParameters() ) {
             GenericParameter parameter = ( GenericParameter ) obj;
             // set fuge object
             genericEquipmentXML.getGenericParameter()

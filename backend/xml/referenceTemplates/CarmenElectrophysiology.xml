@@ -107,22 +107,42 @@ concrete protocols have been made.
             </GenericAction>
         </GenericProtocol>
 
+        <!--
+        Equipment, like Protocols, must remain unchanged from their initial state. Any changes to the equipment
+        in a particular GPA must be captured using the equipmentApplication attribute of that GPA.
+        This means that any *changeable* values must be captured in a GenericParameter (e.g. using a ComplexValue).
+        Anything in the other sections (e.g. annotations, make, model) will be considered unchangeable, and will
+        *not* be modified.
+        -->
         <GenericEquipment name="Electrode"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:6b6e7a48-3cd5-4bad-873c-687e2fe9023c"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8">
-            <make OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OnntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
-            <descriptions>
-                <Description text="Dummy"/>
-            </descriptions>
+            <make OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
             <annotations
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:7d568bc8-23cd-4622-bfde-26358544c086"/>
+            <GenericParameter name="Make"
+                              endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
+                              identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e00c31ac-d167-4b83-b59d-b16a900f44e7">
+                <ComplexValue>
+                    <_defaultValue OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
+                </ComplexValue>
+                <!-- <unit> element is optional, but Frank should include it later -->
+            </GenericParameter>
         </GenericEquipment>
 
 
         <GenericEquipment name="Amplifier"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:c6759d86-cd3f-48e6-b36e-3d2fcbf88c51"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965">
-            <make OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OnntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
+            <make OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
+            <GenericParameter name="Make"
+                              endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:551ec38d-4d67-43dc-91ed-177c79c4be25"
+                              identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f11c31ac-d167-4b83-b59d-b16a900f44e7">
+                <ComplexValue>
+                    <_defaultValue OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
+                </ComplexValue>
+                <!-- <unit> element is optional, but Frank should include it later -->
+            </GenericParameter>
         </GenericEquipment>
 
         <GenericProtocolApplication
@@ -130,7 +150,9 @@ concrete protocols have been made.
                 name="Parameters Associated with Creating the Data File Dummy for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:e3388dc8-371c-4f2f-bdb9-24f52a96983e"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:bb550d13-b25b-42d6-8b37-1260df6a770f">
-              <AtomicParameterValue Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7" value="1"/>
+            <AtomicParameterValue
+                    Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7"
+                    value="1"/>
         </GenericProtocolApplication>
 
 
@@ -202,12 +224,12 @@ concrete protocols have been made.
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:77fb941a-e1cf-473a-92a3-e190f77df5a3"/>
 
         <OntologyIndividual termAccession="accession to come" term="Multi Channel Systems"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OnntologySource:80441996-dd20-49ab-9409-7689b5836e43"
-                            endurant="urn:lsid:cisban.cisbs.org:OnntologyIndvEndurant:880ee8f7-aedc-4941-8257-45c052884b1f"
-                            identifier="urn:lsid:cisban.cisbs.org:OnntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:80441996-dd20-49ab-9409-7689b5836e43"
+                            endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:880ee8f7-aedc-4941-8257-45c052884b1f"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
 
         <OntologyIndividual termAccession="accession to come" term="Two dimensional array"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OnntologySource:468ab0fe-54e4-4c9b-9410-2bb276f2a6e6"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:468ab0fe-54e4-4c9b-9410-2bb276f2a6e6"
                             endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:20aff400-c40a-4189-8fe8-aea3d8d062e8"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:7d568bc8-23cd-4622-bfde-26358544c086"/>
 
@@ -234,13 +256,13 @@ concrete protocols have been made.
 
         <OntologySource ontologyURI="http://www.carmen.org.uk"
                         name="Electrode configuration"
-                        endurant="urn:lsid:cisban.cisbs.org:OnntologySourceEndurant:42f83e52-880d-42bd-b754-937590be435f"
-                        identifier="urn:lsid:cisban.cisbs.org:OnntologySource:468ab0fe-54e4-4c9b-9410-2bb276f2a6e6"/>
+                        endurant="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:42f83e52-880d-42bd-b754-937590be435f"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:468ab0fe-54e4-4c9b-9410-2bb276f2a6e6"/>
 
         <OntologySource ontologyURI="http://www.carmen.org.uk"
                         name="Manufacturer"
-                        endurant="urn:lsid:cisban.cisbs.org:OnntologySourceEndurant:c0a3f035-4280-49d4-ba33-03dd3b36af5f"
-                        identifier="urn:lsid:cisban.cisbs.org:OnntologySource:80441996-dd20-49ab-9409-7689b5836e43"/>
+                        endurant="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:c0a3f035-4280-49d4-ba33-03dd3b36af5f"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:80441996-dd20-49ab-9409-7689b5836e43"/>
 
         <OntologySource ontologyURI="http://www.carmen.org.uk"
                         name="Species"

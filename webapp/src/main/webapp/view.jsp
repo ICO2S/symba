@@ -38,14 +38,16 @@
         List<String> ids;
         if ( request.getParameter( "experimentName" ) != null &&
                 request.getParameter( "experimentName" ).length() > 0 ) {
+            out.println( "<h3>Search Term: " + request.getParameter( "experimentName" ) + "</h3>" );
             ids = validUser.getReService()
                     .getAllLatestExperimentIdsWithName( request.getParameter( "experimentName" ) );
-            out.println( "<h3>Search Term: " + request.getParameter( "experimentName" ) + "</h3>" );
         } else if ( request.getParameter( "ontologyTerm" ) != null &&
                 request.getParameter( "ontologyTerm" ).length() > 0 ) {
+            out.println( "<!-- Search Term: " + request.getParameter( "ontologyTerm" ) + " -->" );
             ids = validUser.getReService()
                     .getAllLatestExperimentIdsWithOntologyTerm( request.getParameter( "ontologyTerm" ) );
-            out.println( "<h3>Search Term: " + request.getParameter( "ontologyTerm" ) + "</h3>" );
+        } else if ( request.getParameter( "showAll" ) != null && request.getParameter( "showAll" ).length() > 0 ) {
+            ids = validUser.getReService().getAllLatestExperimentIds();
         } else {
             ids = validUser.getReService().getAllLatestExpIdsWithContact( validUser.getEndurantLsid() );
         }
@@ -59,8 +61,15 @@
     </h2>
     <%
     } else {
-        out.println( "<h3>" + ids.size() + " Experiments Retrieved</h3>" );
-        out.println("For further searches, please visit our <a href=\"search.jsp\">Search Page</a><br/>");
+        if ( ids.size() == 1 ) {
+            out.println( "<h3>" + ids.size() + " Experiment Retrieved</h3>" );
+        } else {
+            out.println( "<h3>" + ids.size() + " Experiments Retrieved</h3>" );
+        }
+//        for (String id : ids) {
+//            out.println(id + "<br/>");
+//        }
+        out.println( "For further searches, please visit our <a href=\"search.jsp\">Search Page</a><br/>" );
     %>
     <h2>Your Data is shown below <a
             href="help.jsp#viewExperiments"

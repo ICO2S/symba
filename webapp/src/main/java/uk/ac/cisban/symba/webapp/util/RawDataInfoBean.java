@@ -1,6 +1,8 @@
 package uk.ac.cisban.symba.webapp.util;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * This file is part of SyMBA.
@@ -32,11 +34,13 @@ public class RawDataInfoBean implements Serializable {
     private String atomicValueIdentifier;
     private String chosenChildProtocolName;
     private String chosenChildProtocolIdentifier; // In the case of SyMBA, this is the endurant's identifier.
+    private Map<String, GenericEquipmentSummary> genericEquipmentInfo;
 
     // this will only be filled if it is a Microscopy protocol
     private MaterialFactorsBean materialFactorsBean;
 
     public RawDataInfoBean() {
+        genericEquipmentInfo = new HashMap<String, GenericEquipmentSummary>();
     }
 
     public File getAfile() {
@@ -116,6 +120,7 @@ public class RawDataInfoBean implements Serializable {
         this.atomicValueIdentifier = "";
         this.chosenChildProtocolName = "";
         this.chosenChildProtocolIdentifier = "";
+        this.genericEquipmentInfo.clear();
     }
 
     public String getDataName() {
@@ -157,6 +162,7 @@ public class RawDataInfoBean implements Serializable {
     public void setAtomicValue( String atomicValue ) {
         this.atomicValue = atomicValue;
     }
+
     public String getChosenChildProtocolName() {
         return chosenChildProtocolName;
     }
@@ -179,5 +185,17 @@ public class RawDataInfoBean implements Serializable {
 
     public void setAtomicValueIdentifier( String atomicValueIdentifier ) {
         this.atomicValueIdentifier = atomicValueIdentifier;
+    }
+
+    public Map<String, GenericEquipmentSummary> getGenericEquipmentInfo() {
+        return genericEquipmentInfo;
+    }
+
+    public void setGenericEquipmentInfo( Map<String, GenericEquipmentSummary> genericEquipmentInfo ) {
+        this.genericEquipmentInfo = genericEquipmentInfo;
+    }
+
+    public void setGenericEquipmentInfoValue( String key, GenericEquipmentSummary summary ) {
+        this.genericEquipmentInfo.put( key, summary );
     }
 }

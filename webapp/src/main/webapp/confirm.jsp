@@ -11,9 +11,28 @@
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
+<%@ page import="fugeOM.Bio.Data.ExternalData" %>
+<%@ page import="fugeOM.Bio.Material.GenericMaterial" %>
+<%@ page import="fugeOM.Collection.FuGE" %>
+<%@ page import="fugeOM.Common.Audit.Person" %>
+<%@ page import="fugeOM.Common.Description.Description" %>
+<%@ page import="fugeOM.Common.Ontology.OntologySource" %>
 <%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
-<%@ page import="fugeOM.Common.Protocol.GenericAction" %>
-<%@ page import="uk.ac.cisban.symba.webapp.util.RawDataInfoBean" %>
+<%@ page import="fugeOM.Common.Protocol.*" %>
+<%@ page import="org.apache.commons.fileupload.FileItem" %>
+<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanProtocolCollectionHelper" %>
+<%@ page import="uk.ac.cisban.symba.backend.util.conversion.xml.XMLMarshaler" %>
+<%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.io.StringWriter" %>
+<%@ page import="java.util.*" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
 </jsp:useBean>
@@ -149,27 +168,68 @@
             out.println( "</a>" );
             out.println( "</li>" );
         }
-        if (info.getFileFormat() != null) {
-            out.println( "<li>You have specified a file format for the external data file: " );
+        if ( info.getFileFormat() != null ) {
+            out.println( "<li>You have specified a file format for the data file: " );
             out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-            out.println( info.getFileFormat());
+            out.println( info.getFileFormat() );
             out.println( "</a>" );
             out.println( "</li>" );
         }
-         if (info.getAtomicValue() != null) {
-            out.println( "<li>You have specified a value for one of the GenericParameters for this step in the workflow: " );
+        if ( info.getAtomicValue() != null ) {
+            out.println(
+                    "<li>You have specified a value for one of the GenericParameters for this step in the workflow: " );
             out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-            out.println( info.getAtomicValue());
+            out.println( info.getAtomicValue() );
             out.println( "</a>" );
+            out.println( "</li>" );
+        }
+        if ( info.getGenericEquipmentInfo() != null && !info.getGenericEquipmentInfo().isEmpty() ) {
+            // print out information on each of the associated equipment items
+            out.println( "<li>" );
+            out.println( "You have provided information about the equipment used with this data file. " );
+            out.println( "The equipment has the following properties: " );
+            out.println( "<ul>" );
+
+            for ( GenericEquipmentSummary value : info.getGenericEquipmentInfo().values() ) {
+                out.println( "<li>Information for the " + value.getEquipmentName() + ": " );
+
+                out.println( "<ul>" );
+
+                out.println( "<li>Free-Text Description: " );
+                out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+                out.println( value.getFreeTextDescription() );
+                out.println( "</a>" );
+                out.println( "</li>" );
+
+                out.println( "<li>Ontology Terms further describing this " + value.getEquipmentName() + ":" );
+                out.println( "<ul>" );
+                for ( String paramValue : value.getParameterAndTerms().values() ) {
+                    out.println( "<li><a class=\"bigger\" href=\"metaData.jsp\">" );
+                    out.println(
+                            ( ( OntologyTerm ) validUser.getReService()
+                                    .findLatestByEndurant( paramValue ) ).getTerm() );
+                    out.println( "</a>" );
+                    out.println( "</li>" );
+                }
+                out.println( "</ul>" );
+                out.println( "</li>" );
+
+                out.println( "</ul>" );
+
+                out.println( "</li>" );
+            }
+            out.println( "</ul>" );
             out.println( "</li>" );
         }
         if ( info.getMaterialFactorsBean() != null ) {
             out.println( "<li>" );
-            out.println( "You have provided information about the material used in the experiment. " );
+            out.println(
+                    "You have provided information about the material used in this step of the workflow with this data file. " );
             out.println( "This material has the following properties " );
             out.println( "<ul>" );
 
-            if ( info.getMaterialFactorsBean().getMaterialName() != null && info.getMaterialFactorsBean().getMaterialName().length() > 0) {
+            if ( info.getMaterialFactorsBean().getMaterialName() != null &&
+                    info.getMaterialFactorsBean().getMaterialName().length() > 0 ) {
                 out.println( "<li>Name/Identifying Number: " );
                 out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
                 out.println( info.getMaterialFactorsBean().getMaterialName() );
@@ -187,7 +247,8 @@
                 out.println( "</li>" );
             }
 
-            if ( info.getMaterialFactorsBean().getTreatmentInfo() != null && !info.getMaterialFactorsBean().getTreatmentInfo().isEmpty() ) {
+            if ( info.getMaterialFactorsBean().getTreatmentInfo() != null &&
+                    !info.getMaterialFactorsBean().getTreatmentInfo().isEmpty() ) {
                 out.println( "<li>Treatments: " );
                 out.println( "<ol>" );
                 for ( String treatment : info.getMaterialFactorsBean().getTreatmentInfo() ) {
@@ -200,7 +261,8 @@
                 out.println( "</ol>" );
                 out.println( "</li>" );
             }
-            if ( info.getMaterialFactorsBean().getCharacteristics() != null && !info.getMaterialFactorsBean().getCharacteristics().isEmpty() ) {
+            if ( info.getMaterialFactorsBean().getCharacteristics() != null &&
+                    !info.getMaterialFactorsBean().getCharacteristics().isEmpty() ) {
                 out.println( "<li>General Characteristics: " );
                 out.println( "<ol>" );
                 for ( String characteristics : info.getMaterialFactorsBean().getCharacteristics() ) {

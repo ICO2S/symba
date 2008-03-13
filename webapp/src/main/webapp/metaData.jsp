@@ -147,8 +147,6 @@
                 }
             }
         }
-
-        out.println( "<br>" );
         out.println( "<br>" );
 
         // sometimes, we may get factors from Materials associated with the experiment. Search the materials
@@ -331,15 +329,9 @@
 
         // we also allow developers to have a file format for their ExternalData associated with the experiment.
         // Search the ExternalData for dummies named with the name of the current experiment.
-        for ( Object obj : validUser.getReService().getAllLatestExternalData() ) {
+        for ( Object obj : validUser.getReService().getAllLatestExternalData( true ) ) {
             ExternalData externalData = ( ExternalData ) validUser.getReService().greedyGet( obj );
-            if ( externalData.getName().trim().contains( investigationBean.getTopLevelProtocolName().trim() ) &&
-                    externalData.getName().trim().contains( "Dummy" ) ) {
-                // The displayName is just the name for this group of questions we are about to give to the user.
-                // Should be something like "File Formats".
-                String displayName = externalData.getName()
-                        .substring( 0, externalData.getName().indexOf( " Dummy" ) )
-                        .trim();
+            if ( externalData.getName().trim().contains( investigationBean.getTopLevelProtocolName().trim() ) ) {
 
                 // Now, retrieve the file format (singular). It references an OntologyTerm, which in turn is associated
                 // with an OntologySource. Instead of displaying just the referenced OntologyTerm, a pull-down menu
@@ -388,6 +380,104 @@
                 break;
             }
 
+        }
+
+        // we also allow developers choose various settings for their GenericEquipment associated with the experiment.
+        // Any value stored in a GenericParameter is changeable. Any value in other references to ontology terms
+        // (e.g. make, model, annotations) is considered constant and unchangeable.
+        // Search the GenericEquipment for GenericParameters, and print out their options.
+        GenericProtocol chosenProtocol = ( GenericProtocol ) validUser.getReService()
+                .findLatestByEndurant( info.getChosenChildProtocolIdentifier() );
+        chosenProtocol = ( GenericProtocol ) validUser.getReService().greedyGet( chosenProtocol );
+
+        if ( chosenProtocol.getGenPrtclToEquip() != null ) {
+            for ( Object obj : chosenProtocol.getGenPrtclToEquip() ) {
+                GenericEquipment genericEquipment = ( GenericEquipment ) validUser.getReService().greedyGet( obj );
+
+
+                // we're only interested in making more fields in the form if there are any GenericParameters here.
+                if ( genericEquipment.getParameters() != null && !genericEquipment.getParameters().isEmpty() ) {
+
+                    // Provide the name of the equipment as a hidden variable
+                    out.println(
+                            "<input type=\"hidden\" name=\"equipmentName::" +
+                                    genericEquipment.getEndurant().getIdentifier() + "::" + iii + "\" value=\"" +
+                                    genericEquipment.getName() + "\"><br>" );
+
+                    // Now allow a free-text description of the Equipment, to be added in the final stages to the
+                    // EquipmentApplication element of this protocol's GPA.
+                    String nameOfDescriptionField =
+                            "equipmentDescription::" + genericEquipment.getEndurant().getIdentifier() + "::" + iii;
+                    out.println(
+                            "<label for=\"" + nameOfDescriptionField + "\">Description of the " +
+                                    genericEquipment.getName() + ":</label>" );
+                    out.println(
+                            "<textarea id=\"" + nameOfDescriptionField + "\" name=\"" + nameOfDescriptionField +
+                                    "\" rows=\"5\" cols=\"40\"></textarea><br>" );
+
+                    // Now, retrieve all parameters (currently only valid for ComplexValues). It references an OntologyTerm,
+                    //  which in turn is associated with an OntologySource. Instead of displaying just the referenced
+                    // OntologyTerm, a pull-down menu should be displayed of ALL of the OntologyTerms in the database
+                    // associated with that OntologySource.
+                    for ( Object paramObj : genericEquipment.getParameters() ) {
+                        if ( paramObj instanceof GenericParameter &&
+                                ( ( GenericParameter ) paramObj ).getDefaultValue() instanceof ComplexValue ) {
+                            GenericParameter genericParameter = ( GenericParameter ) paramObj;
+                            ComplexValue complexValue = ( ComplexValue ) ( ( GenericParameter ) paramObj ).getDefaultValue();
+                            out.println( "<br>" );
+                            out.println(
+                                    "<p class=\"bigger\">Next, please choose from among the following terms to identify the " +
+                                            genericEquipment.getName() + ".</p>" );
+
+                            List genericList = validUser.getReService()
+                                    .getAllLatestTermsWithSource(
+                                            complexValue.get_defaultValue()
+                                                    .getOntologySource()
+                                                    .getEndurant().getIdentifier() );
+                            List<OntologyTerm> ontologyTerms = genericList;
+                            if ( !ontologyTerms.isEmpty() ) {
+
+                                // the ontology source for this complex value may have a description which tells the user
+                                // how to select the correct ontology term. Check for that.
+                                OntologySource ontologySource = complexValue.get_defaultValue().getOntologySource();
+                                ontologySource = ( OntologySource ) validUser.getReService()
+                                        .findLatestByEndurant( ontologySource.getEndurant().getIdentifier() );
+
+                                String nameOfField = "parameterOfEquipment::" +
+                                        genericEquipment.getEndurant().getIdentifier() + "::" +
+                                        genericParameter.getEndurant().getIdentifier() + "::" + iii;
+                                String nameOfParameter = "term"; // default
+                                if ( genericParameter.getParameterType() != null ) {
+                                    nameOfParameter = genericParameter.getParameterType().getTerm();
+                                }
+                                String instructions =
+                                        "<label for=\"" + nameOfField + "\">Please select your " + nameOfParameter +
+                                                ":</label>";
+                                for ( Object descObj : ontologySource.getDescriptions() ) {
+                                    Description desc = ( Description ) descObj;
+                                    if ( desc.getText().startsWith( "Instructions: " ) ) {
+                                        instructions =
+                                                "<label for=\"" + nameOfField + "\">" + desc.getText().substring( 14 ) +
+                                                        "</label>";
+                                    }
+                                }
+
+                                out.println( instructions );
+                                out.println( "<select name=\"" + nameOfField + "\">" );
+                                for ( OntologyTerm ot : ontologyTerms ) {
+                                    out.println(
+                                            "<option value= \"" + ot.getEndurant().getIdentifier() + "\">" +
+                                                    ot.getTerm() +
+                                                    "</option>" );
+                                }
+                                out.println( "</select>" );
+                                out.println( "<br>" );
+                            }
+                        }
+                    }
+                }
+                // we allow multiple dummy equipment items per experiment
+            }
         }
     }
 

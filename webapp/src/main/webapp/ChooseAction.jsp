@@ -132,7 +132,9 @@
                         // Currently only works for Actions that are no more than one removed from the top-level actions.
                         else {
                             selectAmongLowerLevelActionsList.add(
-                                    "<option value= \"" + genericAction.getEndurant().getIdentifier() + "\">" +
+                                    "<option value= \"" + genericAction.getEndurant().getIdentifier() + "::" +
+                                            genericAction.getGenProtocolRef().getEndurant().getIdentifier() + "::" +
+                                            genericAction.getGenProtocolRef().getName() + "\">" + 
                                             genericAction.getName() +
                                             "</option>" );
                         }

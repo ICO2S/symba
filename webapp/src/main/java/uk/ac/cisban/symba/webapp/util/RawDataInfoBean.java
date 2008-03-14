@@ -34,6 +34,8 @@ public class RawDataInfoBean implements Serializable {
     private String atomicValueIdentifier;
     private String chosenChildProtocolName;
     private String chosenChildProtocolIdentifier; // In the case of SyMBA, this is the endurant's identifier.
+    private String chosenSecondLevelChildProtocolName;  // only used when using 2nd-level protocols
+    private String chosenSecondLevelChildProtocolIdentifier; // only used when using 2nd-level protocols. In the case of SyMBA, this is the endurant's identifier.
     private Map<String, GenericEquipmentSummary> genericEquipmentInfo;
 
     // this will only be filled if it is a Microscopy protocol
@@ -120,6 +122,8 @@ public class RawDataInfoBean implements Serializable {
         this.atomicValueIdentifier = "";
         this.chosenChildProtocolName = "";
         this.chosenChildProtocolIdentifier = "";
+        this.chosenSecondLevelChildProtocolName = "";
+        this.chosenSecondLevelChildProtocolIdentifier = "";
         this.genericEquipmentInfo.clear();
     }
 
@@ -177,6 +181,22 @@ public class RawDataInfoBean implements Serializable {
 
     public void setChosenChildProtocolIdentifier( String chosenChildProtocolIdentifier ) {
         this.chosenChildProtocolIdentifier = chosenChildProtocolIdentifier;
+    }
+
+    public String getChosenSecondLevelChildProtocolName() {
+        return chosenSecondLevelChildProtocolName;
+    }
+
+    public void setChosenSecondLevelChildProtocolName( String chosenSecondLevelChildProtocolName ) {
+        this.chosenSecondLevelChildProtocolName = chosenSecondLevelChildProtocolName;
+    }
+
+    public String getChosenSecondLevelChildProtocolIdentifier() {
+        return chosenSecondLevelChildProtocolIdentifier;
+    }
+
+    public void setChosenSecondLevelChildProtocolIdentifier( String chosenSecondLevelChildProtocolIdentifier ) {
+        this.chosenSecondLevelChildProtocolIdentifier = chosenSecondLevelChildProtocolIdentifier;
     }
 
     public String getAtomicValueIdentifier() {

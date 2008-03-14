@@ -78,6 +78,18 @@
     //        todo this entire page needs generification
     for ( int iii = 0; iii < investigationBean.getAllDataBeans().size(); iii++ ) {
         RawDataInfoBean info = investigationBean.getDataItem( iii );
+
+        // ensure that we choose the 2nd-level "chosen child" information, if it is present
+        String chosenChildProtocolIdentifier, chosenChildProtocolName;
+        if (info.getChosenSecondLevelChildProtocolIdentifier() != null && info.getChosenSecondLevelChildProtocolIdentifier().length() > 0) {
+            chosenChildProtocolIdentifier = info.getChosenSecondLevelChildProtocolIdentifier();
+            chosenChildProtocolName = info.getChosenSecondLevelChildProtocolName();
+        } else {
+            chosenChildProtocolIdentifier = info.getChosenChildProtocolIdentifier();
+            chosenChildProtocolName = info.getChosenChildProtocolName();            
+            chosenChildProtocolName = info.getChosenChildProtocolName();            
+        }
+
         FileBean fileBean = investigationBean.getFileBean( iii );
         String selectDescName = "actionListDescription" + iii;
 
@@ -113,7 +125,7 @@
 //                            genericProtocolApplication.getName().trim() +
 //                            ") with info.getChosenChildProtocolName() (" + info.getChosenChildProtocolName() +
 //                            ")<br/>" );
-            if ( genericProtocolApplication.getName().trim().contains( info.getChosenChildProtocolName() ) ) {
+            if ( genericProtocolApplication.getName().trim().contains( chosenChildProtocolName ) ) {
                 // The displayName is just the name for this group of questions we are about to give to the user.
                 // Should be something like "Parameters Associated with Creating the Data File".
 //                out.println( "Match Found<br/>" );
@@ -158,7 +170,7 @@
 //                    "Comparing current Material name (" + genericMaterial.getName().trim() +
 //                            ") with info.getChosenChildProtocolName() (" + info.getChosenChildProtocolName() +
 //                            ")<br/>" );
-            if ( genericMaterial.getName().trim().contains( info.getChosenChildProtocolName() ) ) {
+            if ( genericMaterial.getName().trim().contains( chosenChildProtocolName ) ) {
                 // The displayName is just the name for this group of questions we are about to give to the user.
                 // Should be something like "Material Characteristics".
 //                out.println( "Match Found<br/>" );
@@ -387,7 +399,7 @@
         // (e.g. make, model, annotations) is considered constant and unchangeable.
         // Search the GenericEquipment for GenericParameters, and print out their options.
         GenericProtocol chosenProtocol = ( GenericProtocol ) validUser.getReService()
-                .findLatestByEndurant( info.getChosenChildProtocolIdentifier() );
+                .findLatestByEndurant( chosenChildProtocolIdentifier );
         chosenProtocol = ( GenericProtocol ) validUser.getReService().greedyGet( chosenProtocol );
 
         if ( chosenProtocol.getGenPrtclToEquip() != null ) {

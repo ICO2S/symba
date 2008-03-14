@@ -49,7 +49,6 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
     // iterate through looking for the investigation details field
     Iterator itr = items.iterator();
-    String expType = null;
     while ( itr.hasNext() ) {
         FileItem item = ( FileItem ) itr.next();
         // first, iterate through - there should be no files to do - just using the field methods
@@ -59,7 +58,10 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 //                System.out.println( "number = " + number );
                 // take what is already there, and add only those fields that have not been made yet
                 RawDataInfoBean temp = investigationBean.getDataItem( number );
-                temp.setFactorChoice( item.getString() );
+                String[] parsedStrings = item.getString().split( "::");
+                temp.setFactorChoice( parsedStrings[0] );
+                temp.setChosenSecondLevelChildProtocolIdentifier( parsedStrings[1] );
+                temp.setChosenSecondLevelChildProtocolName( parsedStrings[2] );
                 investigationBean.setDataItem( temp, number );
             } else if ( item.getFieldName().startsWith( "actionList" ) ) {
                 int number = Integer.valueOf( item.getFieldName().substring( 10 ) );

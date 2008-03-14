@@ -16,24 +16,24 @@
     <parent>
         <groupId>fugeOM</groupId>
         <artifactId>SyMBA</artifactId>
-        <version>8.01</version>
+        <version>8.03</version>
     </parent>
     <groupId>fugeOM</groupId>
     <artifactId>webapp</artifactId>
     <packaging>war</packaging>
-    <version>8.01</version>
+    <version>8.03</version>
     <name>SyMBA Web Front-End</name>
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
             <groupId>fugeOM</groupId>
             <artifactId>backend</artifactId>
-            <version>8.01</version>
+            <version>8.03</version>
         </dependency>
         <dependency>
             <groupId>fugeOM</groupId>
             <artifactId>core</artifactId>
-            <version>8.01</version>
+            <version>8.03</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>

@@ -124,12 +124,11 @@
                 </li>
             </ul>
         </section>
-        <section name="Status: January 2008: 8.01">
+        <section name="Status: March 2008: 8.03">
 
             <p>
-                The CARMEN neuroscience project required a modification to the way the Protocol Templates are
-                handled by the SyMBA webapp. All code changes for this release reflect this need.
-                (see the <a href="changes-report.html">Change Report</a>).
+                A number of new searches have been added, and we have extended the options available to users
+                building SyMBA templates (see the <a href="changes-report.html">Change Report</a>).
             </p>
             <br/><br/>
             <p>

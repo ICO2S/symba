@@ -10,6 +10,18 @@
                 <!--A new cool feature.-->
             <!--</action>-->
         <!--</release>-->
+        <release version="8.03" date="2008-03-13" description="Improvements to Protocol Template Functionality and Search Functionality">
+            <action dev="Allyson Lister" type="add">
+                More searches are now available, including the ability to view all experiments in the database
+                (i.e. not just your own), and the ability to search based on any ontology term in the database.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                EquipmentApplications have now been added.
+            </action>
+            <action dev="Frank Gibson" type="update">
+                The CARMEN neuroscience project's reference template has been massively extended.
+            </action>
+        </release>
         <release version="8.01" date="2008-01-29" description="Improvements to Protocol Template Functionality">
             <action dev="Allyson Lister, Frank Gibson" type="update">
                 The CARMEN neuroscience project required a modification to the way the Protocol Templates are

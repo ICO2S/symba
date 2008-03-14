@@ -16,7 +16,7 @@
     <parent>
         <groupId>fugeOM</groupId>
         <artifactId>SyMBA</artifactId>
-        <version>8.01</version>
+        <version>8.03</version>
     </parent>
     <artifactId>jaxb2</artifactId>
     <packaging>jar</packaging>

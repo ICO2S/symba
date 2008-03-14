@@ -15,13 +15,21 @@
                 Status reports that are no longer current may be found here.
             </p>
 
+            <subsection name="Status: January 2008: 8.01">
+
+                <p>
+                    The CARMEN neuroscience project required a modification to the way the Protocol Templates are
+                    handled by the SyMBA webapp. All code changes for this release reflect this need.
+                    (see the <a href="changes-report.html">Change Report</a>).
+                </p>
+            </subsection>
+
             <subsection name="Status: November 2007: 7.11">
 
                 <p>
                     The main feature of this release is the upgrading of the Andromda plugin from 3.2-SNAPSHOT to 3.2
                     (see the <a href="changes-report.html">Change Report</a>).
                 </p>
-                <br/><br/>
             </subsection>
             
             <subsection name="Status: October 2007: 7.10">
@@ -32,15 +40,6 @@
                     SourceForge.
                 </p>
 
-                <p>
-                    You will need a logon to access this database, which you may request
-                    from the
-                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a> mailing list. This is a simple method
-                     of security that used to prevent anonymous load on the database and to keep your sandbox area separate
-                     from others. For more information on the sandbox installation, please visit SyMBA's
-                    <a href="details.html">technical documentation</a>
-                    .
-                </p>
             </subsection>
 
             <subsection name="Status: September 2007: Second Stable Release (7.09 stable)">
@@ -53,15 +52,6 @@
                 on SourceForge.
             </p>
 
-            <p>
-                You will need a logon to access this database, which you may request
-                from the
-                <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a> mailing list. This is a simple method
-                 of security that used to prevent anonymous load on the database and to keep your sandbox area separate
-                 from others. For more information on the sandbox installation, please visit SyMBA's
-                <a href="details.html">technical documentation</a>
-                .
-            </p>
         </subsection>
             <subsection name="Status: June 2007: First Stable Release (7.06 stable)">
 

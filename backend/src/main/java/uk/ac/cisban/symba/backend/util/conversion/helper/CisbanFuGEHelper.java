@@ -298,6 +298,18 @@ public class CisbanFuGEHelper {
         printStream.println( "<h3>" );
         ci.prettyHtml( "Experiment Name: ", fuge, printStream );
         printStream.println( "</h3>" );
+
+        // Now print out the initial creator of the FuGE object
+        if (fuge.getProvider().getProvider().getContact().getName() != null && fuge.getProvider().getProvider().getContact().getName().length() > 0) {
+            String provider;
+            provider = fuge.getProvider().getProvider().getContact().getName();
+
+            printStream.println("<h4>");
+            printStream.println("Provider of the Experiment: " + provider);
+            printStream.println("</h4>");
+        }
+
+
         if ( fuge.getInvestigationCollection() != null ) {
             Collection collection = fuge.getInvestigationCollection().getInvestigations();
             if ( !collection.isEmpty() ) {

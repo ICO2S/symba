@@ -15,7 +15,7 @@
     <groupId>fugeOM</groupId>
     <artifactId>SyMBA</artifactId>
     <packaging>pom</packaging>
-    <version>8.01</version>
+    <version>8.03</version>
     <name>SyMBA</name>
     <url>http://symba.sourceforge.net</url>
     <description>The Systems and Molecular Biology data Archive (SyMBA) Project. The Centre for Integrated Systems
@@ -81,6 +81,18 @@
             <properties></properties>
         </developer>
         <developer>
+            <id>fgibson_sf</id>
+            <name>Frank Gibson</name>
+            <email>fgibson_sf@users.sourceforge.net</email>
+            <organization>CARMEN, Newcastle University</organization>
+            <organizationUrl>http://www.carmen.org.uk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>0</timezone>
+            <properties></properties>
+        </developer>
+        <developer>
             <id>ollyshaw</id>
             <name>Olly Shaw</name>
             <email>ollyshaw@users.sourceforge.net</email>
@@ -97,7 +109,7 @@
     <distributionManagement>
         <site>
             <id>shell.sf.net</id>
-            <url>scp://shell.sf.net/home/groups/s/sy/symba/test/</url>
+            <url>scp://shell.sf.net/home/groups/s/sy/symba/htdocs/</url>
         </site>
     </distributionManagement>
 

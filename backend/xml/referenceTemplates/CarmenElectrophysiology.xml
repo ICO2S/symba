@@ -117,7 +117,6 @@ concrete protocols have been made.
         <GenericEquipment name="Electrode"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:6b6e7a48-3cd5-4bad-873c-687e2fe9023c"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8">
-            <make OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
             <annotations
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:7d568bc8-23cd-4622-bfde-26358544c086"/>
             <GenericParameter name="Make"
@@ -134,7 +133,6 @@ concrete protocols have been made.
         <GenericEquipment name="Amplifier"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:c6759d86-cd3f-48e6-b36e-3d2fcbf88c51"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965">
-            <make OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
             <GenericParameter name="Make"
                               endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:551ec38d-4d67-43dc-91ed-177c79c4be25"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f11c31ac-d167-4b83-b59d-b16a900f44e7">

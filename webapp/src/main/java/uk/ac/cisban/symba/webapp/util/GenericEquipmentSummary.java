@@ -9,7 +9,7 @@ import java.util.Map;
  * Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
- *
+ * <p/>
  * $LastChangedDate: $
  * $LastChangedRevision: $
  * $Author:  $
@@ -19,6 +19,7 @@ public class GenericEquipmentSummary {
 
     private String equipmentName;
     private Map<String, String> parameterAndTerms; // the key is the parameter endurant identifier, and the value is the ontology term endurant identifier.
+    private Map<String, String> parameterAndAtomics; // the key is the parameter endurant identifier, and the value is the atomic value.
     private String freeTextDescription;
 
     public GenericEquipmentSummary() {
@@ -41,6 +42,14 @@ public class GenericEquipmentSummary {
         this.parameterAndTerms = parameterAndTerms;
     }
 
+    public Map<String, String> getParameterAndAtomics() {
+        return parameterAndAtomics;
+    }
+
+    public void setParameterAndAtomics( Map<String, String> parameterAndAtomics ) {
+        this.parameterAndAtomics = parameterAndAtomics;
+    }
+
     public String getFreeTextDescription() {
         return freeTextDescription;
     }
@@ -50,6 +59,10 @@ public class GenericEquipmentSummary {
     }
 
     public void putParameterAndTermPair( String parameterEndurantId, String termEndurantId ) {
-        this.parameterAndTerms.put(parameterEndurantId, termEndurantId);
+        this.parameterAndTerms.put( parameterEndurantId, termEndurantId );
+    }
+
+    public void putParameterAndAtomicPair( String parameterEndurantId, String atomicValue ) {
+        this.parameterAndAtomics.put( parameterEndurantId, atomicValue );
     }
 }

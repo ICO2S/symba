@@ -395,11 +395,17 @@ public class LoadFuge {
         for ( RawDataInfoBean rdib : rdb.getAllDataBeans() ) {
             if ( rdib.getMaterialFactorsBean() != null && rdib.getMaterialFactorsBean().getMaterialType() != null ) {
                 hasMaterial = true;
+                
                 // the material needs to be made, and each ontology term needs to be added if it hasn't already been added
+                String nameToUse = "";
+                if (rdib.getMaterialFactorsBean().getMaterialName() != null && rdib.getMaterialFactorsBean().getMaterialName().length() > 0) {
+                    nameToUse = rdib.getMaterialFactorsBean().getMaterialName();
+                }
+
                 GenericMaterial genericMaterial = ( GenericMaterial ) reService.createIdentifiableAndEndurantObs(
                         helper.getLSID(
                                 "fugeOM.Bio.Material.GenericMaterial" ),
-                        rdib.getMaterialFactorsBean().getMaterialName(),
+                        nameToUse,
                         helper.getLSID( "fugeOM.Bio.Material.GenericMaterialEndurant" ),
                         "fugeOM.Bio.Material.GenericMaterial",
                         "fugeOM.Bio.Material.GenericMaterialEndurant" );
@@ -761,7 +767,8 @@ public class LoadFuge {
                         // now add the appropriate changes to the original equipment as parameters. We assume that if
                         // there is a value in getGenericEquipmentInfo, that a new parameterValue set must be made and
                         // further, will be non-empty
-                        Set<ComplexParameterValue> pvSet = new HashSet<ComplexParameterValue>();
+                        Set<ParameterValue> pvSet = new HashSet<ParameterValue>();
+                        // look for complex values
                         if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndTerms() != null &&
                                 !( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
                                         .getParameterAndTerms()
@@ -781,6 +788,26 @@ public class LoadFuge {
                                 reService.createObInDB(
                                         "fugeOM.Common.Protocol.ComplexParameterValue", complexParameterValue );
                                 pvSet.add( complexParameterValue );
+                            }
+                        }
+                        // look for atomic values
+                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndAtomics() != null &&
+                                !( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                        .getParameterAndAtomics()
+                                        .isEmpty() ) {
+                            for ( String parameterKey : ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                    .getParameterAndAtomics()
+                                    .keySet() ) {
+                                AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
+                                        "fugeOM.Common.Protocol.AtomicParameterValue" );
+                                atomicParameterValue.setValue( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                                        .getParameterAndAtomics().get( parameterKey ) );
+                                atomicParameterValue.setParameter(
+                                        ( GenericParameter ) reService.findLatestByEndurant(
+                                                parameterKey ) );
+                                reService.createObInDB(
+                                        "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
+                                pvSet.add( atomicParameterValue );
                             }
                         }
                         application.setParameterValues( pvSet );
@@ -943,7 +970,8 @@ public class LoadFuge {
                         // now add the appropriate changes to the original equipment as parameters. We assume that if
                         // there is a value in getGenericEquipmentInfo, that a new parameterValue set must be made and
                         // further, will be non-empty
-                        Set<ComplexParameterValue> pvSet = new HashSet<ComplexParameterValue>();
+                        Set<ParameterValue> pvSet = new HashSet<ParameterValue>();
+                        // look for complex values
                         if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndTerms() != null &&
                                 !( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
                                         .getParameterAndTerms()
@@ -963,6 +991,26 @@ public class LoadFuge {
                                 reService.createObInDB(
                                         "fugeOM.Common.Protocol.ComplexParameterValue", complexParameterValue );
                                 pvSet.add( complexParameterValue );
+                            }
+                        }
+                        // look for atomic values
+                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndAtomics() != null &&
+                                !( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                        .getParameterAndAtomics()
+                                        .isEmpty() ) {
+                            for ( String parameterKey : ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                    .getParameterAndAtomics()
+                                    .keySet() ) {
+                                AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
+                                        "fugeOM.Common.Protocol.AtomicParameterValue" );
+                                atomicParameterValue.setValue( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
+                                                        .getParameterAndAtomics().get( parameterKey ) );
+                                atomicParameterValue.setParameter(
+                                        ( GenericParameter ) reService.findLatestByEndurant(
+                                                parameterKey ) );
+                                reService.createObInDB(
+                                        "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
+                                pvSet.add( atomicParameterValue );
                             }
                         }
                         application.setParameterValues( pvSet );

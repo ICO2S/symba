@@ -91,7 +91,8 @@
                 ids.add( ontologyTerm.getEndurant().getIdentifier() );
                 names.add( ontologyTerm.getTerm() );
             }
-            out.println( "<p>Please select your " + ontologySource.getName() + "</p>" );
+            String modifiedSourceName = ontologySource.getName();
+            out.println( "<p>Please select your " + modifiedSourceName + "</p>" );
             out.println( "<form action=\"view.jsp\" method=\"get\">" );
             out.println( "<select name=\"ontologyTerm\">" );
             int counter = 0;
@@ -114,8 +115,7 @@
                 .getAllLatestUnsourcedOntologyTerms();
         out.println(
                 "<form action=\"view.jsp\" method=\"get\">\n" +
-                        "<p>Please select from within the list of ontology terms " +
-                        "without a source ontology</p>" );
+                        "<p>Please select from the following keywords</p>" );
         out.println( "<select name=\"ontologyTerm\">" );
         for ( OntologyTerm ontologyTerm : unsourcedTerms ) {
             out.println(

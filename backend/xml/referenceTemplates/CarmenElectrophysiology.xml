@@ -310,18 +310,18 @@ concrete protocols have been made.
 
         <OntologyIndividual termAccession="Taxonomy ID: 10088" term="Mus"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"
-                            endurant="**********************"
-                            identifier="*******************************"/>
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:a092b965-f398-4fe2-97b1-f91bfbdac843"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:42985ebf-e2ab-4c9a-a0c0-c08302e305de"/>
 
         <OntologyIndividual termAccession="Taxonomy ID: 10114" term="Rattus"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"
-                            endurant="**********************"
-                            identifier="*******************************"/>
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:865b8e0f-9386-487d-bba2-5ee16220654b"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:50ad7270-67f0-4ba9-87a4-c4ab28c8c5ed"/>
 
         <OntologyIndividual termAccession="Taxonomy ID: 9539" term="Macaca"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"
-                            endurant="**********************"
-                            identifier="*******************************"/>
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:164768de-84db-4d6b-9170-4c6f3bad3850"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:73667ad3-9a4b-491b-b33e-eae0156d4592"/>
 
         <!--NEED micrometer unit -->
 
@@ -331,33 +331,33 @@ concrete protocols have been made.
 
         <OntologyIndividual termAccession="accession to come" term="Multi Channel Systems"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:80441996-dd20-49ab-9409-7689b5836e43"
-                            endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:880ee8f7-aedc-4941-8257-45c052884b1f"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:880ee8f7-aedc-4941-8257-45c052884b1f"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
 
         <OntologyIndividual termAccession="accession to come" term="Two dimensional array"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:468ab0fe-54e4-4c9b-9410-2bb276f2a6e6"
-                            endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:20aff400-c40a-4189-8fe8-aea3d8d062e8"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:20aff400-c40a-4189-8fe8-aea3d8d062e8"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:7d568bc8-23cd-4622-bfde-26358544c086"/>
 
         <OntologyIndividual termAccession="Taxonomy ID: 9544" term="Macaca mulatta"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:1d234420-b6fe-4669-b04b-464fa0bdcdd6"
-                            endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:5f7c80b8-5885-4c47-b3db-b596f8cf349e"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:5f7c80b8-5885-4c47-b3db-b596f8cf349e"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:f1b24b4b-1aa5-4d18-a104-831b681d3b2a"/>
 
         <OntologyIndividual termAccession="accession to come" term="male"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:68c65d87-8b81-4067-b2e2-dda455490305"
-                            endurant="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:c5822354-d20e-4797-99e2-623d89d3e731"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:c5822354-d20e-4797-99e2-623d89d3e731"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:a76ba6fc-0018-4817-bb2c-8cf3b7a1904e"/>
 
         <OntologyIndividual termAccession="accession to come" term="female"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:68c65d87-8b81-4067-b2e2-dda455490305"
-                            endurant="*need***"
-                            identifier="need***"/>
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:83130b35-ab18-4395-9382-cdc677086347"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:9a75eb6d-367b-4f7e-89d7-6acb16d6cd3f"/>
 
         <OntologyIndividual termAccession="accession to come" term="hermaphrodite"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:68c65d87-8b81-4067-b2e2-dda455490305"
-                            endurant="*need***"
-                            identifier="need***"/>
+                            endurant="urn:lsid:cisban.cisbs.org:OntoyIndvEndurant:566e6082-4aff-4e04-b294-c6e5f27d06d9"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:183a856a-a026-4cef-875f-663505b21906"/>
 
 
         <OntologyIndividual termAccession="accession to come" term="a brain cell"

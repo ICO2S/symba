@@ -27,7 +27,8 @@ concrete protocols have been made.
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
             <genPrtclToEquip
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
-
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
         </GenericProtocol>
 
 
@@ -255,9 +256,35 @@ concrete protocols have been made.
             <!--Genus -->
             <materialType
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:943066e5-bbd4-45ed-b0c3-d71e7ec8640d"/>
-            <!--Species -->
+            <descriptions>
+                <Description text="OntologyReplacement::Species"/>
+                <Description text="OntologyReplacement::Strain"/>
+                <Description text="OntologyReplacement::Cell line"/>
+                <Description text="OntologyReplacement::Genetic characteristics"/>
+                <Description text="OntologyReplacement::Genetic variation"/>
+                <Description text="OntologyReplacement::Disease state"/>
+                <Description text="OntologyReplacement::Clinical information"/>
+                <Description text="OntologyReplacement::Age"/>
+                <Description text="OntologyReplacement::Developmental stage"/>
+                <Description text="OntologyReplacement::Subject label"/>
+                <Description text="OntologyReplacement::Subject identifier type"/>
+                <Description text="OntologyReplacement::Subject identifier value"/>
+                <Description text="OntologyReplacement::Associated subject details"/>
+                <Description text="OntologyReplacement::Preparation protocol"/>
+                <Description text="OntologyReplacement::Preparation date"/>
+                <Description text="OntologyReplacement::Preparation date"/>
+                <!-- Recording location -->
+                <Description text="OntologyReplacement::Recording Location structure"/>
+                <Description text="OntologyReplacement::Brain area"/>
+                <Description text="OntologyReplacement::Slice thickness"/>
+                <Description text="OntologyReplacement::Slice orientation"/>
+                <Description text="OntologyReplacement::Cell type coordinates"/>
+                <Description text="OntologyReplacement::Location confirmation"/>          
+            </descriptions>
+            <!--Species
             <characteristics
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:f1b24b4b-1aa5-4d18-a104-831b681d3b2a"/>
+            -->
             <!--Sex -->
             <characteristics
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a76ba6fc-0018-4817-bb2c-8cf3b7a1904e"/>

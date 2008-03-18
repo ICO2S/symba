@@ -126,7 +126,24 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     summary = new GenericEquipmentSummary();
                 }
                 // now get the map of the parameter of the equipment, to assign an ontology term
-                summary.putParameterAndTermPair(parameterEndurantId, item.getString());
+                summary.putParameterAndTermPair( parameterEndurantId, item.getString() );
+                temp.setGenericEquipmentInfoValue( equipmentEndurantId, summary );
+                investigationBean.setDataItem( temp, number );
+            } else if ( item.getFieldName().startsWith( "atomicParameterOfEquipment::" ) ) {
+                String[] parsedStrings = item.getFieldName().split( "::" );
+                int number = Integer.valueOf( parsedStrings[3] );
+                // take what is already there, and add only those fields that have not been made yet
+                RawDataInfoBean temp = investigationBean.getDataItem( number );
+                // get the endurant for the current equipment out.
+                String equipmentEndurantId = parsedStrings[1];
+                String parameterEndurantId = parsedStrings[2];
+                // if there is already an existing map key, add to that one.
+                GenericEquipmentSummary summary = ( temp.getGenericEquipmentInfo() ).get( equipmentEndurantId );
+                if ( summary == null ) {
+                    summary = new GenericEquipmentSummary();
+                }
+                // now get the map of the parameter of the equipment, to assign an ontology term
+                summary.putParameterAndAtomicPair( parameterEndurantId, item.getString() );
                 temp.setGenericEquipmentInfoValue( equipmentEndurantId, summary );
                 investigationBean.setDataItem( temp, number );
             } else if ( item.getFieldName().startsWith( "equipmentName::" ) ) {

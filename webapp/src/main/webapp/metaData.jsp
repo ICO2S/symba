@@ -81,13 +81,14 @@
 
         // ensure that we choose the 2nd-level "chosen child" information, if it is present
         String chosenChildProtocolIdentifier, chosenChildProtocolName;
-        if (info.getChosenSecondLevelChildProtocolIdentifier() != null && info.getChosenSecondLevelChildProtocolIdentifier().length() > 0) {
+        if ( info.getChosenSecondLevelChildProtocolIdentifier() != null &&
+                info.getChosenSecondLevelChildProtocolIdentifier().length() > 0 ) {
             chosenChildProtocolIdentifier = info.getChosenSecondLevelChildProtocolIdentifier();
             chosenChildProtocolName = info.getChosenSecondLevelChildProtocolName();
         } else {
             chosenChildProtocolIdentifier = info.getChosenChildProtocolIdentifier();
-            chosenChildProtocolName = info.getChosenChildProtocolName();            
-            chosenChildProtocolName = info.getChosenChildProtocolName();            
+            chosenChildProtocolName = info.getChosenChildProtocolName();
+            chosenChildProtocolName = info.getChosenChildProtocolName();
         }
 
         FileBean fileBean = investigationBean.getFileBean( iii );
@@ -170,6 +171,14 @@
 //                    "Comparing current Material name (" + genericMaterial.getName().trim() +
 //                            ") with info.getChosenChildProtocolName() (" + info.getChosenChildProtocolName() +
 //                            ")<br/>" );
+            boolean requestName = false, requestTreatment = false;
+            if ( !genericMaterial.getName().contains( " Noname" ) ) {
+                requestName = true;
+            }
+            if ( !genericMaterial.getName().contains( " Notreatment" ) ) {
+                requestTreatment = true;
+            }
+
             if ( genericMaterial.getName().trim().contains( chosenChildProtocolName ) ) {
                 // The displayName is just the name for this group of questions we are about to give to the user.
                 // Should be something like "Material Characteristics".
@@ -178,67 +187,72 @@
                         .substring( 0, genericMaterial.getName().indexOf( " Dummy" ) )
                         .trim();
 
-                // will store the Material's name
-                String matName = "materialName" + iii;
-                out.println( "<br>" );
-                out.println( "<label for=\"" + matName + "\">Name/ID of this Material (optional): </label>" );
-                if ( investigationBean.getAllDataBeans() != null &&
-                        investigationBean.getAllDataBeans().size() > iii &&
-                        investigationBean.getDataItem( iii ).getMaterialFactorsBean() != null ) {
-                    out.println(
-                            "<input id=\"" + matName + "\" name=\"" + matName + "\" value=\"" +
-                                    investigationBean.getDataItem( iii )
-                                            .getMaterialFactorsBean()
-                                            .getMaterialName() +
-                                    "\"><br>" );
-                } else {
-                    out.println( "<input id=\"" + matName + "\" name=\"" + matName + "\"><br>" );
-                }
-                out.println( "<br>" );
-                out.println(
-                        "<p class=\"bigger\">Please enter some information about the " + displayName +
-                                ", starting " +
-                                "with treatment information. There should be a separate box for each treatment performed " +
-                                "(optional). <em>NOTE: All treatments already entered will " +
-                                "remain in the system. You may add additional treatments by entering them below.</em></p>" );
-
-                if ( investigationBean.getAllDataBeans() != null &&
-                        investigationBean.getAllDataBeans().size() > iii &&
-                        investigationBean.getDataItem( iii ).getMaterialFactorsBean() != null &&
-                        investigationBean.getDataItem( iii ).getMaterialFactorsBean().getTreatmentInfo() != null &&
-                        !investigationBean.getDataItem( iii )
-                                .getMaterialFactorsBean()
-                                .getTreatmentInfo()
-                                .isEmpty() ) {
-                    out.println( "<ol>" );
-                    for ( String singleTreatment : investigationBean.getDataItem( iii )
-                            .getMaterialFactorsBean()
-                            .getTreatmentInfo() ) {
-                        out.println( "<li>Treatment already recorded: " + singleTreatment + "</li>" );
+                // will store the Material's name if requested in the template
+                if ( requestName ) {
+                    String matName = "materialName" + iii;
+                    out.println( "<br>" );
+                    out.println( "<label for=\"" + matName + "\">Name/ID of this Material (optional): </label>" );
+                    if ( investigationBean.getAllDataBeans() != null &&
+                            investigationBean.getAllDataBeans().size() > iii &&
+                            investigationBean.getDataItem( iii ).getMaterialFactorsBean() != null ) {
+                        out.println(
+                                "<input id=\"" + matName + "\" name=\"" + matName + "\" value=\"" +
+                                        investigationBean.getDataItem( iii )
+                                                .getMaterialFactorsBean()
+                                                .getMaterialName() +
+                                        "\"><br>" );
+                    } else {
+                        out.println( "<input id=\"" + matName + "\" name=\"" + matName + "\"><br>" );
                     }
-                    out.println( "</ol>" );
+                    out.println( "<br>" );
                 }
 
-                // Each material may have had more than one treatment. Currently this is NOT stored as a controlled
-                // vocabulary, but as free text.
-                String moreTreatments = "moreTreatments" + iii;
-                String treatmentLabel = "treatment" + iii + "-";
-                String treatmentLabelFirst = treatmentLabel + "0";
-                out.println(
-                        "<label for=\"" + treatmentLabelFirst + "\">Type, Dose and Length of Treatment: </label>" );
-                out.println(
-                        "<textarea id=\"" + treatmentLabelFirst + "\" name=\"" + treatmentLabelFirst +
-                                "\" rows=\"5\" cols=\"40\"></textarea> " );
-                out.println( "<br/>" );
+                if ( requestTreatment ) {
+                    out.println(
+                            "<p class=\"bigger\">Please enter some information about the " + displayName +
+                                    ", starting " +
+                                    "with treatment information. There should be a separate box for each treatment performed " +
+                                    "(optional). <em>NOTE: All treatments already entered will " +
+                                    "remain in the system. You may add additional treatments by entering them below.</em></p>" );
 
-                out.println( "<div id=\"" + moreTreatments + "\"></div>" );
-                out.println( "<br/> " );
+                    if ( investigationBean.getAllDataBeans() != null &&
+                            investigationBean.getAllDataBeans().size() > iii &&
+                            investigationBean.getDataItem( iii ).getMaterialFactorsBean() != null &&
+                            investigationBean.getDataItem( iii ).getMaterialFactorsBean().getTreatmentInfo() != null &&
+                            !investigationBean.getDataItem( iii )
+                                    .getMaterialFactorsBean()
+                                    .getTreatmentInfo()
+                                    .isEmpty() ) {
+                        out.println( "<ol>" );
+                        for ( String singleTreatment : investigationBean.getDataItem( iii )
+                                .getMaterialFactorsBean()
+                                .getTreatmentInfo() ) {
+                            out.println( "<li>Treatment already recorded: " + singleTreatment + "</li>" );
+                        }
+                        out.println( "</ol>" );
+                    }
 
-                out.println( "<div id=\"moreTreatmentsLink\">" );
-                out.println(
-                        "<a href=\"javascript:addTreatmentInput('" + treatmentLabel +
-                                "', '" + moreTreatments + "');\">Add Another Treatment</a>" );
-                out.println( "</div>" );
+                    // Each material may have had more than one treatment. Currently this is NOT stored as a controlled
+                    // vocabulary, but as free text.
+                    String moreTreatments = "moreTreatments" + iii;
+                    String treatmentLabel = "treatment" + iii + "-";
+                    String treatmentLabelFirst = treatmentLabel + "0";
+                    out.println(
+                            "<label for=\"" + treatmentLabelFirst + "\">Type, Dose and Length of Treatment: </label>" );
+                    out.println(
+                            "<textarea id=\"" + treatmentLabelFirst + "\" name=\"" + treatmentLabelFirst +
+                                    "\" rows=\"5\" cols=\"40\"></textarea> " );
+                    out.println( "<br/>" );
+
+                    out.println( "<div id=\"" + moreTreatments + "\"></div>" );
+                    out.println( "<br/> " );
+
+                    out.println( "<div id=\"moreTreatmentsLink\">" );
+                    out.println(
+                            "<a href=\"javascript:addTreatmentInput('" + treatmentLabel +
+                                    "', '" + moreTreatments + "');\">Add Another Treatment</a>" );
+                    out.println( "</div>" );
+                }
 
                 // Now, retrieve the materialType (singular) and all characteristics of this material.
                 // Each references an OntologyTerm, which in turn is associated with an OntologySource.
@@ -406,7 +420,6 @@
             for ( Object obj : chosenProtocol.getGenPrtclToEquip() ) {
                 GenericEquipment genericEquipment = ( GenericEquipment ) validUser.getReService().greedyGet( obj );
 
-
                 // we're only interested in making more fields in the form if there are any GenericParameters here.
                 if ( genericEquipment.getParameters() != null && !genericEquipment.getParameters().isEmpty() ) {
 
@@ -427,62 +440,103 @@
                             "<textarea id=\"" + nameOfDescriptionField + "\" name=\"" + nameOfDescriptionField +
                                     "\" rows=\"5\" cols=\"40\"></textarea><br>" );
 
-                    // Now, retrieve all parameters (currently only valid for ComplexValues). It references an OntologyTerm,
-                    //  which in turn is associated with an OntologySource. Instead of displaying just the referenced
-                    // OntologyTerm, a pull-down menu should be displayed of ALL of the OntologyTerms in the database
-                    // associated with that OntologySource.
+                    // Now, retrieve all parameters (currently only valid for ComplexValue and AtomicValue).
+                    if ( genericEquipment.getParameters() != null && !genericEquipment.getParameters().isEmpty() ) {
+                        out.println(
+                                "<p class=\"bigger\">Next, please enter the values appropriate to the following parameters to help identify the " +
+                                        genericEquipment.getName() + ".</p>" );
+                    }
                     for ( Object paramObj : genericEquipment.getParameters() ) {
-                        if ( paramObj instanceof GenericParameter &&
-                                ( ( GenericParameter ) paramObj ).getDefaultValue() instanceof ComplexValue ) {
+                        if ( paramObj instanceof GenericParameter ) {
                             GenericParameter genericParameter = ( GenericParameter ) paramObj;
-                            ComplexValue complexValue = ( ComplexValue ) ( ( GenericParameter ) paramObj ).getDefaultValue();
-                            out.println( "<br>" );
-                            out.println(
-                                    "<p class=\"bigger\">Next, please choose from among the following terms to identify the " +
-                                            genericEquipment.getName() + ".</p>" );
+                            if ( genericParameter.getDefaultValue() instanceof ComplexValue ) {
+                                // ComplexValue objects reference an OntologyTerm,
+                                //  which in turn is associated with an OntologySource. Instead of displaying just the referenced
+                                // OntologyTerm, a pull-down menu should be displayed of ALL of the OntologyTerms in the database
+                                // associated with that OntologySource.
+                                ComplexValue complexValue = ( ComplexValue ) ( ( GenericParameter ) paramObj ).getDefaultValue();
+                                out.println( "<br>" );
 
-                            List genericList = validUser.getReService()
-                                    .getAllLatestTermsWithSource(
-                                            complexValue.get_defaultValue()
-                                                    .getOntologySource()
-                                                    .getEndurant().getIdentifier() );
-                            List<OntologyTerm> ontologyTerms = genericList;
-                            if ( !ontologyTerms.isEmpty() ) {
+                                List genericList = validUser.getReService()
+                                        .getAllLatestTermsWithSource(
+                                                complexValue.get_defaultValue()
+                                                        .getOntologySource()
+                                                        .getEndurant().getIdentifier() );
+                                List<OntologyTerm> ontologyTerms = genericList;
+                                if ( !ontologyTerms.isEmpty() ) {
 
-                                // the ontology source for this complex value may have a description which tells the user
-                                // how to select the correct ontology term. Check for that.
-                                OntologySource ontologySource = complexValue.get_defaultValue().getOntologySource();
-                                ontologySource = ( OntologySource ) validUser.getReService()
-                                        .findLatestByEndurant( ontologySource.getEndurant().getIdentifier() );
+                                    // the ontology source for this complex value may have a description which tells the user
+                                    // how to select the correct ontology term. Check for that.
+                                    OntologySource ontologySource = complexValue.get_defaultValue().getOntologySource();
+                                    ontologySource = ( OntologySource ) validUser.getReService()
+                                            .findLatestByEndurant( ontologySource.getEndurant().getIdentifier() );
 
-                                String nameOfField = "parameterOfEquipment::" +
+                                    String nameOfField = "parameterOfEquipment::" +
+                                            genericEquipment.getEndurant().getIdentifier() + "::" +
+                                            genericParameter.getEndurant().getIdentifier() + "::" + iii;
+                                    String nameOfParameter = "term"; // default
+                                    if ( genericParameter.getParameterType() != null ) {
+                                        nameOfParameter = genericParameter.getParameterType().getTerm();
+                                    } else if ( genericParameter.getName() != null &&
+                                            genericParameter.getName().length() > 0 ) {
+                                        nameOfParameter = genericParameter.getName();
+                                    }
+
+                                    String instructions =
+                                            "<label for=\"" + nameOfField + "\">Please select your " + nameOfParameter +
+                                                    ":</label>";
+                                    for ( Object descObj : ontologySource.getDescriptions() ) {
+                                        Description desc = ( Description ) descObj;
+                                        if ( desc.getText().startsWith( "Instructions: " ) ) {
+                                            instructions =
+                                                    "<label for=\"" + nameOfField + "\">" +
+                                                            desc.getText().substring( 14 ) +
+                                                            "</label>";
+                                        }
+                                    }
+
+                                    out.println( instructions );
+                                    out.println( "<select name=\"" + nameOfField + "\">" );
+                                    for ( OntologyTerm ot : ontologyTerms ) {
+                                        out.println(
+                                                "<option value= \"" + ot.getEndurant().getIdentifier() + "\">" +
+                                                        ot.getTerm() +
+                                                        "</option>" );
+                                    }
+                                    out.println( "</select>" );
+                                    out.println( "<br>" );
+                                }
+                            }
+                            if ( genericParameter.getDefaultValue() instanceof AtomicValue ) {
+                                // AtomicValues just have a string value. Ask the user for it
+                                out.println( "<br>" );
+
+                                // retrieve the unit used, if present.
+                                String unitName = "";
+                                if ( genericParameter.getUnit() != null &&
+                                        genericParameter.getUnit().getTerm().length() > 0 ) {
+                                    unitName = genericParameter.getUnit().getTerm();
+                                }
+
+                                String nameOfField = "atomicParameterOfEquipment::" +
                                         genericEquipment.getEndurant().getIdentifier() + "::" +
                                         genericParameter.getEndurant().getIdentifier() + "::" + iii;
-                                String nameOfParameter = "term"; // default
+                                String nameOfParameter = "value"; // default
                                 if ( genericParameter.getParameterType() != null ) {
                                     nameOfParameter = genericParameter.getParameterType().getTerm();
+                                } else
+                                if ( genericParameter.getName() != null && genericParameter.getName().length() > 0 ) {
+                                    nameOfParameter = genericParameter.getName();
                                 }
                                 String instructions =
-                                        "<label for=\"" + nameOfField + "\">Please select your " + nameOfParameter +
-                                                ":</label>";
-                                for ( Object descObj : ontologySource.getDescriptions() ) {
-                                    Description desc = ( Description ) descObj;
-                                    if ( desc.getText().startsWith( "Instructions: " ) ) {
-                                        instructions =
-                                                "<label for=\"" + nameOfField + "\">" + desc.getText().substring( 14 ) +
-                                                        "</label>";
-                                    }
+                                        "<label for=\"" + nameOfField + "\">Please fill in the " + nameOfParameter;
+                                if ( unitName.length() > 0 ) {
+                                    instructions = instructions + " ( in " + unitName + ")";
                                 }
+                                instructions += ":</label>";
 
                                 out.println( instructions );
-                                out.println( "<select name=\"" + nameOfField + "\">" );
-                                for ( OntologyTerm ot : ontologyTerms ) {
-                                    out.println(
-                                            "<option value= \"" + ot.getEndurant().getIdentifier() + "\">" +
-                                                    ot.getTerm() +
-                                                    "</option>" );
-                                }
-                                out.println( "</select>" );
+                                out.println( "<input id=\"" + nameOfField + "\" name=\"" + nameOfField + "\"><br>" );
                                 out.println( "<br>" );
                             }
                         }

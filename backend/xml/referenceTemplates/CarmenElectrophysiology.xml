@@ -190,7 +190,6 @@ concrete protocols have been made.
                     <_defaultValue
                             OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
                 </ComplexValue>
-                <!-- <unit> element is optional, but Frank should include it later -->
             </GenericParameter>
             <GenericParameter name="Model Name"
                               endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:9323106a-cb05-4b22-8795-96f4a667aa79"
@@ -250,7 +249,7 @@ concrete protocols have been made.
     <MaterialCollection>
         <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
         <GenericMaterial
-                name="Material Characteristics Dummy for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
+                name="Material Characteristics Dummy Noname Notreatment for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:4a34375a-0c7c-4563-ab1d-a2509a5466bb"
                 identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d46bed62-21f6-4d27-b7c0-942abb124032">
             <!--Genus -->

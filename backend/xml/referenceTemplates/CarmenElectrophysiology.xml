@@ -272,7 +272,6 @@ concrete protocols have been made.
                 <Description text="OntologyReplacement::Associated subject details"/>
                 <Description text="OntologyReplacement::Preparation protocol"/>
                 <Description text="OntologyReplacement::Preparation date"/>
-                <Description text="OntologyReplacement::Preparation date"/>
                 <!-- Recording location -->
                 <Description text="OntologyReplacement::Recording Location structure"/>
                 <Description text="OntologyReplacement::Brain area"/>

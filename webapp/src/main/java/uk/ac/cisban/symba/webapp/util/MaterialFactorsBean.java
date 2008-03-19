@@ -1,6 +1,9 @@
 package uk.ac.cisban.symba.webapp.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /*
  * This file is part of SyMBA.
@@ -26,11 +29,28 @@ public class MaterialFactorsBean {
     private String materialType;
 
     // free text for treatment type, dose and length of treatment. One String per treatment type
-    private ArrayList<String> treatmentInfo;
+    private List<String> treatmentInfo;
 
     // these are all stored as Identifiers in the characteristics array.
-    private ArrayList<String> characteristics;
+    private List<String> characteristics;
 
+    // the OntologyReplacement details
+    private Map<String,String> ontologyReplacements;
+
+    public MaterialFactorsBean() {
+        this.treatmentInfo = new ArrayList<String>();
+        this.characteristics = new ArrayList<String>();
+        this.ontologyReplacements = new HashMap<String,String>();
+    }
+
+    public void clear() {
+        this.materialName = "";
+        this.createdMaterial = "";
+        this.materialType = "";
+        this.treatmentInfo.clear();
+        this.characteristics.clear();
+        this.ontologyReplacements.clear();
+    }
 
     public String getMaterialName() {
         return materialName;
@@ -48,7 +68,7 @@ public class MaterialFactorsBean {
         this.createdMaterial = createdMaterial;
     }
 
-    public ArrayList<String> getTreatmentInfo() {
+    public List<String> getTreatmentInfo() {
         return treatmentInfo;
     }
 
@@ -68,7 +88,7 @@ public class MaterialFactorsBean {
         this.materialType = materialType;
     }
 
-    public ArrayList<String> getCharacteristics() {
+    public List<String> getCharacteristics() {
         return characteristics;
     }
 
@@ -78,5 +98,17 @@ public class MaterialFactorsBean {
 
     public void addCharacteristic( String singleCharacteristics ) {
         this.characteristics.add( singleCharacteristics );
+    }
+
+    public Map<String, String> getOntologyReplacements() {
+        return ontologyReplacements;
+    }
+
+    public void setOntologyReplacements( Map<String, String> ontologyReplacements ) {
+        this.ontologyReplacements = ontologyReplacements;
+    }
+
+    public void putOntologyReplacementsPair( String key, String value ) {
+        this.ontologyReplacements.put( key, value );
     }
 }

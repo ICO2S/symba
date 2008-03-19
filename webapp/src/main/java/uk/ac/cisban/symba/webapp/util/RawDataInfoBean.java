@@ -38,7 +38,6 @@ public class RawDataInfoBean implements Serializable {
     private String chosenSecondLevelChildProtocolIdentifier; // only used when using 2nd-level protocols. In the case of SyMBA, this is the endurant's identifier.
     private Map<String, GenericEquipmentSummary> genericEquipmentInfo;
 
-    // this will only be filled if it is a Microscopy protocol
     private MaterialFactorsBean materialFactorsBean;
 
     public RawDataInfoBean() {
@@ -125,6 +124,8 @@ public class RawDataInfoBean implements Serializable {
         this.chosenSecondLevelChildProtocolName = "";
         this.chosenSecondLevelChildProtocolIdentifier = "";
         this.genericEquipmentInfo.clear();
+
+        this.materialFactorsBean.clear();
     }
 
     public String getDataName() {

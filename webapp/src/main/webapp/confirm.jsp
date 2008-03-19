@@ -237,6 +237,21 @@
                 out.println( "</li>" );
             }
 
+            if ( info.getMaterialFactorsBean().getOntologyReplacements() != null &&
+                    !info.getMaterialFactorsBean().getOntologyReplacements().isEmpty() ) {
+                out.println( "<li>Free-text descriptions:" );
+                for ( String key : info.getMaterialFactorsBean().getOntologyReplacements().keySet() ) {
+                    out.println( "<ul>" );
+                    out.println( "<li>" );
+                    out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+                    out.println( key + " = " + info.getMaterialFactorsBean().getOntologyReplacements().get( key ));
+                    out.println( "</a>" );
+                    out.println( "</li>" );
+                    out.println( "</ul>" );
+                }
+                out.println( "</li>" );
+            }
+
             if ( info.getMaterialFactorsBean().getMaterialType() != null ) {
                 out.println( "<li>Material Type: " );
                 out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );

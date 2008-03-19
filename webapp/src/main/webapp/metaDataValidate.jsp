@@ -77,6 +77,23 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 RawDataInfoBean temp = investigationBean.getDataItem( number );
                 temp.setAtomicValue( item.getString() );
                 investigationBean.setDataItem( temp, number );
+            } else if ( item.getFieldName().startsWith( "OntologyReplacement::" ) ) {
+                String[] parsedStrings = item.getFieldName().split( "::" );
+                int number = Integer.valueOf( parsedStrings[2] );
+//                System.out.println( "number = " + number );
+
+                // take what is already there, and add only those fields that have not been made yet
+                RawDataInfoBean temp = investigationBean.getDataItem( number );
+
+                if ( temp.getMaterialFactorsBean() == null )
+                    temp.setMaterialFactorsBean( new MaterialFactorsBean() );
+                MaterialFactorsBean mfb = temp.getMaterialFactorsBean();
+                mfb.putOntologyReplacementsPair(parsedStrings[1], item.getString() );
+
+                temp.setMaterialFactorsBean( mfb );
+                temp.setAtomicValue( item.getString() );
+
+                investigationBean.setDataItem( temp, number );
             } else if ( item.getFieldName().startsWith( "materialName" ) ) {
                 if ( item.getString() != null && item.getString().length() > 0 ) {
                     int number = Integer.valueOf( item.getFieldName().substring( 12 ) );

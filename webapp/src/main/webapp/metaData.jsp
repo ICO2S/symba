@@ -187,6 +187,20 @@
                         .substring( 0, genericMaterial.getName().indexOf( " Dummy" ) )
                         .trim();
 
+                // Print out any descriptions that are OntologyReplacements as a normal text field.
+                for ( Object descriptionObj : genericMaterial.getDescriptions() ) {
+                    Description description = ( Description ) descriptionObj;
+                    if ( description.getText() != null && description.getText().length() > 0 &&
+                            description.getText().startsWith( "OntologyReplacement::" ) ) {
+                        // this is a field that does not have enough information yet to be promoted to
+                        // a material characteristic, so it is currently a free-text field.
+                        String prettified = description.getText().substring( 21 ).trim();
+                        String descriptionLabel = description.getText().trim() + "::" + iii;
+                        out.println( "<label for=\"" + descriptionLabel + "\">Enter the " + prettified + ": </label>" );
+                        out.println( "<input id=\"" + descriptionLabel + "\" name=\"" + descriptionLabel + "\"><br>" );
+                    }
+                }
+
                 // will store the Material's name if requested in the template
                 if ( requestName ) {
                     String matName = "materialName" + iii;

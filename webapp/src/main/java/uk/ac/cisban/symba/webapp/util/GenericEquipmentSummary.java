@@ -24,6 +24,7 @@ public class GenericEquipmentSummary {
 
     public GenericEquipmentSummary() {
         this.parameterAndTerms = new HashMap<String, String>();
+        this.parameterAndAtomics = new HashMap<String, String>();
     }
 
     public String getEquipmentName() {

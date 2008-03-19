@@ -386,9 +386,9 @@
 
                         <source>
                             create table users (
-                            user_name CHARACTER_VARYING(1024) not null,
-                            password CHARACTER_VARYING(1024) not null,
-                            lsid CHARACTER_VARYING(1024) not null,
+                            user_name CHARACTER VARYING(1024) not null,
+                            password CHARACTER VARYING(1024) not null,
+                            lsid CHARACTER VARYING(1024) not null,
 
                             primary key (lsid)
                             );

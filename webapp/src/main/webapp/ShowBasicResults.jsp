@@ -15,8 +15,6 @@
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 <jsp:useBean id="investigationBean" class="uk.ac.cisban.symba.webapp.util.InvestigationBean" scope="session">
 </jsp:useBean>
 

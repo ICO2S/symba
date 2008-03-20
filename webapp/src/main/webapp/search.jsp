@@ -39,7 +39,7 @@
 
     <h4>Please select the search appropriate for your query</h4>
 
-    <form action="view.jsp" method="get">
+    <form action="ShowBasicResults.jsp" method="get">
         <p>Please click "Show All" if you wish to view all of the experiments in the database. Please be aware that this may
             take some time to retrieve.</p>
         <!-- The id attribute is used internally for labels, etc, while the name attribute is passed to the receiving page -->
@@ -49,7 +49,7 @@
     <br/>
     <hr/>
 
-    <form action="view.jsp" method="get">
+    <form action="ShowBasicResults.jsp" method="get">
         <p>Please click "Show Yours" if you wish to view all of your experiments.</p>
         <!-- The id attribute is used internally for labels, etc, while the name attribute is passed to the receiving page -->
         <input type="hidden" name="showYours" value="showYours"/>
@@ -58,7 +58,7 @@
     <br/>
     <hr/>
 
-    <form action="view.jsp" method="get">
+    <form action="ShowBasicResults.jsp" method="get">
         <p>Please put the word you wish to search for in the text field below. Partial matches
             to your search term will also be found.</p>
         <br/>
@@ -93,7 +93,7 @@
             }
             String modifiedSourceName = ontologySource.getName();
             out.println( "<p>Please select your " + modifiedSourceName + "</p>" );
-            out.println( "<form action=\"view.jsp\" method=\"get\">" );
+            out.println( "<form action=\"ShowBasicResults.jsp\" method=\"get\">" );
             out.println( "<select name=\"ontologyTerm\">" );
             int counter = 0;
             for ( String id : ids ) {
@@ -114,7 +114,7 @@
         List<OntologyTerm> unsourcedTerms = ( List<OntologyTerm> ) validUser.getReService()
                 .getAllLatestUnsourcedOntologyTerms();
         out.println(
-                "<form action=\"view.jsp\" method=\"get\">\n" +
+                "<form action=\"ShowBasicResults.jsp\" method=\"get\">\n" +
                         "<p>Please select from the following keywords</p>" );
         out.println( "<select name=\"ontologyTerm\">" );
         for ( OntologyTerm ontologyTerm : unsourcedTerms ) {

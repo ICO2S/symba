@@ -48,7 +48,7 @@
                 <artifactId>axistools-maven-plugin</artifactId>
                 <configuration>
                     <urls>
-                        <url>file:///media/share/unsynched/IdeaProjects/SyMBA/trunk/web/src/main/wsdl/WorkFlowWS.wsdl</url>
+                        <url>file://${basedir}/src/main/wsdl/WorkFlowWS.wsdl</url>
                     </urls>
                     <deployScope>application</deployScope>
                     <serverSide>true</serverSide>

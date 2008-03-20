@@ -51,20 +51,19 @@
                 passedSecurity = interrogator.hasPermission(
                         "demo", request.getParameter( "investigationID" ), "Read" );
             } catch ( Exception e ) {
+                out.println( "<h3>" );
                 out.println( "There has been an error processing the permissions associated with your selected" );
                 out.println( "investigation." );
+                out.println( "If you wish, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">deposit" );
+                out.println(
+                        "some data</a>, or perform <a href=\"search.jsp\">another search</a>." );
+                out.println( "</h3>" );
                 out.println( e.getMessage() );
                 e.printStackTrace();
             }
 
             if ( passedSecurity ) {
                 // Ok to print out the experiment
-                out.println( "<h2>" );
-                out.println( "You have no experiments at the moment, or your search term returned no results." );
-                out.println( "If you wish, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">deposit" );
-                out.println(
-                        "some data</a>, or go to the <a href=\"search.jsp\">Search Page</a> to search the database." );
-                out.println( "</h2>" );
                 out.println( "For further searches, please visit our <a href=\"search.jsp\">Search Page</a><br/>" );
                 out.println( "<h2>Your Data is shown below <a href=\"help.jsp#viewExperiments\"" );
                 out.println( "onClick=\"return popup(this, 'notes')\"> [ Help? ]</a></h2>" );
@@ -91,8 +90,24 @@
                                 "\"/>" );
                 out.println( "<input type=\"submit\" size=\"10\" value=\"show XML\"/>" );
                 out.println( "</form><br>" );
+            } else {
+                out.println( "<h3>" );
+                out.println( "You do not have permission to view this experiment. Use your browser's \"Back\" button" );
+                out.println( "to choose another experiment to view." );
+                out.println( "Alternatively, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">deposit" );
+                out.println(
+                        "some data</a>, or perform <a href=\"search.jsp\">another search</a>." );
+                out.println( "</h3>" );
+                
             }
+        } else {
+            out.println( "<h3>" );
+            out.println( "This is the page that displays the results of a search." );
+            out.println( "Please visit the <a href=\"search.jsp\">Search Page</a> to perform a search." );
+            out.println( "</h3>" );
+
         }
+
     %>
 
     <br><br>

@@ -366,7 +366,7 @@
         <module>jaxb2</module>
         <module>backend</module>
         <module>webapp</module>
-        <!--<module>web</module>-->
+        <module>web</module>
     </modules>
     <properties>
         <!--

@@ -21,9 +21,17 @@
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
 </jsp:useBean>
 
-<html>
-<head><title>Simple jsp page</title></head>
+<%-- The correct doctype and html elements are stored here --%>
+<jsp:include page="header.jsp"/>
+<head>
+    <!-- The title, stylesheet, help popup function, and meta tags -->
+    <jsp:include page="metas.html"/>
+</head>
 <body>
+
+<jsp:include page="visibleHeader.html"/>
+
+<div id="Content">
 
 <%
     List<String> ids;
@@ -55,6 +63,9 @@
             out.println( "<h3>" + ids.size() + " Experiments Retrieved</h3>" );
         }
 
+        out.println("<p class=\"bigger\">");
+        out.println("Below are the details of the experiments that match your search. Please choose one.");
+        out.println("</p>");
         out.println("<ul>");
         for (String id : ids ){
             out.println("<li>");
@@ -64,5 +75,14 @@
         out.println("</ul>");
     }
 %>
+    <br><br>
+
+    <jsp:include page="helpAndComments.jsp"/>
+
+</div>
+
+<jsp:include page="menu.jsp"/>
+
 </body>
+
 </html>

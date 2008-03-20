@@ -1,7 +1,7 @@
 package uk.ac.cisban.symba.webapp.util;
 
-import Carmen.York.WorkFlowWSLocator;
-import Carmen.York.WorkFlowWSSEI;
+import uk.org.carmen.security.WorkFlowWSLocator;
+import uk.org.carmen.security.WorkFlowWSSEI;
 
 import javax.xml.rpc.ServiceException;
 

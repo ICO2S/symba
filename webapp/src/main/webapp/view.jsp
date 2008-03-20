@@ -17,6 +17,7 @@
 <%--Imports so we can use the person object and the data portal utils --%>
 <%@ page import="fugeOM.Collection.FuGE" %>
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
+<%@ page import="uk.ac.cisban.symba.webapp.util.SecurityEngineInterrogator" %>
 <%@ page import="java.io.PrintWriter" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">

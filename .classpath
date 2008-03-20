@@ -49,6 +49,7 @@
   <classpathentry kind="var" path="M2_REPOorg/springframework/spring/1.2.7/spring-1.2.7.jar"/>
   <classpathentry kind="var" path="M2_REPOpostgresql/postgresql/8.2-504.jdbc3/postgresql-8.2-504.jdbc3.jar"/>
   <classpathentry kind="var" path="M2_REPOtaglibs/standard/1.1.2/standard-1.1.2.jar"/>
+  <classpathentry kind="var" path="M2_REPOuk/org/carmen/carmen/1.0-SNAPSHOT/carmen-1.0-SNAPSHOT.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="output" path="target/classes"/>
 </classpath>

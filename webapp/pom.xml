@@ -35,6 +35,17 @@
             <artifactId>core</artifactId>
             <version>8.03</version>
         </dependency>
+        <!--
+         Install by going into web/src/security/build/lib and typing the following command:
+         mvn install:install-file -Dfile=Carmen.jar \
+         -DgroupId=uk.org.carmen -DartifactId=carmen -Dversion=1.0-SNAPSHOT \
+         -Dpackaging=jar -DgeneratePom=true
+        -->
+        <dependency>
+            <groupId>uk.org.carmen</groupId>
+            <artifactId>carmen</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>

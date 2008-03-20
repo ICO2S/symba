@@ -18,7 +18,6 @@
 <%@ page import="fugeOM.Collection.FuGE" %>
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
 <%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.util.*" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
 </jsp:useBean>
@@ -35,58 +34,51 @@
 
 <div id="Content">
     <%
-        List<String> ids;
-        if ( request.getParameter( "experimentName" ) != null &&
-                request.getParameter( "experimentName" ).length() > 0 ) {
-            out.println( "<h3>Search Term: " + request.getParameter( "experimentName" ) + "</h3>" );
-            ids = validUser.getReService()
-                    .getAllLatestExperimentIdsWithName( request.getParameter( "experimentName" ) );
-        } else if ( request.getParameter( "ontologyTerm" ) != null &&
-                request.getParameter( "ontologyTerm" ).length() > 0 ) {
-            out.println( "<!-- Search Term: " + request.getParameter( "ontologyTerm" ) + " -->" );
-            ids = validUser.getReService()
-                    .getAllLatestExperimentIdsWithOntologyTerm( request.getParameter( "ontologyTerm" ) );
-        } else if ( request.getParameter( "showAll" ) != null && request.getParameter( "showAll" ).length() > 0 ) {
-            ids = validUser.getReService().getAllLatestExperimentIds();
-        } else {
-            ids = validUser.getReService().getAllLatestExpIdsWithContact( validUser.getEndurantLsid() );
-        }
-        if ( ids.isEmpty() ) {
-    %>
+        if ( request.getParameter( "investigationID" ) != null &&
+                request.getParameter( "investigationID" ).length() > 0 ) {
 
-    <h2>
-        You have no experiments at the moment, or your search term returned no results.
-        If you wish, you may <a class="bigger" href="newOrExisting.jsp">deposit
-        some data</a>, or go to the <a href="search.jsp">Search Page</a> to search the database.
-    </h2>
-    <%
-    } else {
-        if ( ids.size() == 1 ) {
-            out.println( "<h3>" + ids.size() + " Experiment Retrieved</h3>" );
-        } else {
-            out.println( "<h3>" + ids.size() + " Experiments Retrieved</h3>" );
-        }
-//        for (String id : ids) {
-//            out.println(id + "<br/>");
-//        }
-        out.println( "For further searches, please visit our <a href=\"search.jsp\">Search Page</a><br/>" );
-    %>
-    <h2>Your Data is shown below <a
-            href="help.jsp#viewExperiments"
-            onClick="return popup(this, 'notes')"> [ Help? ]</a></h2>
+            // This combo should always return an access granted message if actually connected.
+//        String role = "demo";
+//        String action = "Write";
+//        String resource = "urn:lsid:carmen.org:file:1";
 
-    <%
-            for ( Object obj : ids ) {
+            SecurityEngineInterrogator interrogator = new SecurityEngineInterrogator();
+
+            boolean passedSecurity = false;
+
+            try {
+                passedSecurity = interrogator.hasPermission(
+                        "demo", request.getParameter( "investigationID" ), "Read" );
+            } catch ( Exception e ) {
+                out.println( "There has been an error processing the permissions associated with your selected" );
+                out.println( "investigation." );
+                out.println( e.getMessage() );
+                e.printStackTrace();
+            }
+
+            if ( passedSecurity ) {
+                // Ok to print out the experiment
+                out.println( "<h2>" );
+                out.println( "You have no experiments at the moment, or your search term returned no results." );
+                out.println( "If you wish, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">deposit" );
+                out.println(
+                        "some data</a>, or go to the <a href=\"search.jsp\">Search Page</a> to search the database." );
+                out.println( "</h2>" );
+                out.println( "For further searches, please visit our <a href=\"search.jsp\">Search Page</a><br/>" );
+                out.println( "<h2>Your Data is shown below <a href=\"help.jsp#viewExperiments\"" );
+                out.println( "onClick=\"return popup(this, 'notes')\"> [ Help? ]</a></h2>" );
+
                 CisbanFuGEHelper cfh = new CisbanFuGEHelper( validUser.getReService() );
-                String identifier = ( String ) obj;
                 // don't get latest version here: prettyHtml will get the latest version ONLY for those
                 // objects it is displaying.
-                FuGE fuge = ( FuGE ) validUser.getReService().findIdentifiable( identifier );
+                FuGE fuge = ( FuGE ) validUser.getReService()
+                        .findIdentifiable( request.getParameter( "investigationID" ) );
                 cfh.prettyHtml( fuge, new PrintWriter( out ) );
                 // Go directly to experimentValidate.jsp
                 out.println( "<form action=\"experimentValidate.jsp\">" );
                 out.println(
-                        "<input type=\"hidden\" name=\"experimentList\" value=\"" + fuge.getEndurant().getIdentifier() +
+                        "<input type=\"hidden\" name=\"experimentList\" value=\"" +
+                                fuge.getEndurant().getIdentifier() +
                                 "\"/>" );
                 out.println( "<input type=\"submit\" value=\"Add Data To This Experiment\"/>" );
                 out.println( "</form>" );

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:PolicyCreation/wsdl" xmlns:ns2="urn:PolicyCreation/types" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="PolicyCreation" targetNamespace="urn:PolicyCreation/wsdl">
+  <types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:PolicyCreation/types" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:PolicyCreation/types">
+      <complexType name="UpdatePolicy">
+        <sequence>
+          <element name="String_1" type="string" nillable="true"/>
+          <element name="String_2" type="string" nillable="true"/>
+          <element name="String_3" type="string" nillable="true"/>
+          <element name="String_4" type="string" nillable="true"/></sequence></complexType>
+      <complexType name="UpdatePolicyResponse">
+        <sequence>
+          <element name="result" type="boolean"/></sequence></complexType>
+      <element name="UpdatePolicy" type="tns:UpdatePolicy"/>
+      <element name="UpdatePolicyResponse" type="tns:UpdatePolicyResponse"/></schema></types>
+  <message name="PolicyCreationSEI_UpdatePolicy">
+    <part name="parameters" element="ns2:UpdatePolicy"/></message>
+  <message name="PolicyCreationSEI_UpdatePolicyResponse">
+    <part name="result" element="ns2:UpdatePolicyResponse"/></message>
+  <portType name="PolicyCreationSEI">
+    <operation name="UpdatePolicy">
+      <input message="tns:PolicyCreationSEI_UpdatePolicy"/>
+      <output message="tns:PolicyCreationSEI_UpdatePolicyResponse"/></operation></portType>
+  <binding name="PolicyCreationSEIBinding" type="tns:PolicyCreationSEI">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <operation name="UpdatePolicy">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/></input>
+      <output>
+        <soap:body use="literal"/></output></operation></binding>
+  <service name="PolicyCreation">
+    <port name="PolicyCreationSEIPort" binding="tns:PolicyCreationSEIBinding">
+      <soap:address location="http://glororan.campus.ncl.ac.uk:8084/PolicyCreator/PolicyCreation" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"/></port></service></definitions>

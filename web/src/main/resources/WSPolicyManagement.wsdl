@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:PolicyWS/wsdl" xmlns:ns2="urn:PolicyWS/types" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="PolicyWS" targetNamespace="urn:PolicyWS/wsdl">
+  <types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:PolicyWS/types" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:PolicyWS/types">
+      <complexType name="listAllPolicies">
+        <sequence/></complexType>
+      <complexType name="listAllPoliciesResponse">
+        <sequence>
+          <element name="result" type="string" nillable="true" minOccurs="0" maxOccurs="unbounded"/></sequence></complexType>
+      <complexType name="PolicyAdminException">
+        <sequence>
+          <element name="message" type="string" nillable="true"/></sequence></complexType>
+      <complexType name="listAllProjectPolicies">
+        <sequence/></complexType>
+      <complexType name="listAllProjectPoliciesResponse">
+        <sequence>
+          <element name="result" type="string" nillable="true" minOccurs="0" maxOccurs="unbounded"/></sequence></complexType>
+      <complexType name="listAllProjectPoliciesByProject">
+        <sequence>
+          <element name="String_1" type="string" nillable="true"/></sequence></complexType>
+      <complexType name="listAllProjectPoliciesByProjectResponse">
+        <sequence>
+          <element name="result" type="string" nillable="true" minOccurs="0" maxOccurs="unbounded"/></sequence></complexType>
+      <complexType name="retrievePolicyForProjectRole">
+        <sequence>
+          <element name="String_1" type="string" nillable="true"/></sequence></complexType>
+      <complexType name="retrievePolicyForProjectRoleResponse">
+        <sequence>
+          <element name="result" type="string" nillable="true"/></sequence></complexType>
+      <complexType name="retrievePolicyForRole">
+        <sequence>
+          <element name="String_1" type="string" nillable="true"/></sequence></complexType>
+      <complexType name="retrievePolicyForRoleResponse">
+        <sequence>
+          <element name="result" type="string" nillable="true"/></sequence></complexType>
+      <complexType name="storePolicy">
+        <sequence>
+          <element name="String_1" type="string" nillable="true"/></sequence></complexType>
+      <complexType name="storePolicyResponse">
+        <sequence>
+          <element name="result" type="long"/></sequence></complexType>
+      <complexType name="storeProjectPolicy">
+        <sequence>
+          <element name="String_1" type="string" nillable="true"/></sequence></complexType>
+      <complexType name="storeProjectPolicyResponse">
+        <sequence>
+          <element name="result" type="long"/></sequence></complexType>
+      <element name="listAllPolicies" type="tns:listAllPolicies"/>
+      <element name="listAllPoliciesResponse" type="tns:listAllPoliciesResponse"/>
+      <element name="PolicyAdminException" type="tns:PolicyAdminException"/>
+      <element name="listAllProjectPolicies" type="tns:listAllProjectPolicies"/>
+      <element name="listAllProjectPoliciesResponse" type="tns:listAllProjectPoliciesResponse"/>
+      <element name="listAllProjectPoliciesByProject" type="tns:listAllProjectPoliciesByProject"/>
+      <element name="listAllProjectPoliciesByProjectResponse" type="tns:listAllProjectPoliciesByProjectResponse"/>
+      <element name="retrievePolicyForProjectRole" type="tns:retrievePolicyForProjectRole"/>
+      <element name="retrievePolicyForProjectRoleResponse" type="tns:retrievePolicyForProjectRoleResponse"/>
+      <element name="retrievePolicyForRole" type="tns:retrievePolicyForRole"/>
+      <element name="retrievePolicyForRoleResponse" type="tns:retrievePolicyForRoleResponse"/>
+      <element name="storePolicy" type="tns:storePolicy"/>
+      <element name="storePolicyResponse" type="tns:storePolicyResponse"/>
+      <element name="storeProjectPolicy" type="tns:storeProjectPolicy"/>
+      <element name="storeProjectPolicyResponse" type="tns:storeProjectPolicyResponse"/></schema></types>
+  <message name="PolicyWSSEI_listAllPolicies">
+    <part name="parameters" element="ns2:listAllPolicies"/></message>
+  <message name="PolicyWSSEI_listAllPoliciesResponse">
+    <part name="result" element="ns2:listAllPoliciesResponse"/></message>
+  <message name="PolicyAdminException">
+    <part name="PolicyAdminException" element="ns2:PolicyAdminException"/></message>
+  <message name="PolicyWSSEI_listAllProjectPolicies">
+    <part name="parameters" element="ns2:listAllProjectPolicies"/></message>
+  <message name="PolicyWSSEI_listAllProjectPoliciesResponse">
+    <part name="result" element="ns2:listAllProjectPoliciesResponse"/></message>
+  <message name="PolicyWSSEI_listAllProjectPoliciesByProject">
+    <part name="parameters" element="ns2:listAllProjectPoliciesByProject"/></message>
+  <message name="PolicyWSSEI_listAllProjectPoliciesByProjectResponse">
+    <part name="result" element="ns2:listAllProjectPoliciesByProjectResponse"/></message>
+  <message name="PolicyWSSEI_retrievePolicyForProjectRole">
+    <part name="parameters" element="ns2:retrievePolicyForProjectRole"/></message>
+  <message name="PolicyWSSEI_retrievePolicyForProjectRoleResponse">
+    <part name="result" element="ns2:retrievePolicyForProjectRoleResponse"/></message>
+  <message name="PolicyWSSEI_retrievePolicyForRole">
+    <part name="parameters" element="ns2:retrievePolicyForRole"/></message>
+  <message name="PolicyWSSEI_retrievePolicyForRoleResponse">
+    <part name="result" element="ns2:retrievePolicyForRoleResponse"/></message>
+  <message name="PolicyWSSEI_storePolicy">
+    <part name="parameters" element="ns2:storePolicy"/></message>
+  <message name="PolicyWSSEI_storePolicyResponse">
+    <part name="result" element="ns2:storePolicyResponse"/></message>
+  <message name="PolicyWSSEI_storeProjectPolicy">
+    <part name="parameters" element="ns2:storeProjectPolicy"/></message>
+  <message name="PolicyWSSEI_storeProjectPolicyResponse">
+    <part name="result" element="ns2:storeProjectPolicyResponse"/></message>
+  <portType name="PolicyWSSEI">
+    <operation name="listAllPolicies">
+      <input message="tns:PolicyWSSEI_listAllPolicies"/>
+      <output message="tns:PolicyWSSEI_listAllPoliciesResponse"/>
+      <fault name="PolicyAdminException" message="tns:PolicyAdminException"/></operation>
+    <operation name="listAllProjectPolicies">
+      <input message="tns:PolicyWSSEI_listAllProjectPolicies"/>
+      <output message="tns:PolicyWSSEI_listAllProjectPoliciesResponse"/>
+      <fault name="PolicyAdminException" message="tns:PolicyAdminException"/></operation>
+    <operation name="listAllProjectPoliciesByProject">
+      <input message="tns:PolicyWSSEI_listAllProjectPoliciesByProject"/>
+      <output message="tns:PolicyWSSEI_listAllProjectPoliciesByProjectResponse"/>
+      <fault name="PolicyAdminException" message="tns:PolicyAdminException"/></operation>
+    <operation name="retrievePolicyForProjectRole">
+      <input message="tns:PolicyWSSEI_retrievePolicyForProjectRole"/>
+      <output message="tns:PolicyWSSEI_retrievePolicyForProjectRoleResponse"/>
+      <fault name="PolicyAdminException" message="tns:PolicyAdminException"/></operation>
+    <operation name="retrievePolicyForRole">
+      <input message="tns:PolicyWSSEI_retrievePolicyForRole"/>
+      <output message="tns:PolicyWSSEI_retrievePolicyForRoleResponse"/>
+      <fault name="PolicyAdminException" message="tns:PolicyAdminException"/></operation>
+    <operation name="storePolicy">
+      <input message="tns:PolicyWSSEI_storePolicy"/>
+      <output message="tns:PolicyWSSEI_storePolicyResponse"/>
+      <fault name="PolicyAdminException" message="tns:PolicyAdminException"/></operation>
+    <operation name="storeProjectPolicy">
+      <input message="tns:PolicyWSSEI_storeProjectPolicy"/>
+      <output message="tns:PolicyWSSEI_storeProjectPolicyResponse"/>
+      <fault name="PolicyAdminException" message="tns:PolicyAdminException"/></operation></portType>
+  <binding name="PolicyWSSEIBinding" type="tns:PolicyWSSEI">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <operation name="listAllPolicies">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/></input>
+      <output>
+        <soap:body use="literal"/></output>
+      <fault name="PolicyAdminException">
+        <soap:fault name="PolicyAdminException" use="literal"/></fault></operation>
+    <operation name="listAllProjectPolicies">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/></input>
+      <output>
+        <soap:body use="literal"/></output>
+      <fault name="PolicyAdminException">
+        <soap:fault name="PolicyAdminException" use="literal"/></fault></operation>
+    <operation name="listAllProjectPoliciesByProject">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/></input>
+      <output>
+        <soap:body use="literal"/></output>
+      <fault name="PolicyAdminException">
+        <soap:fault name="PolicyAdminException" use="literal"/></fault></operation>
+    <operation name="retrievePolicyForProjectRole">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/></input>
+      <output>
+        <soap:body use="literal"/></output>
+      <fault name="PolicyAdminException">
+        <soap:fault name="PolicyAdminException" use="literal"/></fault></operation>
+    <operation name="retrievePolicyForRole">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/></input>
+      <output>
+        <soap:body use="literal"/></output>
+      <fault name="PolicyAdminException">
+        <soap:fault name="PolicyAdminException" use="literal"/></fault></operation>
+    <operation name="storePolicy">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/></input>
+      <output>
+        <soap:body use="literal"/></output>
+      <fault name="PolicyAdminException">
+        <soap:fault name="PolicyAdminException" use="literal"/></fault></operation>
+    <operation name="storeProjectPolicy">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/></input>
+      <output>
+        <soap:body use="literal"/></output>
+      <fault name="PolicyAdminException">
+        <soap:fault name="PolicyAdminException" use="literal"/></fault></operation></binding>
+  <service name="PolicyWS">
+    <port name="PolicyWSSEIPort" binding="tns:PolicyWSSEIBinding">
+      <soap:address location="http://glororan.campus.ncl.ac.uk:8084/WSPolicyManagement/PolicyWS" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"/></port></service></definitions>

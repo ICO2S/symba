@@ -1,9 +1,12 @@
 package uk.ac.cisban.symba.webapp.util;
 
+import uk.org.carmen.security.PolicyCreationLocator;
+import uk.org.carmen.security.PolicyCreationSEI;
 import uk.org.carmen.security.WorkFlowWSLocator;
 import uk.org.carmen.security.WorkFlowWSSEI;
 
 import javax.xml.rpc.ServiceException;
+import java.rmi.RemoteException;
 
 /**
  * This file is part of SyMBA.
@@ -18,23 +21,36 @@ import javax.xml.rpc.ServiceException;
  * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/webapp/src/main/java/uk/ac/cisban/symba/webapp/util/ScpBean.java $
  */
 public class SecurityEngineInterrogator {
-    private WorkFlowWSLocator locator;
-    private WorkFlowWSSEI secService;
+    private WorkFlowWSSEI checkService;
+    private PolicyCreationSEI createService;
 
     public SecurityEngineInterrogator() throws ServiceException {
 
-        this.locator = new WorkFlowWSLocator();
-        // WorkFlowWSSEI secService  = locator.getWorkFlowWSSEIPort (new URL ("http://localhost:8080/CARMENWS/WorkFlowWS"));
-        this.secService = this.locator.getWorkFlowWSSEIPort();
+        WorkFlowWSLocator checkLocator = new WorkFlowWSLocator();
+        this.checkService = checkLocator.getWorkFlowWSSEIPort();
+
+        PolicyCreationLocator creationLocator = new PolicyCreationLocator();
+        this.createService = creationLocator.getPolicyCreationSEIPort();
     }
 
+    /**
+     * creates a policy in the security database.
+     *
+     * @param role The role, such as "admin" or "allUsers", that this policy will be attached to
+     * @param resource The identifier, which for SyMBA is the LSID
+     * @param action Choose one of the following: Read, Update
+     * @param decision : "P" for Permit, or "D" to explicitly Deny
+     * @return true if there is an explicit permission, or false if there is either explicit denial or no associated policy
+     * @throws Exception if there is a problem with getting the permission value.
+     */
     public boolean hasPermission( String role, String resource, String action ) throws Exception {
 
+        // uncomment this if you do not have a connection to the security engine.
         if ( true ) {
             return true;
         }
 
-        String response_unparsed = this.secService.checkWorkFlowOperation( role, resource, action );
+        String response_unparsed = checkService.checkWorkFlowOperation( role, resource, action );
 
         if ( response_unparsed.contains( "<Decision>" ) ) {
             int r1 = response_unparsed.indexOf( "<Decision>" );
@@ -51,10 +67,9 @@ public class SecurityEngineInterrogator {
                 // Authorization Denied
                 return false;
             } else if ( response.equals( "NotApplicable" ) ) {
-                // Related Policies Not Found
-                throw new Exception(
-                        "Response is NotApplicable: Related Polices have not been found" + response_unparsed );
-            } else if ( response.equals( "Intederminate" ) ) {
+                // Related Policies Not Found. For instance, if there is no explicit permission or denial.
+                return false;
+            } else if ( response.equals( "Indeterminate" ) ) {
                 // There is a conflict: perhaps
                 throw new Exception(
                         "Response is indeterminate: Panos has messed up the database" + response_unparsed );
@@ -65,4 +80,25 @@ public class SecurityEngineInterrogator {
             throw new Exception( "The program does not understand the response: " + response_unparsed );
         }
     }
+
+    /**
+     * creates a policy in the security database.
+     *
+     * @param role The role, such as "admin" or "allUsers", that this policy will be attached to
+     * @param resource The identifier, which for SyMBA is the LSID
+     * @param action Choose one of the following: Read, Update
+     * @param decision : "P" for Permit, or "D" to explicitly Deny
+     * @return true if everything's gone well in the database, and false if it hasn't updated the database
+     * @throws Exception
+     */
+    public boolean createPolicy( String role, String resource, String action, String decision ) throws RemoteException {
+
+        // uncomment this if you do not have a connection to the security engine.
+        if ( true ) {
+            return true;
+        }
+
+        return createService.updatePolicy( role, resource, action, decision);
+    }
+    
 }

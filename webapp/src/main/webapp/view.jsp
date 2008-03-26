@@ -48,8 +48,14 @@
             boolean passedSecurity = false;
 
             try {
+                // everyone gets assigned to the allUsers role.
                 passedSecurity = interrogator.hasPermission(
-                        "demo", request.getParameter( "investigationID" ), "Read" );
+                        "symbaAllUsers", request.getParameter( "investigationID" ), "read" );
+                // if allUsers are not allowed, check to see if the role for this particular user allows access
+                if ( !passedSecurity ) {
+                    passedSecurity = interrogator.hasPermission(
+                            validUser.getEndurantLsid(), request.getParameter( "investigationID" ), "read" );
+                }
             } catch ( Exception e ) {
                 out.println( "<h3>" );
                 out.println( "There has been an error processing the permissions associated with your selected" );
@@ -98,7 +104,7 @@
                 out.println(
                         "some data</a>, or perform <a href=\"search.jsp\">another search</a>." );
                 out.println( "</h3>" );
-                
+
             }
         } else {
             out.println( "<h3>" );

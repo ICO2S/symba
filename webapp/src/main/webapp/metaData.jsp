@@ -21,10 +21,6 @@
 <%@ page import="fugeOM.Common.Ontology.OntologySource" %>
 <%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
 <%@ page import="fugeOM.Common.Protocol.*" %>
-<%@ page import="org.apache.commons.fileupload.FileItem" %>
-<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper" %>
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper" %>
@@ -194,9 +190,18 @@
                             description.getText().startsWith( "OntologyReplacement::" ) ) {
                         // this is a field that does not have enough information yet to be promoted to
                         // a material characteristic, so it is currently a free-text field.
-                        String prettified = description.getText().substring( 21 ).trim();
-                        String descriptionLabel = description.getText().trim() + "::" + iii;
-                        out.println( "<label for=\"" + descriptionLabel + "\">Enter the " + prettified + ": </label>" );
+                        String[] parsedStrings = description.getText().split( "::" );
+                        String descriptionLabel = parsedStrings[0] + "::" + parsedStrings[1] + "::" + iii;
+                        if ( parsedStrings.length == 4 && parsedStrings[2].equals( "Help" ) ) {
+                            out.println(
+                                    "<label for=\"" + descriptionLabel + "\">Enter the <SPAN title=\" " +
+                                            parsedStrings[3] + " \" class=\"symba.simplepopup\">" + parsedStrings[1] +
+                                            "</SPAN>: </label>" );
+                        } else {
+                            out.println(
+                                    "<label for=\"" + descriptionLabel + "\">Enter the " + parsedStrings[1] +
+                                            ": </label>" );
+                        }
                         out.println( "<input id=\"" + descriptionLabel + "\" name=\"" + descriptionLabel + "\"><br>" );
                     }
                 }

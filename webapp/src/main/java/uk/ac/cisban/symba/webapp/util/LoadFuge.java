@@ -26,7 +26,9 @@ import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelpe
 import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanOntologyCollectionHelper;
 import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanProtocolCollectionHelper;
 
+import javax.xml.rpc.ServiceException;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -423,7 +425,8 @@ public class LoadFuge {
                     for ( String key : ( rdib.getMaterialFactorsBean() ).getOntologyReplacements().keySet() ) {
                         Description description = ( Description ) reService.createDescribableOb(
                                 "fugeOM.Common.Description.Description" );
-                        description.setText( key + " = " + ( rdib.getMaterialFactorsBean() ).getOntologyReplacements().get( key ) );
+                        description.setText(
+                                key + " = " + ( rdib.getMaterialFactorsBean() ).getOntologyReplacements().get( key ) );
                         helper.loadDescribable( description, auditor, "fugeOM.Common.Description.Description", null );
                         descriptions.add( description );
                     }
@@ -493,7 +496,8 @@ public class LoadFuge {
                             Description description = ( Description ) reService.createDescribableOb(
                                     "fugeOM.Common.Description.Description" );
                             description.setText( "Treatment: " + treatmentDesc );
-                            helper.loadDescribable( description, auditor, "fugeOM.Common.Description.Description", null );
+                            helper.loadDescribable(
+                                    description, auditor, "fugeOM.Common.Description.Description", null );
                             descriptions.add( description );
                         }
                         genericMaterial.setDescriptions( descriptions );
@@ -547,9 +551,25 @@ public class LoadFuge {
         // Load the entire fuge entry into the database
         if ( fuge.getId() != null ) {
             // Assume this object has changed, assign a new LSID and getNewAuditTrail( person ), and load into the database
-            helper.assignAndLoadIdentifiable( fuge, auditor, "fugeOM.Collection.FuGE", null );
+            fuge = ( FuGE ) helper.assignAndLoadIdentifiable( fuge, auditor, "fugeOM.Collection.FuGE", null );
         } else {
             helper.loadIdentifiable( fuge, auditor, "fugeOM.Collection.FuGE", null );
+        }
+
+        // Use the new LSID to create a new policy in the security database
+        try {
+            SecurityEngineInterrogator interrogator = new SecurityEngineInterrogator();
+            interrogator.createPolicy( "symbaAllUsers", fuge.getIdentifier(), "read", "Permit" );
+            interrogator.createPolicy( "symbaAllUsers", fuge.getIdentifier(), "write", "Deny" );
+
+            interrogator.createPolicy( auditor.getEndurant().getIdentifier(), fuge.getIdentifier(), "read", "Permit" );
+            interrogator.createPolicy( auditor.getEndurant().getIdentifier(), fuge.getIdentifier(), "write", "Permit" );
+        } catch ( ServiceException e ) {
+            System.out.println( "Was not able to create the SecurityEngineInterrogator: " + e.getMessage() );
+            e.printStackTrace();
+        } catch ( RemoteException e ) {
+            System.out.println( "Was not able to load the policy into the database: " + e.getMessage() );
+            e.printStackTrace();
         }
     }
 

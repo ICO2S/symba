@@ -257,9 +257,9 @@ concrete protocols have been made.
             <materialType
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:943066e5-bbd4-45ed-b0c3-d71e7ec8640d"/>
             <descriptions>
-                <Description text="OntologyReplacement::Species"/>
-                <Description text="OntologyReplacement::Strain"/>
-                <Description text="OntologyReplacement::Cell line"/>
+                <Description text="OntologyReplacement::Species::Help::this means nothing"/>
+                <Description text="OntologyReplacement::Strain::Help::this means everything"/>
+                <Description text="OntologyReplacement::Cell line::Help::I need help"/>
                 <Description text="OntologyReplacement::Genetic characteristics"/>
                 <Description text="OntologyReplacement::Genetic variation"/>
                 <Description text="OntologyReplacement::Disease state"/>
@@ -277,8 +277,8 @@ concrete protocols have been made.
                 <Description text="OntologyReplacement::Brain area"/>
                 <Description text="OntologyReplacement::Slice thickness"/>
                 <Description text="OntologyReplacement::Slice orientation"/>
-                <Description text="OntologyReplacement::Cell type coordinates"/>
-                <Description text="OntologyReplacement::Location confirmation"/>          
+                <Description text="OntologyReplacement::Target cell type"/>
+                <Description text="OntologyReplacement::Confirmed cell type"/>          
             </descriptions>
             <!--Species
             <characteristics
@@ -287,10 +287,10 @@ concrete protocols have been made.
             <!--Sex -->
             <characteristics
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a76ba6fc-0018-4817-bb2c-8cf3b7a1904e"/>
-
+            <!--
             <characteristics
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:0b645454-8506-4f0e-b824-d6648c1f0126"/>
-
+              -->
         </GenericMaterial>
     </MaterialCollection>
     <DataCollection>

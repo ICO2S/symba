@@ -28,7 +28,7 @@ concrete protocols have been made.
             <genPrtclToEquip
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
             <genPrtclToEquip
-                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:4a240006-7619-48d5-bf8b-161764758cc5"/>
         </GenericProtocol>
 
 
@@ -37,9 +37,7 @@ concrete protocols have been made.
                 endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3bd0bac3-7fcf-496c-be2a-0ba93a30b2b8"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e">
             <genPrtclToEquip
-                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
-            <genPrtclToEquip
-                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipement:607a6089-bd32-4085-95ce-d92f7830a88b"/>
 
         </GenericProtocol>
 
@@ -50,7 +48,7 @@ concrete protocols have been made.
             <genPrtclToEquip
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
             <genPrtclToEquip
-                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipement:607a6089-bd32-4085-95ce-d92f7830a88b"/>
 
         </GenericProtocol>
 
@@ -59,9 +57,7 @@ concrete protocols have been made.
                 endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3789951a-3c94-47b4-8203-941814a722c0"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa">
             <genPrtclToEquip
-                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
-            <genPrtclToEquip
-                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipement:607a6089-bd32-4085-95ce-d92f7830a88b"/>
 
         </GenericProtocol>
 
@@ -160,6 +156,30 @@ concrete protocols have been made.
         <GenericEquipment name="Amplifier"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:c6759d86-cd3f-48e6-b36e-3d2fcbf88c51"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965">
+            <GenericParameter name="Manufacturer"
+                              endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
+                              identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e00c31ac-d167-4b83-b59d-b16a900f44e7">
+                <ComplexValue>
+                    <_defaultValue
+                            OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
+                </ComplexValue>
+            </GenericParameter>
+            <GenericParameter name="Model Name"
+                              endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:dd4bdc5a-d355-4a01-91a9-7ddeb54451b1"
+                              identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f8357d3d-2f14-4a40-b9fd-2a716007b0c9">
+                <AtomicValue defaultValue="0"/>
+            </GenericParameter>
+            <GenericParameter name="Model Number"
+                              endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:9705b45a-00d7-4e47-a7f3-eb544f0380ae"
+                              identifier="urn:lsid:cisban.cisbs.org:GenericParameter:be9d0812-173a-4073-8827-950c4c1d5e80">
+                <AtomicValue defaultValue="0"/>
+            </GenericParameter>
+        </GenericEquipment>
+
+
+        <GenericEquipment name="Equipment"
+                          endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:4a0c8b39-ff59-4527-8c5a-f4ec5de2f3e5"
+                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipement:607a6089-bd32-4085-95ce-d92f7830a88b">
             <GenericParameter name="Manufacturer"
                               endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e00c31ac-d167-4b83-b59d-b16a900f44e7">
@@ -354,6 +374,11 @@ concrete protocols have been made.
         <OntologyIndividual termAccession="accession to come" term="Hz"
                             endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:e012ca0f-8238-45da-96fd-1139707f157b"
                             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:77fb941a-e1cf-473a-92a3-e190f77df5a3"/>
+
+        <OntologyIndividual termAccession="accession to come" term="micrometer"
+                            endurant="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:a45d00f8-7360-4862-b95b-66eb85af59a9"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:0807df05-d326-4733-afb9-510b8fab3431"/>
+
 
         <OntologyIndividual termAccession="accession to come" term="Multi Channel Systems"
                             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:80441996-dd20-49ab-9409-7689b5836e43"

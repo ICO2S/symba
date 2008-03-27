@@ -29,6 +29,8 @@ concrete protocols have been made.
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965"/>
             <genPrtclToEquip
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:4a240006-7619-48d5-bf8b-161764758cc5"/>
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:c0dbb4a6-2666-4883-8173-5f13b48f8624"/>
         </GenericProtocol>
 
 
@@ -143,7 +145,7 @@ concrete protocols have been made.
                               endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:d401bac9-5165-4ebf-b620-740d8301ed12"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:128d231b-f98d-4bbe-b33e-c2b762c02319">
                 <AtomicValue defaultValue="0"/>
-                <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:77fb941a-e1cf-473a-92a3-e190f77df5a3"/>
+                <unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:0807df05-d326-4733-afb9-510b8fab3431"/>
             </GenericParameter>
             <GenericParameter name="Electrode impedance"
                               endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:85f4b183-bbbc-42b6-b931-f8818f2c98a8"
@@ -230,6 +232,10 @@ concrete protocols have been made.
             </GenericParameter>
 
         </GenericEquipment>
+
+
+
+
 
         <GenericEquipment name="Recorder"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:2e049199-6b53-45d1-befa-ec99666412e7"

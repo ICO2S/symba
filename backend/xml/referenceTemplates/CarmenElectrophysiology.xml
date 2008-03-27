@@ -95,6 +95,26 @@ concrete protocols have been made.
                     name="Step Containing the Task Protocol"
                     actionOrdinal="1"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e">
+                <GenericParameter name="Description of task protocol"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:f0963550-a472-41c3-83db-81058e9e5945"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f92cce92-1bef-4b05-b6c5-a77a1561a872">
+                    <AtomicValue defaultValue="0"/>
+
+                    <GenericParameter name="Sensory conditions"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:8e9f7111-e3d8-4ada-91c4-7c16fbb00457"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:0b55113b-b724-4889-8a72-1c3ed08f6a5f">
+                    <AtomicValue defaultValue="0"/>
+
+                        <GenericParameter name="Solutions"
+                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:7e48ab07-7b89-4188-b4b8-9e4cbb734566"
+                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e86715a2-8c95-4cf5-88aa-1ceac974a0b7">
+                    <AtomicValue defaultValue="0"/>
+                    
+                </GenericParameter>
+
+
+
+
             </GenericAction>
 
             <GenericAction

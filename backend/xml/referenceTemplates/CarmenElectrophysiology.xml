@@ -31,6 +31,8 @@ concrete protocols have been made.
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:4a240006-7619-48d5-bf8b-161764758cc5"/>
             <genPrtclToEquip
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:c0dbb4a6-2666-4883-8173-5f13b48f8624"/>
+            <genPrtclToEquip
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:954f6489-2b79-42a3-8a13-17b3f148ed2b"/>
         </GenericProtocol>
 
 
@@ -56,7 +58,7 @@ concrete protocols have been made.
 
         <GenericProtocol
                 name="Behavioural event Protocol (Component of Carmen Electrophysiology Investigation)"
-                endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3789951a-3c94-47b4-8203-941814a722c0"
+                endurant="urn:lsid:cisban.cisbs.org:GenPro tocolEndurant:3789951a-3c94-47b4-8203-941814a722c0"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa">
             <genPrtclToEquip
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipement:607a6089-bd32-4085-95ce-d92f7830a88b"/>
@@ -73,6 +75,9 @@ concrete protocols have been made.
                     name="Step Containing the Recording Protocol"
                     actionOrdinal="4"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3">
+                 <!--This is the new descriptions element that I have added for task, stimulus, recording and behavioural event protocols-->
+                <descriptions text="This should be presented as a text box to allow the description of the Stimulus protocol to be documented"/>
+
                 <GenericParameter name="Sampling Rate"
                                   endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:339ec38d-4d67-43dc-91ed-177c79c4be25"
                                   identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7">
@@ -87,6 +92,9 @@ concrete protocols have been made.
                     name="Step Containing the Stimulus Protocol"
                     actionOrdinal="2"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:aaef5e92-76af-4cb6-aeff-03f7aa77dbe9">
+                 <!--This is the new descriptions element that I have added for task, stimulus, recording and behavioural event protocols-->
+                <descriptions text="This should be presented as a text box to allow the description of the Stimulus protocol to be documented"/>
+
             </GenericAction>
 
             <GenericAction
@@ -95,15 +103,16 @@ concrete protocols have been made.
                     name="Step Containing the Task Protocol"
                     actionOrdinal="1"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e">
-                <GenericParameter name="Description of task protocol"
-                                  endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:f0963550-a472-41c3-83db-81058e9e5945"
-                                  identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f92cce92-1bef-4b05-b6c5-a77a1561a872">
-                    <AtomicValue defaultValue="0"/>
+
+                <!--This is the new descriptions element that I have added for task, stimulus and behavioural event protocols-->
+                <descriptions text="This should be presented as a text box to allow the description of the Task protocol to be documented"></descriptions>
+                <!-- These are the new GenericParameters that I have added although they do not seem to be displaying on the forms I need to repeat these for the task protocol -->
 
                     <GenericParameter name="Sensory conditions"
                                   endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:8e9f7111-e3d8-4ada-91c4-7c16fbb00457"
                                   identifier="urn:lsid:cisban.cisbs.org:GenericParameter:0b55113b-b724-4889-8a72-1c3ed08f6a5f">
                     <AtomicValue defaultValue="0"/>
+                </GenericParameter>
 
                         <GenericParameter name="Solutions"
                                   endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:7e48ab07-7b89-4188-b4b8-9e4cbb734566"
@@ -123,6 +132,9 @@ concrete protocols have been made.
                     name="Step Containing the Behavioural event Protocol"
                     actionOrdinal="3"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa">
+                 <!--This is the new descriptions element that I have added for task, stimulus and behavioural event protocols-->
+                <descriptions text="This should be presented as a text box to allow the description of the Task protocol to be documented"></descriptions>
+
             </GenericAction>
         </GenericProtocol>
 
@@ -197,6 +209,31 @@ concrete protocols have been made.
                 <AtomicValue defaultValue="0"/>
             </GenericParameter>
         </GenericEquipment>
+
+
+        <GenericEquipment name="Containing device"
+                          endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:15149009-77e1-49ba-8e30-f26abe9338ed"
+                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:954f6489-2b79-42a3-8a13-17b3f148ed2b">
+            <GenericParameter name="Manufacturer"
+                              endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
+                              identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e00c31ac-d167-4b83-b59d-b16a900f44e7">
+                <ComplexValue>
+                    <_defaultValue
+                            OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
+                </ComplexValue>
+            </GenericParameter>
+            <GenericParameter name="Model Name"
+                              endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:dd4bdc5a-d355-4a01-91a9-7ddeb54451b1"
+                              identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f8357d3d-2f14-4a40-b9fd-2a716007b0c9">
+                <AtomicValue defaultValue="0"/>
+            </GenericParameter>
+            <GenericParameter name="Model Number"
+                              endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:9705b45a-00d7-4e47-a7f3-eb544f0380ae"
+                              identifier="urn:lsid:cisban.cisbs.org:GenericParameter:be9d0812-173a-4073-8827-950c4c1d5e80">
+                <AtomicValue defaultValue="0"/>
+            </GenericParameter>
+        </GenericEquipment>
+
 
 
         <GenericEquipment name="Equipment"

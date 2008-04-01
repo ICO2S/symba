@@ -32,9 +32,9 @@
 <%-- This allows the page to talk to a database --%>
 <sql:setDataSource
         driver="org.postgresql.Driver"
-        url="jdbc:postgresql://your.machine:5434/symba_security"
-        user=""
-        password=""
+        url="jdbc:postgresql://petrinets:5434/dpi_security"
+        user="dpi"
+        password="dp1_d0rk"
         />
 
 <%--This searches the database for the username/password combination entered 
@@ -95,10 +95,10 @@ must go back to the login page--%>
     }
 
     // todo now set the variables. A bit temporary, but will do until a real properties file setup is done
-    scp.setDirectory( "" );
-    scp.setHostname( "" );
-    scp.setUsername( "" );
-    scp.setPassword( "" );
+    scp.setDirectory( "/data/dpi/sandbox/" );
+    scp.setHostname( "cisbclust.ncl.ac.uk" );
+    scp.setUsername( "dpi" );
+    scp.setPassword( "dp1_d0rk" );
 
     // now get the counts
     counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );

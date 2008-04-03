@@ -34,42 +34,42 @@
 <div id="Content">
 
 <%
-    List<String> ids;
+    List<List<String>> idsAndNames;
     if ( request.getParameter( "experimentName" ) != null &&
             request.getParameter( "experimentName" ).length() > 0 ) {
         out.println( "<h3>Search Term: " + request.getParameter( "experimentName" ) + "</h3>" );
-        ids = validUser.getReService()
-                .getAllLatestExperimentIdsWithName( request.getParameter( "experimentName" ) );
+        idsAndNames = validUser.getReService()
+                .getAllLatestExperimentSummariesWithName( request.getParameter( "experimentName" ) );
     } else if ( request.getParameter( "ontologyTerm" ) != null &&
             request.getParameter( "ontologyTerm" ).length() > 0 ) {
         out.println( "<!-- Search Term: " + request.getParameter( "ontologyTerm" ) + " -->" );
-        ids = validUser.getReService()
-                .getAllLatestExperimentIdsWithOntologyTerm( request.getParameter( "ontologyTerm" ) );
+        idsAndNames = validUser.getReService()
+                .getAllLatestExperimentSummariesWithOntologyTerm( request.getParameter( "ontologyTerm" ) );
     } else if ( request.getParameter( "showAll" ) != null && request.getParameter( "showAll" ).length() > 0 ) {
-        ids = validUser.getReService().getAllLatestExperimentIds();
+        idsAndNames = validUser.getReService().getAllLatestExperimentSummaries();
     } else {
-        ids = validUser.getReService().getAllLatestExpIdsWithContact( validUser.getEndurantLsid() );
+        idsAndNames = validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() );
     }
-    if ( ids.isEmpty() ) {
+    if ( idsAndNames.isEmpty() ) {
         out.println( "<h2>" );
         out.println( "You have no experiments at the moment, or your search term returned no results." );
         out.println( "If you wish, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">deposit" );
         out.println( "some data</a>, or go to the <a href=\"search.jsp\">Search Page</a> to search the database." );
         out.println( "</h2>" );
     } else {
-        if ( ids.size() == 1 ) {
-            out.println( "<h3>" + ids.size() + " Experiment Retrieved</h3>" );
+        if ( idsAndNames.size() == 1 ) {
+            out.println( "<h3>" + idsAndNames.size() + " Experiment Retrieved</h3>" );
         } else {
-            out.println( "<h3>" + ids.size() + " Experiments Retrieved</h3>" );
+            out.println( "<h3>" + idsAndNames.size() + " Experiments Retrieved</h3>" );
         }
 
         out.println("<p class=\"bigger\">");
         out.println("Below are the details of the experiments that match your search. Please choose one.");
         out.println("</p>");
         out.println("<ul>");
-        for (String id : ids ){
+        for (List<String> idAndName : idsAndNames){
             out.println("<li>");
-            out.println("<a href=view.jsp?investigationID=" + id + ">" + id + "</a>");
+            out.println("<a href=view.jsp?investigationID=" + idAndName.get(0) + ">" + idAndName.get(1) + "</a>");
             out.println("</li>");
         }
         out.println("</ul>");

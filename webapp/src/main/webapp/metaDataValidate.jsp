@@ -61,21 +61,38 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 RawDataInfoBean temp = investigationBean.getDataItem( number );
                 temp.setDataName( item.getString() );
                 investigationBean.setDataItem( temp, number );
-            } else if ( item.getFieldName().startsWith( "defaultGenericParameterValueIdentifier" ) ) {
-                // this section needs to go in front of the defaultGenericParameterValue section, otherwise
-                // that section will accidentally take this field.
-                int number = Integer.valueOf( item.getFieldName().substring( 38 ) );
-//                System.out.println( "number = " + number );
+            } else if ( item.getFieldName().startsWith( "atomicParameterOfGPA::" ) ) {
+                String[] parsedStrings = item.getFieldName().split( "::" );
+                int number = Integer.valueOf( parsedStrings[3] );
                 // take what is already there, and add only those fields that have not been made yet
                 RawDataInfoBean temp = investigationBean.getDataItem( number );
-                temp.setAtomicValueIdentifier( item.getString() );
+                // get the endurant for the current equipment out.
+                String GpaParentEndurantId = parsedStrings[1];
+                String parameterEndurantId = parsedStrings[2];
+                // if there is already an existing map key, add to that one.
+                GenericProtocolApplicationSummary summary = ( temp.getGenericProtocolApplicationInfo() ).get( GpaParentEndurantId );
+                if ( summary == null ) {
+                    summary = new GenericProtocolApplicationSummary();
+                }
+                // now get the map of the parameter of the equipment, to assign an ontology term
+                summary.putParameterAndAtomicPair( parameterEndurantId, item.getString() );
+                temp.setGenericProtocolApplicationInfoValue( GpaParentEndurantId, summary );
                 investigationBean.setDataItem( temp, number );
-            } else if ( item.getFieldName().startsWith( "defaultGenericParameterValue" ) ) {
-                int number = Integer.valueOf( item.getFieldName().substring( 28 ) );
-//                System.out.println( "number = " + number );
+            } else if ( item.getFieldName().startsWith( "GPATextBox::" ) ) {
+                String[] parsedStrings = item.getFieldName().split( "::" );
+                int number = Integer.valueOf( parsedStrings[2] );
                 // take what is already there, and add only those fields that have not been made yet
                 RawDataInfoBean temp = investigationBean.getDataItem( number );
-                temp.setAtomicValue( item.getString() );
+                // get the endurant for the current equipment out.
+                String GpaParentEndurantId = parsedStrings[1];
+                // if there is already an existing map key, add to that one.
+                GenericProtocolApplicationSummary summary = ( temp.getGenericProtocolApplicationInfo() ).get( GpaParentEndurantId );
+                if ( summary == null ) {
+                    summary = new GenericProtocolApplicationSummary();
+                }
+                // now add the description to the list of GPA descriptions
+                summary.addDescription( item.getString() );
+                temp.setGenericProtocolApplicationInfoValue( GpaParentEndurantId, summary );
                 investigationBean.setDataItem( temp, number );
             } else if ( item.getFieldName().startsWith( "OntologyReplacement::" ) ) {
                 String[] parsedStrings = item.getFieldName().split( "::" );
@@ -88,7 +105,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 if ( temp.getMaterialFactorsBean() == null )
                     temp.setMaterialFactorsBean( new MaterialFactorsBean() );
                 MaterialFactorsBean mfb = temp.getMaterialFactorsBean();
-                mfb.putOntologyReplacementsPair(parsedStrings[1], item.getString() );
+                mfb.putOntologyReplacementsPair( parsedStrings[1], item.getString() );
 
                 temp.setMaterialFactorsBean( mfb );
                 temp.setAtomicValue( item.getString() );

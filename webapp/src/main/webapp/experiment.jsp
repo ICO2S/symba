@@ -14,8 +14,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<%@ page import="fugeOM.Collection.FuGE" %>
-<%@ page import="uk.ac.cisban.symba.webapp.util.CannedSearch" %>
 <%@ page import="java.util.List" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
@@ -54,16 +52,11 @@
         <label for="experimentList">Existing experiments: </label>
         <select id="experimentList" name="experimentList">
             <%
-                CannedSearch ts = new CannedSearch();
-                // ts.listExperimentsByPerson(validUser.getCreatedMaterial());
-                ts.listExperimentsByPerson( validUser.getEndurantLsid() );
-                List exList = ts.getExperiments();
-                for ( int x = 0; x < exList.size(); x++ ) {
-                    FuGE fug = ( FuGE ) exList.get( x );
-
+                for ( Object obj : validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ) ) {
+                    List<String> idAndName = (List<String>) obj;
                     out.println(
-                            "<option value=\"" + fug.getEndurant().getIdentifier() + "\">" +
-                                    fug.getName() + "</option>" );
+                            "<option value=\"" + idAndName.get(0) + "\">" +
+                                    idAndName.get(1) + "</option>" );
                 }
             %>
         </select><br>

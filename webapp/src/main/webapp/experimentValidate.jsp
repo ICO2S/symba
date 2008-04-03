@@ -3,10 +3,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -28,13 +28,12 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 <jsp:useBean id="experiment" scope="session" class="uk.ac.cisban.symba.webapp.util.ExperimentBean">
 </jsp:useBean>
 
-<jsp:setProperty name="experiment" property="fugeEndurant" value="${param.experimentList}"/>
-
 <%
     //    LoadFuge lf = new LoadFuge();
 //    lf.loadExisting(experiment, validUser);
-    FuGE fuge = ( FuGE ) validUser.getReService().findLatestByEndurant( experiment.getFugeEndurant() );
-    experiment.setFuGE( fuge );
+    FuGE fuge = (FuGE) validUser.getReService().findIdentifiable(request.getParameter("experimentList"));
+    experiment.setFuGE(fuge);
+    experiment.setFugeEndurant(fuge.getEndurant().getIdentifier());
 %>
 
 <c:redirect url="rawData.jsp"/>

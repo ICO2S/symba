@@ -36,12 +36,14 @@ public class RawDataInfoBean implements Serializable {
     private String chosenChildProtocolIdentifier; // In the case of SyMBA, this is the endurant's identifier.
     private String chosenSecondLevelChildProtocolName;  // only used when using 2nd-level protocols
     private String chosenSecondLevelChildProtocolIdentifier; // only used when using 2nd-level protocols. In the case of SyMBA, this is the endurant's identifier.
-    private Map<String, GenericEquipmentSummary> genericEquipmentInfo;
+    private Map<String, GenericEquipmentSummary> genericEquipmentInfo; // the key is the equipment endurant id
+    private Map<String, GenericProtocolApplicationSummary> genericProtocolApplicationInfo;  // the key is the GPA's Parent GenericProtocol endurant id
 
     private MaterialFactorsBean materialFactorsBean;
 
     public RawDataInfoBean() {
         genericEquipmentInfo = new HashMap<String, GenericEquipmentSummary>();
+        genericProtocolApplicationInfo = new HashMap<String, GenericProtocolApplicationSummary>();
     }
 
     public File getAfile() {
@@ -124,6 +126,7 @@ public class RawDataInfoBean implements Serializable {
         this.chosenSecondLevelChildProtocolName = "";
         this.chosenSecondLevelChildProtocolIdentifier = "";
         this.genericEquipmentInfo.clear();
+        this.genericProtocolApplicationInfo.clear();
 
         this.materialFactorsBean.clear();
     }
@@ -218,5 +221,17 @@ public class RawDataInfoBean implements Serializable {
 
     public void setGenericEquipmentInfoValue( String key, GenericEquipmentSummary summary ) {
         this.genericEquipmentInfo.put( key, summary );
+    }
+
+    public Map<String, GenericProtocolApplicationSummary> getGenericProtocolApplicationInfo() {
+        return genericProtocolApplicationInfo;
+    }
+
+    public void setGenericProtocolApplicationInfo( Map<String, GenericProtocolApplicationSummary> genericProtocolApplicationInfo ) {
+        this.genericProtocolApplicationInfo = genericProtocolApplicationInfo;
+    }
+
+    public void setGenericProtocolApplicationInfoValue( String key, GenericProtocolApplicationSummary summary ) {
+        this.genericProtocolApplicationInfo.put( key, summary );
     }
 }

@@ -39,13 +39,12 @@ public class SecurityEngineInterrogator {
      * @param role The role, such as "admin" or "allUsers", that this policy will be attached to
      * @param resource The identifier, which for SyMBA is the LSID
      * @param action Choose one of the following: Read, Update
-     * @param decision : "P" for Permit, or "D" to explicitly Deny
      * @return true if there is an explicit permission, or false if there is either explicit denial or no associated policy
      * @throws Exception if there is a problem with getting the permission value.
      */
     public boolean hasPermission( String role, String resource, String action ) throws Exception {
 
-        // uncomment this if you do not have a connection to the security engine.
+        // comment this out if you have a connection to the security engine.
         if ( true ) {
             return true;
         }
@@ -93,7 +92,7 @@ public class SecurityEngineInterrogator {
      */
     public boolean createPolicy( String role, String resource, String action, String decision ) throws RemoteException {
 
-        // uncomment this if you do not have a connection to the security engine.
+        // comment this out if you have a connection to the security engine.
         if ( true ) {
             return true;
         }

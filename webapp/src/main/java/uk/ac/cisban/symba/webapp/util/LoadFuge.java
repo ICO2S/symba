@@ -245,7 +245,7 @@ public class LoadFuge {
         int iii = 0;
         for ( RawDataInfoBean rdib : rdb.getAllDataBeans() ) {
 
-            // we no longer store data within the database - instead, we store in a file store and use scp.
+            // we store data in a file store and use scp to put it there.
 
             /* Create a connection instance */
             Connection conn = new Connection( scp.getHostname() );
@@ -281,6 +281,21 @@ public class LoadFuge {
                     "fugeOM.Bio.Data.ExternalData",
                     "fugeOM.Bio.Data.ExternalDataEndurant" );
             externalData.setLocation( fileLSID );
+
+            // set the description of the file, if present
+            if ( rdib.getDataName() != null && rdib.getDataName().length() > 0 ) {
+                // add any descriptions. You can see above we have just created a new externaldata object, so
+                // no need to check for old descriptions.
+                Set<Description> descriptions = new HashSet<Description>();
+                Description description = ( Description ) reService.createDescribableOb(
+                        "fugeOM.Common.Description.Description" );
+                description.setText( rdib.getDataName() );
+                reService.createObInDB( "fugeOM.Common.Description.Description", description );
+                descriptions.add( description );
+                externalData.setDescriptions( descriptions );
+            }
+
+            // set the file format, if it has one.
             if ( rdib.getFileFormat() != null ) {
 
                 // we will be updating the ontology collection.
@@ -772,19 +787,39 @@ public class LoadFuge {
                 // add the output data
                 gpaOfSecondLevelParentProtocol.setGenericOutputData( set );
 
-                // add any deviations from the parameter values, if the associated action has any parameters.
-                // Currently only set up to store one parameter change, and therefore we know that if there
-                // is a new parameter (rdib.getAtomicValue()) then it goes in this GPA.
-                // todo currently only assumes that there will be only one parameter total, if we need to change parameters
-                if ( rdib.getAtomicValue() != null && rdib.getAtomicValue().length() > 0 ) {
+                if ( !rdib.getGenericProtocolApplicationInfo().isEmpty() ) {
+
+                    // add any deviations from the zero or more generic parameters associated with the protocol assigned
+                    // to this data item
+                    // todo add more types of parameter values, as currently only valid for atomic values
                     Set<AtomicParameterValue> pvSet = new HashSet<AtomicParameterValue>();
-                    AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
-                            "fugeOM.Common.Protocol.AtomicParameterValue" );
-                    atomicParameterValue.setValue( rdib.getAtomicValue() );
-                    atomicParameterValue.setParameter( ( GenericParameter ) reService.findIdentifiable( rdib.getAtomicValueIdentifier() ) );
-                    reService.createObInDB( "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
-                    pvSet.add( atomicParameterValue );
-                    gpaOfSecondLevelParentProtocol.setParameterValues( pvSet );
+                    GenericProtocolApplicationSummary summary = rdib.getGenericProtocolApplicationInfo().get( gpaOfSecondLevelParentProtocol.getGenericProtocol().getEndurant().getIdentifier() );
+                    if ( summary != null ) {
+                        if ( summary.getParameterAndAtomics() != null && !summary.getParameterAndAtomics().isEmpty() ) {
+                            for ( String parameterKey : summary.getParameterAndAtomics().keySet() ) {
+                                AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
+                                        "fugeOM.Common.Protocol.AtomicParameterValue" );
+                                atomicParameterValue.setValue( summary.getParameterAndAtomics().get( parameterKey ) );
+                                atomicParameterValue.setParameter( ( GenericParameter ) reService.findLatestByEndurant( parameterKey ) );
+                                reService.createObInDB( "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
+                                pvSet.add( atomicParameterValue );
+                            }
+                            gpaOfSecondLevelParentProtocol.setParameterValues( pvSet );
+                        }
+
+                        // add any descriptions. As this is a brand-new GPA, there will be no existing descriptions
+                        if ( summary.getDescriptions() != null && !summary.getDescriptions().isEmpty() ) {
+                            Set<Description> descriptions = new HashSet<Description>();
+                            for ( String currentDescription : summary.getDescriptions() ) {
+                                Description description = ( Description ) reService.createDescribableOb(
+                                        "fugeOM.Common.Description.Description" );
+                                description.setText( currentDescription );
+                                reService.createObInDB( "fugeOM.Common.Description.Description", description );
+                                descriptions.add( description );
+                            }
+                            gpaOfSecondLevelParentProtocol.setDescriptions( descriptions );
+                        }
+                    }
                 }
 
                 // add any deviations from the zero or more generic parameters associated with the equipment associated
@@ -976,19 +1011,39 @@ public class LoadFuge {
                 set.add( reService.findLatestByEndurant( rdib.getEndurantLsid() ) );
                 assayGPA.setGenericOutputData( set );
 
-                // add any deviations from the parameter values, if the associated action has any parameters.
-                // Currently only set up to store one parameter change, and therefore we know that if there
-                // is a new parameter (rdib.getAtomicValue()) then it goes in this GPA.
-                // todo currently only assumes that there will be only one parameter total, if we need to change parameters
-                if ( rdib.getAtomicValue() != null && rdib.getAtomicValue().length() > 0 ) {
+                if ( !rdib.getGenericProtocolApplicationInfo().isEmpty() ) {
+
+                    // add any deviations from the zero or more generic parameters associated with the protocol assigned
+                    // to this data item
+                    // todo add more types of parameter values, as currently only valid for atomic values
                     Set<AtomicParameterValue> pvSet = new HashSet<AtomicParameterValue>();
-                    AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
-                            "fugeOM.Common.Protocol.AtomicParameterValue" );
-                    atomicParameterValue.setValue( rdib.getAtomicValue() );
-                    atomicParameterValue.setParameter( ( GenericParameter ) reService.findIdentifiable( rdib.getAtomicValueIdentifier() ) );
-                    reService.createObInDB( "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
-                    pvSet.add( atomicParameterValue );
-                    assayGPA.setParameterValues( pvSet );
+                    GenericProtocolApplicationSummary summary = rdib.getGenericProtocolApplicationInfo().get( assayGPA.getGenericProtocol().getEndurant().getIdentifier() );
+                    if ( summary != null ) {
+                        if ( summary.getParameterAndAtomics() != null && !summary.getParameterAndAtomics().isEmpty() ) {
+                            for ( String parameterKey : summary.getParameterAndAtomics().keySet() ) {
+                                AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
+                                        "fugeOM.Common.Protocol.AtomicParameterValue" );
+                                atomicParameterValue.setValue( summary.getParameterAndAtomics().get( parameterKey ) );
+                                atomicParameterValue.setParameter( ( GenericParameter ) reService.findLatestByEndurant( parameterKey ) );
+                                reService.createObInDB( "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
+                                pvSet.add( atomicParameterValue );
+                            }
+                            assayGPA.setParameterValues( pvSet );
+                        }
+
+                        // add any descriptions. As this is a brand-new GPA, there will be no existing descriptions
+                        if ( summary.getDescriptions() != null && !summary.getDescriptions().isEmpty() ) {
+                            Set<Description> descriptions = new HashSet<Description>();
+                            for ( Object descriptionObj : summary.getDescriptions() ) {
+                                Description description = ( Description ) reService.createDescribableOb(
+                                        "fugeOM.Common.Description.Description" );
+                                description.setText( ( String ) descriptionObj );
+                                reService.createObInDB( "fugeOM.Common.Description.Description", description );
+                                descriptions.add( description );
+                            }
+                            assayGPA.setDescriptions( descriptions );
+                        }
+                    }
                 }
 
                 // add any deviations from the zero or more generic parameters associated with the equipment associated
@@ -1191,7 +1246,9 @@ public class LoadFuge {
             // Finally, associate the new holding gpa with the protocol collection. If it was already
             // in the database, then loading the new GPA will put a new version in with the same
             // endurant, and the update will be noted when viewing the experiment.
-            if ( !gpaOfFirstLevelParentProtocolMatch ) {
+            if ( !gpaOfFirstLevelParentProtocolMatch )
+
+            {
                 allGPAs.add( gpaOfFirstLevelParentProtocol );
             }
         }
@@ -1239,7 +1296,7 @@ public class LoadFuge {
         ContactRole contactRole = ( ContactRole ) reService.createDescribableOb( "fugeOM.Common.Audit.ContactRole" );
         contactRole.setContact( auditor );
 
-        // the provider contains an ontology term, so we need to add that term to the experiment
+// the provider contains an ontology term, so we need to add that term to the experiment
         OntologyCollection ontologyCollection = ( OntologyCollection ) reService.createDescribableOb(
                 "fugeOM.Collection.OntologyCollection" );
         Set ontologyTerms;
@@ -1260,12 +1317,12 @@ public class LoadFuge {
         ontologyIndividual.setTerm( "Principal Investigators" );
         ontologyIndividual.setTermAccession( "accession to come" );
 
-        // and then load that term into the database
+// and then load that term into the database
         helper.loadIdentifiable( ontologyIndividual, auditor, "fugeOM.Common.Ontology.OntologyIndividual", null );
 
-        // add the ontology term to the list of terms.
+// add the ontology term to the list of terms.
         ontologyTerms.add( ontologyIndividual );
-        // then set that ontology term in the role
+// then set that ontology term in the role
         contactRole.setRole( ontologyIndividual );
         ontologyCollection.setOntologyTerms( ontologyTerms );
 
@@ -1276,7 +1333,7 @@ public class LoadFuge {
         reService.createObInDB( "fugeOM.Collection.OntologyCollection", ontologyCollection );
         fuge.setOntologyCollection( ontologyCollection );
 
-        //  load the role into the database
+//  load the role into the database
         reService.createObInDB( "fugeOM.Common.Audit.ContactRole", contactRole );
 
         Provider provider = ( Provider ) reService.createIdentifiableAndEndurantObs(
@@ -1286,15 +1343,15 @@ public class LoadFuge {
                 "fugeOM.Collection.Provider",
                 "fugeOM.Collection.ProviderEndurant" );
 
-        // set any part of the provider that we are interested in.
+// set any part of the provider that we are interested in.
         provider.setName( "Main Provider of Experiment: " + eb.getExperimentName() );
         provider.setProvider( contactRole );
 
-        // load the provider into the database
+// load the provider into the database
         helper.loadIdentifiable( provider, auditor, "fugeOM.Collection.Provider", null );
-        // add the role to the provider
+// add the role to the provider
         fuge.setProvider( provider );
-        // ..and add the ontology collection to the experiment
+// ..and add the ontology collection to the experiment
         fuge.getOntologyCollection().setOntologyTerms( ontologyTerms );
 
         return fuge;

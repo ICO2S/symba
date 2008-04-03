@@ -171,7 +171,9 @@
         if ( info.getFileFormat() != null ) {
             out.println( "<li>You have specified a file format for the data file: " );
             out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-            out.println( info.getFileFormat() );
+            OntologyTerm ot = ( OntologyTerm ) validUser.getReService()
+                            .findLatestByEndurant( info.getFileFormat() );
+            out.println(ot.getTerm());
             out.println( "</a>" );
             out.println( "</li>" );
         }

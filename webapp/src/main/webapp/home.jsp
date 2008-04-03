@@ -41,7 +41,7 @@
 
     <ul>
         <li><a class="bigger" href="newOrExisting.jsp">Deposit some data (using a new or existing experiment)</a></li>
-        <li><a class="bigger" href="ShowBasicResults.jsp?showAll=showAll">View all of your saved experiments</a></li>
+        <li><a class="bigger" href="ShowBasicResults.jsp">View all of your saved experiments</a></li>
         <li><a class="bigger" href="search.jsp">Search Experiments</a></li>
         <li><a class="bigger" href="helpBordered.jsp">How to use this site</a></li>
         <li><a class="bigger" href="personalData.jsp">Update your personal details</a></li>

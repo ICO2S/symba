@@ -41,7 +41,7 @@ concrete protocols have been made.
                 endurant="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3bd0bac3-7fcf-496c-be2a-0ba93a30b2b8"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e">
             <genPrtclToEquip
-                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipement:607a6089-bd32-4085-95ce-d92f7830a88b"/>
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:607a6089-bd32-4085-95ce-d92f7830a88b"/>
 
         </GenericProtocol>
 
@@ -52,7 +52,7 @@ concrete protocols have been made.
             <genPrtclToEquip
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
             <genPrtclToEquip
-                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipement:607a6089-bd32-4085-95ce-d92f7830a88b"/>
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:607a6089-bd32-4085-95ce-d92f7830a88b"/>
 
         </GenericProtocol>
 
@@ -61,7 +61,7 @@ concrete protocols have been made.
                 endurant="urn:lsid:cisban.cisbs.org:GenPro tocolEndurant:3789951a-3c94-47b4-8203-941814a722c0"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa">
             <genPrtclToEquip
-                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipement:607a6089-bd32-4085-95ce-d92f7830a88b"/>
+                    GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:607a6089-bd32-4085-95ce-d92f7830a88b"/>
 
         </GenericProtocol>
 
@@ -75,8 +75,6 @@ concrete protocols have been made.
                     name="Step Containing the Recording Protocol"
                     actionOrdinal="4"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3">
-                 <!--This is the new descriptions element that I have added for task, stimulus, recording and behavioural event protocols-->
-                <descriptions text="This should be presented as a text box to allow the description of the Stimulus protocol to be documented"/>
 
                 <GenericParameter name="Sampling Rate"
                                   endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:339ec38d-4d67-43dc-91ed-177c79c4be25"
@@ -92,49 +90,33 @@ concrete protocols have been made.
                     name="Step Containing the Stimulus Protocol"
                     actionOrdinal="2"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:aaef5e92-76af-4cb6-aeff-03f7aa77dbe9">
-                 <!--This is the new descriptions element that I have added for task, stimulus, recording and behavioural event protocols-->
-                <descriptions text="This should be presented as a text box to allow the description of the Stimulus protocol to be documented"/>
-
             </GenericAction>
 
             <GenericAction
-                    endurant="urn:lsid:cisban.cisbs.org:GeneriActionEndurant:5c13cd95-11b8-40d3-b7c6-7ad16dcecd95"
-                    identifier="urn:lsid:cisban.cisbs.org:GeneriAction:1f58054a-5d8a-4e5f-93bb-a81921bfb98a"
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:5c13cd95-11b8-40d3-b7c6-7ad16dcecd95"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:1f58054a-5d8a-4e5f-93bb-a81921bfb98a"
                     name="Step Containing the Task Protocol"
                     actionOrdinal="1"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e">
-
-                <!--This is the new descriptions element that I have added for task, stimulus and behavioural event protocols-->
-                <descriptions text="This should be presented as a text box to allow the description of the Task protocol to be documented"></descriptions>
-                <!-- These are the new GenericParameters that I have added although they do not seem to be displaying on the forms I need to repeat these for the task protocol -->
-
-                    <GenericParameter name="Sensory conditions"
+                <GenericParameter name="Sensory conditions"
                                   endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:8e9f7111-e3d8-4ada-91c4-7c16fbb00457"
                                   identifier="urn:lsid:cisban.cisbs.org:GenericParameter:0b55113b-b724-4889-8a72-1c3ed08f6a5f">
                     <AtomicValue defaultValue="0"/>
                 </GenericParameter>
 
-                        <GenericParameter name="Solutions"
+                <GenericParameter name="Solutions"
                                   endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:7e48ab07-7b89-4188-b4b8-9e4cbb734566"
                                   identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e86715a2-8c95-4cf5-88aa-1ceac974a0b7">
                     <AtomicValue defaultValue="0"/>
-                    
                 </GenericParameter>
-
-
-
-
             </GenericAction>
 
             <GenericAction
-                    endurant="urn:lsid:cisban.cisbs.org:GeneriActionEndurant:6ea76645-73bf-4030-a765-f862cc199785"
-                    identifier="urn:lsid:cisban.cisbs.org:GeneriAction:4aaa934a-a224-4ffb-a16d-0771f0519b73"
+                    endurant="urn:lsid:cisban.cisbs.org:GenericActionEndurant:6ea76645-73bf-4030-a765-f862cc199785"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:4aaa934a-a224-4ffb-a16d-0771f0519b73"
                     name="Step Containing the Behavioural event Protocol"
                     actionOrdinal="3"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa">
-                 <!--This is the new descriptions element that I have added for task, stimulus and behavioural event protocols-->
-                <descriptions text="This should be presented as a text box to allow the description of the Task protocol to be documented"></descriptions>
-
             </GenericAction>
         </GenericProtocol>
 
@@ -235,10 +217,9 @@ concrete protocols have been made.
         </GenericEquipment>
 
 
-
         <GenericEquipment name="Equipment"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:4a0c8b39-ff59-4527-8c5a-f4ec5de2f3e5"
-                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipement:607a6089-bd32-4085-95ce-d92f7830a88b">
+                          identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:607a6089-bd32-4085-95ce-d92f7830a88b">
             <GenericParameter name="Manufacturer"
                               endurant="urn:lsid:cisban.cisbs.org:GenParamEndurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e00c31ac-d167-4b83-b59d-b16a900f44e7">
@@ -291,9 +272,6 @@ concrete protocols have been made.
         </GenericEquipment>
 
 
-
-
-
         <GenericEquipment name="Recorder"
                           endurant="urn:lsid:cisban.cisbs.org:GenEquipEndurant:2e049199-6b53-45d1-befa-ec99666412e7"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:c0dbb4a6-2666-4883-8173-5f13b48f8624">
@@ -323,9 +301,48 @@ concrete protocols have been made.
                 name="Parameters Associated with Creating the Data File Dummy for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
                 endurant="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:e3388dc8-371c-4f2f-bdb9-24f52a96983e"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:bb550d13-b25b-42d6-8b37-1260df6a770f">
+            <descriptions>
+                <Description text="TextBox::Please describe the specifics of your Recording protocol"/>
+            </descriptions>
             <AtomicParameterValue
                     Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7"
                     value="1"/>
+        </GenericProtocolApplication>
+
+        <GenericProtocolApplication
+                Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e"
+                name="Parameters Associated with Creating the Data File Dummy for Task Protocol (Component of Carmen Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:14548d13-8ebd-4d48-979c-1895f1c3f121"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:aae41937-70d1-488e-9375-ef7e12f3ec25">
+            <descriptions>
+                <Description text="TextBox::Please describe the specifics of your Task protocol"/>
+            </descriptions>
+            <AtomicParameterValue
+                    Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:0b55113b-b724-4889-8a72-1c3ed08f6a5f"
+                    value="1"/>
+            <AtomicParameterValue
+                    Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:e86715a2-8c95-4cf5-88aa-1ceac974a0b7"
+                    value="1"/>
+        </GenericProtocolApplication>
+
+        <GenericProtocolApplication
+                Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:aaef5e92-76af-4cb6-aeff-03f7aa77dbe9"
+                name="Parameters Associated with Creating the Data File Dummy for Stimulus Protocol (Component of Carmen Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:fd9de954-6666-4ad9-9837-06be7e370010"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:cf69a9ba-3a54-4dd2-af23-a345164f4858">
+            <descriptions>
+                <Description text="TextBox::Please describe the specifics of your Stimulus protocol"/>
+            </descriptions>
+        </GenericProtocolApplication>
+
+        <GenericProtocolApplication
+                Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa"
+                name="Parameters Associated with Creating the Data File Dummy for Behavioural event Protocol (Component of Carmen Electrophysiology Investigation)"
+                endurant="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:b5b32c28-086d-4b69-bd30-b56d3aa07a17"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:e8a49b90-c1e0-432d-b743-ca2446f44cf6">
+            <descriptions>
+                <Description text="TextBox::Please describe the specifics of your Behavioural event protocol"/>
+            </descriptions>
         </GenericProtocolApplication>
 
 
@@ -361,7 +378,7 @@ concrete protocols have been made.
                 <Description text="OntologyReplacement::Slice thickness"/>
                 <Description text="OntologyReplacement::Slice orientation"/>
                 <Description text="OntologyReplacement::Target cell type"/>
-                <Description text="OntologyReplacement::Confirmed cell type"/>          
+                <Description text="OntologyReplacement::Confirmed cell type"/>
             </descriptions>
             <!--Species
             <characteristics

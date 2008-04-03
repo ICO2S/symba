@@ -375,13 +375,13 @@ public class RealizableEntityServiceImpl
     }
 
     /**
-     * @see fugeOM.service.RealizableEntityService#getAllLatestExpIdsWithContact(java.lang.String)
+     * @see fugeOM.service.RealizableEntityService#getAllLatestExpSummariesWithContact(java.lang.String)
      */
-    protected java.util.List handleGetAllLatestExpIdsWithContact( java.lang.String endurantId )
+    protected java.util.List handleGetAllLatestExpSummariesWithContact( java.lang.String endurantId )
             throws java.lang.Exception {
         // Retrieves all experiment endurant identifiers whose *latest* version contains a contact with the
         // endurant identifier "endurantId".
-        List genericList = getFuGEDao().getAllLatestIdsWithContact( endurantId );
+        List genericList = getFuGEDao().getAllLatestSummariesWithContact( endurantId );
 
         if ( genericList == null ) {
             throw new java.lang.Exception(
@@ -639,11 +639,11 @@ public class RealizableEntityServiceImpl
     }
 
     /**
-     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentIdsWithName()
+     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentSummariesWithName()
      */
-    protected List handleGetAllLatestExperimentIdsWithName( String investigationName ) throws Exception {
+    protected List handleGetAllLatestExperimentSummariesWithName( String investigationName ) throws Exception {
         // Retrieves the latest version of all FuGE objects with the given name in the database.
-        List genericList = getFuGEDao().getAllLatestIdsWithName( investigationName );
+        List genericList = getFuGEDao().getAllLatestSummariesWithName( investigationName );
 
         if ( genericList == null ) {
             throw new java.lang.Exception(
@@ -654,11 +654,11 @@ public class RealizableEntityServiceImpl
     }
 
     /**
-     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentIds()
+     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentSummaries()
      */
-    protected List handleGetAllLatestExperimentIds() throws Exception {
+    protected List handleGetAllLatestExperimentSummaries() throws Exception {
         // Retrieves the latest version of all FuGE objects in the database.
-        List genericList = getFuGEDao().getAllLatestIds();
+        List genericList = getFuGEDao().getAllLatestSummaries();
 
         if ( genericList == null ) {
             throw new java.lang.Exception(
@@ -696,11 +696,11 @@ public class RealizableEntityServiceImpl
     }
 
     /**
-     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentIdsWithOntologyTerm()
+     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentSummariesWithOntologyTerm()
      */
-    protected List handleGetAllLatestExperimentIdsWithOntologyTerm( String endurantId ) throws Exception {
+    protected List handleGetAllLatestExperimentSummariesWithOntologyTerm( String endurantId ) throws Exception {
         // Retrieves a list of fuge object ids that have the provided OntologyTerm
-        List genericList = getFuGEDao().getAllLatestIdsWithOntologyTerm( endurantId );
+        List genericList = getFuGEDao().getAllLatestSummariesWithOntologyTerm( endurantId );
 
         if ( genericList == null ) {
             throw new java.lang.Exception(

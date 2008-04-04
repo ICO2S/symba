@@ -26,16 +26,19 @@ public class RawDataInfoBean implements Serializable {
     private String protocolEndurant;
     private String actionEndurant;
     private String workflowName;
+
+    // Data file variables
     private String friendlyId;
-    private String dataName;
+    private String dataName;    // the description of the data file provided by the user.
     private String factorChoice;
     private String fileFormat;
-    private String atomicValue; // todo only allows a single generic parameter, who is identified with the identifier in atomicValueIdentifier
-    private String atomicValueIdentifier;
+    private String oldFilename; // the original filename, to make it easier for users to determine which file they're annotating
+
     private String chosenChildProtocolName;
     private String chosenChildProtocolIdentifier; // In the case of SyMBA, this is the endurant's identifier.
     private String chosenSecondLevelChildProtocolName;  // only used when using 2nd-level protocols
     private String chosenSecondLevelChildProtocolIdentifier; // only used when using 2nd-level protocols. In the case of SyMBA, this is the endurant's identifier.
+
     private Map<String, GenericEquipmentSummary> genericEquipmentInfo; // the key is the equipment endurant id
     private Map<String, GenericProtocolApplicationSummary> genericProtocolApplicationInfo;  // the key is the GPA's Parent GenericProtocol endurant id
 
@@ -119,8 +122,8 @@ public class RawDataInfoBean implements Serializable {
         this.workflowName = "";
         this.dataName = "";
         this.fileFormat = "";
-        this.atomicValue = "";
-        this.atomicValueIdentifier = "";
+        this.oldFilename = "";
+
         this.chosenChildProtocolName = "";
         this.chosenChildProtocolIdentifier = "";
         this.chosenSecondLevelChildProtocolName = "";
@@ -163,12 +166,12 @@ public class RawDataInfoBean implements Serializable {
         this.fileFormat = fileFormat;
     }
 
-    public String getAtomicValue() {
-        return atomicValue;
+    public String getOldFilename() {
+        return oldFilename;
     }
 
-    public void setAtomicValue( String atomicValue ) {
-        this.atomicValue = atomicValue;
+    public void setOldFilename( String oldFilename ) {
+        this.oldFilename = oldFilename;
     }
 
     public String getChosenChildProtocolName() {
@@ -201,14 +204,6 @@ public class RawDataInfoBean implements Serializable {
 
     public void setChosenSecondLevelChildProtocolIdentifier( String chosenSecondLevelChildProtocolIdentifier ) {
         this.chosenSecondLevelChildProtocolIdentifier = chosenSecondLevelChildProtocolIdentifier;
-    }
-
-    public String getAtomicValueIdentifier() {
-        return atomicValueIdentifier;
-    }
-
-    public void setAtomicValueIdentifier( String atomicValueIdentifier ) {
-        this.atomicValueIdentifier = atomicValueIdentifier;
     }
 
     public Map<String, GenericEquipmentSummary> getGenericEquipmentInfo() {

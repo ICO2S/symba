@@ -3,10 +3,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -26,30 +26,42 @@
 <jsp:include page="visibleHeader.html"/>
 
 <div id="Content">
-    <H1>Welcome to SyMBA</H1>
+    <h1>Welcome to SyMBA</h1>
 
-    <h3>Please log on to add or view experiments <a
-            href="help.jsp#logon"
-            onClick="return popup(this, 'notes')">[ why? ]</a></h3>
+    <%--<p>--%>
+    <%--<font class="blueText">--%>
+    <%--${fn:escapeXml(param.errorMsg)}--%>
+    <%--</font>--%>
+    <%--</p>--%>
 
-    <p>
-        <font class="blueText">
-            ${fn:escapeXml(param.errorMsg)}
-        </font>
-    </p>
 
     <form action="verify.jsp" method="post">
 
-        <label for="userName">User name:</label>
-        <input id="userName" name="userName"><br>
+        <fieldset>
+            <legend>Please log on to add or view experiments <a
+            href="help.jsp#logon"
+            onClick="return popup(this, 'notes')">[ why? ]</a></legend>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password"><br>
+            <ol>
 
-        <input type="submit" value="Enter">
+                <li>
+                    <label for="userName">User name:</label>
+                    <input id="userName" name="userName"><br/>
+                </li>
+
+                <li>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password"><br/>
+                </li>
+            </ol>
+        </fieldset>
+
+        <fieldset class="submit">
+            <input type="submit" value="Enter">
+        </fieldset>
 
     </form>
-    <br>
+
 
     <%--  <form action="verify.jsp" method="post">
    <input name="userName"

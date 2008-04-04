@@ -435,7 +435,7 @@ public class RealizableEntityServiceImpl
     }
 
     /**
-     * @see fugeOM.service.RealizableEntityService#getAllLatestGenericMaterials()
+     * @see fugeOM.service.RealizableEntityService#getAllLatestGenericMaterials(boolean) 
      */
     protected java.util.List handleGetAllLatestGenericMaterials( boolean onlyDummies )
             throws java.lang.Exception {
@@ -457,7 +457,7 @@ public class RealizableEntityServiceImpl
     }
 
     /**
-     * @see fugeOM.service.RealizableEntityService#getAllLatestExternalData()
+     * @see fugeOM.service.RealizableEntityService#getAllLatestExternalData(boolean)
      */
     protected java.util.List handleGetAllLatestExternalData( boolean onlyDummies )
             throws java.lang.Exception {
@@ -639,7 +639,7 @@ public class RealizableEntityServiceImpl
     }
 
     /**
-     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentSummariesWithName()
+     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentSummariesWithName(String) 
      */
     protected List handleGetAllLatestExperimentSummariesWithName( String investigationName ) throws Exception {
         // Retrieves the latest version of all FuGE objects with the given name in the database.
@@ -696,7 +696,7 @@ public class RealizableEntityServiceImpl
     }
 
     /**
-     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentSummariesWithOntologyTerm()
+     * @see fugeOM.service.RealizableEntityService#getAllLatestExperimentSummariesWithOntologyTerm(String)
      */
     protected List handleGetAllLatestExperimentSummariesWithOntologyTerm( String endurantId ) throws Exception {
         // Retrieves a list of fuge object ids that have the provided OntologyTerm
@@ -711,7 +711,7 @@ public class RealizableEntityServiceImpl
     }
 
     /**
-     * @see fugeOM.service.RealizableEntityService#getAllLatestGenericProtocolApplications()
+     * @see fugeOM.service.RealizableEntityService#getAllLatestGenericProtocolApplications(boolean)
      */
      protected List handleGetAllLatestGenericProtocolApplications( boolean onlyDummies ) throws Exception {
         List genericList;
@@ -731,7 +731,7 @@ public class RealizableEntityServiceImpl
     }
 
     /**
-     * @see fugeOM.service.RealizableEntityService#getAllLatestGenericEquipment()
+     * @see fugeOM.service.RealizableEntityService#getAllLatestGenericEquipment(boolean)
      */
      protected List handleGetAllLatestGenericEquipment( boolean onlyDummies ) throws Exception {
         List genericList;

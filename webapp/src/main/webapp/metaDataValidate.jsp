@@ -11,27 +11,11 @@
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
-<%@ page import="fugeOM.Bio.Data.ExternalData" %>
-<%@ page import="fugeOM.Bio.Material.GenericMaterial" %>
-<%@ page import="fugeOM.Collection.FuGE" %>
-<%@ page import="fugeOM.Common.Audit.Person" %>
-<%@ page import="fugeOM.Common.Description.Description" %>
-<%@ page import="fugeOM.Common.Ontology.OntologySource" %>
-<%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
-<%@ page import="fugeOM.Common.Protocol.*" %>
 <%@ page import="org.apache.commons.fileupload.FileItem" %>
 <%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
 <%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
 <%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanProtocolCollectionHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.xml.XMLMarshaler" %>
 <%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.io.StringWriter" %>
 <%@ page import="java.util.*" %>
 
 <%--
@@ -54,8 +38,9 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
     for ( Object object : items ) {
         FileItem item = ( FileItem ) object;
         if ( item.isFormField() ) {
-            if ( item.getFieldName().startsWith( "actionListDescription" ) && item.getString().length() > 0 ) {
-                int number = Integer.valueOf( item.getFieldName().substring( 21 ) );
+            if ( item.getFieldName().startsWith( "actionListDescription::" ) && item.getString().length() > 0 ) {
+                String[] parsedStrings = item.getFieldName().split( "::" );
+                int number = Integer.valueOf( parsedStrings[1] );
 //                System.out.println( "number = " + number );
                 // take what is already there, and add only those fields that have not been made yet
                 RawDataInfoBean temp = investigationBean.getDataItem( number );
@@ -106,9 +91,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     temp.setMaterialFactorsBean( new MaterialFactorsBean() );
                 MaterialFactorsBean mfb = temp.getMaterialFactorsBean();
                 mfb.putOntologyReplacementsPair( parsedStrings[1], item.getString() );
-
                 temp.setMaterialFactorsBean( mfb );
-                temp.setAtomicValue( item.getString() );
 
                 investigationBean.setDataItem( temp, number );
             } else if ( item.getFieldName().startsWith( "materialName" ) ) {

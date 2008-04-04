@@ -42,26 +42,35 @@
         (4) Select Protocol -> (5) Confirm Your Submission -> (6) Completion and Download
     </p>
 
-    <h2>Select exisiting experiment <a
-            href="help.jsp#existingExperiment"
-            onClick="return popup(this, 'notes')"> [ What Choice Should I Make? ]</a></h2>
-
-    <h3>Select the experiment to which this data pertains:</h3>
-
     <form name="selectProt" action="experimentValidate.jsp">
-        <label for="experimentList">Existing experiments: </label>
-        <select id="experimentList" name="experimentList">
-            <%
-                for ( Object obj : validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ) ) {
-                    List<String> idAndName = (List<String>) obj;
-                    out.println(
-                            "<option value=\"" + idAndName.get(0) + "\">" +
-                                    idAndName.get(1) + "</option>" );
-                }
-            %>
-        </select><br>
-        <input type="submit" value="Select" name="submit"/>
-        <input type="button" value="Back" onclick="history.go(-1)">
+        <fieldset>
+            <legend>Select the experiment to which this data pertains:
+                <a href="help.jsp#existingExperiment" onClick="return popup(this, 'notes')">
+                    [ What Choice Should I Make? ]</a></legend>
+
+            <ol>
+
+                <li>
+                    <label for="experimentList">Existing experiments: </label>
+                    <select id="experimentList" name="experimentList">
+                        <%
+                            for ( Object obj : validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ) ) {
+                                List<String> idAndName = ( List<String> ) obj;
+                                out.println(
+                                        "<option value=\"" + idAndName.get( 0 ) + "\">" +
+                                                idAndName.get( 1 ) + "</option>" );
+                            }
+                        %>
+                    </select><br>
+                </li>
+            </ol>
+        </fieldset>
+
+        <fieldset class="submit">
+
+            <input type="submit" value="Select" name="submit"/>
+            <input type="button" value="Back" onclick="history.go(-1)">
+        </fieldset>
     </form>
     <br>
 

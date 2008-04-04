@@ -11,28 +11,9 @@
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
-<%@ page import="fugeOM.Bio.Data.ExternalData" %>
-<%@ page import="fugeOM.Bio.Material.GenericMaterial" %>
-<%@ page import="fugeOM.Collection.FuGE" %>
-<%@ page import="fugeOM.Common.Audit.Person" %>
-<%@ page import="fugeOM.Common.Description.Description" %>
-<%@ page import="fugeOM.Common.Ontology.OntologySource" %>
 <%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
 <%@ page import="fugeOM.Common.Protocol.*" %>
-<%@ page import="org.apache.commons.fileupload.FileItem" %>
-<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanProtocolCollectionHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.xml.XMLMarshaler" %>
 <%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.io.StringWriter" %>
-<%@ page import="java.util.*" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
 </jsp:useBean>
@@ -172,17 +153,31 @@
             out.println( "<li>You have specified a file format for the data file: " );
             out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
             OntologyTerm ot = ( OntologyTerm ) validUser.getReService()
-                            .findLatestByEndurant( info.getFileFormat() );
-            out.println(ot.getTerm());
+                    .findLatestByEndurant( info.getFileFormat() );
+            out.println( ot.getTerm() );
             out.println( "</a>" );
             out.println( "</li>" );
         }
-        if ( info.getAtomicValue() != null ) {
-            out.println(
-                    "<li>You have specified a value for one of the GenericParameters for this step in the workflow: " );
-            out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-            out.println( info.getAtomicValue() );
-            out.println( "</a>" );
+        if ( info.getGenericProtocolApplicationInfo() != null && !info.getGenericProtocolApplicationInfo().isEmpty() ) {
+            for ( GenericProtocolApplicationSummary value : info.getGenericProtocolApplicationInfo().values() ) {
+                for ( String parameterEndurant : value.getParameterAndAtomics().keySet() ) {
+
+                    out.println( "<li>" );
+                    out.println( ( ( GenericParameter ) validUser.getReService().findLatestByEndurant( parameterEndurant ) ).getName() + ": " );
+                    out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+                    out.println( value.getParameterAndAtomics().get( parameterEndurant ) );
+                    out.println( "</a>" );
+                    out.println( "</li>" );
+                }
+                for ( String description : value.getDescriptions() ) {
+                    out.println( "<li>" );
+                    out.println( "Description of this stage in the investigation: " );
+                    out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+                    out.println( description );
+                    out.println( "</a>" );
+                    out.println( "</li>" );
+                }
+            }
             out.println( "</li>" );
         }
         if ( info.getGenericEquipmentInfo() != null && !info.getGenericEquipmentInfo().isEmpty() ) {
@@ -246,7 +241,7 @@
                     out.println( "<ul>" );
                     out.println( "<li>" );
                     out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                    out.println( key + " = " + info.getMaterialFactorsBean().getOntologyReplacements().get( key ));
+                    out.println( key + " = " + info.getMaterialFactorsBean().getOntologyReplacements().get( key ) );
                     out.println( "</a>" );
                     out.println( "</li>" );
                     out.println( "</ul>" );

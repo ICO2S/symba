@@ -52,9 +52,6 @@
     <br/>
 </c:if>
 
-<h3>Please select the factors appropriate to your data file: <a
-        href="help.jsp#protocol"
-        onClick="return popup(this, 'notes')">[ Help ]</a></h3>
 
 <!-- We have chosen to separate the selection of a factor (aka generic action of the top-level protocol)
     so that the appropriate action can be taken on the next page if there is a dummy GenericParameter
@@ -62,6 +59,11 @@
 -->
 <form ENCTYPE="multipart/form-data" name="selectProt" action="ChooseActionValidate.jsp" method="post">
 
+<fieldset>
+<legend>Please select the factors appropriate to your data:
+    <a href="help.jsp#protocol" onClick="return popup(this, 'notes')">[ Help ]</a></legend>
+
+<ol>
 <%
 
     for ( int iii = 0; iii < investigationBean.getAllDataBeans().size(); iii++ ) {
@@ -134,7 +136,7 @@
                             selectAmongLowerLevelActionsList.add(
                                     "<option value= \"" + genericAction.getEndurant().getIdentifier() + "::" +
                                             genericAction.getGenProtocolRef().getEndurant().getIdentifier() + "::" +
-                                            genericAction.getGenProtocolRef().getName() + "\">" + 
+                                            genericAction.getGenProtocolRef().getName() + "\">" +
                                             genericAction.getName() +
                                             "</option>" );
                         }
@@ -149,12 +151,15 @@
 
         // Top-Level Menu
         boolean hasLabel = false;
+        out.println( "<li>" );
+        out.println(investigationBean.getAllDataBeans().get( iii ).getOldFilename() + ": <br/>");
         for ( String selectChoice : selectAmongTopLevelActionsList ) {
             if ( !hasLabel ) {
                 out.println(
                         "<label for=\"" + selectAmongTopLevelActions +
-                                "\">Please select your factor (Top Level):</label>" );
-                out.println( "<select name=\"" + selectAmongTopLevelActions + "\">" );
+                                "\">Please select the protocol that produced your data:</label>" );
+                out.println("<!-- Top Level -->");
+                out.println( "<select id=\"" + selectAmongTopLevelActions + "\" name=\"" + selectAmongTopLevelActions + "\">" );
                 hasLabel = true;
             }
             out.println( selectChoice );
@@ -162,6 +167,8 @@
         // ensure that the select menu has been printed before closing it
         if ( hasLabel ) {
             out.println( "</select>" );
+            out.println( "<br/>" );
+            out.println( "</li>" );
         } else {
             out.flush();
             out.println(
@@ -174,12 +181,14 @@
         // Lower-Level Menu
         hasLabel = false;
         if ( !selectAmongLowerLevelActionsList.isEmpty() ) {
+            out.println( "<li>" );
             for ( String selectChoice : selectAmongLowerLevelActionsList ) {
                 if ( !hasLabel ) {
                     out.println(
                             "<label for=\"" + selectAmongLowerLevelActions +
-                                    "\">Please select your factor (Lower Level):</label>" );
-                    out.println( "<select name=\"" + selectAmongLowerLevelActions + "\">" );
+                                    "\">Please select the protocol that produced your data:</label>" );
+                    out.println("<!-- Lower Level -->");
+                    out.println( "<select id=\"" + selectAmongLowerLevelActions + "\" name=\"" + selectAmongLowerLevelActions + "\">" );
                     hasLabel = true;
                 }
                 out.println( selectChoice );
@@ -187,6 +196,8 @@
             // ensure that the select menu has been printed before closing it
             if ( hasLabel ) {
                 out.println( "</select>" );
+                out.println( "<br/>" );
+                out.println( "</li>" );
             } else {
                 out.flush();
                 out.println(
@@ -197,12 +208,17 @@
             }
         }
     }
-
 %>
-<br/><br/>
-<!--ONCLICK="disabled=true"-->
-<input type="submit" value="Submit"/>
-<input type="button" value="Back" onclick="history.go(-1)"/>
+<br/>
+
+</ol>
+</fieldset>
+
+<fieldset class="submit">
+    <!--ONCLICK="disabled=true"-->
+    <input type="submit" value="Submit"/>
+    <input type="button" value="Back" onclick="history.go(-1)"/>
+</fieldset>
 </form>
 <br/>
 <jsp:include page="helpAndComments.jsp"/>

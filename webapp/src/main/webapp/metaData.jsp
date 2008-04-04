@@ -15,21 +15,11 @@
 
 <%@ page import="fugeOM.Bio.Data.ExternalData" %>
 <%@ page import="fugeOM.Bio.Material.GenericMaterial" %>
-<%@ page import="fugeOM.Collection.FuGE" %>
-<%@ page import="fugeOM.Common.Audit.Person" %>
 <%@ page import="fugeOM.Common.Description.Description" %>
 <%@ page import="fugeOM.Common.Ontology.OntologySource" %>
 <%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
 <%@ page import="fugeOM.Common.Protocol.*" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanProtocolCollectionHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.xml.XMLMarshaler" %>
 <%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.io.StringWriter" %>
 <%@ page import="java.util.*" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
@@ -87,118 +77,18 @@
             chosenChildProtocolName = info.getChosenChildProtocolName();
         }
 
-        FileBean fileBean = investigationBean.getFileBean( iii );
-        String selectDescName = "actionListDescription" + iii;
+        String selectDescName = "actionListDescription::" + iii;
+        out.println( "<br/>" );
+        out.println( "<hr/>" );
+        out.println( "<h3>Information for " + info.getFriendlyId() + "</h3>" );
+        out.println( "<p>Original name: " + info.getOldFilename() + "</p>" );
 
-%>
-<br/>
-<hr/>
-<h3>Information for <% out.print( info.getFriendlyId() ); %></h3>
-
-<p>Original name: <% out.print( fileBean.getAFile().getName() ); %></p>
-<label for="<% out.print(selectDescName); %>">Description of File <a href="help.jsp#cisbanIdentifiers"
-                                                                     onClick="return popup(this, 'notes')">[ ?
-    ]</a>:</label>
-<textarea id="<% out.print(selectDescName); %>" name="<% out.print(selectDescName); %>"
-          rows="5" cols="40"><% if ( info.getDataName() != null ) {
-    out.println( info.getDataName() );
-}%></textarea>
-<br>
-
-<%
-
-        // sometimes, we may get GenericParameters from Dummy GPAs associated with the experiment. This is how we
-        // differentiate GenericParameters that are not meant to be changed (== no Dummy GPA) from those that are
-        // meant to be changed (== has dummy GPA). Search the GPAs
-        // for dummies named with the addition of "XXX Dummy YYY SomeProtocol", where XXX and YYY may be anything, and
-        // where SomeProtocol may ONLY be the exact, full protocol name of the GenericAction selected for this data file.
-        //
-        // Only currently valid for AtomicValues.
-        for ( Object gpaObj : validUser.getReService().getAllLatestGenericProtocolApplications( true ) ) {
-            GenericProtocolApplication genericProtocolApplication = ( GenericProtocolApplication ) validUser.getReService()
-                    .greedyGet( gpaObj );
-//            out.println(
-//                    "Comparing current GenericProtocolApplication name (" +
-//                            genericProtocolApplication.getName().trim() +
-//                            ") with info.getChosenChildProtocolName() (" + info.getChosenChildProtocolName() +
-//                            ")<br/>" );
-            if ( genericProtocolApplication.getName().trim().contains( chosenChildProtocolName ) ) {
-                // The displayName is just the name for this group of questions we are about to give to the user.
-                // Should be something like "Parameters Associated with Creating the Data File".
-//                out.println( "Match Found<br/>" );
-//                out.println( "Number of Parameters" + genericProtocolApplication.getParameterValues().size() + "<br/>" );
-
-                String gpaParentEndurantId = genericProtocolApplication.getGenericProtocol().getEndurant().getIdentifier();
-
-                // Firstly, the template might contain descriptions beginning with "TextBox::". In this case,
-                // the template is requesting that a text box be provided with the instructions given after the
-                // "TextBox::" phrase. The contents of the text box will be stored in the same location as the
-                // instructions in the template.
-                for ( Object descriptionObj : genericProtocolApplication.getDescriptions() ) {
-                    Description description = ( Description ) descriptionObj;
-                    if ( description.getText() != null && description.getText().length() > 0 &&
-                            description.getText().startsWith( "TextBox::" ) ) {
-                        String[] parsedStrings = description.getText().split( "::" );
-                        String descriptionLabel = "GPA" + parsedStrings[0] + "::" + gpaParentEndurantId + "::" + iii;
-                        out.println(
-                                "<label for=\"" + descriptionLabel + "\">" + parsedStrings[1] + ": </label>" );
-                        out.println( "<textarea id=\"" + descriptionLabel + "\" name=\"" + descriptionLabel + "\"" );
-                        out.println( "rows=\"5\" cols=\"40\"></textarea><br>" );
-                    }
-                }
-
-                // Now provide the choices requested in the dummy GenericParameter. Currently, only an AtomicValue
-                // with a fixed unit type is allowed.
-                for ( Object obj2 : genericProtocolApplication.getParameterValues() ) {
-                    if ( obj2 instanceof AtomicParameterValue ) {
-                        GenericParameter genericParameter = ( GenericParameter ) ( ( AtomicParameterValue ) obj2 ).getParameter();
-                        if ( genericParameter.getDefaultValue() instanceof AtomicValue ) {
-                            // AtomicValues just have a string value. Ask the user for it
-                            out.println( "<br>" );
-
-                            // retrieve the unit used, if present.
-                            String unitName = "";
-                            if ( genericParameter.getUnit() != null &&
-                                    genericParameter.getUnit().getTerm().length() > 0 ) {
-                                unitName = genericParameter.getUnit().getTerm();
-                            }
-
-                            String nameOfField = "atomicParameterOfGPA::" +
-                                    gpaParentEndurantId + "::" +
-                                    genericParameter.getEndurant().getIdentifier() + "::" + iii;
-                            String nameOfParameter = "value"; // default
-                            if ( genericParameter.getParameterType() != null ) {
-                                nameOfParameter = genericParameter.getParameterType().getTerm();
-                            } else
-                            if ( genericParameter.getName() != null && genericParameter.getName().length() > 0 ) {
-                                nameOfParameter = genericParameter.getName();
-                            }
-                            String instructions =
-                                    "<label for=\"" + nameOfField + "\">Please fill in the " + nameOfParameter;
-                            if ( unitName.length() > 0 ) {
-                                instructions = instructions + " ( in " + unitName + ")";
-                            }
-                            instructions += ":</label>";
-
-                            out.println( instructions );
-                            out.println( "<input id=\"" + nameOfField + "\" name=\"" + nameOfField + "\"><br>" );
-                            out.println( "<br>" );
-                        }
-                    }
-                }
-            }
-        }
-        out.println( "<br>" );
-
+        // First, print out the form fields for the Materials.
         // sometimes, we may get factors from Materials associated with the experiment. Search the materials
         // for dummies named with the addition of "XXX Dummy YYY SomeProtocol", where XXX and YYY may be anything, and
         // where SomeProtocol may ONLY be the exact, full protocol name of the GenericAction selected for this data file.
         for ( Object gmObj : validUser.getReService().getAllLatestGenericMaterials( true ) ) {
             GenericMaterial genericMaterial = ( GenericMaterial ) validUser.getReService().greedyGet( gmObj );
-//            out.println(
-//                    "Comparing current Material name (" + genericMaterial.getName().trim() +
-//                            ") with info.getChosenChildProtocolName() (" + info.getChosenChildProtocolName() +
-//                            ")<br/>" );
             boolean requestName = false, requestTreatment = false;
             if ( !genericMaterial.getName().contains( " Noname" ) ) {
                 requestName = true;
@@ -215,6 +105,10 @@
                         .substring( 0, genericMaterial.getName().indexOf( " Dummy" ) )
                         .trim();
 
+                out.println( "<fieldset>" );
+                out.println( "<legend>" + displayName + "</legend>" );
+                out.println( "<ol>" );
+
                 // Print out any descriptions that are OntologyReplacements as a normal text field.
                 for ( Object descriptionObj : genericMaterial.getDescriptions() ) {
                     Description description = ( Description ) descriptionObj;
@@ -224,6 +118,7 @@
                         // a material characteristic, so it is currently a free-text field.
                         String[] parsedStrings = description.getText().split( "::" );
                         String descriptionLabel = parsedStrings[0] + "::" + parsedStrings[1] + "::" + iii;
+                        out.println( "<li>" );
                         if ( parsedStrings.length == 4 && parsedStrings[2].equals( "Help" ) ) {
                             out.println(
                                     "<label for=\"" + descriptionLabel + "\">Enter the <SPAN title=\" " +
@@ -235,13 +130,14 @@
                                             ": </label>" );
                         }
                         out.println( "<input id=\"" + descriptionLabel + "\" name=\"" + descriptionLabel + "\"><br>" );
+                        out.println( "</li>" );
                     }
                 }
 
                 // will store the Material's name if requested in the template
                 if ( requestName ) {
                     String matName = "materialName" + iii;
-                    out.println( "<br>" );
+                    out.println( "<li>" );
                     out.println( "<label for=\"" + matName + "\">Name/ID of this Material (optional): </label>" );
                     if ( investigationBean.getAllDataBeans() != null &&
                             investigationBean.getAllDataBeans().size() > iii &&
@@ -256,9 +152,12 @@
                         out.println( "<input id=\"" + matName + "\" name=\"" + matName + "\"><br>" );
                     }
                     out.println( "<br>" );
+                    out.println( "</li>" );
                 }
 
+                // will provide a treatment box, if requested
                 if ( requestTreatment ) {
+                    out.println( "<li>" );
                     out.println(
                             "<p class=\"bigger\">Please enter some information about the " + displayName +
                                     ", starting " +
@@ -303,6 +202,8 @@
                             "<a href=\"javascript:addTreatmentInput('" + treatmentLabel +
                                     "', '" + moreTreatments + "');\">Add Another Treatment</a>" );
                     out.println( "</div>" );
+                    out.println( "<br>" );
+                    out.println( "</li>" );
                 }
 
                 // Now, retrieve the materialType (singular) and all characteristics of this material.
@@ -310,8 +211,7 @@
                 // Instead of displaying just the referenced OntologyTerm, a pull-down menu should be displayed
                 // of ALL of the OntologyTerms in the database associated with that OntologySource.
                 if ( genericMaterial.getMaterialType() != null ) {
-                    out.println( "<br>" );
-                    out.println( "<p class=\"bigger\">Next, please choose the correct Material Type.</p>" );
+//                    out.println( "<p class=\"bigger\">Next, please choose the correct Material Type.</p>" );
                     List genericList = validUser.getReService()
                             .getAllLatestTermsWithSource(
                                     genericMaterial.getMaterialType()
@@ -341,6 +241,7 @@
                             }
                         }
 
+                        out.println( "<li>" );
                         out.println( instructions );
                         out.println( "<select name=\"" + matType + "\">" );
                         for ( OntologyTerm ot : ontologyTerms ) {
@@ -350,6 +251,7 @@
                         }
                         out.println( "</select>" );
                         out.println( "<br>" );
+                        out.println( "</li>" );
                     }
                 }
 
@@ -380,6 +282,7 @@
                         }
 
                         String characteristicLabel = "characteristic" + iii + "-" + ontoCount;
+                        out.println( "<li>" );
                         out.println(
                                 "<label for=\"" + characteristicLabel +
                                         "\">Please select your " + ontologySource.getName() + "</label>" );
@@ -395,16 +298,38 @@
                         }
                         out.println( "</select>" );
                         out.println( "<br>" );
+                        out.println( "</li>" );
                     }
                     ontoCount++;
                 }
+                out.println( "</ol>" );
+                out.println( "</fieldset>" );
 
                 // only allow one dummy generic material per experiment, for now only!
                 break;
             }
         }
 
-        // we also allow developers to have a file format for their ExternalData associated with the experiment.
+        // Next, print information that is directly associated with the data file: this includes a text description
+        // of the file itself, and any file format information.
+        out.println( "<fieldset>" );
+        out.println( "<legend>Data</legend>" );
+        out.println( "<ol>" );
+
+        // Text Box for the description of the file
+        out.println( "<li>" );
+        out.println(
+                "<label for=\"" + selectDescName + "\">Description of File <a href=\"help.jsp#cisbanIdentifiers\"" );
+        out.println( "onClick=\"return popup(this, 'notes')\">[ ? ]</a>:</label>" );
+        out.println( "<textarea id=\"" + selectDescName + "\" name=\"" + selectDescName + "\" rows=\"5\" cols=\"40\">" );
+        if ( info.getDataName() != null ) {
+            out.println( info.getDataName() );
+        }
+        out.println( "</textarea>" );
+        out.println( "<br>" );
+        out.println( "</li>" );
+
+        // The file format for the ExternalData associated with the experiment.
         // Search the ExternalData for dummies named with the name of the current experiment.
         for ( Object obj : validUser.getReService().getAllLatestExternalData( true ) ) {
             ExternalData externalData = ( ExternalData ) validUser.getReService().greedyGet( obj );
@@ -414,8 +339,6 @@
                 // with an OntologySource. Instead of displaying just the referenced OntologyTerm, a pull-down menu
                 // should be displayed of ALL of the OntologyTerms in the database associated with that OntologySource.
                 if ( externalData.getFileFormat() != null ) {
-                    out.println( "<br>" );
-                    out.println( "<p class=\"bigger\">Next, please choose the correct file format.</p>" );
                     List genericList = validUser.getReService()
                             .getAllLatestTermsWithSource(
                                     externalData.getFileFormat()
@@ -442,6 +365,7 @@
                         }
 
                         out.println( instructions );
+                        out.println( "<li>" );
                         out.println( "<select name=\"" + fileFormat + "\">" );
                         for ( OntologyTerm ot : ontologyTerms ) {
                             out.println(
@@ -450,6 +374,7 @@
                         }
                         out.println( "</select>" );
                         out.println( "<br>" );
+                        out.println( "</li>" );
                     }
                 }
 
@@ -458,6 +383,100 @@
             }
 
         }
+
+        out.println( "</ol>" );
+        out.println( "</fieldset>" );
+
+        // sometimes, we may get GenericParameters from Dummy GPAs associated with the experiment. This is how we
+        // differentiate GenericParameters that are not meant to be changed (== no Dummy GPA) from those that are
+        // meant to be changed (== has dummy GPA). Search the GPAs
+        // for dummies named with the addition of "XXX Dummy YYY SomeProtocol", where XXX and YYY may be anything, and
+        // where SomeProtocol may ONLY be the exact, full protocol name of the GenericAction selected for this data file.
+        //
+        // Only currently valid for AtomicValues.
+        for ( Object gpaObj : validUser.getReService().getAllLatestGenericProtocolApplications( true ) ) {
+            GenericProtocolApplication genericProtocolApplication = ( GenericProtocolApplication ) validUser.getReService()
+                    .greedyGet( gpaObj );
+//            out.println(
+//                    "Comparing current GenericProtocolApplication name (" +
+//                            genericProtocolApplication.getName().trim() +
+//                            ") with info.getChosenChildProtocolName() (" + info.getChosenChildProtocolName() +
+//                            ")<br/>" );
+            if ( genericProtocolApplication.getName().trim().contains( chosenChildProtocolName ) ) {
+                out.println( "<fieldset>" );
+                // make a shorter version of the chosen child protocol name
+                String shortProtocolName = chosenChildProtocolName;
+                if ( chosenChildProtocolName.contains( "(Component of" ) ) {
+                    shortProtocolName = chosenChildProtocolName.substring( 0, chosenChildProtocolName.indexOf( "(Component of" ) );
+                }
+                out.println( "<legend>Further Details of the " + shortProtocolName + "</legend>" );
+                out.println( "<ol>" );
+                String gpaParentEndurantId = genericProtocolApplication.getGenericProtocol().getEndurant().getIdentifier();
+
+                // Firstly, the template might contain descriptions beginning with "TextBox::". In this case,
+                // the template is requesting that a text box be provided with the instructions given after the
+                // "TextBox::" phrase. The contents of the text box will be stored in the same location as the
+                // instructions in the template.
+                for ( Object descriptionObj : genericProtocolApplication.getDescriptions() ) {
+                    Description description = ( Description ) descriptionObj;
+                    if ( description.getText() != null && description.getText().length() > 0 &&
+                            description.getText().startsWith( "TextBox::" ) ) {
+                        String[] parsedStrings = description.getText().split( "::" );
+                        String descriptionLabel = "GPA" + parsedStrings[0] + "::" + gpaParentEndurantId + "::" + iii;
+                        out.println( "<li>" );
+                        out.println(
+                                "<label for=\"" + descriptionLabel + "\">" + parsedStrings[1] + ": </label>" );
+                        out.println( "<textarea id=\"" + descriptionLabel + "\" name=\"" + descriptionLabel + "\"" );
+                        out.println( "rows=\"5\" cols=\"40\"></textarea><br>" );
+                        out.println( "</li>" );
+                    }
+                }
+
+                // Now provide the choices requested in the dummy GenericParameter. Currently, only an AtomicValue
+                // with a fixed unit type is allowed.
+                for ( Object obj2 : genericProtocolApplication.getParameterValues() ) {
+                    if ( obj2 instanceof AtomicParameterValue ) {
+                        GenericParameter genericParameter = ( GenericParameter ) ( ( AtomicParameterValue ) obj2 ).getParameter();
+                        if ( genericParameter.getDefaultValue() instanceof AtomicValue ) {
+                            // AtomicValues just have a string value. Ask the user for it
+
+                            // retrieve the unit used, if present.
+                            String unitName = "";
+                            if ( genericParameter.getUnit() != null &&
+                                    genericParameter.getUnit().getTerm().length() > 0 ) {
+                                unitName = genericParameter.getUnit().getTerm();
+                            }
+
+                            String nameOfField = "atomicParameterOfGPA::" +
+                                    gpaParentEndurantId + "::" +
+                                    genericParameter.getEndurant().getIdentifier() + "::" + iii;
+                            String nameOfParameter = "value"; // default
+                            if ( genericParameter.getParameterType() != null ) {
+                                nameOfParameter = genericParameter.getParameterType().getTerm();
+                            } else
+                            if ( genericParameter.getName() != null && genericParameter.getName().length() > 0 ) {
+                                nameOfParameter = genericParameter.getName();
+                            }
+                            String instructions =
+                                    "<label for=\"" + nameOfField + "\">Please fill in the " + nameOfParameter;
+                            if ( unitName.length() > 0 ) {
+                                instructions = instructions + " ( in " + unitName + ")";
+                            }
+                            instructions += ":</label>";
+
+                            out.println( "<li>" );
+                            out.println( instructions );
+                            out.println( "<input id=\"" + nameOfField + "\" name=\"" + nameOfField + "\"><br>" );
+                            out.println( "<br>" );
+                            out.println( "</li>" );
+                        }
+                    }
+                }
+                out.println( "</ol>" );
+                out.println( "</fieldset>" );
+            }
+        }
+        out.println( "<br>" );
 
         // we also allow developers choose various settings for their GenericEquipment associated with the experiment.
         // Any value stored in a GenericParameter is changeable. Any value in other references to ontology terms
@@ -473,6 +492,9 @@
 
                 // we're only interested in making more fields in the form if there are any GenericParameters here.
                 if ( genericEquipment.getParameters() != null && !genericEquipment.getParameters().isEmpty() ) {
+                    out.println( "<fieldset>" );
+                    out.println( "<legend>" + genericEquipment.getName() + "</legend>" );
+                    out.println( "<ol>" );
 
                     // Provide the name of the equipment as a hidden variable
                     out.println(
@@ -484,6 +506,7 @@
                     // EquipmentApplication element of this protocol's GPA.
                     String nameOfDescriptionField =
                             "equipmentDescription::" + genericEquipment.getEndurant().getIdentifier() + "::" + iii;
+                    out.println( "<li>" );
                     out.println(
                             "<label for=\"" + nameOfDescriptionField + "\">Description of the " +
                                     genericEquipment.getName() + ":</label>" );
@@ -491,12 +514,9 @@
                             "<textarea id=\"" + nameOfDescriptionField + "\" name=\"" + nameOfDescriptionField +
                                     "\" rows=\"5\" cols=\"40\"></textarea><br>" );
 
+                    out.println( "</li>" );
+
                     // Now, retrieve all parameters (currently only valid for ComplexValue and AtomicValue).
-                    if ( genericEquipment.getParameters() != null && !genericEquipment.getParameters().isEmpty() ) {
-                        out.println(
-                                "<p class=\"bigger\">Next, please enter the values appropriate to the following parameters to help identify the " +
-                                        genericEquipment.getName() + ".</p>" );
-                    }
                     for ( Object paramObj : genericEquipment.getParameters() ) {
                         if ( paramObj instanceof GenericParameter ) {
                             GenericParameter genericParameter = ( GenericParameter ) paramObj;
@@ -546,6 +566,7 @@
                                         }
                                     }
 
+                                    out.println( "<li>" );
                                     out.println( instructions );
                                     out.println( "<select name=\"" + nameOfField + "\">" );
                                     for ( OntologyTerm ot : ontologyTerms ) {
@@ -556,6 +577,7 @@
                                     }
                                     out.println( "</select>" );
                                     out.println( "<br>" );
+                                    out.println( "</li>" );
                                 }
                             }
                             if ( genericParameter.getDefaultValue() instanceof AtomicValue ) {
@@ -586,14 +608,17 @@
                                 }
                                 instructions += ":</label>";
 
+                                out.println( "<li>" );
                                 out.println( instructions );
                                 out.println( "<input id=\"" + nameOfField + "\" name=\"" + nameOfField + "\"><br>" );
                                 out.println( "<br>" );
+                                out.println( "</li>" );
                             }
                         }
                     }
+                    out.println( "</ol>" );
+                    out.println( "</fieldset>" );
                 }
-                // we allow multiple dummy equipment items per experiment
             }
         }
     }

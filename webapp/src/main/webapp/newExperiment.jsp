@@ -48,58 +48,67 @@
         <br/>
     </c:if>
 
-    <%-- Remove the fuge value in the experiment variable --%>
-    <%
-        experiment.setFuGE( null );
-    %>
-
-    <h3>Please add some information about your experiment:</h3>
-
     <form name="metaForm" action="newExperimentValidate.jsp">
 
-        <label for="experimentName">Experiment Name:(<font color="red">*</font>)</label>
-        <input id="experimentName"
-               name="experimentName"
-                <% if ( experiment.getExperimentName() != null && experiment.getExperimentName().length() > 0 ) {
-                    out.println( "value=\"" + experiment.getExperimentName() + "\">" );
-                } else {
-                    out.println( ">" );
-                } %>
-        <br>
+        <fieldset>
+            <legend>Please Name Your Experiment</legend>
 
-        <label for="hypothesis">Hypothesis:</label>
-        <textarea id="hypothesis" rows="5" cols="40" name="hypothesis"
-                <% if ( experiment.getHypothesis() != null && experiment.getHypothesis().length() > 0 ) {
-                    // putting the brackets here means non-essential whitespace is not shown
-                    out.println( ">" + experiment.getHypothesis() + "</textarea>" );
-                } else {
-                    out.println( "></textarea>" );
-                } %>
-        <br>
+            <ol>
 
-        <label for="conclusion">Conclusions:</label>
-        <textarea id="conclusion" rows="5" cols="40" name="conclusion"
-                <% if ( experiment.getConclusion() != null && experiment.getConclusion().length() > 0 ) {
-                    // putting the brackets here means non-essential whitespace is not shown
-                    out.println( ">" + experiment.getConclusion() + "</textarea>" );
-                } else {
-                    out.println( "></textarea>" );
-                } %>
-        <br>
+                <li>
+                    <label for="experimentName">Experiment Name:<em>required</em></label>
+                    <input id="experimentName"
+                           name="experimentName"
+                    <%
+                        if ( experiment.getExperimentName() != null && experiment.getExperimentName().length() > 0 ) {
+                            out.println( "value=\"" + experiment.getExperimentName() + "\">" );
+                        } else {
+                            out.println( ">" );
+                        }
+                    %>
+                    <br>
+                </li>
 
-        <input type="submit" value="Submit"/>
-        <%--<% if ( experiment.getExperimentName() != null ) { %>--%>
-        <!--<input type="hidden" name="godirect" value="true"/>-->
-        <!--<input type="submit" value="Go Back to Confirmation Page"/>-->
-        <%--<% } %>--%>
-        <input type="button" value="Back" onclick="history.go(-1)">
+                <li>
+                    <label for="hypothesis">Hypothesis:</label>
+                    <textarea id="hypothesis" rows="5" cols="40" name="hypothesis"
+                    <%
+                        if ( experiment.getHypothesis() != null && experiment.getHypothesis().length() > 0 ) {
+                            // putting the brackets here means non-essential whitespace is not shown
+                            out.println( ">" + experiment.getHypothesis() + "</textarea>" );
+                        } else {
+                            out.println( "></textarea>" );
+                        }
+                    %>
+                    <br>
+                </li>
+
+                <li>
+                    <label for="conclusion">Conclusions:</label>
+                    <textarea id="conclusion" rows="5" cols="40" name="conclusion"
+                    <%
+                        if ( experiment.getConclusion() != null && experiment.getConclusion().length() > 0 ) {
+                            // putting the brackets here means non-essential whitespace is not shown
+                            out.println( ">" + experiment.getConclusion() + "</textarea>" );
+                        } else {
+                            out.println( "></textarea>" );
+                        }
+                    %>
+                    <br>
+                </li>
+            </ol>
+        </fieldset>
+
+        <fieldset class="submit">
+            <input type="submit" value="Submit"/>
+            <%--<% if ( experiment.getExperimentName() != null ) { %>--%>
+            <!--<input type="hidden" name="godirect" value="true"/>-->
+            <!--<input type="submit" value="Go Back to Confirmation Page"/>-->
+            <%--<% } %>--%>
+            <input type="button" value="Back" onclick="history.go(-1)">
+        </fieldset>
     </form>
     <br>
-
-    <p>
-        (<font color="red">*</font>) Sections marked with an asterisk must be filled in. All other
-        sections are optional.
-    </p>
 
     <%--File : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="file" name="afile"/>

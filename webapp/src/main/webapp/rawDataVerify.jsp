@@ -100,8 +100,8 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     validUser.getLastName().substring( 0, 3 ) + "_" + threeLetterCode + "_" +
                             String.valueOf( Math.random() ).substring( 2, 6 ) );
 
-//            System.out.println( "doing file" );
-            System.out.println( "SIZE OF FILE " + item.getSize() );
+            localRdib.setOldFilename(item.getName());
+//            System.out.println( "SIZE OF FILE " + item.getSize() );
             String name = item.getName();
             name = name.replace( ":\\", "Q" );
             name = name.replace( "\\", "X" );
@@ -116,8 +116,6 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 //            System.out.println( localRdib.getFriendlyId() );
             item.write( afile );
 
-            // todo do we really need RawDataInfoBean objects to hold the file anymore? Can its work be transferred
-            // to the FileBean?
             localRdib.setAfile( afile );
             FileBean localFileBean = new FileBean();
             localFileBean.setAFile( afile );

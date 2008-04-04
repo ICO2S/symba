@@ -84,7 +84,7 @@
                 out.println( "<form action=\"experimentValidate.jsp\">" );
                 out.println(
                         "<input type=\"hidden\" name=\"experimentList\" value=\"" +
-                                fuge.getEndurant().getIdentifier() +
+                                fuge.getIdentifier() +
                                 "\"/>" );
                 out.println( "<input type=\"submit\" value=\"Add Data To This Experiment\"/>" );
                 out.println( "</form>" );

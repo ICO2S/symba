@@ -55,10 +55,10 @@
                     <select id="experimentList" name="experimentList">
                         <%
                             for ( Object obj : validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ) ) {
-                                List<String> idAndName = ( List<String> ) obj;
+                                List<String> summary = ( List<String> ) obj;
                                 out.println(
-                                        "<option value=\"" + idAndName.get( 0 ) + "\">" +
-                                                idAndName.get( 1 ) + "</option>" );
+                                        "<option value=\"" + summary.get( 0 ) + "\">" +
+                                                summary.get( 1 ) + "</option>" );
                             }
                         %>
                     </select><br>

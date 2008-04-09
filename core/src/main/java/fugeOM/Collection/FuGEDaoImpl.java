@@ -43,25 +43,27 @@ public class FuGEDaoImpl
         // endurant identifier "endurantId".
         return super.getAllLatestWithContact(
                 transform,
-                "select new list(exp.identifier, exp.name) from fugeOM.Collection.FuGE as exp " +
+                "select new list(exp.identifier, exp.name, audit.date) from fugeOM.Collection.FuGE as exp " +
                         "join exp.auditCollection.allContacts as contacts " +
                         "join exp.auditTrail as audit " +
                         "where audit.date = (select max(internalaudit.date) from fugeOM.Collection.FuGE as internalexp " +
                         "                     join internalexp.auditTrail as internalaudit " +
                         "                     where internalexp.endurant.id = exp.endurant.id) " +
                         "and " +
-                        "contacts.endurant.identifier = :endurantId ", endurantId );
+                        "contacts.endurant.identifier = :endurantId " +
+                        "order by audit.date desc", endurantId );
     }
 
     public java.util.List getAllLatestSummaries( final int transform ) {
         // Retrieves all *latest* versions of every experiment in the database
         return super.getAllLatestSummaries(
                 transform,
-                "select new list(exp.identifier, exp.name) from fugeOM.Collection.FuGE as exp " +
+                "select new list(exp.identifier, exp.name, audit.date) from fugeOM.Collection.FuGE as exp " +
                         "join exp.auditTrail as audit " +
                         "where audit.date = (select max(internalaudit.date) from fugeOM.Collection.FuGE as internalexp " +
                         "                     join internalexp.auditTrail as internalaudit " +
-                        "                     where internalexp.endurant.id = exp.endurant.id) " );
+                        "                     where internalexp.endurant.id = exp.endurant.id) " +
+                        "order by audit.date desc" );
     }
 
     public java.util.List getAllWithContact( final int transform, final java.lang.String endurantId ) {
@@ -79,29 +81,30 @@ public class FuGEDaoImpl
         // Searches all experiments: NOT restricted by person
         return super.getAllLatestSummariesWithName(
                 transform,
-                "select new list(exp.identifier, exp.name) from fugeOM.Collection.FuGE as exp " +
+                "select new list(exp.identifier, exp.name, audit.date) from fugeOM.Collection.FuGE as exp " +
                         "join exp.auditTrail as audit " +
                         "where audit.date = (select max(internalaudit.date) from fugeOM.Collection.FuGE as internalexp " +
                         "                     join internalexp.auditTrail as internalaudit " +
                         "                     where internalexp.endurant.id = exp.endurant.id) " +
                         "and " +
-                        "exp.name like :investigationName", "%" + investigationName + "%");
+                        "exp.name like :investigationName", "%" + investigationName + "% " +
+                "order by audit.date desc");
     }
 
     public java.util.List getAllLatestSummariesWithOntologyTerm( final int transform, final java.lang.String endurantId ) {
         // Retrieves all experiments whose *latest* version contains a the OntologyTerm endurantId provided
         // Searches all experiments: NOT restricted by person
-        System.err.println( "endurantId is " + endurantId);
         return super.getAllLatestSummariesWithOntologyTerm(
                 transform,
-                "select new list(exp.identifier, exp.name) from fugeOM.Collection.FuGE as exp " +
+                "select new list(exp.identifier, exp.name, audit.date) from fugeOM.Collection.FuGE as exp " +
                         "join exp.ontologyCollection.ontologyTerms as term " +
                         "join exp.auditTrail as audit " +
                         "where audit.date = (select max(internalaudit.date) from fugeOM.Collection.FuGE as internalexp " +
                         "                     join internalexp.auditTrail as internalaudit " +
                         "                     where internalexp.endurant.id = exp.endurant.id) " +
                         "and " +
-                        "term.endurant.identifier = :endurantId", endurantId );
+                        "term.endurant.identifier = :endurantId " +
+                        "order by audit.date desc", endurantId );
     }
 
 }

@@ -36,9 +36,9 @@
             <version>8.03</version>
         </dependency>
         <dependency>
-            <groupId>fugeOM</groupId>
-            <artifactId>web</artifactId>
-            <version>8.03</version>
+            <groupId>uk.org.carmen.security</groupId>
+            <artifactId>security-client</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>

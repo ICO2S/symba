@@ -19,9 +19,8 @@
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
 </jsp:useBean>
 
-<%-- Remove the session beans --%>
-<c:remove var="experiment"/>
-<c:remove var="investigationBean"/>
+<%-- The session is or isn't cleared (depending on the route the user has taken to get here)
+ directly prior to the loading of this page --%>
 
 <jsp:useBean id="experiment" class="uk.ac.cisban.symba.webapp.util.ExperimentBean" scope="session">
 </jsp:useBean>
@@ -54,11 +53,15 @@
                     <label for="experimentList">Existing experiments: </label>
                     <select id="experimentList" name="experimentList">
                         <%
+                            boolean inputAlreadyPresent = false;
                             for ( Object obj : validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ) ) {
                                 List<String> summary = ( List<String> ) obj;
-                                out.println(
-                                        "<option value=\"" + summary.get( 0 ) + "\">" +
-                                                summary.get( 1 ) + "</option>" );
+                                String optionValueStart = "<option value=\"" + summary.get( 0 ) + "\"";
+                                if ( experiment.getFugeIdentifier() != null && experiment.getFugeIdentifier().equals( summary.get( 0 ) ) ) {
+                                    inputAlreadyPresent = true;
+                                    optionValueStart += " selected=\"selected\"";
+                                }
+                                out.println( optionValueStart + ">" + summary.get( 1 ) + "</option>" );
                             }
                         %>
                     </select><br>
@@ -67,9 +70,18 @@
         </fieldset>
 
         <fieldset class="submit">
-
-            <input type="submit" value="Select" name="submit"/>
-            <input type="button" value="Back" onclick="history.go(-1)">
+            <% if ( inputAlreadyPresent ) { %>
+            Would you like to change more about your experiment, or go straight back to the
+            confirmation page? Just make your choice and hit "Submit". <br/>
+            <input type="radio" name="go2confirm" class="reset-radio" value="true" checked="checked"/> <strong>I'm
+            finished making changes: go back to the Confirmation Page</strong><br/>
+            <input type="radio" name="go2confirm" class="reset-radio" value="false"/><strong>I'd like to make more
+            changes: continue on to the next form page</strong><br/>
+            <input type="submit" value="Submit"/>
+            <% } else { // don't allow the use of the back button when changing metadata. %>
+            <input type="submit" value="Submit"/>
+            <input type="button" value="Back" onclick="history.go(-1)"/>
+            <% } %>
         </fieldset>
     </form>
     <br>

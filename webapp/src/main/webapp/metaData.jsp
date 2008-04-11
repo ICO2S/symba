@@ -59,11 +59,19 @@
         href="help.jsp#protocol"
         onClick="return popup(this, 'notes')">[ Help ]</a></h3>
 
-<form ENCTYPE="multipart/form-data" name="selectProt" action="metaDataValidate.jsp" method="post">
+<%--
+Ensure you do not have a multipart/form-data for the form's ENCTYPE if you wish to use
+POST, and then a request.getParameter() in the following page. It will cause all request.getParameter()
+to return null. See this page for more details:
+http://www.programmersheaven.com/mb/jsp/363016/363016/ReadMessage.aspx
+--%>
+<form name="selectMetadata" action="metaDataValidate.jsp" method="post">
 <%
+    boolean inputAlreadyPresent = false;
+
     //        todo this entire page needs generification
     for ( int iii = 0; iii < investigationBean.getAllDataBeans().size(); iii++ ) {
-        RawDataInfoBean info = investigationBean.getDataItem( iii );
+        RawDataInfoBean info = investigationBean.getAllDataBeans().get( iii );
 
         // ensure that we choose the 2nd-level "chosen child" information, if it is present
         String chosenChildProtocolIdentifier, chosenChildProtocolName;
@@ -129,29 +137,32 @@
                                     "<label for=\"" + descriptionLabel + "\">Enter the " + parsedStrings[1] +
                                             ": </label>" );
                         }
-                        out.println( "<input id=\"" + descriptionLabel + "\" name=\"" + descriptionLabel + "\"><br>" );
+                        String inputStartValue = "<input id=\"" + descriptionLabel + "\" name=\"" + descriptionLabel + "\"";
+                        if ( info.getMaterialFactorsBean() != null &&
+                                info.getMaterialFactorsBean().getOntologyReplacements().get( parsedStrings[1] ) != null ) {
+                            inputAlreadyPresent = true;
+                            inputStartValue += " value=\"" + info.getMaterialFactorsBean().getOntologyReplacements().get( parsedStrings[1] ) + "\"";
+                        }
+                        out.println( inputStartValue + "><br/>" );
                         out.println( "</li>" );
                     }
                 }
 
-                // will store the Material's name if requested in the template
+                // Will show the user-inputted material name if already present
                 if ( requestName ) {
                     String matName = "materialName" + iii;
                     out.println( "<li>" );
                     out.println( "<label for=\"" + matName + "\">Name/ID of this Material (optional): </label>" );
-                    if ( investigationBean.getAllDataBeans() != null &&
-                            investigationBean.getAllDataBeans().size() > iii &&
-                            investigationBean.getDataItem( iii ).getMaterialFactorsBean() != null ) {
+                    if ( info.getMaterialFactorsBean() != null && info.getMaterialFactorsBean().getMaterialName() != null ) {
+                        inputAlreadyPresent = true;
                         out.println(
                                 "<input id=\"" + matName + "\" name=\"" + matName + "\" value=\"" +
-                                        investigationBean.getDataItem( iii )
-                                                .getMaterialFactorsBean()
-                                                .getMaterialName() +
-                                        "\"><br>" );
+                                        info.getMaterialFactorsBean().getMaterialName() +
+                                        "\"><br/>" );
                     } else {
-                        out.println( "<input id=\"" + matName + "\" name=\"" + matName + "\"><br>" );
+                        out.println( "<input id=\"" + matName + "\" name=\"" + matName + "\"><br/>" );
                     }
-                    out.println( "<br>" );
+                    out.println( "<br/>" );
                     out.println( "</li>" );
                 }
 
@@ -159,28 +170,24 @@
                 if ( requestTreatment ) {
                     out.println( "<li>" );
                     out.println(
-                            "<p class=\"bigger\">Please enter some information about the " + displayName +
-                                    ", starting " +
-                                    "with treatment information. There should be a separate box for each treatment performed " +
-                                    "(optional). <em>NOTE: All treatments already entered will " +
-                                    "remain in the system. You may add additional treatments by entering them below.</em></p>" );
+                            "<p class=\"bigger\">Please enter some information about the " + displayName + ", starting " +
+                                    "with treatment information. There should be a separate box for each " +
+                                    "treatment performed (optional)." );
 
-                    if ( investigationBean.getAllDataBeans() != null &&
-                            investigationBean.getAllDataBeans().size() > iii &&
-                            investigationBean.getDataItem( iii ).getMaterialFactorsBean() != null &&
-                            investigationBean.getDataItem( iii ).getMaterialFactorsBean().getTreatmentInfo() != null &&
-                            !investigationBean.getDataItem( iii )
-                                    .getMaterialFactorsBean()
-                                    .getTreatmentInfo()
-                                    .isEmpty() ) {
+                    if ( info.getMaterialFactorsBean() != null &&
+                            info.getMaterialFactorsBean().getTreatmentInfo() != null &&
+                            !info.getMaterialFactorsBean().getTreatmentInfo().isEmpty() ) {
+                        out.println( "<em>NOTE: Treatments already entered will remain in the system (see list below).</em>" );
                         out.println( "<ol>" );
-                        for ( String singleTreatment : investigationBean.getDataItem( iii )
-                                .getMaterialFactorsBean()
-                                .getTreatmentInfo() ) {
+                        inputAlreadyPresent = true;
+                        for ( String singleTreatment : info.getMaterialFactorsBean().getTreatmentInfo() ) {
                             out.println( "<li>Treatment already recorded: " + singleTreatment + "</li>" );
                         }
                         out.println( "</ol>" );
+                        out.println( "You may add additional treatments by entering them below." );
                     }
+
+                    out.println( "</p>" );
 
                     // Each material may have had more than one treatment. Currently this is NOT stored as a controlled
                     // vocabulary, but as free text.
@@ -202,7 +209,7 @@
                             "<a href=\"javascript:addTreatmentInput('" + treatmentLabel +
                                     "', '" + moreTreatments + "');\">Add Another Treatment</a>" );
                     out.println( "</div>" );
-                    out.println( "<br>" );
+                    out.println( "<br/>" );
                     out.println( "</li>" );
                 }
 
@@ -212,11 +219,10 @@
                 // of ALL of the OntologyTerms in the database associated with that OntologySource.
                 if ( genericMaterial.getMaterialType() != null ) {
 //                    out.println( "<p class=\"bigger\">Next, please choose the correct Material Type.</p>" );
-                    List genericList = validUser.getReService()
-                            .getAllLatestTermsWithSource(
-                                    genericMaterial.getMaterialType()
-                                            .getOntologySource()
-                                            .getEndurant().getIdentifier() );
+                    List genericList = validUser.getReService().getAllLatestTermsWithSource(
+                            genericMaterial.getMaterialType()
+                                    .getOntologySource()
+                                    .getEndurant().getIdentifier() );
                     List<OntologyTerm> ontologyTerms = genericList;
                     if ( !ontologyTerms.isEmpty() ) {
 
@@ -245,12 +251,17 @@
                         out.println( instructions );
                         out.println( "<select name=\"" + matType + "\">" );
                         for ( OntologyTerm ot : ontologyTerms ) {
-                            out.println(
-                                    "<option value= \"" + ot.getEndurant().getIdentifier() + "\">" + ot.getTerm() +
-                                            "</option>" );
+                            String inputStartValue = "<option value= \"" + ot.getEndurant().getIdentifier() + "\"";
+                            if ( info.getMaterialFactorsBean() != null &&
+                                    info.getMaterialFactorsBean().getMaterialType() != null &&
+                                    info.getMaterialFactorsBean().getMaterialType().equals( ot.getEndurant().getIdentifier() ) ) {
+                                inputAlreadyPresent = true;
+                                inputStartValue += " selected=\"selected\"";
+                            }
+                            out.println( inputStartValue + ">" + ot.getTerm() + "</option>" );
                         }
                         out.println( "</select>" );
-                        out.println( "<br>" );
+                        out.println( "<br/>" );
                         out.println( "</li>" );
                     }
                 }
@@ -292,12 +303,21 @@
                             out.println( "<select name=\"" + characteristicLabel + "\">" );
                         }
                         for ( OntologyTerm ot : ontologyTerms ) {
-                            out.println(
-                                    "<option value= \"" + ot.getEndurant().getIdentifier() + "\">" + ot.getTerm() +
-                                            "</option>" );
+                            String inputStartValue = "<option value= \"" + ot.getEndurant().getIdentifier() + "\"";
+                            if ( info.getMaterialFactorsBean() != null &&
+                                    info.getMaterialFactorsBean().getCharacteristics() != null ) {
+                                for ( String endurantIdentifier : info.getMaterialFactorsBean().getCharacteristics() ) {
+                                    if ( endurantIdentifier.equals( ot.getEndurant().getIdentifier() ) ) {
+                                        inputAlreadyPresent = true;
+                                        inputStartValue += " selected=\"selected\"";
+                                        break; // found a match.
+                                    }
+                                }
+                            }
+                            out.println( inputStartValue + ">" + ot.getTerm() + "</option>" );
                         }
                         out.println( "</select>" );
-                        out.println( "<br>" );
+                        out.println( "<br/>" );
                         out.println( "</li>" );
                     }
                     ontoCount++;
@@ -323,10 +343,11 @@
         out.println( "onClick=\"return popup(this, 'notes')\">[ ? ]</a>:</label>" );
         out.println( "<textarea id=\"" + selectDescName + "\" name=\"" + selectDescName + "\" rows=\"5\" cols=\"40\">" );
         if ( info.getDataName() != null ) {
+            inputAlreadyPresent = true;
             out.println( info.getDataName() );
         }
         out.println( "</textarea>" );
-        out.println( "<br>" );
+        out.println( "<br/>" );
         out.println( "</li>" );
 
         // The file format for the ExternalData associated with the experiment.
@@ -366,14 +387,18 @@
 
                         out.println( instructions );
                         out.println( "<li>" );
-                        out.println( "<select name=\"" + fileFormat + "\">" );
+                        out.println( "<select name=\"" + fileFormat + "\" id=\"" + fileFormat + "\">" );
                         for ( OntologyTerm ot : ontologyTerms ) {
-                            out.println(
-                                    "<option value= \"" + ot.getEndurant().getIdentifier() + "\">" + ot.getTerm() +
-                                            "</option>" );
+                            String inputStartValue = "<option value= \"" + ot.getEndurant().getIdentifier() + "\"";
+                            if ( info.getFileFormat() != null &&
+                                    info.getFileFormat().equals( ot.getEndurant().getIdentifier() ) ) {
+                                inputAlreadyPresent = true;
+                                inputStartValue += " selected=\"selected\"";
+                            }
+                            out.println( inputStartValue + ">" + ot.getTerm() + "</option>" );
                         }
                         out.println( "</select>" );
-                        out.println( "<br>" );
+                        out.println( "<br/>" );
                         out.println( "</li>" );
                     }
                 }
@@ -417,6 +442,7 @@
                 // the template is requesting that a text box be provided with the instructions given after the
                 // "TextBox::" phrase. The contents of the text box will be stored in the same location as the
                 // instructions in the template.
+                // todo deal with the alreadypresent multiple TextBox instances (currently only deals with one)
                 for ( Object descriptionObj : genericProtocolApplication.getDescriptions() ) {
                     Description description = ( Description ) descriptionObj;
                     if ( description.getText() != null && description.getText().length() > 0 &&
@@ -427,7 +453,13 @@
                         out.println(
                                 "<label for=\"" + descriptionLabel + "\">" + parsedStrings[1] + ": </label>" );
                         out.println( "<textarea id=\"" + descriptionLabel + "\" name=\"" + descriptionLabel + "\"" );
-                        out.println( "rows=\"5\" cols=\"40\"></textarea><br>" );
+                        out.println( "rows=\"5\" cols=\"40\">" );
+                        if ( info.getGenericProtocolApplicationInfo() != null &&
+                                info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId ) != null ) {
+                            inputAlreadyPresent = true;
+                            out.println( info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId ).getDescriptions().get( 0 ) );
+                        }
+                        out.println( "</textarea><br/>" );
                         out.println( "</li>" );
                     }
                 }
@@ -466,8 +498,18 @@
 
                             out.println( "<li>" );
                             out.println( instructions );
-                            out.println( "<input id=\"" + nameOfField + "\" name=\"" + nameOfField + "\"><br>" );
-                            out.println( "<br>" );
+                            out.print( "<input id=\"" + nameOfField + "\" name=\"" + nameOfField + "\"" );
+                            if ( info.getGenericProtocolApplicationInfo() != null &&
+                                    info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId ) != null ) {
+                                String inputValue = info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId )
+                                        .getParameterAndAtomics().get( genericParameter.getEndurant().getIdentifier() );
+                                if ( inputValue != null && inputValue.length() > 0 ) {
+                                    inputAlreadyPresent = true;
+                                    out.print( " value=\"" + inputValue + "\"" );
+                                }
+                            }
+                            out.println( "/><br/>" );
+                            out.println( "<br/>" );
                             out.println( "</li>" );
                         }
                     }
@@ -476,7 +518,7 @@
                 out.println( "</fieldset>" );
             }
         }
-        out.println( "<br>" );
+        out.println( "<br/>" );
 
         // we also allow developers choose various settings for their GenericEquipment associated with the experiment.
         // Any value stored in a GenericParameter is changeable. Any value in other references to ontology terms
@@ -500,7 +542,7 @@
                     out.println(
                             "<input type=\"hidden\" name=\"equipmentName::" +
                                     genericEquipment.getEndurant().getIdentifier() + "::" + iii + "\" value=\"" +
-                                    genericEquipment.getName() + "\"><br>" );
+                                    genericEquipment.getName() + "\"/><br/>" );
 
                     // Now allow a free-text description of the Equipment, to be added in the final stages to the
                     // EquipmentApplication element of this protocol's GPA.
@@ -512,8 +554,17 @@
                                     genericEquipment.getName() + ":</label>" );
                     out.println(
                             "<textarea id=\"" + nameOfDescriptionField + "\" name=\"" + nameOfDescriptionField +
-                                    "\" rows=\"5\" cols=\"40\"></textarea><br>" );
+                                    "\" rows=\"5\" cols=\"40\">" );
 
+                    if ( info.getGenericEquipmentInfo().get( genericEquipment.getEndurant().getIdentifier() ) != null ) {
+                        String inputValue = info.getGenericEquipmentInfo()
+                                .get( genericEquipment.getEndurant().getIdentifier() ).getFreeTextDescription();
+                        if ( inputValue != null && inputValue.length() > 0 ) {
+                            inputAlreadyPresent = true;
+                            out.println( inputValue );
+                        }
+                    }
+                    out.println( "</textarea><br/>" );
                     out.println( "</li>" );
 
                     // Now, retrieve all parameters (currently only valid for ComplexValue and AtomicValue).
@@ -526,7 +577,7 @@
                                 // OntologyTerm, a pull-down menu should be displayed of ALL of the OntologyTerms in the database
                                 // associated with that OntologySource.
                                 ComplexValue complexValue = ( ComplexValue ) ( ( GenericParameter ) paramObj ).getDefaultValue();
-                                out.println( "<br>" );
+                                out.println( "<br/>" );
 
                                 List genericList = validUser.getReService()
                                         .getAllLatestTermsWithSource(
@@ -568,21 +619,29 @@
 
                                     out.println( "<li>" );
                                     out.println( instructions );
-                                    out.println( "<select name=\"" + nameOfField + "\">" );
+                                    out.println( "<select id=\"" + nameOfField + "\" name=\"" + nameOfField + "\">" );
                                     for ( OntologyTerm ot : ontologyTerms ) {
-                                        out.println(
-                                                "<option value= \"" + ot.getEndurant().getIdentifier() + "\">" +
-                                                        ot.getTerm() +
-                                                        "</option>" );
+                                        String inputStartValue = "<option value= \"" + ot.getEndurant().getIdentifier() + "\"";
+                                        if ( info.getGenericEquipmentInfo() != null &&
+                                                info.getGenericEquipmentInfo()
+                                                        .get( genericEquipment.getEndurant().getIdentifier() ) != null ) {
+                                            String inputValue = info.getGenericEquipmentInfo().get( genericEquipment.getEndurant().getIdentifier() ).
+                                                    getParameterAndTerms().get( genericParameter.getEndurant().getIdentifier() );
+                                            if ( inputValue != null && inputValue.equals( ot.getEndurant().getIdentifier() ) ) {
+                                                inputAlreadyPresent = true;
+                                                inputStartValue += " selected=\"selected\"";
+                                            }
+                                        }
+                                        out.println( inputStartValue + ">" + ot.getTerm() + "</option>" );
                                     }
                                     out.println( "</select>" );
-                                    out.println( "<br>" );
+                                    out.println( "<br/>" );
                                     out.println( "</li>" );
                                 }
                             }
                             if ( genericParameter.getDefaultValue() instanceof AtomicValue ) {
                                 // AtomicValues just have a string value. Ask the user for it
-                                out.println( "<br>" );
+                                out.println( "<br/>" );
 
                                 // retrieve the unit used, if present.
                                 String unitName = "";
@@ -610,8 +669,19 @@
 
                                 out.println( "<li>" );
                                 out.println( instructions );
-                                out.println( "<input id=\"" + nameOfField + "\" name=\"" + nameOfField + "\"><br>" );
-                                out.println( "<br>" );
+                                out.print( "<input id=\"" + nameOfField + "\" name=\"" + nameOfField + "\"" );
+                                if ( info.getGenericEquipmentInfo() != null &&
+                                        info.getGenericEquipmentInfo()
+                                                .get( genericEquipment.getEndurant().getIdentifier() ) != null ) {
+                                    String inputValue = info.getGenericEquipmentInfo().get( genericEquipment.getEndurant().getIdentifier() )
+                                            .getParameterAndAtomics().get( genericParameter.getEndurant().getIdentifier() );
+                                    if ( inputValue != null ) {
+                                        inputAlreadyPresent = true;
+                                        out.print( " value=\"" + inputValue + "\"" );
+                                    }
+                                }
+                                out.println( "/><br/>" );
+                                out.println( "<br/>" );
                                 out.println( "</li>" );
                             }
                         }
@@ -624,11 +694,18 @@
     }
 
 %>
-<br>
-<input type="submit" value="Submit" name="submit"/>
-<input type="button" value="Back" onclick="history.go(-1)"/>
+<br/>
+<fieldset class="submit">
+    <%-- no need to check the go2confirm value, as the next step is the confirm page anyway --%>
+    <% if ( inputAlreadyPresent ) { %>
+    Return to the Confirmation Page by clicking on the "Submit" button below. <br/>
+    <input type="submit" value="Submit"/>
+    <% } else { // don't allow the use of the back button when changing metadata. %>
+    <input type="submit" value="Submit"/>
+    <input type="button" value="Back" onclick="history.go(-1)"/>
+    <% } %>
+</fieldset>
 </form>
-<br>
 
 <p>If a required factor for your protocol is not here please <a href="mailto:helpdesk@cisban.ac.uk">contact us</a></p>
 

@@ -67,10 +67,6 @@ public class InvestigationBean implements Serializable {
         this.allDataBeans.set( value, info );
     }
 
-    public RawDataInfoBean getDataItem( int value ) {
-        return this.allDataBeans.get( value );
-    }
-
     public void clear() {
         this.allDataBeans = new ArrayList<RawDataInfoBean>();
         this.allFileBeans = new ArrayList<FileBean>();

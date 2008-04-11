@@ -222,6 +222,11 @@ label, input {
     margin-bottom: 10px;
 }
 
+/* Needed so that radio inputs aren't absurdly wide */
+input.reset-radio {
+    width: auto;
+}
+
 label {
     float: left;
     clear: left;
@@ -243,9 +248,6 @@ font-style: normal;
 text-transform: uppercase;
 }
 
-
-
-
 fieldset {
 float: left;
 clear: both;
@@ -257,12 +259,6 @@ background-color: #BAE1F7;
 /*background-color: #A7DAF2;*/
 /*background-color: #DFEFFF;*/
 }
-
-
-
-
-
-
 
 legend {
 margin-left: 1em;
@@ -289,8 +285,6 @@ padding-left: 12em;
 background-color: transparent;
 }
 
-
-
 br {
     clear: left;
 }
@@ -302,6 +296,6 @@ CURSOR: help;
 TEXT-DECORATION: none
 }
 
-
-
-
+textarea:focus, input:focus, select:focus {
+	border: 2px solid #0099CC;
+}

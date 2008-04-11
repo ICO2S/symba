@@ -20,16 +20,17 @@ import java.io.Serializable;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate:$
- * $LastChangedRevision:$
- * $Author:$
- * $HeadURL:$
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 public class ExperimentBean implements Serializable {
 
     private FuGE fuGE;
     private String fugeEndurant;
+    private String fugeIdentifier;
     private String experimentName;
     private String hypothesis;
     private String conclusion;
@@ -81,9 +82,18 @@ public class ExperimentBean implements Serializable {
         this.fugeEndurant = fugeEndurant;
     }
 
+    public String getFugeIdentifier() {
+        return fugeIdentifier;
+    }
+
+    public void setFugeIdentifier( String fugeIdentifier ) {
+        this.fugeIdentifier = fugeIdentifier;
+    }
+
     public void clear() {
         this.fuGE = null;
         this.fugeEndurant = "";
+        this.fugeIdentifier = "";
         this.experimentName = "";
         this.hypothesis = "";
     }

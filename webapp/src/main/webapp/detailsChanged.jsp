@@ -3,10 +3,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -45,7 +45,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
     <form name="done" action="home.jsp">
         <input type="submit" value="Confirm" name="confirm"/>
-        <input type="button" value="Change" onclick="history.go(-1)">
+        <input type="button" value="Change" onclick="history.go(-1)"/>
     </form>
 
     <br>

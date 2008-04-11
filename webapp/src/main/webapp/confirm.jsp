@@ -61,47 +61,51 @@
     appropriate form page, where you can correct any mistakes.
 </p>
 
-<!--experiment bean-->
 <%
+    // experiment bean
     if ( experiment.getFuGE() == null ) {
-%>
-<p class="bigger">
-    The experiment you are loading has the following details:
-    <%
-            out.println( "<ul>" );
-            if ( experiment.getExperimentName() != null ) {
-                out.println(
-                        "<li>Name: <a class=\"bigger\" href=\"newExperiment.jsp\">" +
-                                experiment.getExperimentName() +
-                                "</a></li>" );
-            }
-            if ( experiment.getHypothesis() != null ) {
-                out.println(
-                        "<li>Hypothesis: <a class=\"bigger\" href=\"newExperiment.jsp\">" +
-                                experiment.getHypothesis() +
-                                "</a></li>" );
-            }
-            if ( experiment.getConclusion() != null ) {
-                out.println(
-                        "<li>Conclusions: <a class=\"bigger\" href=\"newExperiment.jsp\">" +
-                                experiment.getConclusion() + "</a></li>" );
-            }
-            out.println( "</ul>" );
+        // the user has created a new experiment
+        out.println( "<p class=\"bigger\">" );
+        out.println( "The experiment you are loading has the following details:" );
+        out.println( "<ul>" );
+        if ( experiment.getExperimentName() != null ) {
+            out.println(
+                    "<li>Name: <a class=\"bigger\" href=\"newExperiment.jsp\">" +
+                            experiment.getExperimentName() +
+                            "</a></li>" );
         }
-    %>
-</p>
-<!--raw data bean-->
-<p class="bigger">
-    This experiment has the following data file(s) for your
-    <%
-        out.println( " <a class=\"bigger\" href=\"rawData.jsp\">" );
-        out.println( investigationBean.getTopLevelProtocolName() );
-        out.println( "</a>:" );
-    %>
-</p>
-<%
+        if ( experiment.getHypothesis() != null ) {
+            out.println(
+                    "<li>Hypothesis: <a class=\"bigger\" href=\"newExperiment.jsp\">" +
+                            experiment.getHypothesis() +
+                            "</a></li>" );
+        }
+        if ( experiment.getConclusion() != null ) {
+            out.println(
+                    "<li>Conclusions: <a class=\"bigger\" href=\"newExperiment.jsp\">" +
+                            experiment.getConclusion() + "</a></li>" );
+        }
+        out.println( "</ul>" );
+        out.println( "</p>" );
+    } else {
+
+        // the user has used an existing experiment.
+        out.println( "<p class=\"bigger\">" );
+        out.println( "You are adding to the following experiment: " );
+        out.println( "<a href=\"experiment.jsp\">" + experiment.getExperimentName() + "</a>" );
+        out.println( "</p>" );
+    }
+
+    // raw data bean
+    out.println( "<p class=\"bigger\">" );
+    out.println( "This experiment has the following data file(s) for your" );
+    out.println( " <a class=\"bigger\" href=\"rawData.jsp\">" );
+    out.println( investigationBean.getTopLevelProtocolName() );
+    out.println( "</a>:" );
+    out.println( "</p>" );
+
     for ( int iii = 0; iii < investigationBean.getAllDataBeans().size(); iii++ ) {
-        RawDataInfoBean info = investigationBean.getDataItem( iii );
+        RawDataInfoBean info = investigationBean.getAllDataBeans().get( iii );
         out.println( "<hr/>" );
         out.println( "<p class=\"bigger\">Information for " );
         out.println( " <a class=\"bigger\" href=\"rawData.jsp\">" );
@@ -125,7 +129,7 @@
                     "Your workflow also required that you specify a factor associated with " +
                             "your data file. " );
             out.println( "The factor you have chosen is " );
-            out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+            out.println( "<a class=\"bigger\" href=\"ChooseAction.jsp\">" );
             String modified = ga.getName().trim();
             if ( modified.startsWith( "Step Containing the" ) ) {
                 modified = modified.substring( 20 );
@@ -140,7 +144,7 @@
             out.println( "<li>" );
             out.println( "You have also assigned the data file to a particular step in your " );
             out.println( " workflow. The step you have assigned the file to is " );
-            out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+            out.println( "<a class=\"bigger\" href=\"ChooseAction.jsp\">" );
             String modified = ga.getName();
             if ( modified.startsWith( "Step Containing the" ) ) {
                 modified = modified.substring( 20 );

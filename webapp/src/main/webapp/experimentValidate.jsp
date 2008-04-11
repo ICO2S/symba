@@ -29,11 +29,15 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 </jsp:useBean>
 
 <%
-    //    LoadFuge lf = new LoadFuge();
-//    lf.loadExisting(experiment, validUser);
-    FuGE fuge = (FuGE) validUser.getReService().findIdentifiable(request.getParameter("experimentList"));
-    experiment.setFuGE(fuge);
-    experiment.setFugeEndurant(fuge.getEndurant().getIdentifier());
+    experiment.setFugeIdentifier( request.getParameter( "experimentList" ) );
+
+    FuGE fuge = ( FuGE ) validUser.getReService().findIdentifiable( request.getParameter( "experimentList" ) );
+    experiment.setFuGE( fuge );
+    experiment.setFugeEndurant( fuge.getEndurant().getIdentifier() );
 %>
 
+<% if ( request.getParameter( "go2confirm" ) != null && request.getParameter( "go2confirm" ).trim().equals( "true" ) ) { %>
+<c:redirect url="confirm.jsp"/>
+<% } else { %>
 <c:redirect url="rawData.jsp"/>
+<% } %>

@@ -3,10 +3,10 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -60,7 +60,7 @@ filled from information held in the session persistant person bean -->
             <input id="email" name="email" value="${fn:escapeXml(validUser.email)}"><br>
 
             <input type="submit" value="Update">
-            <input type="button" value="Cancel" onclick="history.go(-1)">
+            <input type="button" value="Cancel" onclick="history.go(-1)"/>
 
         </form>
 

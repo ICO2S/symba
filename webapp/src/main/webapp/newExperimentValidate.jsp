@@ -3,30 +3,38 @@
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
 <!-- To view the full licensing information for this software and ALL other files contained-->
 <!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate:$-->
-<!-- $LastChangedRevision:$-->
-<!-- $Author:$-->
-<!-- $HeadURL:$-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%--
 The taglib directive below imports the JSTL library. If you uncomment it,
 you must also add the JSTL library to the project. The Add Library... action
 on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 --%>
-<%--
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
---%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <jsp:useBean id="experiment" scope="session" class="uk.ac.cisban.symba.webapp.util.ExperimentBean">
 </jsp:useBean>
 
 <jsp:setProperty name="experiment" property="*"/>
 
+<%--
+ Now un-set the FuGE and FuGEEndurant properties of the experiment bean, just in case
+ someone has started down that route, but then realized they want to start a new experiment.
+ Pressing "Submit" from newExperiment.jsp is enough to convince us that they're serious about the
+ new experiment (versus attaching the data file to a pre-existing experiment)
+--%>
+
 <%
+    experiment.setFugeEndurant( "" );
+    experiment.setFugeIdentifier( "" );
+    experiment.setFuGE( null );
+
     if ( experiment.getExperimentName() == null ) {
 %>
 <c:redirect url="newExperiment.jsp">
@@ -35,12 +43,10 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 </c:redirect>
 <%
     }
-
-    System.out.println( "IT's loaded" );
 %>
 
-<% if ( request.getParameter( "godirect" ) == null ) { %>
-<c:redirect url="rawData.jsp"/>
-<% } else { %>
+<% if ( request.getParameter( "go2confirm" ) != null && request.getParameter( "go2confirm" ).trim().equals( "true" ) ) { %>
 <c:redirect url="confirm.jsp"/>
+<% } else { %>
+<c:redirect url="rawData.jsp"/>
 <% } %>

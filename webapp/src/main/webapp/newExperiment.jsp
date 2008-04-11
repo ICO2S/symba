@@ -14,10 +14,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<%-- Remove the session beans --%>
-<c:remove var="experiment"/>
-<c:remove var="investigationBean"/>
-
+<%-- The session is or isn't cleared (depending on the route the user has taken to get here)
+ directly prior to the loading of this page --%>
 <jsp:useBean id="experiment" class="uk.ac.cisban.symba.webapp.util.ExperimentBean" scope="session">
 </jsp:useBean>
 
@@ -48,6 +46,8 @@
         <br/>
     </c:if>
 
+    <% boolean inputAlreadyPresent = false; %>
+
     <form name="metaForm" action="newExperimentValidate.jsp">
 
         <fieldset>
@@ -62,6 +62,7 @@
                     <%
                         if ( experiment.getExperimentName() != null && experiment.getExperimentName().length() > 0 ) {
                             out.println( "value=\"" + experiment.getExperimentName() + "\">" );
+                            inputAlreadyPresent = true;
                         } else {
                             out.println( ">" );
                         }
@@ -75,10 +76,12 @@
                     <%
                         if ( experiment.getHypothesis() != null && experiment.getHypothesis().length() > 0 ) {
                             // putting the brackets here means non-essential whitespace is not shown
-                            out.println( ">" + experiment.getHypothesis() + "</textarea>" );
+                            out.println( ">" + experiment.getHypothesis() );
+                            inputAlreadyPresent = true;
                         } else {
-                            out.println( "></textarea>" );
+                            out.println( ">" );
                         }
+                        out.println( "</textarea>" );
                     %>
                     <br>
                 </li>
@@ -90,6 +93,7 @@
                         if ( experiment.getConclusion() != null && experiment.getConclusion().length() > 0 ) {
                             // putting the brackets here means non-essential whitespace is not shown
                             out.println( ">" + experiment.getConclusion() + "</textarea>" );
+                            inputAlreadyPresent = true;
                         } else {
                             out.println( "></textarea>" );
                         }
@@ -100,12 +104,18 @@
         </fieldset>
 
         <fieldset class="submit">
+            <% if ( inputAlreadyPresent ) { %>
+            Would you like to change more about your experiment, or go straight back to the
+            confirmation page? Just make your choice and hit "Submit". <br/>
+            <input type="radio" name="go2confirm" class="reset-radio" value="true" checked="checked"/> <strong>I'm
+            finished making changes: go back to the Confirmation Page</strong><br/>
+            <input type="radio" name="go2confirm" class="reset-radio" value="false"/><strong>I'd like to make more
+            changes: continue on to the next form page</strong><br/>
             <input type="submit" value="Submit"/>
-            <%--<% if ( experiment.getExperimentName() != null ) { %>--%>
-            <!--<input type="hidden" name="godirect" value="true"/>-->
-            <!--<input type="submit" value="Go Back to Confirmation Page"/>-->
-            <%--<% } %>--%>
-            <input type="button" value="Back" onclick="history.go(-1)">
+            <% } else { // don't allow the use of the back button when changing metadata. %>
+            <input type="submit" value="Submit"/>
+            <input type="button" value="Back" onclick="history.go(-1)"/>
+            <% } %>
         </fieldset>
     </form>
     <br>

@@ -298,7 +298,7 @@ public class CisbanProtocolCollectionHelper {
 
         for ( Object obj : parentProtocol.getGenericActions() ) {
             GenericAction genericAction = ( GenericAction ) obj;
-            System.out.println( "Investigating genericAction.getName() = " + genericAction.getName() );
+//            System.out.println( "Investigating genericAction.getName() = " + genericAction.getName() );
             // add the generic protocol referenced by the generic action.
             GenericProtocol genericProtocol = ( GenericProtocol ) genericAction.getGenProtocolRef();
             boolean matchFound = false;
@@ -309,7 +309,7 @@ public class CisbanProtocolCollectionHelper {
                             .getIdentifier().trim()
                             .equals( genericProtocol.getEndurant().getIdentifier().trim() ) ) {
                         matchFound = true;
-                        System.err.println( "Match Found" );
+//                        System.err.println( "Match Found" );
                         break;
                     }
                 }

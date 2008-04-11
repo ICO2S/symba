@@ -51,8 +51,9 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
 %>
 
-<%-- Remove the experiment user bean --%>
+<%-- Remove all session beans except the person bean --%>
 <c:remove var="experiment"/>
+<c:remove var="investigationBean"/>
 
 <c:redirect url="download.jsp">
     <c:param name="msg"

@@ -37,43 +37,59 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
 </jsp:useBean>
 
-<%--One of the properties in the previous form belongs in the RawDataBean--%>
 <jsp:useBean id="investigationBean"
              class="uk.ac.cisban.symba.webapp.util.InvestigationBean" scope="session">
 </jsp:useBean>
 
 
 <%
-    // to ensure that there are no problems with the files, delete all files from the investigationBean
-    // if any are present.
-    investigationBean.setAllFileBeans( new ArrayList<FileBean>() );
-    investigationBean.setAllDataBeans( new ArrayList<RawDataInfoBean>() );
-
     // now start the form handling
     System.out.println( ServletFileUpload.isMultipartContent( request ) );
     FileItemFactory factory = new DiskFileItemFactory();
     ServletFileUpload upload = new ServletFileUpload( factory );
     List items = upload.parseRequest( request );
 
+    // If the user is trying to re-enter data at this stage, we know that they are not allowed to
+    // change anything in rawData.jsp. Therefore we can skip all of this.
+    if ( investigationBean.getTopLevelProtocolName() != null && investigationBean.getTopLevelProtocolIdentifier() != null ) {
+        String parameterValue = null;
+        for ( Object itemObj : items ) {
+            FileItem item = ( FileItem ) itemObj;
+            if ( item.isFormField() && item.getFieldName().equals( "go2confirm" ) ) {
+                parameterValue = item.getString();
+                break;
+            }
+        }
+        if ( parameterValue != null && parameterValue.equals( "true" ) ) { %>
+<c:redirect url="confirm.jsp"/>
+<% } else { %>
+<c:redirect url="ChooseAction.jsp"/>
+<% }
+}
+
+    // to ensure that there are no problems with the files, delete all files from the investigationBean
+    // if any are present.
+    investigationBean.setAllFileBeans( new ArrayList<FileBean>() );
+
     // first, iterate through looking for the investigation details field
     Iterator itr = items.iterator();
     String investigationName = null;
-    String investigationIdentifier = null; 
+    String investigationIdentifier = null;
     while ( itr.hasNext() ) {
         FileItem item = ( FileItem ) itr.next();
         if ( item.isFormField() && item.getFieldName().equals( "investigationType" ) ) {
             // currently only one non-file field
             // set the experimental investigation type
-            investigationName = item.getString().substring(0, item.getString().indexOf("::Identifier::"));
-            System.err.println( "Investigation Name:" + investigationName + "END");
-            investigationIdentifier = item.getString().substring(item.getString().indexOf("::Identifier::") + 14);
-            System.err.println( "Investigation Identifier:" + investigationIdentifier  + "END");
+            investigationName = item.getString().substring( 0, item.getString().indexOf( "::Identifier::" ) );
+//            System.err.println( "Investigation Name:" + investigationName + "END");
+            investigationIdentifier = item.getString().substring( item.getString().indexOf( "::Identifier::" ) + 14 );
+//            System.err.println( "Investigation Identifier:" + investigationIdentifier  + "END");
         }
     }
 
-    // set the investigation details in the bean
     investigationBean.setTopLevelProtocolName( investigationName );
     investigationBean.setTopLevelProtocolIdentifier( investigationIdentifier );
+
     // sort out the 3-letter code for the friendly identifiers
     String threeLetterCode;
     if ( investigationBean.getTopLevelProtocolName().contains( "Microarray" ) ) {
@@ -90,7 +106,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         threeLetterCode = "DEF";
     }
 
-    // go through each part of the form again - this time we're only interested in the files.
+    // go through each part of the form - this time we're only interested in the files.
     for ( Object object : items ) {
         FileItem item = ( FileItem ) object;
         if ( !item.isFormField() && item.getSize() > 0 ) {
@@ -100,7 +116,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     validUser.getLastName().substring( 0, 3 ) + "_" + threeLetterCode + "_" +
                             String.valueOf( Math.random() ).substring( 2, 6 ) );
 
-            localRdib.setOldFilename(item.getName());
+            localRdib.setOldFilename( item.getName() );
 //            System.out.println( "SIZE OF FILE " + item.getSize() );
             String name = item.getName();
             name = name.replace( ":\\", "Q" );
@@ -108,10 +124,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             String[] args = name.split( "\\." );
             String tempDir = config.getServletContext().getRealPath( "temp" );
 
-            //Allys old Line
             File afile = new File( tempDir + File.separator + localRdib.getFriendlyId() + "." + args[1] );
-
-            //File afile = new File(tempDir+File.separator+"random."+args[1]);
 
 //            System.out.println( localRdib.getFriendlyId() );
             item.write( afile );
@@ -123,9 +136,6 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
             investigationBean.addFile( localFileBean );
             investigationBean.addDataItem( localRdib );
-
-            System.out.println( "done doing file" );
-            //TODO make a listener, read line by line
         }
     }
 

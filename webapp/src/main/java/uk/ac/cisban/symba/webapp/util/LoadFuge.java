@@ -640,10 +640,10 @@ public class LoadFuge {
             expName = fuge.getName();
         }
         for ( DatafileSpecificMetadataStore rdib : formSessionBean.getDatafileSpecificMetadataStores() ) {
-            GenericAction actionSelectedFromFirstLevel = ( GenericAction ) reService.findLatestByEndurant( rdib.getActionEndurant() );
+            GenericAction actionSelectedFromFirstLevel = ( GenericAction ) reService.findLatestByEndurant( rdib.getChosenActionEndurant() );
             GenericAction actionSelectedFromSecondLevel = null;
             if ( !treatSecondLevelAsAssay ) {
-                actionSelectedFromSecondLevel = ( GenericAction ) reService.findLatestByEndurant( rdib.getFactorChoice() );
+                actionSelectedFromSecondLevel = ( GenericAction ) reService.findLatestByEndurant( rdib.getChosenSecondLevelActionEndurant() );
             }
 
             // first, find the containing protocols for each action described.
@@ -672,7 +672,7 @@ public class LoadFuge {
             if ( firstLevelParentProtocol == null ) {
                 System.err.println(
                         "Error finding parent protocol for first-level action endurant " +
-                                rdib.getActionEndurant() );
+                                rdib.getChosenActionEndurant() );
                 return fuge;
             }
 
@@ -680,7 +680,7 @@ public class LoadFuge {
             if ( !treatSecondLevelAsAssay && secondLevelParentProtocol == null ) {
                 System.err.println(
                         "Error finding parent protocol and not treating second level as an assay for first-level action endurant " +
-                                rdib.getFactorChoice() );
+                                rdib.getChosenSecondLevelActionEndurant() );
                 return fuge;
             }
 

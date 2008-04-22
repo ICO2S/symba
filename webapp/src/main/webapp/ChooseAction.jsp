@@ -22,6 +22,7 @@ in this distribution, please see LICENSE.txt
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper" %>
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper" %>
 <%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanProtocolCollectionHelper" %>
+<%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
 <%@ page import="java.util.*" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session"/>
@@ -70,10 +71,35 @@ in this distribution, please see LICENSE.txt
     // re-print the existing values if present
     if ( symbaFormSessionBean.isProtocolLocked() ) {
         for ( int iii = 0; iii < symbaFormSessionBean.getDatafileSpecificMetadataStores().size(); iii++ ) {
+            // if there is a template store, then set session variables FOR THIS PAGE ONLY for the ones that are only in
+            //  the templateStore right now. The rest will get filled normally in metaDataValidate.jsp
+            if ( session.getAttribute( "templateStore" ) != null ) {
+                DatafileSpecificMetadataStore info = ( DatafileSpecificMetadataStore ) session.getAttribute(
+                        "templateStore" );
+                symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                        .get( iii )
+                        .setChosenActionEndurant( info.getChosenActionEndurant() );
+                symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                        .get( iii )
+                        .setChosenChildProtocolEndurant( info.getChosenChildProtocolEndurant() );
+                symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                        .get( iii )
+                        .setChosenChildProtocolName( info.getChosenChildProtocolName() );
+                symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                        .get( iii )
+                        .setChosenSecondLevelActionEndurant( info.getChosenSecondLevelActionEndurant() );
+                symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                        .get( iii )
+                        .setChosenSecondLevelChildProtocolEndurant( info.getChosenSecondLevelChildProtocolEndurant() );
+                symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                        .get( iii )
+                        .setChosenSecondLevelChildProtocolName( info.getChosenSecondLevelChildProtocolName() );
+            }
             if ( symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getChosenChildProtocolName() !=
                     null ) {
                 out.println( "<ol><li>" );
                 out.println( "<strong>" );
+                // oldFilename will not be in the template, but alwaysin the session value
                 out.println(
                         symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() + ": " );
                 out.println( "</strong><br/>" );
@@ -82,8 +108,7 @@ in this distribution, please see LICENSE.txt
                 out.println(
                         symbaFormSessionBean.getDatafileSpecificMetadataStores()
                                 .get( iii )
-                                .getChosenChildProtocolName() +
-                                ". " );
+                                .getChosenChildProtocolName() + ". " );
                 out.println( "</strong><br/>" );
                 if ( symbaFormSessionBean.getDatafileSpecificMetadataStores()
                         .get( iii )
@@ -103,6 +128,7 @@ in this distribution, please see LICENSE.txt
                 out.println( "</li>" );
                 out.println( "</ol>" );
             } else {
+                // oldFilename will not be in the template, but alwaysin the session value
                 out.println(
                         "Error trying to retrieve the protocol for the file: " +
                                 symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() );

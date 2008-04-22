@@ -25,8 +25,6 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session"/>
 
-<jsp:useBean id="symbaFormSessionBean" class="uk.ac.cisban.symba.webapp.util.SymbaFormSessionBean" scope="session"/>
-
 <%
 
     Map<String, SymbaFormSessionBean> allPossibleMetadata = ( Map<String, SymbaFormSessionBean> ) session.getAttribute(
@@ -53,9 +51,13 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 %>
 <c:remove var="allPossibleMetadata"/>
 <%
-    // check SymbaFormSessionBean
-    out.println( "after variable deletion: <br/><br/>" );
-    symbaFormSessionBean.displayHtml( out, validUser.getReService() );
+    if ( ( ( SymbaFormSessionBean ) session.getAttribute( "symbaFormSessionBean" ) ).getFuGE() == null ) {
+        // the metadata was taken from an experiment the user doesn't have rights to change. Force them to fill in
+        // a new experiment.
+%>
+<c:redirect url="newExperiment.jsp"/>
+<%
+    }
 %>
 <c:redirect url="rawData.jsp"/>
 

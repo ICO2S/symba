@@ -10,32 +10,14 @@ in this distribution, please see LICENSE.txt
 <!-- $Author$-->
 <!-- $HeadURL$-->
 
-<%@ page import="fugeOM.Bio.Data.ExternalData" %>
-<%@ page import="fugeOM.Bio.Material.GenericMaterial" %>
-<%@ page import="fugeOM.Collection.FuGE" %>
-<%@ page import="fugeOM.Common.Audit.Person" %>
-<%@ page import="fugeOM.Common.Description.Description" %>
-<%@ page import="fugeOM.Common.Ontology.OntologySource" %>
-<%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
-<%@ page import="fugeOM.Common.Protocol.*" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
 <%@ page import="org.apache.commons.fileupload.FileItem" %>
 <%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
 <%@ page import="org.apache.commons.fileupload.FileUploadException" %>
 <%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
 <%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanProtocolCollectionHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.xml.XMLMarshaler" %>
 <%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
-<%@ page import="javax.xml.rpc.ServiceException" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.io.StringWriter" %>
-<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.io.File" %>
 
 <%--
  Authors: Oliver Shaw, Allyson Lister
@@ -82,7 +64,8 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
     if ( parameterValue != null && parameterValue.equals( "true" ) ) { %>
 <c:redirect url="confirm.jsp"/>
 <% } else if ( ( parameterValue != null && parameterValue.equals( "false" ) ) ||
-        ( parameterValue == null && symbaFormSessionBean.isProtocolLocked() && symbaFormSessionBean.isDataPresent()) ) { %>
+        ( parameterValue == null && symbaFormSessionBean.isProtocolLocked() &&
+                symbaFormSessionBean.isDataPresent() ) ) { %>
 <c:redirect url="ChooseAction.jsp"/>
 <%
     }
@@ -97,13 +80,10 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
     // and associated file-specific metadata, in case the user keeps going back and forth, reloading data files.
     // In the second case, we should delete the existing datafiles, but retain the first set of file-specific
     // metadata as a template for the rest, then only allow changes to the data file portion of it.
-    DatafileSpecificMetadataStore templateStore = new DatafileSpecificMetadataStore();
-    if ( symbaFormSessionBean.isProtocolLocked() && symbaFormSessionBean.isMetadataFromAnotherExperiment() ) {
-        DatafileSpecificMetadataStore store = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( 0 );
-        store.setOldFilename( "" );
-        store.setFriendlyId( "" );
-        store.setDataFile( null ); // fixme = don't use null
-        templateStore = store;
+    if ( session.getAttribute( "templateStore" ) == null ) {
+        if ( symbaFormSessionBean.isProtocolLocked() && symbaFormSessionBean.isMetadataFromAnotherExperiment() ) {
+            session.setAttribute( "templateStore", symbaFormSessionBean.getDatafileSpecificMetadataStores().get( 0 ) );
+        }
     }
     symbaFormSessionBean.setDatafileSpecificMetadataStores( new ArrayList<DatafileSpecificMetadataStore>() );
 
@@ -152,10 +132,6 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         if ( !item.isFormField() && item.getSize() > 0 ) {
             DatafileSpecificMetadataStore localFileMetadataStore = new DatafileSpecificMetadataStore();
 
-            // fill with template information if not already done.
-            if ( symbaFormSessionBean.isMetadataFromAnotherExperiment() ) {
-                localFileMetadataStore = templateStore;
-            }
             // create the friendly identifier
             localFileMetadataStore.setFriendlyId(
                     validUser.getLastName().substring( 0, 3 ) + "_" + threeLetterCode + "_" +

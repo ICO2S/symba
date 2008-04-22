@@ -239,8 +239,8 @@ public class SymbaFormSessionBean implements Serializable {
                 out.println( "</a>" );
                 out.println( "</li>" );
             }
-            if ( info.getFactorChoice() != null && info.getFactorChoice().length() > 0 ) {
-                GenericAction ga = ( GenericAction ) reService.findLatestByEndurant( info.getFactorChoice() );
+            if ( info.getChosenSecondLevelActionEndurant() != null && info.getChosenSecondLevelActionEndurant().length() > 0 ) {
+                GenericAction ga = ( GenericAction ) reService.findLatestByEndurant( info.getChosenSecondLevelActionEndurant() );
                 out.println( "<li>" );
                 out.println(
                         "Your workflow also required that you specify a factor associated with " +
@@ -255,8 +255,8 @@ public class SymbaFormSessionBean implements Serializable {
                 out.println( "</a>" );
                 out.println( "</li>" );
             }
-            if ( info.getActionEndurant() != null && info.getActionEndurant().length() > 0 ) {
-                GenericAction ga = ( GenericAction ) reService.findLatestByEndurant( info.getActionEndurant() );
+            if ( info.getChosenActionEndurant() != null && info.getChosenActionEndurant().length() > 0 ) {
+                GenericAction ga = ( GenericAction ) reService.findLatestByEndurant( info.getChosenActionEndurant() );
                 out.println( "<li>" );
                 out.println( "You have also assigned the data file to a particular step in your " );
                 out.println( " workflow. The step you have assigned the file to is " );

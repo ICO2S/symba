@@ -26,19 +26,19 @@ public class DatafileSpecificMetadataStore {
     private File dataFile;
     private byte[] barray;
     private String endurantLsid;
-    private String actionEndurant;
 
     // Data file variables
     private String friendlyId;
     private String dataFileDescription;    // the description of the data file provided by the user.
-    private String factorChoice;
     private String fileFormat;
     private String oldFilename; // the original filename, to make it easier for users to determine which file they're annotating
 
-    private String chosenChildProtocolName;
-    private String chosenChildProtocolEndurant; // In the case of SyMBA, this is the endurant's identifier.
-    private String chosenSecondLevelChildProtocolName;  // only used when using 2nd-level protocols
-    private String chosenSecondLevelChildProtocolEndurant; // only used when using 2nd-level protocols. In the case of SyMBA, this is the endurant's identifier.
+    private String chosenActionEndurant; // the endurant of the action selected
+    private String chosenChildProtocolName; // the name of the protocol associated with the chosenActionEndurant
+    private String chosenChildProtocolEndurant; // the endurant of the protocol associated with the chosenActionEndurant
+    private String chosenSecondLevelActionEndurant; // only used when using 2nd-level protocols: the endurant of the 2nd-level action selected
+    private String chosenSecondLevelChildProtocolName;  // only used when using 2nd-level protocols: the name of the protocol associated with the chosenSecondLevelActionEndurant
+    private String chosenSecondLevelChildProtocolEndurant; // only used when using 2nd-level protocols: the endurant of the protocol associated with the chosenSecondLevelActionEndurant
 
     private Map<String, GenericEquipmentSummary> genericEquipmentInfo; // the key is the equipment endurant id
     private Map<String, GenericProtocolApplicationSummary> genericProtocolApplicationInfo;  // the key is the GPA's Parent GenericProtocol endurant id
@@ -64,6 +64,11 @@ public class DatafileSpecificMetadataStore {
         setBarray( local );
     }
 
+    public void clearDataFile() {
+        this.dataFile = null;
+        setBarray( new byte[10] );
+    }
+
     public byte[] getBarray() {
         return barray;
     }
@@ -80,12 +85,12 @@ public class DatafileSpecificMetadataStore {
         this.endurantLsid = endurantLsid;
     }
 
-    public String getActionEndurant() {
-        return actionEndurant;
+    public String getChosenActionEndurant() {
+        return chosenActionEndurant;
     }
 
-    public void setActionEndurant( String actionEndurant ) {
-        this.actionEndurant = actionEndurant;
+    public void setChosenActionEndurant( String chosenActionEndurant ) {
+        this.chosenActionEndurant = chosenActionEndurant;
     }
 
     public String getFriendlyId() {
@@ -97,12 +102,12 @@ public class DatafileSpecificMetadataStore {
     }
 
     public void clear() {
-        this.actionEndurant = "";
+        this.chosenActionEndurant = "";
         this.dataFile = null;
         this.barray = null;
         this.endurantLsid = "";
         this.friendlyId = "";
-        this.actionEndurant = "";
+        this.chosenActionEndurant = "";
         this.dataFileDescription = "";
         this.fileFormat = "";
         this.oldFilename = "";
@@ -125,12 +130,12 @@ public class DatafileSpecificMetadataStore {
         this.dataFileDescription = dataFileDescription;
     }
 
-    public String getFactorChoice() {
-        return factorChoice;
+    public String getChosenSecondLevelActionEndurant() {
+        return chosenSecondLevelActionEndurant;
     }
 
-    public void setFactorChoice( String factorChoice ) {
-        this.factorChoice = factorChoice;
+    public void setChosenSecondLevelActionEndurant( String chosenSecondLevelActionEndurant ) {
+        this.chosenSecondLevelActionEndurant = chosenSecondLevelActionEndurant;
     }
 
     public MaterialFactorsStore getMaterialFactorsStore() {

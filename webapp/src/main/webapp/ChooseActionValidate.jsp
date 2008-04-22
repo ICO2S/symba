@@ -1,26 +1,4 @@
-<%@ page import="fugeOM.Bio.Data.ExternalData" %>
-<%@ page import="fugeOM.Bio.Material.GenericMaterial" %>
-<%@ page import="fugeOM.Collection.FuGE" %>
-<%@ page import="fugeOM.Common.Audit.Person" %>
-<%@ page import="fugeOM.Common.Description.Description" %>
-<%@ page import="fugeOM.Common.Ontology.OntologySource" %>
-<%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
-<%@ page import="fugeOM.Common.Protocol.*" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
-<%@ page import="org.apache.commons.fileupload.FileItem" %>
-<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.FileUploadException" %>
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanDescribableHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanFuGEHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.helper.CisbanProtocolCollectionHelper" %>
-<%@ page import="uk.ac.cisban.symba.backend.util.conversion.xml.XMLMarshaler" %>
 <%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
-<%@ page import="javax.xml.rpc.ServiceException" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.io.StringWriter" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
@@ -75,8 +53,11 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 // take what is already there, and add only those fields that have not been made yet
                 DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores()
                         .get( number );
+                if (temp == null) {
+                    temp = new DatafileSpecificMetadataStore();
+                }
                 String[] parsedStrings = request.getParameter( parameterName ).split( "::" );
-                temp.setFactorChoice( parsedStrings[0] );
+                temp.setChosenSecondLevelActionEndurant( parsedStrings[0] );
                 temp.setChosenSecondLevelChildProtocolEndurant( parsedStrings[1] );
                 temp.setChosenSecondLevelChildProtocolName( parsedStrings[2] );
                 symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
@@ -86,14 +67,18 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 // take what is already there, and add only those fields that have not been made yet
                 DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores()
                         .get( number );
+                if (temp == null) {
+                    temp = new DatafileSpecificMetadataStore();
+                }
                 String[] parsedStrings = request.getParameter( parameterName ).split( "::" );
-                temp.setActionEndurant( parsedStrings[0] );
+                temp.setChosenActionEndurant( parsedStrings[0] );
                 temp.setChosenChildProtocolEndurant( parsedStrings[1] );
                 temp.setChosenChildProtocolName( parsedStrings[2] );
                 symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
             }
         }
-    } else if ( request.getParameter( "go2confirm" ).trim().equals( "true" ) ) { %>
+    } else if ( request.getParameter( "go2confirm" ) != null &&
+            request.getParameter( "go2confirm" ).trim().equals( "true" ) ) { %>
 <c:redirect url="confirm.jsp"/>
 <% } %>
 

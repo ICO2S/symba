@@ -44,7 +44,7 @@ public class DisplayFuge {
      * @param sessionUserEndurant the endurant identifier for the person requesting the metadata.
      * @param fuge                the object to display
      * @param reService           the connection to the database to retrieve up-to-date versions
-     * @param printWriter         the location to print out the HTML
+     * @param out         the location to print out the HTML
      * @return the Map of session beans, one per data file in the FuGE object, with the key being the original
      *         ExternalData object's identifier.
      * @throws fugeOM.service.RealizableEntityServiceException
@@ -53,18 +53,18 @@ public class DisplayFuge {
     public static Map<String, SymbaFormSessionBean> displayHtml( String sessionUserEndurant,
                                                                  FuGE fuge,
                                                                  RealizableEntityService reService,
-                                                                 PrintWriter printWriter ) throws RealizableEntityServiceException {
+                                                                 PrintWriter out ) throws RealizableEntityServiceException {
 
         SymbaFormSessionBean sessionBean = new SymbaFormSessionBean();
 
         // We assume that the top-level fuge object itself is the newest version.
-        printWriter.println( "<h3>" );
-        printWriter.println( "Experiment Name: " + fuge.getName() );
+        out.println( "<h3>" );
+        out.println( "Experiment Name: " + fuge.getName() );
         sessionBean.setExperimentName( fuge.getName() );
         sessionBean.setFuGE( fuge );
         sessionBean.setFugeIdentifier( fuge.getIdentifier() );
         sessionBean.setFugeEndurant( fuge.getEndurant().getIdentifier() );
-        printWriter.println( "</h3>" );
+        out.println( "</h3>" );
 
         // Now print out the initial creator of the FuGE object
         if ( fuge.getProvider().getProvider().getContact().getName() != null &&
@@ -72,9 +72,9 @@ public class DisplayFuge {
             String provider;
             provider = fuge.getProvider().getProvider().getContact().getName();
 
-            printWriter.println( "<h4>" );
-            printWriter.println( "Provider of the Experiment: " + provider );
-            printWriter.println( "</h4>" );
+            out.println( "<h4>" );
+            out.println( "Provider of the Experiment: " + provider );
+            out.println( "</h4>" );
         }
 
         // todo insert code that will properly check that the user is allowed to add information to this particular experiment.
@@ -98,19 +98,19 @@ public class DisplayFuge {
                     Investigation inv = ( Investigation ) obj;
                     for ( Object obj2 : inv.getDescriptions() ) {
                         Description de = ( Description ) obj2;
-                        printWriter.println( "<p>" );
-                        printWriter.println( de.getText() );
-                        printWriter.println( "</p>" );
+                        out.println( "<p>" );
+                        out.println( de.getText() );
+                        out.println( "</p>" );
                     }
                 }
             }
         }
-        printWriter.println( "<ol>" );
+        out.println( "<ol>" );
         // ProtocolCollection is describable, so will always be the most up-to-date
         Map<String, SymbaFormSessionBean> sessionBeanHashMap = displayHtmlProtocolCollection(
-                userOwnsExperiment, sessionBean, fuge.getProtocolCollection(), reService, printWriter );
-        printWriter.println( "</ol>" );
-        printWriter.flush();
+                userOwnsExperiment, sessionBean, fuge.getProtocolCollection(), reService, out );
+        out.println( "</ol>" );
+        out.flush();
 
         return sessionBeanHashMap;
     }
@@ -126,10 +126,10 @@ public class DisplayFuge {
                                                                                     SymbaFormSessionBean templateSessionBean,
                                                                                     ProtocolCollection protocolCollection,
                                                                                     RealizableEntityService reService,
-                                                                                    PrintWriter printWriter ) throws RealizableEntityServiceException {
+                                                                                    PrintWriter out ) throws RealizableEntityServiceException {
 
         if ( protocolCollection == null || protocolCollection.getProtocols() == null ) {
-            printWriter.println(
+            out.println(
                     "<li>Error: this experiment has no protocols. Please contact helpdesk@cisban.ac.uk</li>" );
             return new HashMap<String, SymbaFormSessionBean>();
         }
@@ -182,7 +182,7 @@ public class DisplayFuge {
                 dataFilledGPA = ( GenericProtocolApplication ) reService.greedyGet( dataFilledGPA );
                 // Go through each assay GPA, printing out its protocol history as we go.
                 if ( dataFilledGPA.getGenericOutputData().isEmpty() ) {
-                    printWriter.println(
+                    out.println(
                             "<li>There has been an error displaying all of the data files. Please contact helpdesk@cisban.ac.uk</li>" );
                     return new HashMap<String, SymbaFormSessionBean>();
                 }
@@ -190,7 +190,7 @@ public class DisplayFuge {
                 SymbaFormSessionBean currentSessionBean = new SymbaFormSessionBean();
 
                 // set the values to match those already present in the session bean from the calling method.
-                // these values have already been printed out to the printWriter.
+                // these values have already been printed out to the out.
                 // if it isn't the user's experiment, allow them to copy metadata but they must assign it to a new
                 // experiment
                 if ( userOwnsExperiment ) {
@@ -199,35 +199,31 @@ public class DisplayFuge {
                     currentSessionBean.setFugeEndurant( templateSessionBean.getFugeEndurant() );
                     currentSessionBean.setFugeIdentifier( templateSessionBean.getFugeIdentifier() );
                 }
-                // save the child protocol identifier and name (print later on, where nicer to look at)
-                // the protocol referenced by this assay gpa is the current child protocol, and all data files
-                // associated with this assay gpa will have the same values for these.
-                String chosenChildProtocolIdentifier = dataFilledGPA.getGenericProtocol().getEndurant().getIdentifier();
-                String chosenChildProtocolName = dataFilledGPA.getGenericProtocol().getName();
-                String chosenSecondLevelChildProtocolIdentifier = "";
-                String chosenSecondLevelChildProtocolName = "";
 
                 // save the various levels of protocol identifiers and names (print later on, where nicer to look at)
                 GenericProtocolApplication gpaAssociatedWithTopLevelProtocol;
                 GenericProtocolApplication oneLevelUpGPA = getLatestParentGPA(
                         oneAboveAssayGPAs, dataFilledGPA.getIdentifier() );
+
+                // save the child protocol identifier and name (print later on, where nicer to look at)
+                // the protocol one level up from this assay gpa is the current child protocol, and all data files
+                // associated with this assay gpa will have the same values for these.
+                String assayProtocolEndurant = dataFilledGPA.getGenericProtocol().getEndurant().getIdentifier();
+                String assayProtocolName = dataFilledGPA.getGenericProtocol().getName();
+                String oneAboveAssayProtocolEndurant = "";
+                String oneAboveAssayProtocolName = "";
+
                 if ( twoAboveAssayGPAs.isEmpty() ) {
                     // the protocol referenced by the gpa one level above this assay gpa is the parent protocol.
                     // retrieve with this method as we have already gotten the latest version
                     gpaAssociatedWithTopLevelProtocol = oneLevelUpGPA;
                 } else {
-                    // the protocol referenced by the gpa one level up from this assay gpa is the
-                    // second-level child protocol. All data files
-                    // associated with this assay gpa will have the same values for these.
-                    chosenSecondLevelChildProtocolIdentifier = oneLevelUpGPA.getGenericProtocol()
-                            .getEndurant()
-                            .getIdentifier();
-                    chosenSecondLevelChildProtocolName = oneLevelUpGPA.getGenericProtocol().getName();
-
                     // the protocol referenced by the gpa two levels above this assay gpa is the parent protocol.
                     // retrieve with this method as we have already gotten the latest version.
                     gpaAssociatedWithTopLevelProtocol = getLatestParentGPA(
                             twoAboveAssayGPAs, oneLevelUpGPA.getIdentifier() );
+                    oneAboveAssayProtocolEndurant = oneLevelUpGPA.getGenericProtocol().getEndurant().getIdentifier();
+                    oneAboveAssayProtocolName = oneLevelUpGPA.getGenericProtocol().getName();                         
                 }
                 currentSessionBean.setTopLevelProtocolEndurant(
                         gpaAssociatedWithTopLevelProtocol.getGenericProtocol().getEndurant().getIdentifier() );
@@ -245,15 +241,18 @@ public class DisplayFuge {
 
                         DatafileSpecificMetadataStore store = new DatafileSpecificMetadataStore();
 
-                        store.setChosenChildProtocolEndurant( chosenChildProtocolIdentifier );
-                        store.setChosenChildProtocolName( chosenChildProtocolName );
 
                         if ( !twoAboveAssayGPAs.isEmpty() ) {
-                            store.setChosenSecondLevelChildProtocolEndurant( chosenSecondLevelChildProtocolIdentifier );
-                            store.setChosenSecondLevelChildProtocolName( chosenSecondLevelChildProtocolName );
+                            store.setChosenChildProtocolEndurant( oneAboveAssayProtocolEndurant );
+                            store.setChosenChildProtocolName( oneAboveAssayProtocolName );
+                            store.setChosenSecondLevelChildProtocolEndurant( assayProtocolEndurant );
+                            store.setChosenSecondLevelChildProtocolName( assayProtocolName );
+                        } else {
+                            store.setChosenChildProtocolEndurant( assayProtocolEndurant );
+                            store.setChosenChildProtocolName( assayProtocolName );
                         }
 
-                        // add the information for this data file to the printWriter and a new SymbaFormSessionBean
+                        // add the information for this data file to the out and a new SymbaFormSessionBean
                         ExternalData externalData = ( ExternalData ) outputDataObj;
                         //store the identifier for later use as the key in the HashMap of SymbaFormSessionBeans
                         externalDataIdentifier = externalData.getIdentifier();
@@ -263,11 +262,11 @@ public class DisplayFuge {
                             fileDescription += description.getText();
                         }
                         // print the friendly identifier, but don't save it to the session.
-                        printWriter.print( "<li>Data File " + externalData.getName() );
-                        printWriter.println( "<ul>" );
+                        out.print( "<li>Data File " + externalData.getName() );
+                        out.println( "<ul>" );
                         // print the form to allow download of this data file.
                         String formId = "downloadSingle" + dataNumber;
-                        printWriter.println(
+                        out.println(
                                 "<br/><form style=\"display:none;\" id=\"" + formId +
                                         "\" action=\"downloadSingleFile.jsp\">" +
                                         "<input type=\"hidden\" name=\"identifier\" value=\"" +
@@ -283,7 +282,7 @@ public class DisplayFuge {
                         // All the SymbaFormSessionBean objects will be identified in this form using the
                         // current external data identifier
                         formId = "prepare" + dataNumber;
-                        printWriter.println(
+                        out.println(
                                 "<form style=\"display:none;\" id=\"" + formId +
                                         "\" action=\"prepareCopiedMetadata.jsp\">" +
                                         "<input type=\"hidden\" name=\"identifier\" value=\"" +
@@ -296,13 +295,13 @@ public class DisplayFuge {
 
                         // print and save the file description
                         if ( fileDescription.length() > 0 ) {
-                            printWriter.println(
+                            out.println(
                                     "<li>Your description of this file is: " + fileDescription + "</li>" );
                             store.setDataFileDescription( fileDescription );
                         }
                         // print and save the file format
                         if ( externalData.getFileFormat() != null ) {
-                            printWriter.println(
+                            out.println(
                                     "<li>The format of your file is: " +
                                             externalData.getFileFormat().getTerm() +
                                             "</li>" );
@@ -313,17 +312,15 @@ public class DisplayFuge {
                         ActionApplication oneLevelUpActionApplication = findActionApplication(
                                 oneLevelUpGPA, dataFilledGPA.getIdentifier() );
                         if ( oneLevelUpActionApplication != null ) {
-                            printWriter.println( "<li>This data file was created in the following step of your" );
-                            printWriter.println(
-                                    "experiment: " + store.getChosenChildProtocolName() + "," );
+                            out.println( "<li>This data file was created in the following step of your experiment:" );
                             if ( store.getChosenSecondLevelChildProtocolName() != null &&
                                     store.getChosenSecondLevelChildProtocolName().length() > 0 ) {
-                                printWriter.println(
-                                        " part of " + store.getChosenSecondLevelChildProtocolName() + "," );
+                                out.println(store.getChosenSecondLevelChildProtocolName() + ", part of the " );
                             }
+                            out.println( store.getChosenChildProtocolName() + "," );
                             if ( twoAboveAssayGPAs.isEmpty() ) {
-                                printWriter.println( "</li>" );
-                                store.setActionEndurant(
+                                out.println( "</li>" );
+                                store.setChosenActionEndurant(
                                         oneLevelUpActionApplication.getAction().getEndurant().getIdentifier() );
                             } else {
                                 // if there is a second factor choice associated with this action, fill out that, too.
@@ -333,9 +330,9 @@ public class DisplayFuge {
                                                 twoAboveAssayGPAs, oneLevelUpGPA.getIdentifier() ),
                                         oneLevelUpGPA.getIdentifier() );
                                 if ( twoLevelsUpActionApplication != null ) {
-                                    store.setActionEndurant(
+                                    store.setChosenActionEndurant(
                                             twoLevelsUpActionApplication.getAction().getEndurant().getIdentifier() );
-                                    store.setFactorChoice(
+                                    store.setChosenSecondLevelActionEndurant(
                                             oneLevelUpActionApplication.getAction().getEndurant().getIdentifier() );
                                 }
                             }
@@ -347,15 +344,15 @@ public class DisplayFuge {
                             GenericEquipmentSummary equipmentSummary = new GenericEquipmentSummary();
                             // print and save the equipment name;
                             equipmentSummary.setEquipmentName( equipmentApplication.getAppliedEquipment().getName() );
-                            printWriter.println( "<li>Information about " + equipmentSummary.getEquipmentName() );
-                            printWriter.println( "<ul>" );
+                            out.println( "<li>Information about " + equipmentSummary.getEquipmentName() );
+                            out.println( "<ul>" );
                             // print and save the equipment description
                             String equipmentDescription = "";
                             for ( Description description : ( Set<Description> ) equipmentApplication.getDescriptions() ) {
                                 equipmentDescription += description.getText();
                             }
                             equipmentSummary.setFreeTextDescription( equipmentDescription );
-                            printWriter.println( "<li>" + equipmentSummary.getFreeTextDescription() + "</li>" );
+                            out.println( "<li>" + equipmentSummary.getFreeTextDescription() + "</li>" );
                             // print and save the equipment ontology terms and atomic values
 
                             for ( ParameterValue parameterValue : ( Set<ParameterValue> ) equipmentApplication.getParameterValues() ) {
@@ -363,49 +360,49 @@ public class DisplayFuge {
                                     equipmentSummary.putParameterAndAtomicPair(
                                             parameterValue.getParameter().getEndurant().getIdentifier(),
                                             ( ( AtomicParameterValue ) parameterValue ).getValue() );
-                                    printWriter.println(
+                                    out.println(
                                             "<li>" + ( ( AtomicParameterValue ) parameterValue ).getValue() + "</li>" );
                                 } else if ( parameterValue instanceof ComplexParameterValue ) {
                                     equipmentSummary.putParameterAndTermPair(
                                             parameterValue.getParameter().getEndurant().getIdentifier(),
                                             ( ( ComplexParameterValue ) parameterValue ).getParameterValue()
                                                     .getEndurant().getIdentifier() );
-                                    printWriter.println(
+                                    out.println(
                                             "<li>" + ( ( ComplexParameterValue ) parameterValue ).getParameterValue()
                                                     .getTerm() + "</li>" );
                                 }
                             }
-                            printWriter.println( "</ul>" );
-                            printWriter.println( "</li>" );
+                            out.println( "</ul>" );
+                            out.println( "</li>" );
                             store.putGenericEquipmentInfoValue(
                                     equipmentApplication.getAppliedEquipment().getEndurant().getIdentifier(),
                                     equipmentSummary );
                         }
 
-                        if ( !dataFilledGPA.getParameterValues().isEmpty() ) {
+                        if ( !dataFilledGPA.getParameterValues().isEmpty() || !dataFilledGPA.getDescriptions().isEmpty() ) {
                             GenericProtocolApplicationSummary protocolApplicationSummary = new GenericProtocolApplicationSummary();
                             // print and save all atomic parameters
-                            printWriter.println( "<li>Information about the protocol selected" );
-                            printWriter.println( "<ul>" );
+                            out.println( "<li>Information about the protocol selected" );
+                            out.println( "<ul>" );
                             for ( ParameterValue parameterValue : ( Set<ParameterValue> ) dataFilledGPA.getParameterValues() ) {
                                 if ( parameterValue instanceof AtomicParameterValue ) {
                                     protocolApplicationSummary.putParameterAndAtomicPair(
                                             parameterValue.getParameter().getEndurant().getIdentifier(),
                                             ( ( AtomicParameterValue ) parameterValue ).getValue() );
-                                    printWriter.println(
+                                    out.println(
                                             "<li>" + ( ( AtomicParameterValue ) parameterValue ).getValue() + "</li>" );
                                 }
                             }
-                            // print and save the descriptions
 
+                            // print and save the descriptions
                             for ( Description description : ( Set<Description> ) dataFilledGPA.getDescriptions() ) {
                                 // parse along the " = "
                                 String[] parsedStrings = description.getText().split( " = " );
                                 protocolApplicationSummary.putDescription( parsedStrings[0], parsedStrings[1] );
-                                printWriter.println( "<li>" + description.getText() + "</li>" );
+                                out.println( "<li>" + description.getText() + "</li>" );
                             }
-                            printWriter.println( "</ul>" );
-                            printWriter.println( "</li>" );
+                            out.println( "</ul>" );
+                            out.println( "</li>" );
                             store.putGenericProtocolApplicationInfoValue(
                                     dataFilledGPA.getGenericProtocol().getEndurant().getIdentifier(),
                                     protocolApplicationSummary );
@@ -418,36 +415,36 @@ public class DisplayFuge {
                         // setCreatedMaterial() doesn't need to be run, as that is something used only within
                         // LoadFuge
                         if ( !dataFilledGPA.getGenericInputCompleteMaterials().isEmpty() ) {
-                            printWriter.println(
+                            out.println(
                                     "<li>You have associated an input material with the creation of this data file:" );
-                            printWriter.println( "<ul>" );
+                            out.println( "<ul>" );
                             MaterialFactorsStore materialFactorsStore = new MaterialFactorsStore();
                             for ( Material material : ( Set<Material> ) dataFilledGPA.getGenericInputCompleteMaterials() ) {
                                 if ( material instanceof GenericMaterial ) {
                                     if ( material.getName() != null && material.getName().length() > 0 ) {
                                         materialFactorsStore.setMaterialName( material.getName() );
-                                        printWriter.println( "<li>Its name is " + material.getName() + "</li>" );
+                                        out.println( "<li>Its name is " + material.getName() + "</li>" );
                                     }
                                     if ( material.getMaterialType() != null ) {
                                         materialFactorsStore.setMaterialType(
                                                 material.getMaterialType().getEndurant().getIdentifier() );
-                                        printWriter.println(
+                                        out.println(
                                                 "<li>" + material.getMaterialType().getTerm() + "<!-- type --></li>" );
                                     }
                                     for ( OntologyTerm ontologyTerm : ( Set<OntologyTerm> ) material.getCharacteristics() ) {
                                         materialFactorsStore.addCharacteristic( ontologyTerm.getEndurant().getIdentifier() );
-                                        printWriter.println(
+                                        out.println(
                                                 "<li>" + ontologyTerm.getTerm() + "<!-- characteristic --></li>" );
                                     }
                                     for ( Description description : ( Set<Description> ) material.getDescriptions() ) {
                                         // Structure for treatment info is "Treatment: "
                                         if ( description.getText().startsWith( "Treatment: " ) ) {
                                             materialFactorsStore.addTreatmentInfo( description.getText().substring( 11 ) );
-                                            printWriter.println( "<li>" + description.getText() + "</li>" );
+                                            out.println( "<li>" + description.getText() + "</li>" );
                                         } else {
                                             // Structure for OntologyReplacement is "OntologyReplacementTitle = value"
                                             int equalsPosition = description.getText().indexOf( " = " );
-                                            printWriter.println( "<li>" + description.getText() + "</li>" );
+                                            out.println( "<li>" + description.getText() + "</li>" );
                                             String title = description.getText().substring( 0, equalsPosition );
                                             String ontValue = description.getText().substring( equalsPosition + 3 );
                                             materialFactorsStore.putOntologyReplacementsPair( title, ontValue );
@@ -455,17 +452,17 @@ public class DisplayFuge {
                                     }
                                 }
                             }
-                            printWriter.println( "</ul>" );
-                            printWriter.println( "</li>" );
+                            out.println( "</ul>" );
+                            out.println( "</li>" );
                             store.setMaterialFactorsStore( materialFactorsStore );
                         }
 
                         datafileSpecificMetadataStores.add( store );
 
                         // close data file details list
-                        printWriter.println( "</ul>" );
+                        out.println( "</ul>" );
                         // close data file list element
-                        printWriter.println( "</li>" );
+                        out.println( "</li>" );
 
                     }
 
@@ -479,15 +476,15 @@ public class DisplayFuge {
                 if ( externalDataIdentifier.length() > 0 ) {
                     allBeans.put( externalDataIdentifier, currentSessionBean );
                 } else {
-                    printWriter.println(
+                    out.println(
                             "<li>There has been an error storing this data file's metadata. Please " +
                                     "Contact helpdesk@cisban.ac.uk with this error and the name of the experiment you were " +
                                     "trying to display</li>" );
                 }
 
                 // flush after each data file to give the user something to see
-                printWriter.println();
-                printWriter.flush();
+                out.println();
+                out.flush();
             }
         }
 

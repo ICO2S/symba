@@ -1,8 +1,10 @@
-<!-- This file is part of SyMBA.-->
-<!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
-<!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
-<!-- To view the full licensing information for this software and ALL other files contained-->
-<!-- in this distribution, please see LICENSE.txt-->
+<%--
+This file is part of SyMBA.
+SyMBA is covered under the GNU Lesser General Public License (LGPL).
+Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
+To view the full licensing information for this software and ALL other files contained
+in this distribution, please see LICENSE.txt
+--%>
 <!-- $LastChangedDate$-->
 <!-- $LastChangedRevision$-->
 <!-- $Author$-->
@@ -15,15 +17,14 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@ page import="java.util.List" %>
+<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
 
-<jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
-</jsp:useBean>
+<jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session"/>
 
 <%-- The session is or isn't cleared (depending on the route the user has taken to get here)
  directly prior to the loading of this page --%>
 
-<jsp:useBean id="experiment" class="uk.ac.cisban.symba.webapp.util.ExperimentBean" scope="session">
-</jsp:useBean>
+<jsp:useBean id="symbaFormSessionBean" class="uk.ac.cisban.symba.webapp.util.SymbaFormSessionBean" scope="session"/>
 
 <%-- The correct doctype and html elements are stored here --%>
 <jsp:include page="header.jsp"/>
@@ -50,18 +51,28 @@
             <ol>
 
                 <li>
-                    <label for="experimentList">Existing experiments: </label>
-                    <select id="experimentList" name="experimentList">
+                    <label for="fugeIdentifier">Existing experiments: </label>
+                    <select id="fugeIdentifier" name="fugeIdentifier">
                         <%
-                            boolean inputAlreadyPresent = false;
-                            for ( Object obj : validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ) ) {
-                                List<String> summary = ( List<String> ) obj;
-                                String optionValueStart = "<option value=\"" + summary.get( 0 ) + "\"";
-                                if ( experiment.getFugeIdentifier() != null && experiment.getFugeIdentifier().equals( summary.get( 0 ) ) ) {
-                                    inputAlreadyPresent = true;
-                                    optionValueStart += " selected=\"selected\"";
+                            try {
+                                for ( Object obj : validUser.getReService()
+                                        .getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ) ) {
+                                    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+                                    // casting from Object, even though runtime can handle this.
+                                    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+                                    List<String> summary = ( List<String> ) obj;
+                                    String optionValueStart = "<option value=\"" + summary.get( 0 ) + "\"";
+                                    if ( symbaFormSessionBean.getFugeIdentifier() != null &&
+                                            symbaFormSessionBean.getFugeIdentifier().equals( summary.get( 0 ) ) ) {
+                                        optionValueStart += " selected=\"selected\"";
+                                    }
+                                    out.println( optionValueStart + ">" + summary.get( 1 ) + "</option>" );
                                 }
-                                out.println( optionValueStart + ">" + summary.get( 1 ) + "</option>" );
+                            } catch ( RealizableEntityServiceException e ) {
+                                out.println("</select><br>There has been a problem retrieving your experiments. Please ");
+                                out.println("</select><br>contact the " + application.getAttribute( "helpEmail" ) + "<br/>" );
+                                System.out.println(e.getMessage());
+                                e.printStackTrace();
                             }
                         %>
                     </select><br>
@@ -70,18 +81,18 @@
         </fieldset>
 
         <fieldset class="submit">
-            <% if ( inputAlreadyPresent ) { %>
+            <%
+                // in this case, we only want to present them with this option if the have reached the
+                // confirmation page. Otherwise, we want to force them to move forward linearly.
+                if ( symbaFormSessionBean.isConfirmationReached() ) { %>
             Would you like to change more about your experiment, or go straight back to the
             confirmation page? Just make your choice and hit "Submit". <br/>
             <input type="radio" name="go2confirm" class="reset-radio" value="true" checked="checked"/> <strong>I'm
             finished making changes: go back to the Confirmation Page</strong><br/>
             <input type="radio" name="go2confirm" class="reset-radio" value="false"/><strong>I'd like to make more
             changes: continue on to the next form page</strong><br/>
+            <% } // don't allow the use of the back button in the first step. %>
             <input type="submit" value="Submit"/>
-            <% } else { // don't allow the use of the back button when changing metadata. %>
-            <input type="submit" value="Submit"/>
-            <input type="button" value="Back" onclick="history.go(-1)"/>
-            <% } %>
         </fieldset>
     </form>
     <br>

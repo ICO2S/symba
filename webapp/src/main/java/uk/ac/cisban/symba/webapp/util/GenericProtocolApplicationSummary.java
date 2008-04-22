@@ -1,8 +1,6 @@
 package uk.ac.cisban.symba.webapp.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,12 +17,15 @@ import java.util.Map;
  */
 public class GenericProtocolApplicationSummary {
 
-    private Map<String, String> parameterAndAtomics; // the key is the parameter endurant identifier, and the value is the atomic value.
-    private List<String> descriptions; // Fill this with any descriptions you wish to add to the GPA.
+    // the key is the parameter endurant identifier, and the value is the atomic value.
+    private Map<String, String> parameterAndAtomics;
+    // Fill this with any descriptions you wish to add to the GPA. The key is the description type (e.g.
+    // ProtocolDescription), and the value is the description itself. This way you only allow one description per type
+    private Map<String,String> descriptions;
 
     public GenericProtocolApplicationSummary() {
         this.parameterAndAtomics = new HashMap<String, String>();
-        this.descriptions = new ArrayList<String>();
+        this.descriptions = new HashMap<String, String>();
     }
 
     public Map<String, String> getParameterAndAtomics() {
@@ -35,19 +36,19 @@ public class GenericProtocolApplicationSummary {
         this.parameterAndAtomics = parameterAndAtomics;
     }
 
-    public List<String> getDescriptions() {
+    public Map<String,String> getDescriptions() {
         return descriptions;
     }
 
-    public void setDescriptions( List<String> descriptions ) {
+    public void setDescriptions( Map<String,String> descriptions ) {
         this.descriptions = descriptions;
+    }
+
+    public void putDescription( String descriptionType, String description ) {
+        this.descriptions.put( descriptionType, description );
     }
 
     public void putParameterAndAtomicPair( String parameterEndurantId, String atomicValue ) {
         this.parameterAndAtomics.put( parameterEndurantId, atomicValue );
-    }
-
-    public void addDescription( String description ) {
-        this.descriptions.add( description );
     }
 }

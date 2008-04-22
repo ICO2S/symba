@@ -3,6 +3,8 @@ package uk.ac.cisban.symba.webapp.util;
 import fugeOM.ServiceLocator;
 import fugeOM.service.RealizableEntityService;
 
+import java.io.Serializable;
+
 /*
  * This file is part of SyMBA.
  * SyMBA is covered under the GNU Lesser General Public License (LGPL).
@@ -16,7 +18,7 @@ import fugeOM.service.RealizableEntityService;
  * $HeadURL$
  *
  */
-public class PersonBean {
+public class PersonBean implements Serializable {
 
     // The bean follows standard coding practice, eg empty constructor
     //then private fields with public getters and setters based on Field names

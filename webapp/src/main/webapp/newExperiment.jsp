@@ -1,8 +1,10 @@
-<!-- This file is part of SyMBA.-->
-<!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
-<!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
-<!-- To view the full licensing information for this software and ALL other files contained-->
-<!-- in this distribution, please see LICENSE.txt-->
+<%--
+This file is part of SyMBA.
+SyMBA is covered under the GNU Lesser General Public License (LGPL).
+Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
+To view the full licensing information for this software and ALL other files contained
+in this distribution, please see LICENSE.txt
+--%>
 <!-- $LastChangedDate$-->
 <!-- $LastChangedRevision$-->
 <!-- $Author$-->
@@ -16,8 +18,7 @@
 
 <%-- The session is or isn't cleared (depending on the route the user has taken to get here)
  directly prior to the loading of this page --%>
-<jsp:useBean id="experiment" class="uk.ac.cisban.symba.webapp.util.ExperimentBean" scope="session">
-</jsp:useBean>
+<jsp:useBean id="symbaFormSessionBean" class="uk.ac.cisban.symba.webapp.util.SymbaFormSessionBean" scope="session"/>
 
 <%-- The correct doctype and html elements are stored here --%>
 <jsp:include page="header.jsp"/>
@@ -46,9 +47,7 @@
         <br/>
     </c:if>
 
-    <% boolean inputAlreadyPresent = false; %>
-
-    <form name="metaForm" action="newExperimentValidate.jsp">
+    <form name="metaForm" action="newExperimentValidate.jsp" method="post">
 
         <fieldset>
             <legend>Please Name Your Experiment</legend>
@@ -60,9 +59,10 @@
                     <input id="experimentName"
                            name="experimentName"
                     <%
-                        if ( experiment.getExperimentName() != null && experiment.getExperimentName().length() > 0 ) {
-                            out.println( "value=\"" + experiment.getExperimentName() + "\">" );
-                            inputAlreadyPresent = true;
+                        if ( symbaFormSessionBean.getExperimentName() != null &&
+                                symbaFormSessionBean.getExperimentName().length() > 0 ) {
+                            out.println(
+                                    "value=\"" + symbaFormSessionBean.getExperimentName() + "\">" );
                         } else {
                             out.println( ">" );
                         }
@@ -74,10 +74,10 @@
                     <label for="hypothesis">Hypothesis:</label>
                     <textarea id="hypothesis" rows="5" cols="40" name="hypothesis"
                     <%
-                        if ( experiment.getHypothesis() != null && experiment.getHypothesis().length() > 0 ) {
+                        if ( symbaFormSessionBean.getHypothesis() != null &&
+                                symbaFormSessionBean.getHypothesis().length() > 0 ) {
                             // putting the brackets here means non-essential whitespace is not shown
-                            out.println( ">" + experiment.getHypothesis() );
-                            inputAlreadyPresent = true;
+                            out.println( ">" + symbaFormSessionBean.getHypothesis() );
                         } else {
                             out.println( ">" );
                         }
@@ -90,10 +90,11 @@
                     <label for="conclusion">Conclusions:</label>
                     <textarea id="conclusion" rows="5" cols="40" name="conclusion"
                     <%
-                        if ( experiment.getConclusion() != null && experiment.getConclusion().length() > 0 ) {
+                        if ( symbaFormSessionBean.getConclusion() != null &&
+                                symbaFormSessionBean.getConclusion().length() > 0 ) {
                             // putting the brackets here means non-essential whitespace is not shown
-                            out.println( ">" + experiment.getConclusion() + "</textarea>" );
-                            inputAlreadyPresent = true;
+                            out.println(
+                                    ">" + symbaFormSessionBean.getConclusion() + "</textarea>" );
                         } else {
                             out.println( "></textarea>" );
                         }
@@ -104,18 +105,19 @@
         </fieldset>
 
         <fieldset class="submit">
-            <% if ( inputAlreadyPresent ) { %>
+            <%
+                // in this case, we only want to present them with this option if the have reached the
+                // confirmation page. Otherwise, we want to force them to move forward linearly.
+                // Presence of all data is shown with the variable symbaFormSessionBean.get
+                if ( symbaFormSessionBean.isConfirmationReached() ) { %>
             Would you like to change more about your experiment, or go straight back to the
             confirmation page? Just make your choice and hit "Submit". <br/>
             <input type="radio" name="go2confirm" class="reset-radio" value="true" checked="checked"/> <strong>I'm
             finished making changes: go back to the Confirmation Page</strong><br/>
             <input type="radio" name="go2confirm" class="reset-radio" value="false"/><strong>I'd like to make more
             changes: continue on to the next form page</strong><br/>
+            <% } // don't allow the use of the back button in the first step. %>
             <input type="submit" value="Submit"/>
-            <% } else { // don't allow the use of the back button when changing metadata. %>
-            <input type="submit" value="Submit"/>
-            <input type="button" value="Back" onclick="history.go(-1)"/>
-            <% } %>
         </fieldset>
     </form>
     <br>

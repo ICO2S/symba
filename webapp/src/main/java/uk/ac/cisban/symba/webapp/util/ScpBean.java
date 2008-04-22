@@ -1,5 +1,7 @@
 package uk.ac.cisban.symba.webapp.util;
 
+import java.io.Serializable;
+
 /*
  * This file is part of SyMBA.
  * SyMBA is covered under the GNU Lesser General Public License (LGPL).
@@ -7,14 +9,14 @@ package uk.ac.cisban.symba.webapp.util;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate:$
- * $LastChangedRevision:$
- * $Author:$
- * $HeadURL:$
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 
-public class ScpBean {
+public class ScpBean implements Serializable {
 
     private String hostname;
     private String username;

@@ -49,30 +49,26 @@ import java.util.Set;
 public class LoadFuge {
     private final CisbanHelper helper;
     private final RealizableEntityService reService;
-    private final ExperimentBean eb;
-    private final InvestigationBean rdb;
-    private final ScpBean scp;
-    private final PersonBean pb;
+    private final SymbaFormSessionBean formSessionBean;
+    private final ScpBean scpBean;
+    private final PersonBean personBean;
     private Person auditor;
 
     /**
      * Creates a new instance of LoadFuge
      */
-    public LoadFuge( ExperimentBean eb, InvestigationBean rdb, PersonBean pb, ScpBean scp ) {
-        this.pb = pb;
-        this.reService = pb.getReService();
+    public LoadFuge( SymbaFormSessionBean formSessionBean, PersonBean personBean, ScpBean scpBean ) {
+        this.personBean = personBean;
+        this.reService = personBean.getReService();
         this.helper = CisbanHelper.create( reService );
 
-        this.eb = eb;
-
-        this.rdb = rdb;
-
-        this.scp = scp;
+        this.formSessionBean = formSessionBean;
+        this.scpBean = scpBean;
     }
 
     public void load() throws IOException, LSIDException, RealizableEntityServiceException {
 
-        if ( eb.getFuGE() == null ) {
+        if ( formSessionBean.getFuGE() == null ) {
             loadNew();
         } else {
             loadExisting();
@@ -80,7 +76,7 @@ public class LoadFuge {
     }
 
     private void loadExisting() throws LSIDException, RealizableEntityServiceException, IOException {
-        FuGE fuge = eb.getFuGE();
+        FuGE fuge = formSessionBean.getFuGE();
         fuge = loadPerson( fuge, true );
         fuge = loadMaterial( fuge );
         fuge = loadData( fuge );
@@ -96,7 +92,7 @@ public class LoadFuge {
 
         FuGE fuge = ( FuGE ) reService.createIdentifiableAndEndurantObs(
                 helper.getLSID( "fugeOM.Collection.FuGE" ),
-                eb.getExperimentName(),
+                formSessionBean.getExperimentName(),
                 helper.getLSID( "fugeOM.Collection.FuGEEndurant" ),
                 "fugeOM.Collection.FuGE",
                 "fugeOM.Collection.FuGEEndurant" );
@@ -124,7 +120,7 @@ public class LoadFuge {
                 "fugeOM.Collection.AuditCollection" );
 
         Person person = ( Person ) helper.getOrCreateLatest(
-                pb.getEndurantLsid(),
+                personBean.getEndurantLsid(),
                 "fugeOM.Common.Audit.PersonEndurant",
                 null,
                 "fugeOM.Common.Audit.Person" );
@@ -183,15 +179,15 @@ public class LoadFuge {
                 "fugeOM.Common.Description.Description" );
         Description description2 = ( Description ) reService.createDescribableOb(
                 "fugeOM.Common.Description.Description" );
-        if ( eb.getHypothesis() != null ) {
-            description1.setText( "Hypothesis: " + eb.getHypothesis() );
+        if ( formSessionBean.getHypothesis() != null ) {
+            description1.setText( "Hypothesis: " + formSessionBean.getHypothesis() );
         } else {
             description1.setText( "Hypothesis: None" );
         }
         reService.createObInDB( "fugeOM.Common.Description.Description", description1 );
         descriptions.add( description1 );
-        if ( eb.getConclusion() != null ) {
-            description2.setText( "Conclusions: " + eb.getConclusion() );
+        if ( formSessionBean.getConclusion() != null ) {
+            description2.setText( "Conclusions: " + formSessionBean.getConclusion() );
         } else {
             description2.setText( "Conclusions: None" );
         }
@@ -201,12 +197,12 @@ public class LoadFuge {
         // Retrieve latest investigation (or create a new one) from the database.
         Investigation investigation = ( Investigation ) reService.createIdentifiableAndEndurantObs(
                 helper.getLSID( "fugeOM.Bio.Investigation.Investigation" ),
-                "Investigation for " + eb.getExperimentName(),
+                "Investigation for " + formSessionBean.getExperimentName(),
                 helper.getLSID( "fugeOM.Bio.Investigation.InvestigationEndurant" ),
                 "fugeOM.Bio.Investigation.Investigation",
                 "fugeOM.Bio.Investigation.InvestigationEndurant" );
 
-        investigation.setName( "Investigation Details for " + eb.getExperimentName() );
+        investigation.setName( "Investigation Details for " + formSessionBean.getExperimentName() );
         investigation.setDescriptions( descriptions );
 
         if ( investigation.getId() != null ) {
@@ -243,20 +239,20 @@ public class LoadFuge {
         }
 
         int iii = 0;
-        for ( RawDataInfoBean rdib : rdb.getAllDataBeans() ) {
+        for ( DatafileSpecificMetadataStore rdib : formSessionBean.getDatafileSpecificMetadataStores() ) {
 
-            // we store data in a file store and use scp to put it there.
+            // we store data in a file store and use scpBean to put it there.
 
             /* Create a connection instance */
-            Connection conn = new Connection( scp.getHostname() );
+            Connection conn = new Connection( scpBean.getHostname() );
             conn.connect();
 
-            boolean isAuthenticated = conn.authenticateWithPassword( scp.getUsername(), scp.getPassword() );
+            boolean isAuthenticated = conn.authenticateWithPassword( scpBean.getUsername(), scpBean.getPassword() );
 
             if ( !isAuthenticated )
                 throw new IOException( "Authentication failed." );
 
-            String directoryForFile = scp.getDirectory() + "/data";
+            String directoryForFile = scpBean.getDirectory() + "/data";
             Session sess = conn.openSession();
             sess.execCommand( "mkdir -p " + directoryForFile );
             sess.close();
@@ -283,13 +279,13 @@ public class LoadFuge {
             externalData.setLocation( fileLSID );
 
             // set the description of the file, if present
-            if ( rdib.getDataName() != null && rdib.getDataName().length() > 0 ) {
+            if ( rdib.getDataFileDescription() != null && rdib.getDataFileDescription().length() > 0 ) {
                 // add any descriptions. You can see above we have just created a new externaldata object, so
                 // no need to check for old descriptions.
                 Set<Description> descriptions = new HashSet<Description>();
                 Description description = ( Description ) reService.createDescribableOb(
                         "fugeOM.Common.Description.Description" );
-                description.setText( rdib.getDataName() );
+                description.setText( rdib.getDataFileDescription() );
                 reService.createObInDB( "fugeOM.Common.Description.Description", description );
                 descriptions.add( description );
                 externalData.setDescriptions( descriptions );
@@ -350,7 +346,7 @@ public class LoadFuge {
             helper.loadIdentifiable( externalData, auditor, "fugeOM.Bio.Data.ExternalData", System.out );
 
             rdib.setEndurantLsid( externalData.getEndurant().getIdentifier() );
-            rdb.setDataItem( rdib, iii );
+            formSessionBean.setDatafileSpecificMetadataStore( rdib, iii );
 
             datas.add( externalData );
             iii++;
@@ -409,15 +405,15 @@ public class LoadFuge {
         // each rdib instance has its own material
         boolean hasMaterial = false;
         int iii = 0;
-        for ( RawDataInfoBean rdib : rdb.getAllDataBeans() ) {
-            if ( rdib.getMaterialFactorsBean() != null ) {
+        for ( DatafileSpecificMetadataStore rdib : formSessionBean.getDatafileSpecificMetadataStores() ) {
+            if ( rdib.getMaterialFactorsStore() != null ) {
                 hasMaterial = true;
 
                 // the material needs to be made, and each ontology term needs to be added if it hasn't already been added
                 String nameToUse = "";
-                if ( rdib.getMaterialFactorsBean().getMaterialName() != null &&
-                        rdib.getMaterialFactorsBean().getMaterialName().length() > 0 ) {
-                    nameToUse = rdib.getMaterialFactorsBean().getMaterialName();
+                if ( rdib.getMaterialFactorsStore().getMaterialName() != null &&
+                        rdib.getMaterialFactorsStore().getMaterialName().length() > 0 ) {
+                    nameToUse = rdib.getMaterialFactorsStore().getMaterialName();
                 }
 
                 GenericMaterial genericMaterial = ( GenericMaterial ) reService.createIdentifiableAndEndurantObs(
@@ -429,33 +425,33 @@ public class LoadFuge {
                         "fugeOM.Bio.Material.GenericMaterialEndurant" );
 
                 // add any OntologyReplacement descriptions.
-                if ( ( rdib.getMaterialFactorsBean() ).getOntologyReplacements() != null &&
-                        ( rdib.getMaterialFactorsBean() ).getOntologyReplacements().size() > 0 ) {
+                if ( ( rdib.getMaterialFactorsStore() ).getOntologyReplacements() != null &&
+                        ( rdib.getMaterialFactorsStore() ).getOntologyReplacements().size() > 0 ) {
                     Set<Description> descriptions;
                     if ( genericMaterial.getDescriptions() == null ) {
                         descriptions = new HashSet<Description>();
                     } else {
                         descriptions = ( Set<Description> ) genericMaterial.getDescriptions();
                     }
-                    for ( String key : ( rdib.getMaterialFactorsBean() ).getOntologyReplacements().keySet() ) {
+                    for ( String key : ( rdib.getMaterialFactorsStore() ).getOntologyReplacements().keySet() ) {
                         Description description = ( Description ) reService.createDescribableOb(
                                 "fugeOM.Common.Description.Description" );
                         description.setText(
-                                key + " = " + ( rdib.getMaterialFactorsBean() ).getOntologyReplacements().get( key ) );
+                                key + " = " + ( rdib.getMaterialFactorsStore() ).getOntologyReplacements().get( key ) );
                         helper.loadDescribable( description, auditor, "fugeOM.Common.Description.Description", null );
                         descriptions.add( description );
                     }
                     genericMaterial.setDescriptions( descriptions );
                 }
 
-                if ( rdib.getMaterialFactorsBean().getMaterialType() != null ) {
+                if ( rdib.getMaterialFactorsStore().getMaterialType() != null ) {
                     // The first ontology term is the materialType
 
                     // todo proper algorithm
                     boolean matchFound = findMatchingEndurant(
-                            rdib.getMaterialFactorsBean().getMaterialType(), ontologyTerms );
+                            rdib.getMaterialFactorsStore().getMaterialType(), ontologyTerms );
                     // irrespective of whether or not we found a match, we still need to add the term to the new material
-                    OntologyTerm termToAdd = ( OntologyTerm ) reService.findLatestByEndurant( rdib.getMaterialFactorsBean().getMaterialType() );
+                    OntologyTerm termToAdd = ( OntologyTerm ) reService.findLatestByEndurant( rdib.getMaterialFactorsStore().getMaterialType() );
                     genericMaterial.setMaterialType( termToAdd );
                     // todo this won't catch cases where the ontology source was added at a later date
                     if ( !matchFound ) {
@@ -469,7 +465,7 @@ public class LoadFuge {
                         }
                     }
 
-                    if ( rdib.getMaterialFactorsBean().getCharacteristics() != null ) {
+                    if ( rdib.getMaterialFactorsStore().getCharacteristics() != null ) {
                         // Now we have the characteristics to load.
                         Set<OntologyTerm> characteristics;
                         if ( genericMaterial.getCharacteristics() == null ) {
@@ -477,7 +473,7 @@ public class LoadFuge {
                         } else {
                             characteristics = ( Set<OntologyTerm> ) genericMaterial.getCharacteristics();
                         }
-                        for ( String endurant : rdib.getMaterialFactorsBean().getCharacteristics() ) {
+                        for ( String endurant : rdib.getMaterialFactorsStore().getCharacteristics() ) {
                             // todo proper algorithm
                             matchFound = findMatchingEndurant( endurant, ontologyTerms );
                             // irrespective of whether or not we found a match, we still need to add the term to the new material
@@ -498,7 +494,7 @@ public class LoadFuge {
                         genericMaterial.setCharacteristics( characteristics );
                     }
 
-                    if ( rdib.getMaterialFactorsBean().getTreatmentInfo() != null ) {
+                    if ( rdib.getMaterialFactorsStore().getTreatmentInfo() != null ) {
                         // Next are the treatments, which get loaded as individual descriptions on the GenericMaterial.
                         // These are always added, without checks.
                         Set<Description> descriptions;
@@ -507,7 +503,7 @@ public class LoadFuge {
                         } else {
                             descriptions = ( Set<Description> ) genericMaterial.getDescriptions();
                         }
-                        for ( String treatmentDesc : rdib.getMaterialFactorsBean().getTreatmentInfo() ) {
+                        for ( String treatmentDesc : rdib.getMaterialFactorsStore().getTreatmentInfo() ) {
                             Description description = ( Description ) reService.createDescribableOb(
                                     "fugeOM.Common.Description.Description" );
                             description.setText( "Treatment: " + treatmentDesc );
@@ -522,10 +518,10 @@ public class LoadFuge {
                     helper.loadIdentifiable(
                             genericMaterial, auditor, "fugeOM.Bio.Material.GenericMaterial", System.out );
 
-                    MaterialFactorsBean mfb = rdib.getMaterialFactorsBean();
+                    MaterialFactorsStore mfb = rdib.getMaterialFactorsStore();
                     mfb.setCreatedMaterial( genericMaterial.getEndurant().getIdentifier() );
-                    rdib.setMaterialFactorsBean( mfb );
-                    rdb.setDataItem( rdib, iii );
+                    rdib.setMaterialFactorsStore( mfb );
+                    formSessionBean.setDatafileSpecificMetadataStore( rdib, iii );
 
                     materials.add( genericMaterial );
                 }
@@ -589,9 +585,8 @@ public class LoadFuge {
     }
 
     // the default protocol loader
-    // if not Microarray protocol, rdib.getProtocolEndurant() does not get filled.
     // Also assumes a flat structure of only two levels:
-    // all names must include the rdb.getTopLevelProtocolName() in order to be found
+    // all names must include the formSessionBean.getTopLevelProtocolName() in order to be found
     // first-level protocol contains a full list of steps
     // second-level protocols are those referenced in the top-level protocol, containing the word "Component", and themselves have no actions
     private FuGE loadProtocols( FuGE fuge ) throws RealizableEntityServiceException, LSIDException {
@@ -606,14 +601,15 @@ public class LoadFuge {
         CisbanProtocolCollectionHelper cpc = new CisbanProtocolCollectionHelper(
                 reService, new CisbanIdentifiableHelper( reService, new CisbanDescribableHelper( reService ) ) );
         // The GenericProtocol whose GenericAction is stored from the form will get the data item added to it.
-        Set<Protocol> protocolSet = cpc.addRelevantProtocols( fuge, rdb.getTopLevelProtocolIdentifier().trim() );
+        Set<Protocol> protocolSet = cpc.addRelevantProtocols(
+                fuge, formSessionBean.getTopLevelProtocolEndurant().trim() );
 
         // the only thing we cannot figure out at runtime currently is which are "complex" protocols
         // and which are "simple" protocols. This is why there is hard-coding here.
         boolean treatSecondLevelAsAssay = false;
         GenericProtocol assayProtocol = null;
         // All Microarray Experiments are complex, and others are simple (currently)
-        if ( rdb.getTopLevelProtocolName().contains( "Example mutant/WT Microarray Investigation" ) ) {
+        if ( formSessionBean.getTopLevelProtocolName().contains( "Example mutant/WT Microarray Investigation" ) ) {
             // The next two are "real" CISBAN protocols, but this one is the particular example for the sandbox
             assayProtocol = ( GenericProtocol ) reService.findLatestByEndurant(
                     "urn:lsid:cisban.cisbs.org:GenProtocolEndurant:71fbd89e-13c7-4ced-9d0d-199abf9956f2" );
@@ -638,12 +634,12 @@ public class LoadFuge {
             allGPAs = new HashSet();
         }
         String expName;
-        if ( eb.getExperimentName() != null ) {
-            expName = eb.getExperimentName();
+        if ( formSessionBean.getExperimentName() != null ) {
+            expName = formSessionBean.getExperimentName();
         } else {
             expName = fuge.getName();
         }
-        for ( RawDataInfoBean rdib : rdb.getAllDataBeans() ) {
+        for ( DatafileSpecificMetadataStore rdib : formSessionBean.getDatafileSpecificMetadataStores() ) {
             GenericAction actionSelectedFromFirstLevel = ( GenericAction ) reService.findLatestByEndurant( rdib.getActionEndurant() );
             GenericAction actionSelectedFromSecondLevel = null;
             if ( !treatSecondLevelAsAssay ) {
@@ -793,15 +789,19 @@ public class LoadFuge {
                     // to this data item
                     // todo add more types of parameter values, as currently only valid for atomic values
                     Set<AtomicParameterValue> pvSet = new HashSet<AtomicParameterValue>();
-                    GenericProtocolApplicationSummary summary = rdib.getGenericProtocolApplicationInfo().get( gpaOfSecondLevelParentProtocol.getGenericProtocol().getEndurant().getIdentifier() );
+                    GenericProtocolApplicationSummary summary = rdib.getGenericProtocolApplicationInfo()
+                            .get( gpaOfSecondLevelParentProtocol.getGenericProtocol().getEndurant().getIdentifier() );
                     if ( summary != null ) {
                         if ( summary.getParameterAndAtomics() != null && !summary.getParameterAndAtomics().isEmpty() ) {
                             for ( String parameterKey : summary.getParameterAndAtomics().keySet() ) {
                                 AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
                                         "fugeOM.Common.Protocol.AtomicParameterValue" );
                                 atomicParameterValue.setValue( summary.getParameterAndAtomics().get( parameterKey ) );
-                                atomicParameterValue.setParameter( ( GenericParameter ) reService.findLatestByEndurant( parameterKey ) );
-                                reService.createObInDB( "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
+                                atomicParameterValue.setParameter(
+                                        ( GenericParameter ) reService.findLatestByEndurant(
+                                                parameterKey ) );
+                                reService.createObInDB(
+                                        "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
                                 pvSet.add( atomicParameterValue );
                             }
                             gpaOfSecondLevelParentProtocol.setParameterValues( pvSet );
@@ -810,10 +810,12 @@ public class LoadFuge {
                         // add any descriptions. As this is a brand-new GPA, there will be no existing descriptions
                         if ( summary.getDescriptions() != null && !summary.getDescriptions().isEmpty() ) {
                             Set<Description> descriptions = new HashSet<Description>();
-                            for ( String currentDescription : summary.getDescriptions() ) {
+                            for ( String currentDescriptionKey : summary.getDescriptions().keySet() ) {
                                 Description description = ( Description ) reService.createDescribableOb(
                                         "fugeOM.Common.Description.Description" );
-                                description.setText( currentDescription );
+                                description.setText(
+                                        currentDescriptionKey + " = " +
+                                                summary.getDescriptions().get( currentDescriptionKey ) );
                                 reService.createObInDB( "fugeOM.Common.Description.Description", description );
                                 descriptions.add( description );
                             }
@@ -928,11 +930,11 @@ public class LoadFuge {
                 }
 
                 // add the material
-                if ( rdib.getMaterialFactorsBean() != null ) {
+                if ( rdib.getMaterialFactorsStore() != null ) {
                     // add the material
                     Set set2 = new HashSet();
-                    set2.add( reService.findLatestByEndurant( rdib.getMaterialFactorsBean().getCreatedMaterial() ) );
-                    System.out.println( "Received lsid: " + rdib.getMaterialFactorsBean().getCreatedMaterial() );
+                    set2.add( reService.findLatestByEndurant( rdib.getMaterialFactorsStore().getCreatedMaterial() ) );
+                    System.out.println( "Received lsid: " + rdib.getMaterialFactorsStore().getCreatedMaterial() );
                     gpaOfSecondLevelParentProtocol.setGenericInputCompleteMaterials( set2 );
                 }
 
@@ -1017,15 +1019,19 @@ public class LoadFuge {
                     // to this data item
                     // todo add more types of parameter values, as currently only valid for atomic values
                     Set<AtomicParameterValue> pvSet = new HashSet<AtomicParameterValue>();
-                    GenericProtocolApplicationSummary summary = rdib.getGenericProtocolApplicationInfo().get( assayGPA.getGenericProtocol().getEndurant().getIdentifier() );
+                    GenericProtocolApplicationSummary summary = rdib.getGenericProtocolApplicationInfo()
+                            .get( assayGPA.getGenericProtocol().getEndurant().getIdentifier() );
                     if ( summary != null ) {
                         if ( summary.getParameterAndAtomics() != null && !summary.getParameterAndAtomics().isEmpty() ) {
                             for ( String parameterKey : summary.getParameterAndAtomics().keySet() ) {
                                 AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
                                         "fugeOM.Common.Protocol.AtomicParameterValue" );
                                 atomicParameterValue.setValue( summary.getParameterAndAtomics().get( parameterKey ) );
-                                atomicParameterValue.setParameter( ( GenericParameter ) reService.findLatestByEndurant( parameterKey ) );
-                                reService.createObInDB( "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
+                                atomicParameterValue.setParameter(
+                                        ( GenericParameter ) reService.findLatestByEndurant(
+                                                parameterKey ) );
+                                reService.createObInDB(
+                                        "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
                                 pvSet.add( atomicParameterValue );
                             }
                             assayGPA.setParameterValues( pvSet );
@@ -1034,10 +1040,12 @@ public class LoadFuge {
                         // add any descriptions. As this is a brand-new GPA, there will be no existing descriptions
                         if ( summary.getDescriptions() != null && !summary.getDescriptions().isEmpty() ) {
                             Set<Description> descriptions = new HashSet<Description>();
-                            for ( Object descriptionObj : summary.getDescriptions() ) {
+                            for ( String currentDescriptionKey : summary.getDescriptions().keySet() ) {
                                 Description description = ( Description ) reService.createDescribableOb(
                                         "fugeOM.Common.Description.Description" );
-                                description.setText( ( String ) descriptionObj );
+                                description.setText(
+                                        currentDescriptionKey + " = " +
+                                                summary.getDescriptions().get( currentDescriptionKey ) );
                                 reService.createObInDB( "fugeOM.Common.Description.Description", description );
                                 descriptions.add( description );
                             }
@@ -1143,10 +1151,10 @@ public class LoadFuge {
                 }
 
                 // add the material
-                if ( rdib.getMaterialFactorsBean() != null ) {
+                if ( rdib.getMaterialFactorsStore() != null ) {
                     // add the material
                     Set set2 = new HashSet();
-                    set2.add( reService.findLatestByEndurant( rdib.getMaterialFactorsBean().getCreatedMaterial() ) );
+                    set2.add( reService.findLatestByEndurant( rdib.getMaterialFactorsStore().getCreatedMaterial() ) );
                     assayGPA.setGenericInputCompleteMaterials( set2 );
                 }
                 // load into the database
@@ -1296,7 +1304,7 @@ public class LoadFuge {
         ContactRole contactRole = ( ContactRole ) reService.createDescribableOb( "fugeOM.Common.Audit.ContactRole" );
         contactRole.setContact( auditor );
 
-// the provider contains an ontology term, so we need to add that term to the experiment
+        // the provider contains an ontology term, so we need to add that term to the experiment
         OntologyCollection ontologyCollection = ( OntologyCollection ) reService.createDescribableOb(
                 "fugeOM.Collection.OntologyCollection" );
         Set ontologyTerms;
@@ -1317,12 +1325,12 @@ public class LoadFuge {
         ontologyIndividual.setTerm( "Principal Investigators" );
         ontologyIndividual.setTermAccession( "accession to come" );
 
-// and then load that term into the database
+        // and then load that term into the database
         helper.loadIdentifiable( ontologyIndividual, auditor, "fugeOM.Common.Ontology.OntologyIndividual", null );
 
-// add the ontology term to the list of terms.
+        // add the ontology term to the list of terms.
         ontologyTerms.add( ontologyIndividual );
-// then set that ontology term in the role
+        // then set that ontology term in the role
         contactRole.setRole( ontologyIndividual );
         ontologyCollection.setOntologyTerms( ontologyTerms );
 
@@ -1333,7 +1341,7 @@ public class LoadFuge {
         reService.createObInDB( "fugeOM.Collection.OntologyCollection", ontologyCollection );
         fuge.setOntologyCollection( ontologyCollection );
 
-//  load the role into the database
+        //  load the role into the database
         reService.createObInDB( "fugeOM.Common.Audit.ContactRole", contactRole );
 
         Provider provider = ( Provider ) reService.createIdentifiableAndEndurantObs(
@@ -1343,15 +1351,15 @@ public class LoadFuge {
                 "fugeOM.Collection.Provider",
                 "fugeOM.Collection.ProviderEndurant" );
 
-// set any part of the provider that we are interested in.
-        provider.setName( "Main Provider of Experiment: " + eb.getExperimentName() );
+        // set any part of the provider that we are interested in.
+        provider.setName( "Main Provider of Experiment: " + formSessionBean.getExperimentName() );
         provider.setProvider( contactRole );
 
-// load the provider into the database
+        // load the provider into the database
         helper.loadIdentifiable( provider, auditor, "fugeOM.Collection.Provider", null );
-// add the role to the provider
+        // add the role to the provider
         fuge.setProvider( provider );
-// ..and add the ontology collection to the experiment
+        // ..and add the ontology collection to the experiment
         fuge.getOntologyCollection().setOntologyTerms( ontologyTerms );
 
         return fuge;

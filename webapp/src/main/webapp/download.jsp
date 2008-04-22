@@ -1,20 +1,22 @@
-<!-- This file is part of SyMBA.-->
-<!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
-<!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
-<!-- To view the full licensing information for this software and ALL other files contained-->
-<!-- in this distribution, please see LICENSE.txt-->
+<%--
+This file is part of SyMBA.
+SyMBA is covered under the GNU Lesser General Public License (LGPL).
+Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
+To view the full licensing information for this software and ALL other files contained
+in this distribution, please see LICENSE.txt
+--%>
 <!-- $LastChangedDate$-->
 <!-- $LastChangedRevision$-->
 <!-- $Author$-->
 <!-- $HeadURL$-->
 
-<%@ page import="uk.ac.cisban.symba.webapp.util.FileBean" %>
+<%@ page import="java.io.File" %>
+<%@ page import="uk.ac.cisban.symba.webapp.util.DatafileSpecificMetadataStore" %>
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
-<jsp:useBean id="investigationBean" class="uk.ac.cisban.symba.webapp.util.InvestigationBean" scope="session">
-</jsp:useBean>
+<jsp:useBean id="symbaFormSessionBean" class="uk.ac.cisban.symba.webapp.util.SymbaFormSessionBean" scope="session"/>
 
 <%-- The correct doctype and html elements are stored here --%>
 <jsp:include page="header.jsp"/>
@@ -49,15 +51,15 @@
     </p>
 
     <%
-        for ( FileBean fileBean : investigationBean.getAllFileBeans() ) {
+        for ( DatafileSpecificMetadataStore fileStore : symbaFormSessionBean.getDatafileSpecificMetadataStores() ) {
     %>
 
-    <a href="temp/<% out.print(fileBean.getAFile().getName()); %>"
-       target="_blank"><% out.print( fileBean.getAFile().getName() ); %></a>
+    <a href="temp/<% out.print(fileStore.getDataFile().getName()); %>"
+       target="_blank"><% out.print( fileStore.getDataFile().getName() ); %></a>
     <br/>
     <%--<form action="downloadAndRedirect.jsp">--%>
-    <%--<input type="submit" onclick="popup('temp/<% out.print(fileBean.getAFile().getName()); %>', 'userfile')"--%>
-    <%--value="Get <% out.print(fileBean.getAFile().getName()); %>"/>--%>
+    <%--<input type="submit" onclick="popup('temp/<% out.print(fileStore.getAFile().getName()); %>', 'userfile')"--%>
+    <%--value="Get <% out.print(fileStore.getAFile().getName()); %>"/>--%>
     <%--</form>--%>
     <br/>
 

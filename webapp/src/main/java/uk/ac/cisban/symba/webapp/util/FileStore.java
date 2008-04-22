@@ -9,17 +9,17 @@ import java.io.File;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate:$
- * $LastChangedRevision:$
- * $Author:$
- * $HeadURL:$
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
-public class FileBean {
+public class FileStore {
   private File aFile;
   
-  /** Creates a new instance of FileBean */
-  public FileBean() {
+  /** Creates a new instance of FileStore */
+  public FileStore() {
   }
 
   public File getAFile() {

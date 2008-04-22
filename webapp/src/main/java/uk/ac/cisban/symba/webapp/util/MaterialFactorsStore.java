@@ -19,7 +19,7 @@ import java.util.Map;
  *
  */
 
-public class MaterialFactorsBean {
+public class MaterialFactorsStore {
 
     private String materialName;
 
@@ -37,7 +37,7 @@ public class MaterialFactorsBean {
     // the OntologyReplacement details
     private Map<String,String> ontologyReplacements;
 
-    public MaterialFactorsBean() {
+    public MaterialFactorsStore() {
         this.treatmentInfo = new ArrayList<String>();
         this.characteristics = new ArrayList<String>();
         this.ontologyReplacements = new HashMap<String,String>();
@@ -110,5 +110,29 @@ public class MaterialFactorsBean {
 
     public void putOntologyReplacementsPair( String key, String value ) {
         this.ontologyReplacements.put( key, value );
+    }
+
+    public MaterialFactorsStore copy() {
+        MaterialFactorsStore newStore = new MaterialFactorsStore();
+
+        newStore.materialName = materialName;
+
+        newStore.createdMaterial = createdMaterial;
+
+        newStore.materialType = materialType;
+
+        for (String treatment : treatmentInfo) {
+            newStore.addTreatmentInfo( treatment );
+        }
+
+        for (String characteristic : characteristics) {
+            newStore.addCharacteristic( characteristic );
+        }
+
+        for ( String ontReplacement : ontologyReplacements.keySet() ) {
+            newStore.putOntologyReplacementsPair( ontReplacement, ontologyReplacements.get( ontReplacement ) );
+        }
+
+        return newStore;
     }
 }

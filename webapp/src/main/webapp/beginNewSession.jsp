@@ -21,9 +21,13 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%-- Remove the session beans --%>
-<c:remove var="experiment"/>
-<c:remove var="investigationBean"/>
+<%-- Remove the metadata/data session bean --%>
+<c:remove var="symbaFormSessionBean"/>
+<%--
+The variable below will only still be filled if the user has viewed an experiment but not selected one to copy its
+metadata over to a new data file upload.
+--%>
+<c:remove var="allPossibleMetadata"/>
 
 <c:redirect url="newOrExisting.jsp">
 </c:redirect>

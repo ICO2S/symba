@@ -7,24 +7,24 @@ package uk.ac.cisban.symba.webapp.util;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate:$
- * $LastChangedRevision:$
- * $Author:$
- * $HeadURL:$
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 
 import fugeOM.Common.Audit.Person;
 import fugeOM.ServiceLocator;
 import fugeOM.service.RealizableEntityService;
-import java.io.*;
+
+import java.io.Serializable;
 
 /**
  * This class contains information about an employee.
- *
- * 
  */
 public class EmployeeBean implements Serializable {
+
     // Properties
     private String emailAddr;
     private String password;
@@ -33,10 +33,13 @@ public class EmployeeBean implements Serializable {
     private RealizableEntityService reService;
     private String lsid;
     private Person person;
-    
-      private String address;
-  private String firstName;
-  private String lastName;
+
+    private String address;
+    private String firstName;
+    private String lastName;
+
+    public EmployeeBean() {
+    }
 
     /*public EmployeeBean()
     {
@@ -54,7 +57,7 @@ public class EmployeeBean implements Serializable {
     /**
      * Sets the emailAddr property value.
      */
-    public void setEmailAddr(String emailAddr) {
+    public void setEmailAddr( String emailAddr ) {
         this.emailAddr = emailAddr;
     }
 
@@ -68,7 +71,7 @@ public class EmployeeBean implements Serializable {
     /**
      * Sets the password property value.
      */
-    public void setPassword(String password) {
+    public void setPassword( String password ) {
         this.password = password;
     }
 
@@ -82,70 +85,69 @@ public class EmployeeBean implements Serializable {
     /**
      * Sets the userName property value.
      */
-    public void setUserName(String userName) {
+    public void setUserName( String userName ) {
         this.userName = userName;
     }
-    
-    public void startRe()
-    {
-         ServiceLocator sl = ServiceLocator.instance();
-        setReService(sl.getRealizableEntityService());
+
+    public void startRe() {
+        ServiceLocator sl = ServiceLocator.instance();
+        setReService( sl.getRealizableEntityService() );
     }
 
 
-  public RealizableEntityService getReService() {
-    return reService;
-  }
+    public RealizableEntityService getReService() {
+        return reService;
+    }
 
-  public void setReService(RealizableEntityService reService) {
-    this.reService = reService;
-  }
+    public void setReService( RealizableEntityService reService ) {
+        this.reService = reService;
+    }
 
-  public String getLsid() {
-    return lsid;
-  }
+    public String getLsid() {
+        return lsid;
+    }
 
-  public void setLsid(String lsid) {
-    this.lsid = lsid;
-  }
+    public void setLsid( String lsid ) {
+        this.lsid = lsid;
+    }
 
-  public Person getPerson() {
-    return person;
-  }
+    public Person getPerson() {
+        return person;
+    }
 
-  public void setPerson(Person person) {
-    this.person = person;
-  }
+    public void setPerson( Person person ) {
+        this.person = person;
+    }
 
-  public ServiceLocator getSl() {
-    return sl;
-  }
+    public ServiceLocator getSl() {
+        return sl;
+    }
 
-  public void setSl(ServiceLocator sl) {
-    this.sl = sl;
-  }
+    public void setSl( ServiceLocator sl ) {
+        this.sl = sl;
+    }
 
-  public String getAddress() {
-    return address;
-  }
+    public String getAddress() {
+        return address;
+    }
 
-  public void setAddress(String address) {
-    this.address = address;
-  }
+    public void setAddress( String address ) {
+        this.address = address;
+    }
 
-  public String getFirstName() {
-    return firstName;
-  }
+    public String getFirstName() {
+        return firstName;
+    }
 
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
+    public void setFirstName( String firstName ) {
+        this.firstName = firstName;
+    }
 
-  public String getLastName() {
-    return lastName;
-  }
+    public String getLastName() {
+        return lastName;
+    }
 
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
+    public void setLastName( String lastName ) {
+        this.lastName = lastName;
+    }
 }

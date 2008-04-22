@@ -302,7 +302,7 @@ concrete protocols have been made.
                 endurant="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:e3388dc8-371c-4f2f-bdb9-24f52a96983e"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:bb550d13-b25b-42d6-8b37-1260df6a770f">
             <descriptions>
-                <Description text="TextBox::Please describe the specifics of your Recording protocol"/>
+                <Description text="TextBox::ProtocolDescription::Please describe the specifics of your Recording protocol"/>
             </descriptions>
             <AtomicParameterValue
                     Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7"
@@ -315,7 +315,7 @@ concrete protocols have been made.
                 endurant="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:14548d13-8ebd-4d48-979c-1895f1c3f121"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:aae41937-70d1-488e-9375-ef7e12f3ec25">
             <descriptions>
-                <Description text="TextBox::Please describe the specifics of your Task protocol"/>
+                <Description text="TextBox::ProtocolDescription::Please describe the specifics of your Task protocol"/>
             </descriptions>
             <AtomicParameterValue
                     Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:0b55113b-b724-4889-8a72-1c3ed08f6a5f"
@@ -331,7 +331,7 @@ concrete protocols have been made.
                 endurant="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:fd9de954-6666-4ad9-9837-06be7e370010"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:cf69a9ba-3a54-4dd2-af23-a345164f4858">
             <descriptions>
-                <Description text="TextBox::Please describe the specifics of your Stimulus protocol"/>
+                <Description text="TextBox::ProtocolDescription::Please describe the specifics of your Stimulus protocol"/>
             </descriptions>
         </GenericProtocolApplication>
 
@@ -341,7 +341,7 @@ concrete protocols have been made.
                 endurant="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:b5b32c28-086d-4b69-bd30-b56d3aa07a17"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:e8a49b90-c1e0-432d-b743-ca2446f44cf6">
             <descriptions>
-                <Description text="TextBox::Please describe the specifics of your Behavioural event protocol"/>
+                <Description text="TextBox::ProtocolDescription::Please describe the specifics of your Behavioural event protocol"/>
             </descriptions>
         </GenericProtocolApplication>
 

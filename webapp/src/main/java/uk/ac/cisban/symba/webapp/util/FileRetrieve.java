@@ -16,10 +16,10 @@ import java.io.IOException;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate:$
- * $LastChangedRevision:$
- * $Author:$
- * $HeadURL:$
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 public class FileRetrieve {
@@ -62,7 +62,6 @@ public class FileRetrieve {
         if ( !isAuthenticated )
             throw new IOException( "Authentication failed." );
 
-        // todo /home/tester should be a global variable
         String directoryForFile = scp.getDirectory() + "/data";
 
         SCPClient scpClient = new SCPClient( conn );

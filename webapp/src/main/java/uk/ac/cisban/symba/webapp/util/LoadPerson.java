@@ -7,17 +7,17 @@ import uk.ac.cisban.symba.backend.util.CisbanHelper;
 
 import java.io.FileNotFoundException;
 
-/*
+/**
  * This file is part of SyMBA.
  * SyMBA is covered under the GNU Lesser General Public License (LGPL).
  * Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
- * $LastChangedDate:$
- * $LastChangedRevision:$
- * $Author:$
- * $HeadURL:$
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 
@@ -30,6 +30,7 @@ public class LoadPerson {
 
     /**
      * Creates a new instance of LoadPerson
+     * @param reService the link to the database
      */
     public LoadPerson( fugeOM.service.RealizableEntityService reService ) {
         this.reService = reService;

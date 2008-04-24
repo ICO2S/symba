@@ -13,7 +13,6 @@ in this distribution, please see LICENSE.txt
 <%@ page import="fugeOM.Common.Protocol.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="fugeOM.service.RealizableEntityServiceException" %>
-<%@ page import="uk.ac.cisban.symba.webapp.util.SymbaFormSessionBean" %>
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>

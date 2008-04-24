@@ -7,10 +7,10 @@ package uk.ac.cisban.symba.webapp.util;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  * <p/>
- * $LastChangedDate: 2008-04-22 16:28:31 +0100 (Tue, 22 Apr 2008) $
- * $LastChangedRevision: 128 $
- * $Author: allysonlister $
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/webapp/src/main/java/uk/ac/cisban/symba/webapp/util/DatafileSpecificMetadataStore.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  */
 
 public class ActionSummary {

@@ -2,7 +2,7 @@ package uk.ac.cisban.symba.webapp.util;
 
 import java.io.Serializable;
 
-/*
+/**
  * This file is part of SyMBA.
  * SyMBA is covered under the GNU Lesser General Public License (LGPL).
  * Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.

@@ -20,15 +20,15 @@
 }
 
 body {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     font-family: verdana, arial, helvetica, sans-serif;
     color: #333; /*background-color:white;*/
 }
 
 h1 {
-    margin: 0px 0px 15px 0px;
-    padding: 0px;
+    margin: 0 0 15px 0;
+    padding: 0;
 
 }
 
@@ -51,14 +51,14 @@ font.blueText {
 	}*/
 p {
     font: 11px / 20px verdana, arial, helvetica, sans-serif;
-    margin: 0px 0px 16px 0px;
-    padding: 0px;
+    margin: 0 0 16px 0;
+    padding: 0;
 }
 
 p.bigger {
     font: 16px / 20px verdana, arial, helvetica, sans-serif;
-    margin: 0px 0px 16px 0px;
-    padding: 0px;
+    margin: 0 0 16px 0;
+    padding: 0;
 }
 
 p.centered {
@@ -107,24 +107,24 @@ a:hover {
 }
 
 a>#Newcastle {
-    margin: 0px 0px 0px 0px;
+    margin: 0 0 0 0;
     padding: 0
 }
 
 #Header {
-    margin: 0px 0px 10px 0px;
-    padding: 0px 0px 0px 10px; /*Changed first from 17 to 0, last 20 to 0*/
+    margin: 0 0 10px 0;
+    padding: 0 0 0 10px; /*Changed first from 17 to 0, last 20 to 0*/
 /* For IE5/Win's benefit height = [correct height] + [top padding] + [top and bottom border widths] */
-    height: 114px; /* 14px + 17px + 2px = 33px */
+    /*height: 114px; *//* 14px + 17px + 2px = 33px */
     /*border-style:solid;
      border-color:black;*/
-    border-width: 1px 0px; /* top and bottom borders: 1px; left and right borders: 0px */
+    border-width: 1px 0; /* top and bottom borders: 1px; left and right borders: 0px */
     line-height: 11px; /*background-color: #487f8e;*/
     background-image: url( "pics/banner.jpg" ); /*background-color: #CBE5FF;*/
     color: #23153f;
     font-weight: bold;
     font-size: large;
-    font-family: arial;
+    font-family: arial,sans-serif;
 
     /* Here is the ugly brilliant hack that protects IE5/Win from its own stupidity.
 Thanks to Tantek Celik for the hack and to Eric Costello for publicizing it. 
@@ -150,7 +150,7 @@ body>#Header {
     top: 185px;
     left: 10px;
     width: 157px;
-    padding: 0px; /*background-color: #71c4f0;*/
+    padding: 0; /*background-color: #71c4f0;*/
     display: block;
     background-color: #DFEFFF;
     border-color: #ACACAC;
@@ -172,13 +172,13 @@ ul>#Menu {
 
 #Menu ul {
 
-    margin: 0px 0px 0px 0px;
+    margin: 0 0 0 0;
     padding: 0;
     list-style-type: none;
 }
 
 #Menu li {
-    margin: 0px;
+    margin: 0;
     border-bottom: 1px solid #ACACAC;
 }
 

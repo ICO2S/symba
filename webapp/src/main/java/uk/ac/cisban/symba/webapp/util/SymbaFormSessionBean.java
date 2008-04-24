@@ -22,10 +22,10 @@ import java.util.List;
  * Stores all of the information needed for a single user's session that is directly dealing with data and metadata
  * upload.
  * <p/>
- * $LastChangedDate: 2007-09-09 09:25:30 +0100 (Sun, 09 Sep 2007) $
- * $LastChangedRevision: 4 $
- * $Author: allysonlister $
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/webapp/src/main/java/uk/ac/cisban/symba/webapp/util/ScpBean.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  */
 
 public class SymbaFormSessionBean implements Serializable {

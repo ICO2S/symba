@@ -15,10 +15,10 @@ import java.rmi.RemoteException;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  * <p/>
- * $LastChangedDate: 2007-09-09 09:25:30 +0100 (Sun, 09 Sep 2007) $
- * $LastChangedRevision: 4 $
- * $Author: allysonlister $
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/webapp/src/main/java/uk/ac/cisban/symba/webapp/util/ScpBean.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  */
 public class SecurityEngineInterrogator {
     private WorkFlowWSSEI checkService;
@@ -88,7 +88,7 @@ public class SecurityEngineInterrogator {
      * @param action Choose one of the following: Read, Update
      * @param decision : "P" for Permit, or "D" to explicitly Deny
      * @return true if everything's gone well in the database, and false if it hasn't updated the database
-     * @throws Exception
+     * @throws java.rmi.RemoteException if there is a problem with the creation of the policy
      */
     public boolean createPolicy( String role, String resource, String action, String decision ) throws RemoteException {
 

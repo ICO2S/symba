@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/*
+/**
  * This file is part of SyMBA.
  * SyMBA is covered under the GNU Lesser General Public License (LGPL).
  * Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
@@ -49,7 +49,7 @@ public class FileRetrieve {
     public File getFile( String LSID,
                          String friendly,
                          String path,
-                         ScpBean scp ) throws RealizableEntityServiceException, FileNotFoundException, IOException {
+                         ScpBean scp ) throws RealizableEntityServiceException, IOException {
 
         // we no longer store data within the database - instead, we store in a file store and use scp.
 

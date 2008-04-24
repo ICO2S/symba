@@ -5,10 +5,10 @@ Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employer
 To view the full licensing information for this software and ALL other files contained
 in this distribution, please see LICENSE.txt
 --%>
-<!-- $LastChangedDate: 2008-02-28 15:15:03 +0000 (Thu, 28 Feb 2008) $-->
-<!-- $LastChangedRevision: 70 $-->
-<!-- $Author: allysonlister $-->
-<!-- $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/webapp/src/main/webapp/verify.jsp $-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 

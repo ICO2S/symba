@@ -7,10 +7,10 @@ Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employer
 To view the full licensing information for this software and ALL other files contained
 in this distribution, please see LICENSE.txt
 --%>
-<!-- $LastChangedDate: 2008-04-11 14:54:55 +0100 (Fri, 11 Apr 2008) $-->
-<!-- $LastChangedRevision: 126 $-->
-<!-- $Author: allysonlister $-->
-<!-- $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/webapp/src/main/webapp/rawDataVerify.jsp $-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>

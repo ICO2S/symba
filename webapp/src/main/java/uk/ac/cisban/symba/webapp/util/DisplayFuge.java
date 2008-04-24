@@ -18,7 +18,7 @@ import uk.ac.cisban.symba.backend.util.conversion.helper.CisbanIdentifiableHelpe
 import java.io.PrintWriter;
 import java.util.*;
 
-/*
+/**
  * This file is part of SyMBA.
  * SyMBA is covered under the GNU Lesser General Public License (LGPL).
  * Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
@@ -27,10 +27,10 @@ import java.util.*;
  *
  * This class holds the code necessary to display fuge objects, in a variety of formats. 
  *
- * $LastChangedDate: 2007-09-09 09:25:30 +0100 (Sun, 09 Sep 2007) $
- * $LastChangedRevision: 4 $
- * $Author: allysonlister $
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/webapp/src/main/java/uk/ac/cisban/symba/webapp/util/EmployeeBean.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 

@@ -4,10 +4,10 @@
  Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
  To view the full licensing information for this software and ALL other files contained
  in this distribution, please see LICENSE.txt
- $LastChangedDate: 2008-04-04 14:24:30 +0000 (Fri, 04 Apr 2008) $
- $LastChangedRevision: 122 $
- $Author: allysonlister $
- $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/webapp/src/main/webapp/metaDataValidate.jsp $
+ $LastChangedDate$
+ $LastChangedRevision$
+ $Author$
+ $HeadURL$
  --%>
 
 <%-- This include will validate the user --%>

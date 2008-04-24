@@ -46,7 +46,7 @@ forms field id's match EXACTLY the beans fields. -->
     System.out.println( "VALID USER EMAIL " + validUser.getEmail() );
     boolean errorFound = false;    
     try {
-        session.setAttribute("validUser", lp.loadInDB( validUser );
+        session.setAttribute("validUser", lp.loadInDB( validUser ));
     } catch ( LSIDException e ) {
         errorFound = true;
         out.println(

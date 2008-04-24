@@ -10,6 +10,7 @@ import fugeOM.Bio.Investigation.Investigation;
 import fugeOM.Bio.Material.GenericMaterial;
 import fugeOM.Bio.Material.Material;
 import fugeOM.Collection.*;
+import fugeOM.Common.Audit.Contact;
 import fugeOM.Common.Audit.ContactRole;
 import fugeOM.Common.Audit.Person;
 import fugeOM.Common.Description.Description;
@@ -56,6 +57,10 @@ public class LoadFuge {
 
     /**
      * Creates a new instance of LoadFuge
+     *
+     * @param formSessionBean the bean that holds all information about the current upload
+     * @param personBean      the bean that holds all information about the current user
+     * @param scpBean         the bean that holds all information about where and how to secure copy the data files
      */
     public LoadFuge( SymbaFormSessionBean formSessionBean, PersonBean personBean, ScpBean scpBean ) {
         this.personBean = personBean;
@@ -105,15 +110,19 @@ public class LoadFuge {
         loadExperiment( fuge );
     }
 
+    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+    // casting from Object, even though runtime can handle this.
+    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+    @SuppressWarnings( "unchecked" )
     private FuGE loadPerson( FuGE fuge,
                              boolean isExisting ) throws RealizableEntityServiceException, LSIDException {
 
         // Create the Audit Collection
-        Set contacts;
+        Set<Contact> contacts;
         if ( !isExisting ) {
-            contacts = new HashSet();
+            contacts = new HashSet<Contact>();
         } else {
-            contacts = ( Set ) fuge.getAuditCollection().getAllContacts();
+            contacts = ( Set<Contact> ) fuge.getAuditCollection().getAllContacts();
         }
 
         AuditCollection auditColl = ( AuditCollection ) reService.createDescribableOb(
@@ -135,7 +144,7 @@ public class LoadFuge {
             if ( affiliations != null && !affiliations.isEmpty() ) {
 
                 // And we can now add the latestOrg to the list of contacts
-                contacts.add( affiliations.iterator().next() );
+                contacts.add( ( Contact ) affiliations.iterator().next() );
             }
 
             // And we can now add the person to the list of contacts
@@ -207,7 +216,8 @@ public class LoadFuge {
 
         if ( investigation.getId() != null ) {
             // Assume this object has changed, assign a new LSID and getNewAuditTrail( person ), and load into the database
-            helper.assignAndLoadIdentifiable( investigation, auditor, "fugeOM.Bio.Investigation.Investigation", null );
+            investigation = ( Investigation ) helper.assignAndLoadIdentifiable(
+                    investigation, auditor, "fugeOM.Bio.Investigation.Investigation", null );
         } else {
             helper.loadIdentifiable( investigation, auditor, "fugeOM.Bio.Investigation.Investigation", null );
         }
@@ -225,6 +235,10 @@ public class LoadFuge {
 
     // Add a raw data file, and the external data that refers to it
     // We are always positive that these data files have not been loaded before.
+    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+    // casting from Object, even though runtime can handle this.
+    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+    @SuppressWarnings( "unchecked" )
     private FuGE loadData( FuGE fuge ) throws LSIDException, RealizableEntityServiceException, IOException {
 
         DataCollection dataCollection = ( DataCollection ) reService
@@ -233,9 +247,9 @@ public class LoadFuge {
         Set<Data> datas;
         // this line ensures that, if there is any data in the collection, that it is retained.
         if ( fuge.getDataCollection() != null && !fuge.getDataCollection().getAllData().isEmpty() ) {
-            datas = ( Set ) fuge.getDataCollection().getAllData();
+            datas = ( Set<Data> ) fuge.getDataCollection().getAllData();
         } else {
-            datas = new HashSet();
+            datas = new HashSet<Data>();
         }
 
         int iii = 0;
@@ -368,6 +382,10 @@ public class LoadFuge {
     }
 
     // for now, a new GenericMaterial each time.
+    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+    // casting from Object, even though runtime can handle this.
+    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+    @SuppressWarnings( "unchecked" )
     private FuGE loadMaterial( FuGE fuge ) throws RealizableEntityServiceException, LSIDException {
 
         OntologyCollection ontologyCollection = ( OntologyCollection ) reService.createDescribableOb(
@@ -585,10 +603,11 @@ public class LoadFuge {
     }
 
     // the default protocol loader
-    // Also assumes a flat structure of only two levels:
     // all names must include the formSessionBean.getTopLevelProtocolName() in order to be found
-    // first-level protocol contains a full list of steps
-    // second-level protocols are those referenced in the top-level protocol, containing the word "Component", and themselves have no actions
+    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+    // casting from Object, even though runtime can handle this.
+    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+    @SuppressWarnings( "unchecked" )
     private FuGE loadProtocols( FuGE fuge ) throws RealizableEntityServiceException, LSIDException {
 
         ProtocolCollection protocolCollection = ( ProtocolCollection ) reService
@@ -604,20 +623,8 @@ public class LoadFuge {
         Set<Protocol> protocolSet = cpc.addRelevantProtocols(
                 fuge, formSessionBean.getTopLevelProtocolEndurant().trim() );
 
-        // the only thing we cannot figure out at runtime currently is which are "complex" protocols
-        // and which are "simple" protocols. This is why there is hard-coding here.
-        boolean treatSecondLevelAsAssay = false;
-        GenericProtocol assayProtocol = null;
-        // All Microarray Experiments are complex, and others are simple (currently)
-        if ( formSessionBean.getTopLevelProtocolName().contains( "Example mutant/WT Microarray Investigation" ) ) {
-            // The next two are "real" CISBAN protocols, but this one is the particular example for the sandbox
-            assayProtocol = ( GenericProtocol ) reService.findLatestByEndurant(
-                    "urn:lsid:cisban.cisbs.org:GenProtocolEndurant:71fbd89e-13c7-4ced-9d0d-199abf9956f2" );
-            protocolSet.add( assayProtocol );
-        } else {
-            treatSecondLevelAsAssay = true;
-        }
-
+        // used to manually add assay protocol here, but shouldn't have to - should be taken care of by the
+        // addRelevantProtocols method above.
         protocolCollection.setProtocols( protocolSet );
 
         // Now retrieve all equipment associated with these protocols
@@ -625,641 +632,207 @@ public class LoadFuge {
                 cpc.addRelevantEquipment(
                         fuge, ( Set<Protocol> ) protocolCollection.getProtocols() ) );
 
-        // for each data file that has just been added, it must be assigned to the appropriate GenericAction
-        // from the factor Protocol
         Set allGPAs;
         if ( fuge.getProtocolCollection() != null ) {
             allGPAs = ( Set ) fuge.getProtocolCollection().getAllProtocolApps();
         } else {
             allGPAs = new HashSet();
         }
+
         String expName;
         if ( formSessionBean.getExperimentName() != null ) {
             expName = formSessionBean.getExperimentName();
         } else {
             expName = fuge.getName();
         }
-        for ( DatafileSpecificMetadataStore rdib : formSessionBean.getDatafileSpecificMetadataStores() ) {
-            GenericAction actionSelectedFromFirstLevel = ( GenericAction ) reService.findLatestByEndurant( rdib.getChosenActionEndurant() );
-            GenericAction actionSelectedFromSecondLevel = null;
-            if ( !treatSecondLevelAsAssay ) {
-                actionSelectedFromSecondLevel = ( GenericAction ) reService.findLatestByEndurant( rdib.getChosenSecondLevelActionEndurant() );
-            }
 
-            // first, find the containing protocols for each action described.
-            GenericProtocol firstLevelParentProtocol = null, secondLevelParentProtocol = null;
-            for ( Object obj2 : protocolCollection.getProtocols() ) {
-                if ( obj2 instanceof GenericProtocol ) {
-                    GenericProtocol gp = ( GenericProtocol ) obj2;
-                    if ( gp.getGenericActions() != null ) {
-                        for ( Object obj3 : gp.getGenericActions() ) {
-                            GenericAction ga = ( GenericAction ) obj3;
-                            if ( ga.getEndurant()
-                                    .getIdentifier()
-                                    .equals( actionSelectedFromFirstLevel.getEndurant().getIdentifier() ) ) {
-                                firstLevelParentProtocol = gp;
-                            } else if ( !treatSecondLevelAsAssay && ga.getEndurant()
-                                    .getIdentifier()
-                                    .equals( actionSelectedFromSecondLevel.getEndurant().getIdentifier() ) ) {
-                                secondLevelParentProtocol = gp;
-                            }
+        // Get the top-level protocol, which has no matching GenericAction.
+        GenericProtocol topLevelProtocol = ( GenericProtocol ) reService.findLatestByEndurant( formSessionBean.getTopLevelProtocolEndurant() );
+        if ( topLevelProtocol == null ) {
+            System.err.println(
+                    "Error finding parent protocol for assay action endurant " +
+                            formSessionBean.getTopLevelProtocolEndurant() + " (" +
+                            formSessionBean.getTopLevelProtocolName() + ")" );
+            return fuge;
+        }
 
-                        }
-                    }
+        // get the GPA attached to the top level protocol, if present.
+        GenericProtocolApplication gpaOfTopLevelProtocol = null;
+        // first, find the highest-level GPA: that is, the GPA of the top-level investigation
+        for ( Object gpaObject : allGPAs ) {
+            if ( gpaObject instanceof GenericProtocolApplication ) {
+                GenericProtocolApplication gpa = ( GenericProtocolApplication ) gpaObject;
+                if ( gpa.getGenericProtocol()
+                        .getEndurant()
+                        .getIdentifier()
+                        .equals( topLevelProtocol.getEndurant().getIdentifier() ) ) {
+                    gpaOfTopLevelProtocol = gpa;
+                    break;
                 }
             }
-            // there is a problem if there isn't a matching protocol
-            if ( firstLevelParentProtocol == null ) {
+        }
+
+        // There will either be two levels or three levels of GPAs: two levels (assay and top-level protocol) if
+        // it is a two level investigation, and three levels (assay, one level up from assay, and top-level protocol)
+        // otherwise.
+        for ( DatafileSpecificMetadataStore store : formSessionBean.getDatafileSpecificMetadataStores() ) {
+            boolean threeLevelInvestigation = false;
+            GenericProtocol assayProtocol = ( GenericProtocol ) reService.findLatestByEndurant( store.getAssayActionSummary().getChosenChildProtocolEndurant() );
+            GenericAction assayAction = ( GenericAction ) reService.findLatestByEndurant( store.getAssayActionSummary().getChosenActionEndurant() );
+
+            GenericProtocol oneAboveAssayProtocol = null;
+            GenericAction oneAboveAssayAction = null;
+            if ( store.getOneLevelUpActionSummary() != null  &&
+                        store.getOneLevelUpActionSummary().getChosenActionName() != null) {
+                threeLevelInvestigation = true;
+                oneAboveAssayProtocol = ( GenericProtocol ) reService.findLatestByEndurant( store.getOneLevelUpActionSummary().getChosenChildProtocolEndurant() );
+                oneAboveAssayAction = ( GenericAction ) reService.findLatestByEndurant( store.getOneLevelUpActionSummary().getChosenActionEndurant() );
+            }
+
+            // there is a problem if there isn't a matching protocol for the assay
+            if ( assayProtocol == null ) {
                 System.err.println(
-                        "Error finding parent protocol for first-level action endurant " +
-                                rdib.getChosenActionEndurant() );
+                        "Error finding parent protocol for assay action endurant " +
+                                store.getAssayActionSummary().getChosenActionEndurant() + " (" +
+                                store.getAssayActionSummary().getChosenActionName() + ")" );
                 return fuge;
             }
 
-            // there is a problem if there isn't a matching protocol and we aren't treating the second level as an assay
-            if ( !treatSecondLevelAsAssay && secondLevelParentProtocol == null ) {
+            // there is a problem if there isn't a matching protocol for one level up from the assay, if this is a
+            // two-level investigation
+            if ( threeLevelInvestigation && oneAboveAssayProtocol == null ) {
                 System.err.println(
-                        "Error finding parent protocol and not treating second level as an assay for first-level action endurant " +
-                                rdib.getChosenSecondLevelActionEndurant() );
+                        "Error finding parent protocol for assay for action endurant " +
+                                store.getOneLevelUpActionSummary().getChosenActionEndurant() + " (" +
+                                store.getOneLevelUpActionSummary().getChosenActionName() + ")" );
                 return fuge;
             }
 
-            // Next, we need to check and see if a GPA is already present for these two levels.
-            // Look for a GPA whose protocol reference contains one of these two actions.
-            GenericProtocolApplication gpaOfFirstLevelParentProtocol = null;
-            boolean gpaOfFirstLevelParentProtocolMatch = false;
-            if ( allGPAs != null ) {
-                for ( Object obj2 : allGPAs ) {
-                    if ( obj2 instanceof GenericProtocolApplication ) {
-                        GenericProtocolApplication gpa = ( GenericProtocolApplication ) obj2;
-                        if ( gpa.getGenericProtocol()
-                                .getEndurant()
+            // Next, we need to check and see if a GPA is already present for the top two levels if a 3-level investigation,
+            // or in the top-level only if it is a 2-level investigation. We will ALWAYS want to create a new
+            // assay-level GPA.
+            GenericProtocolApplication gpaOfOneAboveAssayProtocol = null;
+
+            // If it is a three-level investigation, then the gpaOfOneAboveAssayProtocol can be determined by looking at
+            // the ActionApplication objects of the gpaOfTopLevelProtocol. Otherwise, the gpa found will be that of
+            // the assay gpa. As we are going to make a new assayGPA anyway, then we will only run this step if
+            // this investigation is a threeLevelInvestigation
+            if ( threeLevelInvestigation && gpaOfTopLevelProtocol != null ) {
+                for ( Object obj2 : gpaOfTopLevelProtocol.getActionApplications() ) {
+                    ActionApplication actionApplication = ( ActionApplication ) obj2;
+                    // search for the action referenced by the AA, as otherrwise you might catch the right
+                    // protocol but the wrong action
+                    Action referencedAction = actionApplication.getAction();
+                    if ( referencedAction instanceof GenericAction ) {
+                        GenericAction genericAction = ( GenericAction ) referencedAction;
+                        if ( genericAction.getEndurant()
                                 .getIdentifier()
-                                .equals( firstLevelParentProtocol.getEndurant().getIdentifier() ) ) {
-                            gpaOfFirstLevelParentProtocol = gpa;
-                            gpaOfFirstLevelParentProtocolMatch = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // if there is a gpaOfFirstLevelParentProtocol, then we need to see if there is already an appropriate
-            // second-level GPA present. It is appropriate if the AA of gpaOfFirstLevelParentProtocol contains a
-            // GPA Reference whose Protocol_ref is the secondLevelParentProtocol and the corresponding Action_ref is
-            // actionSelectedFromFirstLevel
-            boolean gpaOfSecondLevelParentProtocolMatch = false;
-            GenericProtocolApplication gpaOfSecondLevelParentProtocol = null;
-            if ( !treatSecondLevelAsAssay ) {
-                if ( gpaOfFirstLevelParentProtocolMatch ) {
-                    for ( Object obj2 : gpaOfFirstLevelParentProtocol.getActionApplications() ) {
-                        ActionApplication actionApplication = ( ActionApplication ) obj2;
-                        ProtocolApplication referencedGPA = actionApplication.getProtAppRef();
-                        if ( referencedGPA instanceof GenericProtocolApplication ) {
-                            GenericProtocolApplication gpa = ( GenericProtocolApplication ) referencedGPA;
-                            if ( gpa.getGenericProtocol()
-                                    .getEndurant()
-                                    .getIdentifier()
-                                    .equals( secondLevelParentProtocol.getEndurant().getIdentifier() ) ) {
-                                // this is a possible choice. Also check the GA attached to this AA is the
-                                // actionSelectedFromFirstLevel
-                                if ( actionApplication.getAction()
-                                        .getEndurant()
-                                        .getIdentifier()
-                                        .equals( actionSelectedFromFirstLevel.getEndurant().getIdentifier() ) ) {
-                                    gpaOfSecondLevelParentProtocol = gpa;
-                                    gpaOfSecondLevelParentProtocolMatch = true;
-                                    break;
-                                }
+                                .equals( assayAction.getEndurant().getIdentifier() ) ) {
+                            if ( actionApplication.getProtAppRef() instanceof GenericProtocolApplication ) {
+                                gpaOfOneAboveAssayProtocol = ( GenericProtocolApplication ) actionApplication.getProtAppRef();
                             }
                         }
                     }
                 }
             }
-            // If the appropriate gpas are not found, we should create it now.
-            if ( !gpaOfFirstLevelParentProtocolMatch ) {
-                gpaOfFirstLevelParentProtocol = ( GenericProtocolApplication ) reService.createIdentifiableAndEndurantObs(
+
+            // always create the assay GPA. This will get added, via an ActionApplication, to the higher-level
+            // GPA or GPAs.
+            GenericProtocolApplication assayGPA = createAssayGPA( store, assayProtocol );
+
+            // add the assayGPA to the set of all GPAs
+            allGPAs.add( assayGPA );
+
+            // ensure that the GPA of the top level protocol is not null
+            // first, ensure that the GPA is not null, and if it is null, create a new object
+            if ( gpaOfTopLevelProtocol == null ) {
+                gpaOfTopLevelProtocol = ( GenericProtocolApplication ) reService.createIdentifiableAndEndurantObs(
                         helper.getLSID( "fugeOM.Common.Protocol.GenericProtocolApplication" ),
-                        "Actual Application/Performance of " + firstLevelParentProtocol.getName() +
+                        "Actual Application/Performance of " + topLevelProtocol.getName() +
                                 " for Investigation " +
                                 expName,
                         helper.getLSID( "fugeOM.Common.Protocol.GenPrtclAppEndurant" ),
                         "fugeOM.Common.Protocol.GenericProtocolApplication",
                         "fugeOM.Common.Protocol.GenPrtclAppEndurant" );
-                gpaOfFirstLevelParentProtocol.setGenericProtocol( firstLevelParentProtocol );
+                gpaOfTopLevelProtocol.setGenericProtocol( topLevelProtocol );
                 // We should really ask them the Activity Date, but for now assume current date.
-                gpaOfFirstLevelParentProtocol.setActivityDate( new Date() );
+                gpaOfTopLevelProtocol.setActivityDate( new Date() );
             }
 
-            // If the appropriate gpa is not found, we should create it now UNLESS
-            // we are already at the level of the assay protocol
-            // in some simpler cases, the gpaOfSecondLevelParentProtocol is also the "assay" GPA, or the one
-            // where the output data should be set. In this case, we should ALWAYS
-            // create a new GPA at this step. In more complex cases, there
-            // is an Assay gpa in addition to the factor GPA. Currently, we have to
-            // hard-code which ones have this extra step.
-            if ( treatSecondLevelAsAssay || !gpaOfSecondLevelParentProtocolMatch ) {
-                gpaOfSecondLevelParentProtocol = ( GenericProtocolApplication ) reService.createIdentifiableAndEndurantObs(
-                        helper.getLSID( "fugeOM.Common.Protocol.GenericProtocolApplication" ),
-                        "Actual Application/Performance of " +
-                                actionSelectedFromFirstLevel.getGenProtocolRef().getName() +
-                                " for Experiment " +
-                                expName,
-                        helper.getLSID( "fugeOM.Common.Protocol.GenPrtclAppEndurant" ),
+            // now, add a link to the assayGPA to the GPA one level up from here. Which GPA that is,
+            // is determined by the value of threeLevelInvestigation
+            if ( threeLevelInvestigation ) {
+                // first, ensure that the GPA is not null, and if it is null, create a new object
+                if ( gpaOfOneAboveAssayProtocol == null ) {
+                    gpaOfOneAboveAssayProtocol = ( GenericProtocolApplication ) reService.createIdentifiableAndEndurantObs(
+                            helper.getLSID( "fugeOM.Common.Protocol.GenericProtocolApplication" ),
+                            "Actual Application/Performance of " + oneAboveAssayAction.getName() +
+                                    " for Investigation " +
+                                    expName,
+                            helper.getLSID( "fugeOM.Common.Protocol.GenPrtclAppEndurant" ),
+                            "fugeOM.Common.Protocol.GenericProtocolApplication",
+                            "fugeOM.Common.Protocol.GenPrtclAppEndurant" );
+                    gpaOfOneAboveAssayProtocol.setGenericProtocol( oneAboveAssayProtocol );
+                    // We should really ask them the Activity Date, but for now assume current date.
+                    gpaOfOneAboveAssayProtocol.setActivityDate( new Date() );
+                }
+                // add the ActionApplication to the gpaOfOneAboveAssayProtocol
+                gpaOfOneAboveAssayProtocol = addActionApplication( assayGPA, assayAction, gpaOfOneAboveAssayProtocol );
+
+                // If gpaOfOneAboveAssayProtocol is new, add to database. Otherwise, put a new version in.
+                if ( gpaOfOneAboveAssayProtocol.getId() != null ) {
+                    // Each time we load a new version of the one-level up GPA, we need to clean the allGPAs Set.
+                    // We need to remember that any child GPA *must* be removed
+                    // from the set of allGPAs *if* it, too, is being overwritten.
+                    allGPAs.remove( gpaOfOneAboveAssayProtocol );
+                    // Assume this object has changed, assign a new LSID, and load into the database
+                    gpaOfOneAboveAssayProtocol = ( GenericProtocolApplication ) helper.assignAndLoadIdentifiable(
+                            gpaOfOneAboveAssayProtocol,
+                            "fugeOM.Common.Protocol.GenericProtocolApplication",
+                            null );
+                } else {
+                    helper.loadIdentifiable(
+                            gpaOfOneAboveAssayProtocol,
+                            auditor,
+                            "fugeOM.Common.Protocol.GenericProtocolApplication",
+                            null );
+                }
+                // associate the new assays with the protocol collection.
+                allGPAs.add( gpaOfOneAboveAssayProtocol );
+
+                // then add the ActionApplication linking the gpaOfTopLevelProtocol to the gpaOfOneAboveAssayProtocol
+                gpaOfTopLevelProtocol = addActionApplication(
+                        gpaOfOneAboveAssayProtocol, oneAboveAssayAction, gpaOfTopLevelProtocol );
+            } else {
+                // add the ActionApplication to the gpaOfTopLevelProtocol
+                gpaOfTopLevelProtocol = addActionApplication( assayGPA, assayAction, gpaOfTopLevelProtocol );
+            }
+
+            // the gpaOfTopLevelProtocol is now finished. load in the database.
+            // If gpaOfTopLevelProtocol is new, add to database. Otherwise, put a new version in.
+            // todo move this and associated code out of the for-loop and only do this after all data files are processed: it's currently loading unnecessary intermediaries into the db
+            if ( gpaOfTopLevelProtocol.getId() != null ) {
+                // Each time we load a new version of the top level GPA, we need to clean the allGPAs Set.
+                // The "old" top-level GPA will be replaced with the new version of the top-level GPA with the new
+                // ActionApplication objects.
+                allGPAs.remove( gpaOfTopLevelProtocol );
+
+                // Assume this object has changed, assign a new LSID, and load into the database
+                gpaOfTopLevelProtocol = ( GenericProtocolApplication ) helper.assignAndLoadIdentifiable(
+                        gpaOfTopLevelProtocol,
                         "fugeOM.Common.Protocol.GenericProtocolApplication",
-                        "fugeOM.Common.Protocol.GenPrtclAppEndurant" );
-                gpaOfSecondLevelParentProtocol.setGenericProtocol( actionSelectedFromFirstLevel.getGenProtocolRef() );
-                // We should really ask them the Activity Date, but for now assume current date.
-                gpaOfSecondLevelParentProtocol.setActivityDate( new Date() );
-            }
-
-            // if we are treating the factor GPA as an assay, then add the output here
-            // and load into the database.
-            if ( treatSecondLevelAsAssay ) {
-                // add the data, using a temporary set as it expects a collection.
-                Set<ExternalData> set = new HashSet<ExternalData>();
-                set.add( ( ExternalData ) reService.findLatestByEndurant( rdib.getEndurantLsid() ) );
-
-                // add the output data
-                gpaOfSecondLevelParentProtocol.setGenericOutputData( set );
-
-                if ( !rdib.getGenericProtocolApplicationInfo().isEmpty() ) {
-
-                    // add any deviations from the zero or more generic parameters associated with the protocol assigned
-                    // to this data item
-                    // todo add more types of parameter values, as currently only valid for atomic values
-                    Set<AtomicParameterValue> pvSet = new HashSet<AtomicParameterValue>();
-                    GenericProtocolApplicationSummary summary = rdib.getGenericProtocolApplicationInfo()
-                            .get( gpaOfSecondLevelParentProtocol.getGenericProtocol().getEndurant().getIdentifier() );
-                    if ( summary != null ) {
-                        if ( summary.getParameterAndAtomics() != null && !summary.getParameterAndAtomics().isEmpty() ) {
-                            for ( String parameterKey : summary.getParameterAndAtomics().keySet() ) {
-                                AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
-                                        "fugeOM.Common.Protocol.AtomicParameterValue" );
-                                atomicParameterValue.setValue( summary.getParameterAndAtomics().get( parameterKey ) );
-                                atomicParameterValue.setParameter(
-                                        ( GenericParameter ) reService.findLatestByEndurant(
-                                                parameterKey ) );
-                                reService.createObInDB(
-                                        "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
-                                pvSet.add( atomicParameterValue );
-                            }
-                            gpaOfSecondLevelParentProtocol.setParameterValues( pvSet );
-                        }
-
-                        // add any descriptions. As this is a brand-new GPA, there will be no existing descriptions
-                        if ( summary.getDescriptions() != null && !summary.getDescriptions().isEmpty() ) {
-                            Set<Description> descriptions = new HashSet<Description>();
-                            for ( String currentDescriptionKey : summary.getDescriptions().keySet() ) {
-                                Description description = ( Description ) reService.createDescribableOb(
-                                        "fugeOM.Common.Description.Description" );
-                                description.setText(
-                                        currentDescriptionKey + " = " +
-                                                summary.getDescriptions().get( currentDescriptionKey ) );
-                                reService.createObInDB( "fugeOM.Common.Description.Description", description );
-                                descriptions.add( description );
-                            }
-                            gpaOfSecondLevelParentProtocol.setDescriptions( descriptions );
-                        }
-                    }
-                }
-
-                // add any deviations from the zero or more generic parameters associated with the equipment associated
-                // with the protocol assigned to this data item
-                if ( !rdib.getGenericEquipmentInfo().isEmpty() ) {
-                    Set<EquipmentApplication> eaSet = ( Set<EquipmentApplication> ) gpaOfSecondLevelParentProtocol.getEquipmentApplications();
-
-                    for ( String equipmentKey : ( rdib.getGenericEquipmentInfo() ).keySet() ) {
-                        // Now we can create an EquipmentApplication in the GPA of the second-level (assay)protocol that is
-                        // associated with the correct Equipment object. However, make sure we don't delete any existing
-                        // EquipmentApplications by adding to them rather than by creating a new collection.
-
-                        EquipmentApplication application = ( EquipmentApplication ) reService.createIdentifiableAndEndurantObs(
-                                helper.getLSID( "fugeOM.Common.Protocol.EquipmentApplication" ),
-                                "Application of " +
-                                        ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getEquipmentName() +
-                                        " Equipment",
-                                helper.getLSID( "fugeOM.Common.Protocol.EquipAppEndurant" ),
-                                "fugeOM.Common.Protocol.EquipmentApplication",
-                                "fugeOM.Common.Protocol.EquipAppEndurant" );
-                        application.setAppliedEquipment( ( Equipment ) reService.findLatestByEndurant( equipmentKey ) );
-
-                        // now add the appropriate changes to the original equipment as parameters. We assume that if
-                        // there is a value in getGenericEquipmentInfo, that a new parameterValue set must be made and
-                        // further, will be non-empty
-                        Set<ParameterValue> pvSet = new HashSet<ParameterValue>();
-                        // look for complex values
-                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndTerms() != null &&
-                                !( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                        .getParameterAndTerms()
-                                        .isEmpty() ) {
-                            for ( String parameterKey : ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                    .getParameterAndTerms()
-                                    .keySet() ) {
-                                ComplexParameterValue complexParameterValue = ( ComplexParameterValue ) reService.createDescribableOb(
-                                        "fugeOM.Common.Protocol.ComplexParameterValue" );
-                                complexParameterValue.setParameterValue(
-                                        ( OntologyTerm ) reService.findLatestByEndurant(
-                                                ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                                        .getParameterAndTerms().get( parameterKey ) ) );
-                                complexParameterValue.setParameter(
-                                        ( GenericParameter ) reService.findLatestByEndurant(
-                                                parameterKey ) );
-                                reService.createObInDB(
-                                        "fugeOM.Common.Protocol.ComplexParameterValue", complexParameterValue );
-                                pvSet.add( complexParameterValue );
-                            }
-                        }
-                        // look for atomic values
-                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndAtomics() != null &&
-                                !( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                        .getParameterAndAtomics()
-                                        .isEmpty() ) {
-                            for ( String parameterKey : ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                    .getParameterAndAtomics()
-                                    .keySet() ) {
-                                AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
-                                        "fugeOM.Common.Protocol.AtomicParameterValue" );
-                                atomicParameterValue.setValue(
-                                        ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                                .getParameterAndAtomics().get( parameterKey ) );
-                                atomicParameterValue.setParameter(
-                                        ( GenericParameter ) reService.findLatestByEndurant(
-                                                parameterKey ) );
-                                reService.createObInDB(
-                                        "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
-                                pvSet.add( atomicParameterValue );
-                            }
-                        }
-                        application.setParameterValues( pvSet );
-
-                        // add any descriptions. As this is a brand-new EA, there will be no existing descriptions
-                        Set<Description> descriptions = new HashSet<Description>();
-                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getFreeTextDescription() != null &&
-                                ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                        .getFreeTextDescription()
-                                        .length() > 0 ) {
-                            Description description = ( Description ) reService.createDescribableOb(
-                                    "fugeOM.Common.Description.Description" );
-                            description.setText( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getFreeTextDescription() );
-                            reService.createObInDB( "fugeOM.Common.Description.Description", description );
-                            descriptions.add( description );
-                        }
-                        application.setDescriptions( descriptions );
-
-                        // load equipment application into database
-                        helper.loadIdentifiable(
-                                application,
-                                auditor,
-                                "fugeOM.Common.Protocol.EquipmentApplication",
-                                System.out );
-                        eaSet.add( application );
-
-                    }
-                    // add the list of EquipmentApplication objects to the assay protocol
-                    gpaOfSecondLevelParentProtocol.setEquipmentApplications( eaSet );
-                }
-
-                // Print out the types of material present here
-                if ( gpaOfSecondLevelParentProtocol.getGenericOutputMaterials() != null &&
-                        !gpaOfSecondLevelParentProtocol.getGenericOutputMaterials().isEmpty() ) {
-                    System.out.println( "Found Output Materials directly before adding GICM" );
-                } else {
-                    System.out.println( "Found No Output Materials directly before adding GICM" );
-
-                }
-
-                // add the material
-                if ( rdib.getMaterialFactorsStore() != null ) {
-                    // add the material
-                    Set set2 = new HashSet();
-                    set2.add( reService.findLatestByEndurant( rdib.getMaterialFactorsStore().getCreatedMaterial() ) );
-                    System.out.println( "Received lsid: " + rdib.getMaterialFactorsStore().getCreatedMaterial() );
-                    gpaOfSecondLevelParentProtocol.setGenericInputCompleteMaterials( set2 );
-                }
-
-                // Print out the types of material present here
-                if ( gpaOfSecondLevelParentProtocol.getGenericOutputMaterials() != null &&
-                        !gpaOfSecondLevelParentProtocol.getGenericOutputMaterials().isEmpty() ) {
-                    System.out.println( "Found Output Materials directly before loading" );
-                } else {
-                    System.out.println( "Found No Output Materials directly before loading" );
-
-                }
-
-                // load in database
+                        null );
+            } else {
                 helper.loadIdentifiable(
-                        gpaOfSecondLevelParentProtocol,
+                        gpaOfTopLevelProtocol,
                         auditor,
                         "fugeOM.Common.Protocol.GenericProtocolApplication",
-                        System.out );
-
-                // Print out the types of material present here
-                if ( gpaOfSecondLevelParentProtocol.getGenericOutputMaterials() != null &&
-                        !gpaOfSecondLevelParentProtocol.getGenericOutputMaterials().isEmpty() ) {
-                    System.out.println( "Found Output Materials directly after loading" );
-                } else {
-                    System.out.println( "Found No Output Materials directly after loading" );
-
-                }
-
-                // Now we can create an ActionApplication in the GPA of the first-level parent protocol that is associated with
-                // the newly created assay GPA. However, make sure we don't delete any existing ActionApplications by
-                // adding to them rather than by creating a new collection.
-
-                Set aaSet = ( Set ) gpaOfFirstLevelParentProtocol.getActionApplications();
-
-                ActionApplication application = ( ActionApplication ) reService
-                        .createDescribableOb( "fugeOM.Common.Protocol.ActionApplication" );
-                application.setAction( actionSelectedFromFirstLevel );
-                application.setProtAppRef( gpaOfSecondLevelParentProtocol );
-                reService.createObInDB( "fugeOM.Common.Protocol.ActionApplication", application );
-                aaSet.add( application );
-
-                gpaOfFirstLevelParentProtocol.setActionApplications( aaSet );
-
-                // If the GPA of the first-level parent protocol is new, add to database. Otherwise, put a new version in.
-                if ( gpaOfFirstLevelParentProtocol.getId() != null ) {
-                    // Assume this object has changed, assign a new LSID, and load into the database
-                    helper.assignAndLoadIdentifiable(
-                            gpaOfFirstLevelParentProtocol,
-                            auditor,
-                            "fugeOM.Common.Protocol.GenericProtocolApplication",
-                            null );
-                } else {
-                    helper.loadIdentifiable(
-                            gpaOfFirstLevelParentProtocol,
-                            auditor,
-                            "fugeOM.Common.Protocol.GenericProtocolApplication",
-                            null );
-                }
-                // associate the new assay with the protocol collection.
-                allGPAs.add( gpaOfSecondLevelParentProtocol );
-
-            } else {
-                // Otherwise, we now need to create a separate assay gpa.
-                GenericProtocolApplication assayGPA = ( GenericProtocolApplication ) reService.createIdentifiableAndEndurantObs(
-                        helper.getLSID( "fugeOM.Common.Protocol.GenericProtocolApplication" ),
-                        "Actual Application/Performance of a " + assayProtocol.getName(),
-                        helper.getLSID( "fugeOM.Common.Protocol.GenPrtclAppEndurant" ),
-                        "fugeOM.Common.Protocol.GenericProtocolApplication",
-                        "fugeOM.Common.Protocol.GenPrtclAppEndurant" );
-                assayGPA.setGenericProtocol( assayProtocol );
-                // We should really ask them the Activity Date, but for now assume current date.
-                assayGPA.setActivityDate( new Date() );
-
-                // add the data
-                Set set = new HashSet();
-                set.add( reService.findLatestByEndurant( rdib.getEndurantLsid() ) );
-                assayGPA.setGenericOutputData( set );
-
-                if ( !rdib.getGenericProtocolApplicationInfo().isEmpty() ) {
-
-                    // add any deviations from the zero or more generic parameters associated with the protocol assigned
-                    // to this data item
-                    // todo add more types of parameter values, as currently only valid for atomic values
-                    Set<AtomicParameterValue> pvSet = new HashSet<AtomicParameterValue>();
-                    GenericProtocolApplicationSummary summary = rdib.getGenericProtocolApplicationInfo()
-                            .get( assayGPA.getGenericProtocol().getEndurant().getIdentifier() );
-                    if ( summary != null ) {
-                        if ( summary.getParameterAndAtomics() != null && !summary.getParameterAndAtomics().isEmpty() ) {
-                            for ( String parameterKey : summary.getParameterAndAtomics().keySet() ) {
-                                AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
-                                        "fugeOM.Common.Protocol.AtomicParameterValue" );
-                                atomicParameterValue.setValue( summary.getParameterAndAtomics().get( parameterKey ) );
-                                atomicParameterValue.setParameter(
-                                        ( GenericParameter ) reService.findLatestByEndurant(
-                                                parameterKey ) );
-                                reService.createObInDB(
-                                        "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
-                                pvSet.add( atomicParameterValue );
-                            }
-                            assayGPA.setParameterValues( pvSet );
-                        }
-
-                        // add any descriptions. As this is a brand-new GPA, there will be no existing descriptions
-                        if ( summary.getDescriptions() != null && !summary.getDescriptions().isEmpty() ) {
-                            Set<Description> descriptions = new HashSet<Description>();
-                            for ( String currentDescriptionKey : summary.getDescriptions().keySet() ) {
-                                Description description = ( Description ) reService.createDescribableOb(
-                                        "fugeOM.Common.Description.Description" );
-                                description.setText(
-                                        currentDescriptionKey + " = " +
-                                                summary.getDescriptions().get( currentDescriptionKey ) );
-                                reService.createObInDB( "fugeOM.Common.Description.Description", description );
-                                descriptions.add( description );
-                            }
-                            assayGPA.setDescriptions( descriptions );
-                        }
-                    }
-                }
-
-                // add any deviations from the zero or more generic parameters associated with the equipment associated
-                // with the protocol assigned to this data item
-                if ( !rdib.getGenericEquipmentInfo().isEmpty() ) {
-                    Set<EquipmentApplication> eaSet = ( Set<EquipmentApplication> ) assayGPA.getEquipmentApplications();
-
-                    for ( String equipmentKey : ( rdib.getGenericEquipmentInfo() ).keySet() ) {
-                        // Now we can create an EquipmentApplication in the GPA of the second-level (assay)protocol that is
-                        // associated with the correct Equipment object. However, make sure we don't delete any existing
-                        // EquipmentApplications by adding to them rather than by creating a new collection.
-
-                        EquipmentApplication application = ( EquipmentApplication ) reService.createIdentifiableAndEndurantObs(
-                                helper.getLSID( "fugeOM.Common.Protocol.EquipmentApplication" ),
-                                "Application of " +
-                                        ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getEquipmentName() +
-                                        " Equipment",
-                                helper.getLSID( "fugeOM.Common.Protocol.EquipAppEndurant" ),
-                                "fugeOM.Common.Protocol.EquipmentApplication",
-                                "fugeOM.Common.Protocol.EquipAppEndurant" );
-                        application.setAppliedEquipment( ( Equipment ) reService.findLatestByEndurant( equipmentKey ) );
-
-                        // now add the appropriate changes to the original equipment as parameters. We assume that if
-                        // there is a value in getGenericEquipmentInfo, that a new parameterValue set must be made and
-                        // further, will be non-empty
-                        Set<ParameterValue> pvSet = new HashSet<ParameterValue>();
-                        // look for complex values
-                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndTerms() != null &&
-                                !( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                        .getParameterAndTerms()
-                                        .isEmpty() ) {
-                            for ( String parameterKey : ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                    .getParameterAndTerms()
-                                    .keySet() ) {
-                                ComplexParameterValue complexParameterValue = ( ComplexParameterValue ) reService.createDescribableOb(
-                                        "fugeOM.Common.Protocol.ComplexParameterValue" );
-                                complexParameterValue.setParameterValue(
-                                        ( OntologyTerm ) reService.findLatestByEndurant(
-                                                ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                                        .getParameterAndTerms().get( parameterKey ) ) );
-                                complexParameterValue.setParameter(
-                                        ( GenericParameter ) reService.findLatestByEndurant(
-                                                parameterKey ) );
-                                reService.createObInDB(
-                                        "fugeOM.Common.Protocol.ComplexParameterValue", complexParameterValue );
-                                pvSet.add( complexParameterValue );
-                            }
-                        }
-                        // look for atomic values
-                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndAtomics() != null &&
-                                !( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                        .getParameterAndAtomics()
-                                        .isEmpty() ) {
-                            for ( String parameterKey : ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                    .getParameterAndAtomics()
-                                    .keySet() ) {
-                                AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
-                                        "fugeOM.Common.Protocol.AtomicParameterValue" );
-                                atomicParameterValue.setValue(
-                                        ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                                .getParameterAndAtomics().get( parameterKey ) );
-                                atomicParameterValue.setParameter(
-                                        ( GenericParameter ) reService.findLatestByEndurant(
-                                                parameterKey ) );
-                                reService.createObInDB(
-                                        "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
-                                pvSet.add( atomicParameterValue );
-                            }
-                        }
-                        application.setParameterValues( pvSet );
-
-                        // add any descriptions. As this is a brand-new EA, there will be no existing descriptions
-                        Set<Description> descriptions = new HashSet<Description>();
-                        if ( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getFreeTextDescription() != null &&
-                                ( rdib.getGenericEquipmentInfo() ).get( equipmentKey )
-                                        .getFreeTextDescription()
-                                        .length() > 0 ) {
-                            Description description = ( Description ) reService.createDescribableOb(
-                                    "fugeOM.Common.Description.Description" );
-                            description.setText( ( rdib.getGenericEquipmentInfo() ).get( equipmentKey ).getFreeTextDescription() );
-                            reService.createObInDB( "fugeOM.Common.Description.Description", description );
-                            descriptions.add( description );
-                        }
-                        application.setDescriptions( descriptions );
-
-                        // load equipment application into database
-                        helper.loadIdentifiable(
-                                application,
-                                auditor,
-                                "fugeOM.Common.Protocol.EquipmentApplication",
-                                System.out );
-                        eaSet.add( application );
-
-                    }
-                    // add the list of EquipmentApplication objects to the assay protocol
-                    assayGPA.setEquipmentApplications( eaSet );
-                }
-
-                // add the material
-                if ( rdib.getMaterialFactorsStore() != null ) {
-                    // add the material
-                    Set set2 = new HashSet();
-                    set2.add( reService.findLatestByEndurant( rdib.getMaterialFactorsStore().getCreatedMaterial() ) );
-                    assayGPA.setGenericInputCompleteMaterials( set2 );
-                }
-                // load into the database
-                helper.loadIdentifiable(
-                        assayGPA, auditor, "fugeOM.Common.Protocol.GenericProtocolApplication", null );
-
-                if ( assayGPA.getGenericOutputMaterials() != null &&
-                        !assayGPA.getGenericOutputMaterials().isEmpty() ) {
-                    System.out.println( "Found Output Materials directly after loading (assay)" );
-                } else {
-                    System.out.println( "Found No Output Materials directly after loading (assay)" );
-
-                }
-
-                // Now we can create an ActionApplication in the GPA of the second-level parent protocol that
-                // is associated with the assay GPA. However, make sure we don't delete any existing ActionApplications
-                // by adding to them rather than by creating a new collection.
-                Set aaSet = ( Set ) gpaOfSecondLevelParentProtocol.getActionApplications();
-
-                ActionApplication application = ( ActionApplication ) reService
-                        .createDescribableOb( "fugeOM.Common.Protocol.ActionApplication" );
-                application.setAction( actionSelectedFromSecondLevel );
-                application.setProtAppRef( assayGPA );
-                reService.createObInDB( "fugeOM.Common.Protocol.ActionApplication", application );
-                aaSet.add( application );
-
-                gpaOfSecondLevelParentProtocol.setActionApplications( aaSet );
-
-                // If new, add to database. Otherwise, put a new version in.
-                if ( gpaOfSecondLevelParentProtocol.getId() != null ) {
-                    // Assume this object has changed, assign a new LSID, and load into the database
-                    helper.assignAndLoadIdentifiable(
-                            gpaOfSecondLevelParentProtocol,
-                            "fugeOM.Common.Protocol.GenericProtocolApplication",
-                            null );
-                } else {
-                    helper.loadIdentifiable(
-                            gpaOfSecondLevelParentProtocol,
-                            auditor,
-                            "fugeOM.Common.Protocol.GenericProtocolApplication",
-                            null );
-                }
-                // Now we can create an ActionApplication in the GPA of the first-level parent protocol that is associated with
-                // the GPA of the second-level parent protocol. However, make sure we don't delete any existing
-                // ActionApplications by adding to them rather than by creating a new collection.
-                // However, there is one existing AA that we would want to remove: the one that may be about to be
-                // replaced. Any AA of the completeGPA gets removed if it has an identical completeAction.
-
-                Set bbSet = new HashSet();
-                for ( Object aaObj : gpaOfFirstLevelParentProtocol.getActionApplications() ) {
-                    ActionApplication aa = ( ActionApplication ) aaObj;
-                    if ( !aa.getAction()
-                            .getEndurant()
-                            .getIdentifier()
-                            .equals( actionSelectedFromFirstLevel.getEndurant().getIdentifier() ) ) {
-                        bbSet.add( aa );
-                    }
-                }
-
-                ActionApplication holdingApplication = ( ActionApplication ) reService
-                        .createDescribableOb( "fugeOM.Common.Protocol.ActionApplication" );
-                holdingApplication.setAction( actionSelectedFromFirstLevel );
-                // to find the correct generic action, we search through the generic actions, finding the one whose
-                // strain choice matches.
-                holdingApplication.setProtAppRef( gpaOfSecondLevelParentProtocol );
-                reService.createObInDB( "fugeOM.Common.Protocol.ActionApplication", holdingApplication );
-                bbSet.add( holdingApplication );
-
-                gpaOfFirstLevelParentProtocol.setActionApplications( bbSet );
-                // If the time series is new, add to database. Otherwise, put a new version in.
-                if ( gpaOfFirstLevelParentProtocol.getId() != null ) {
-                    // Assume this object has changed, assign a new LSID, and load into the database
-                    helper.assignAndLoadIdentifiable(
-                            gpaOfFirstLevelParentProtocol,
-                            auditor,
-                            "fugeOM.Common.Protocol.GenericProtocolApplication",
-                            null );
-                } else {
-                    helper.loadIdentifiable(
-                            gpaOfFirstLevelParentProtocol,
-                            auditor,
-                            "fugeOM.Common.Protocol.GenericProtocolApplication",
-                            null );
-                }
-
-                // associate the new assays with the protocol collection.
-                allGPAs.add( assayGPA );
-
-                // Finally, associate the new factor with the protocol collection. If it was already
-                // in the database, then loading the new GPA will put a new version in with the same
-                // endurant, and the update will be noted when viewing the experiment.
-                if ( !gpaOfSecondLevelParentProtocolMatch ) {
-                    allGPAs.add( gpaOfSecondLevelParentProtocol );
-                }
+                        null );
             }
 
-            // Finally, associate the new holding gpa with the protocol collection. If it was already
-            // in the database, then loading the new GPA will put a new version in with the same
-            // endurant, and the update will be noted when viewing the experiment.
-            if ( !gpaOfFirstLevelParentProtocolMatch )
-
-            {
-                allGPAs.add( gpaOfFirstLevelParentProtocol );
-            }
+            allGPAs.add( gpaOfTopLevelProtocol );
         }
+
         protocolCollection.setAllProtocolApps( allGPAs );
 //        System.err.println( "ABOUT TO PRINT OUT PROTOCOL COLLECTION MATERIAL INFO DIRECTLY AFTER SETTING GPAs" );
 //        RetrieveSimple retrieveSimple = new RetrieveSimple();
@@ -1293,10 +866,238 @@ public class LoadFuge {
         return fuge;
     }
 
+    /**
+     * Adds the specified ActionApplication, both to the database and to the gpaToAddActionApplication. However,
+     * it does NOT any new version of that GPA into the database, as you may have multiple ActionApplications to
+     * add and there is no reason to make excess database calls.
+     *
+     * @param gpaToBeAdded                the gpa to assign as an ActionApplication to gpaToAddActionApplication
+     * @param actionAssociatedWithGpaToBeAdded
+     *                                    the action that will be linked to the gpaToBeAdded
+     * @param gpaToAddActionApplicationTo the gpa to have the ActionApplication added to
+     * @return the modified version of gpaToAddActionApplication, and null if gpaToAddActionApplication was null
+     * @throws fugeOM.service.RealizableEntityServiceException
+     *          if there is a problem creating the ActionApplication in the database
+     */
+    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+    // casting from Object, even though runtime can handle this.
+    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+    @SuppressWarnings( "unchecked" )
+    private GenericProtocolApplication addActionApplication( GenericProtocolApplication gpaToBeAdded,
+                                                             GenericAction actionAssociatedWithGpaToBeAdded,
+                                                             GenericProtocolApplication gpaToAddActionApplicationTo ) throws RealizableEntityServiceException {
+
+        // do NOTHING if they are sending a null GPA.
+        if ( gpaToAddActionApplicationTo == null ) {
+            return null;
+        }
+
+        // Add an ActionApplication. However, make sure we don't delete any existing ActionApplications by adding
+        // to them rather than by creating a new collection.
+        Set<ActionApplication> aaSet;
+        if ( gpaToAddActionApplicationTo.getActionApplications() != null ) {
+            aaSet = ( Set<ActionApplication> ) gpaToAddActionApplicationTo.getActionApplications();
+        } else {
+            aaSet = new HashSet<ActionApplication>();
+        }
+
+        ActionApplication application = ( ActionApplication ) reService
+                .createDescribableOb( "fugeOM.Common.Protocol.ActionApplication" );
+        application.setAction( actionAssociatedWithGpaToBeAdded );
+        application.setProtAppRef( gpaToBeAdded );
+        reService.createObInDB( "fugeOM.Common.Protocol.ActionApplication", application );
+        aaSet.add( application );
+
+        gpaToAddActionApplicationTo.setActionApplications( aaSet );
+
+        return gpaToAddActionApplicationTo;
+    }
+
+    private GenericProtocolApplication createAssayGPA( DatafileSpecificMetadataStore store,
+                                                       GenericProtocol assayProtocol ) throws LSIDException, RealizableEntityServiceException {
+
+        GenericProtocolApplication assayGPA = ( GenericProtocolApplication ) reService.createIdentifiableAndEndurantObs(
+                helper.getLSID( "fugeOM.Common.Protocol.GenericProtocolApplication" ),
+                "Actual Application/Performance of a " + assayProtocol.getName(),
+                helper.getLSID( "fugeOM.Common.Protocol.GenPrtclAppEndurant" ),
+                "fugeOM.Common.Protocol.GenericProtocolApplication",
+                "fugeOM.Common.Protocol.GenPrtclAppEndurant" );
+        assayGPA.setGenericProtocol( assayProtocol );
+        // We should really ask them the Activity Date, but for now assume current date.
+        assayGPA.setActivityDate( new Date() );
+
+        // add the data
+        Set<ExternalData> externalDataSet = new HashSet<ExternalData>();
+        externalDataSet.add( ( ExternalData ) reService.findLatestByEndurant( store.getEndurantLsid() ) );
+        assayGPA.setGenericOutputData( externalDataSet );
+
+        if ( !store.getGenericProtocolApplicationInfo().isEmpty() ) {
+
+            // add any deviations from the zero or more generic parameters associated with the protocol assigned
+            // to this data item
+            // todo add more types of parameter values, as currently only valid for atomic values
+            Set<AtomicParameterValue> pvSet = new HashSet<AtomicParameterValue>();
+            GenericProtocolApplicationSummary summary = store.getGenericProtocolApplicationInfo()
+                    .get( assayProtocol.getEndurant().getIdentifier() );
+            if ( summary != null ) {
+                if ( summary.getParameterAndAtomics() != null && !summary.getParameterAndAtomics().isEmpty() ) {
+                    for ( String parameterKey : summary.getParameterAndAtomics().keySet() ) {
+                        AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
+                                "fugeOM.Common.Protocol.AtomicParameterValue" );
+                        atomicParameterValue.setValue( summary.getParameterAndAtomics().get( parameterKey ) );
+                        atomicParameterValue.setParameter(
+                                ( GenericParameter ) reService.findLatestByEndurant(
+                                        parameterKey ) );
+                        reService.createObInDB(
+                                "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
+                        pvSet.add( atomicParameterValue );
+                    }
+                    assayGPA.setParameterValues( pvSet );
+                }
+
+                // add any descriptions. As this is a brand-new GPA, there will be no existing descriptions
+                if ( summary.getDescriptions() != null && !summary.getDescriptions().isEmpty() ) {
+                    Set<Description> descriptions = new HashSet<Description>();
+                    for ( String currentDescriptionKey : summary.getDescriptions().keySet() ) {
+                        Description description = ( Description ) reService.createDescribableOb(
+                                "fugeOM.Common.Description.Description" );
+                        description.setText(
+                                currentDescriptionKey + " = " +
+                                        summary.getDescriptions().get( currentDescriptionKey ) );
+                        reService.createObInDB( "fugeOM.Common.Description.Description", description );
+                        descriptions.add( description );
+                    }
+                    assayGPA.setDescriptions( descriptions );
+                }
+            }
+        }
+
+        // add any deviations from the zero or more generic parameters associated with the equipment associated
+        // with the protocol assigned to this data item
+        if ( !store.getGenericEquipmentInfo().isEmpty() ) {
+            // unchecked cast warning provided by javac when using generics in Lists/Sets and
+            // casting from Object, even though runtime can handle this.
+            // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+            @SuppressWarnings( "unchecked" )
+            Set<EquipmentApplication> eaSet = ( Set<EquipmentApplication> ) assayGPA.getEquipmentApplications();
+
+            for ( String equipmentKey : ( store.getGenericEquipmentInfo() ).keySet() ) {
+                // Now we can create an EquipmentApplication in the GPA of the second-level (assay)protocol that is
+                // associated with the correct Equipment object. However, make sure we don't delete any existing
+                // EquipmentApplications by adding to them rather than by creating a new collection.
+
+                EquipmentApplication application = ( EquipmentApplication ) reService.createIdentifiableAndEndurantObs(
+                        helper.getLSID( "fugeOM.Common.Protocol.EquipmentApplication" ),
+                        "Application of " +
+                                ( store.getGenericEquipmentInfo() ).get( equipmentKey ).getEquipmentName() +
+                                " Equipment",
+                        helper.getLSID( "fugeOM.Common.Protocol.EquipAppEndurant" ),
+                        "fugeOM.Common.Protocol.EquipmentApplication",
+                        "fugeOM.Common.Protocol.EquipAppEndurant" );
+                application.setAppliedEquipment( ( Equipment ) reService.findLatestByEndurant( equipmentKey ) );
+
+                // now add the appropriate changes to the original equipment as parameters. We assume that if
+                // there is a value in getGenericEquipmentInfo, that a new parameterValue set must be made and
+                // further, will be non-empty
+                Set<ParameterValue> pvSet = new HashSet<ParameterValue>();
+                // look for complex values
+                if ( ( store.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndTerms() != null &&
+                        !( store.getGenericEquipmentInfo() ).get( equipmentKey )
+                                .getParameterAndTerms()
+                                .isEmpty() ) {
+                    for ( String parameterKey : ( store.getGenericEquipmentInfo() ).get( equipmentKey )
+                            .getParameterAndTerms()
+                            .keySet() ) {
+                        ComplexParameterValue complexParameterValue = ( ComplexParameterValue ) reService.createDescribableOb(
+                                "fugeOM.Common.Protocol.ComplexParameterValue" );
+                        complexParameterValue.setParameterValue(
+                                ( OntologyTerm ) reService.findLatestByEndurant(
+                                        ( store.getGenericEquipmentInfo() ).get( equipmentKey )
+                                                .getParameterAndTerms().get( parameterKey ) ) );
+                        complexParameterValue.setParameter(
+                                ( GenericParameter ) reService.findLatestByEndurant(
+                                        parameterKey ) );
+                        reService.createObInDB(
+                                "fugeOM.Common.Protocol.ComplexParameterValue", complexParameterValue );
+                        pvSet.add( complexParameterValue );
+                    }
+                }
+                // look for atomic values
+                if ( ( store.getGenericEquipmentInfo() ).get( equipmentKey ).getParameterAndAtomics() != null &&
+                        !( store.getGenericEquipmentInfo() ).get( equipmentKey )
+                                .getParameterAndAtomics()
+                                .isEmpty() ) {
+                    for ( String parameterKey : ( store.getGenericEquipmentInfo() ).get( equipmentKey )
+                            .getParameterAndAtomics()
+                            .keySet() ) {
+                        AtomicParameterValue atomicParameterValue = ( AtomicParameterValue ) reService.createDescribableOb(
+                                "fugeOM.Common.Protocol.AtomicParameterValue" );
+                        atomicParameterValue.setValue(
+                                ( store.getGenericEquipmentInfo() ).get( equipmentKey )
+                                        .getParameterAndAtomics().get( parameterKey ) );
+                        atomicParameterValue.setParameter(
+                                ( GenericParameter ) reService.findLatestByEndurant(
+                                        parameterKey ) );
+                        reService.createObInDB(
+                                "fugeOM.Common.Protocol.AtomicParameterValue", atomicParameterValue );
+                        pvSet.add( atomicParameterValue );
+                    }
+                }
+                application.setParameterValues( pvSet );
+
+                // add any descriptions. As this is a brand-new EA, there will be no existing descriptions
+                Set<Description> descriptions = new HashSet<Description>();
+                if ( ( store.getGenericEquipmentInfo() ).get( equipmentKey ).getFreeTextDescription() != null &&
+                        ( store.getGenericEquipmentInfo() ).get( equipmentKey )
+                                .getFreeTextDescription()
+                                .length() > 0 ) {
+                    Description description = ( Description ) reService.createDescribableOb(
+                            "fugeOM.Common.Description.Description" );
+                    description.setText( ( store.getGenericEquipmentInfo() ).get( equipmentKey ).getFreeTextDescription() );
+                    reService.createObInDB( "fugeOM.Common.Description.Description", description );
+                    descriptions.add( description );
+                }
+                application.setDescriptions( descriptions );
+
+                // load equipment application into database
+                helper.loadIdentifiable(
+                        application,
+                        auditor,
+                        "fugeOM.Common.Protocol.EquipmentApplication",
+                        System.out );
+                eaSet.add( application );
+
+            }
+            // add the list of EquipmentApplication objects to the assay protocol
+            assayGPA.setEquipmentApplications( eaSet );
+        }
+
+        // add the material
+        if ( store.getMaterialFactorsStore() != null && store.getMaterialFactorsStore().getCreatedMaterial() != null) {
+            Set<Material> set2 = new HashSet<Material>();
+            set2.add( ( Material ) reService.findLatestByEndurant( store.getMaterialFactorsStore().getCreatedMaterial() ) );
+            assayGPA.setGenericInputCompleteMaterials( set2 );
+        }
+        // load into the database
+        helper.loadIdentifiable(
+                assayGPA, auditor, "fugeOM.Common.Protocol.GenericProtocolApplication", null );
+
+        if ( assayGPA.getGenericOutputMaterials() != null &&
+                !assayGPA.getGenericOutputMaterials().isEmpty() ) {
+            System.out.println( "Found Output Materials directly after loading (assay)" );
+        } else {
+            System.out.println( "Found No Output Materials directly after loading (assay)" );
+
+        }
+        return assayGPA;
+    }
+
     // this method assumes that the experiment is new, and not existing already in the database.
-    private FuGE loadProvider
-            ( FuGE
-                    fuge ) throws RealizableEntityServiceException, LSIDException {
+    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+    // casting from Object, even though runtime can handle this.
+    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+    @SuppressWarnings( "unchecked" )
+    private FuGE loadProvider( FuGE fuge ) throws RealizableEntityServiceException, LSIDException {
         // We will assign the current Person to be the Provider. The link between the Provider
         // and the Person is called a ContactRole.
 
@@ -1307,11 +1108,11 @@ public class LoadFuge {
         // the provider contains an ontology term, so we need to add that term to the experiment
         OntologyCollection ontologyCollection = ( OntologyCollection ) reService.createDescribableOb(
                 "fugeOM.Collection.OntologyCollection" );
-        Set ontologyTerms;
+        Set<OntologyTerm> ontologyTerms;
         if ( fuge.getOntologyCollection() != null ) {
-            ontologyTerms = ( Set ) fuge.getOntologyCollection().getOntologyTerms();
+            ontologyTerms = ( Set<OntologyTerm> ) fuge.getOntologyCollection().getOntologyTerms();
         } else {
-            ontologyTerms = new HashSet();
+            ontologyTerms = new HashSet<OntologyTerm>();
         }
         // then create an ontology term to identify the role, or load the most recent version of that term
         OntologyIndividual ontologyIndividual = ( OntologyIndividual ) reService.createIdentifiableAndEndurantObs(

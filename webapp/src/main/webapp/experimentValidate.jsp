@@ -14,15 +14,14 @@ in this distribution, please see LICENSE.txt
 <jsp:include page="checkUser.jsp"/>
 
 <%@ page import="fugeOM.Collection.FuGE" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+
 <%--
 The taglib directive below imports the JSTL library. If you uncomment it,
 you must also add the JSTL library to the project. The Add Library... action
 on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 --%>
-<%--
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
---%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session"/>
 
@@ -31,13 +30,27 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 <jsp:setProperty name="symbaFormSessionBean" property="fugeIdentifier"/>
 
 <%
-    FuGE fuge = ( FuGE ) validUser.getReService().findIdentifiable( symbaFormSessionBean.getFugeIdentifier() );
-    symbaFormSessionBean.setFuGE( fuge );
-    symbaFormSessionBean.setFugeEndurant( fuge.getEndurant().getIdentifier() );
+    try {
+        FuGE fuge = ( FuGE ) validUser.getReService().findIdentifiable( symbaFormSessionBean.getFugeIdentifier() );
+        symbaFormSessionBean.setFuGE( fuge );
+        symbaFormSessionBean.setFugeEndurant( fuge.getEndurant().getIdentifier() );
 %>
 
-<% if ( request.getParameter( "go2confirm" ) != null && request.getParameter( "go2confirm" ).trim().equals( "true" ) ) { %>
+<%
+    if ( request.getParameter( "go2confirm" ) != null &&
+            request.getParameter( "go2confirm" ).trim().equals( "true" ) ) {
+%>
 <c:redirect url="confirm.jsp"/>
-<% } else { %>
+<%
+} else {
+%>
 <c:redirect url="rawData.jsp"/>
-<% } %>
+<%
+        }
+    } catch ( RealizableEntityServiceException e ) {
+        out.println( "There was an error retrieving your experimental details. For help, please send this message to " );
+        out.println( application.getAttribute( "helpEmail" ) );
+        System.out.println( e.getMessage() );
+        e.printStackTrace();
+    }
+%>

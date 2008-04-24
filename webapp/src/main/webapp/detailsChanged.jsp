@@ -10,6 +10,8 @@ in this distribution, please see LICENSE.txt
 <!-- $Author$-->
 <!-- $HeadURL$-->
 
+<jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session"/>
+
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 

@@ -1,6 +1,4 @@
 <%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
-<%@ page import="java.io.StringWriter" %>
-<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
 <%--
 This file is part of SyMBA.
@@ -47,8 +45,8 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         Enumeration enumeration = request.getParameterNames();
         while ( enumeration.hasMoreElements() ) {
             String parameterName = ( String ) enumeration.nextElement();
-            if ( parameterName.startsWith( "actionListFactor" ) ) {
-                int number = Integer.valueOf( parameterName.substring( 16 ) );
+            if ( parameterName.startsWith( "actionListOneLevelUp" ) ) {
+                int number = Integer.valueOf( parameterName.substring( 20 ) );
 //                System.out.println( "number = " + number );
                 // take what is already there, and add only those fields that have not been made yet
                 DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores()
@@ -57,12 +55,13 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     temp = new DatafileSpecificMetadataStore();
                 }
                 String[] parsedStrings = request.getParameter( parameterName ).split( "::" );
-                temp.setChosenSecondLevelActionEndurant( parsedStrings[0] );
-                temp.setChosenSecondLevelChildProtocolEndurant( parsedStrings[1] );
-                temp.setChosenSecondLevelChildProtocolName( parsedStrings[2] );
+                temp.getOneLevelUpActionSummary().setChosenActionEndurant( parsedStrings[0] );
+                temp.getOneLevelUpActionSummary().setChosenActionName( parsedStrings[1] );
+                temp.getOneLevelUpActionSummary().setChosenChildProtocolEndurant( parsedStrings[2] );
+                temp.getOneLevelUpActionSummary().setChosenChildProtocolName( parsedStrings[3] );
                 symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
-            } else if ( parameterName.startsWith( "actionList" ) ) {
-                int number = Integer.valueOf( parameterName.substring( 10 ) );
+            } else if ( parameterName.startsWith( "actionListAssay" ) ) {
+                int number = Integer.valueOf( parameterName.substring( 15 ) );
 //                System.out.println( "number = " + number );
                 // take what is already there, and add only those fields that have not been made yet
                 DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores()
@@ -71,9 +70,10 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     temp = new DatafileSpecificMetadataStore();
                 }
                 String[] parsedStrings = request.getParameter( parameterName ).split( "::" );
-                temp.setChosenActionEndurant( parsedStrings[0] );
-                temp.setChosenChildProtocolEndurant( parsedStrings[1] );
-                temp.setChosenChildProtocolName( parsedStrings[2] );
+                temp.getAssayActionSummary().setChosenActionEndurant( parsedStrings[0] );
+                temp.getAssayActionSummary().setChosenActionName( parsedStrings[1] );
+                temp.getAssayActionSummary().setChosenChildProtocolEndurant( parsedStrings[2] );
+                temp.getAssayActionSummary().setChosenChildProtocolName( parsedStrings[3] );
                 symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
             }
         }

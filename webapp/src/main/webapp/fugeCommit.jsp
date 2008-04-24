@@ -13,7 +13,9 @@ in this distribution, please see LICENSE.txt
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
-<%@ page import="uk.ac.cisban.symba.webapp.util.LoadFuge" %>
+<%@ page import="com.ibm.lsid.LSIDException" %>
+<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+<%@ page import="uk.ac.cisban.symba.webapp.util.*" %>
 
 <%--
 The taglib directive below imports the JSTL library. If you uncomment it,
@@ -33,19 +35,51 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 <jsp:useBean id="scp" class="uk.ac.cisban.symba.webapp.util.ScpBean" scope="application"/>
 
 <%
+    boolean errorFound = false;
     LoadFuge lf = new LoadFuge( symbaFormSessionBean, validUser, scp );
-    lf.load();
-
+    try {
+        lf.load();
+    } catch ( LSIDException e ) {
+        errorFound = true;
+        out.println(
+                "There was an error assigning identifiers to your experiment. For help, please send this message to " );
+        out.println( application.getAttribute( "helpEmail" ) );
+        System.out.println( e.getMessage() );
+        e.printStackTrace();
+    } catch ( RealizableEntityServiceException e ) {
+        errorFound = true;
+        out.println( "There was an error talking to the database. For help, please send this message to " );
+        out.println( application.getAttribute( "helpEmail" ) );
+        System.out.println( e.getMessage() );
+        e.printStackTrace();
+    }
+    
     // Update the counts
-    counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );
-    counter.setNumberOfDataFiles( validUser.getReService().countData() );
+    try {
+        counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );
+        counter.setNumberOfDataFiles( validUser.getReService().countData() );
+    } catch ( RealizableEntityServiceException e ) {
+        errorFound = true;
+        out.println(
+                "There was an error counting the number of experiments and data files. For help, please send this message to " );
+        out.println( application.getAttribute( "helpEmail" ) );
+        System.out.println( e.getMessage() );
+        e.printStackTrace();
+    }
 
 %>
-
 <%-- Remove all user-specific session beans associated with data upload --%>
 <c:remove var="symbaFormSessionBean"/>
+
+<%
+    // don't redirect if there has been an exception
+    if ( !errorFound ) {
+%>
 
 <c:redirect url="download.jsp">
     <c:param name="msg"
              value="Submission Saved and Complete"/>
 </c:redirect>
+<%
+    }
+%>

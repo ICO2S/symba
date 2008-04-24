@@ -2,7 +2,6 @@ package uk.ac.cisban.symba.webapp.util;
 
 import fugeOM.Collection.FuGE;
 import fugeOM.Common.Ontology.OntologyTerm;
-import fugeOM.Common.Protocol.GenericAction;
 import fugeOM.Common.Protocol.GenericParameter;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
@@ -211,7 +210,7 @@ public class SymbaFormSessionBean implements Serializable {
             // the user has used an existing experiment.
             out.println( "<p class=\"bigger\">" );
             out.println( "You are adding to the following experiment: " );
-            out.println( "<a href=\"experiment.jsp\">" + experimentName + "</a>" );
+            out.println( "<a href=\"experiment.jsp\">" + fuGE.getName() + "</a>" );
             out.println( "</p>" );
         }
 
@@ -239,33 +238,20 @@ public class SymbaFormSessionBean implements Serializable {
                 out.println( "</a>" );
                 out.println( "</li>" );
             }
-            if ( info.getChosenSecondLevelActionEndurant() != null && info.getChosenSecondLevelActionEndurant().length() > 0 ) {
-                GenericAction ga = ( GenericAction ) reService.findLatestByEndurant( info.getChosenSecondLevelActionEndurant() );
-                out.println( "<li>" );
-                out.println(
-                        "Your workflow also required that you specify a factor associated with " +
-                                "your data file. " );
-                out.println( "The factor you have chosen is " );
-                out.println( "<a class=\"bigger\" href=\"ChooseAction.jsp\">" );
-                String modified = ga.getName().trim();
-                if ( modified.startsWith( "Step Containing the" ) ) {
-                    modified = modified.substring( 20 );
-                }
-                out.println( modified );
-                out.println( "</a>" );
-                out.println( "</li>" );
-            }
-            if ( info.getChosenActionEndurant() != null && info.getChosenActionEndurant().length() > 0 ) {
-                GenericAction ga = ( GenericAction ) reService.findLatestByEndurant( info.getChosenActionEndurant() );
+            if ( info.getAssayActionSummary() != null ) {
                 out.println( "<li>" );
                 out.println( "You have also assigned the data file to a particular step in your " );
                 out.println( " workflow. The step you have assigned the file to is " );
                 out.println( "<a class=\"bigger\" href=\"ChooseAction.jsp\">" );
-                String modified = ga.getName();
+                String modified = info.getAssayActionSummary().getChosenActionName();
                 if ( modified.startsWith( "Step Containing the" ) ) {
                     modified = modified.substring( 20 );
                 }
                 out.println( modified );
+                if ( info.getOneLevelUpActionSummary() != null &&
+                                    info.getOneLevelUpActionSummary().getChosenActionName() != null) {
+                    out.println( ", which belongs to the " + info.getOneLevelUpActionSummary().getChosenActionName() );
+                }
                 out.println( "</a>" );
                 out.println( "</li>" );
             }
@@ -320,17 +306,36 @@ public class SymbaFormSessionBean implements Serializable {
                     out.println( "</a>" );
                     out.println( "</li>" );
 
-                    out.println( "<li>Ontology Terms further describing this " + value.getEquipmentName() + ":" );
-                    out.println( "<ul>" );
-                    for ( String paramValue : value.getParameterAndTerms().values() ) {
-                        out.println( "<li><a class=\"bigger\" href=\"metaData.jsp\">" );
-                        out.println(
-                                ( ( OntologyTerm ) reService.findLatestByEndurant( paramValue ) ).getTerm() );
-                        out.println( "</a>" );
+                    if ( !value.getParameterAndTerms().isEmpty() ) {
+                        out.println( "<li>Ontology Terms further describing this " + value.getEquipmentName() + ":" );
+                        out.println( "<ul>" );
+                        for ( String paramValue : value.getParameterAndTerms().values() ) {
+                            out.println( "<li><a class=\"bigger\" href=\"metaData.jsp\">" );
+                            out.println(
+                                    ( ( OntologyTerm ) reService.findLatestByEndurant( paramValue ) ).getTerm() );
+                            out.println( "</a>" );
+                            out.println( "</li>" );
+                        }
+                        out.println( "</ul>" );
                         out.println( "</li>" );
                     }
-                    out.println( "</ul>" );
-                    out.println( "</li>" );
+                    if ( !value.getParameterAndAtomics().isEmpty() ) {
+                        out.println( "<li>Parameters further describing this " + value.getEquipmentName() + ":" );
+                        out.println( "<ul>" );
+                        for ( String parameterEndurant : value.getParameterAndAtomics().keySet() ) {
+
+                            out.println( "<li>" );
+                            out.println(
+                                    ( ( GenericParameter ) reService.findLatestByEndurant( parameterEndurant ) ).getName() +
+                                            ": " );
+                            out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+                            out.println( value.getParameterAndAtomics().get( parameterEndurant ) );
+                            out.println( "</a>" );
+                            out.println( "</li>" );
+                        }
+                        out.println( "</ul>" );
+                        out.println( "</li>" );
+                    }
 
                     out.println( "</ul>" );
 

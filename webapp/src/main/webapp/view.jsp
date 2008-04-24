@@ -58,19 +58,11 @@ to a new one.
 //        String action = "Write";
 //        String resource = "urn:lsid:carmen.org:file:1";
 
-        SecurityEngineInterrogator interrogator = null;
-        try {
-            interrogator = new SecurityEngineInterrogator();
-        } catch ( ServiceException e ) {
-            out.println( "Unable to confirm that you are allowed to access this experiment. Please contact" );
-            out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
-            System.out.println( e.getMessage() ); // print out error to catalina.out
-            e.printStackTrace();
-        }
-
         boolean passedSecurity = false;
 
         try {
+            SecurityEngineInterrogator interrogator = new SecurityEngineInterrogator();
+
             // everyone gets assigned to the allUsers role.
             passedSecurity = interrogator.hasPermission(
                     "symbaAllUsers", request.getParameter( "investigationID" ), "read" );
@@ -79,6 +71,11 @@ to a new one.
                 passedSecurity = interrogator.hasPermission(
                         validUser.getEndurantLsid(), request.getParameter( "investigationID" ), "read" );
             }
+        } catch ( ServiceException e ) {
+            out.println( "Unable to confirm that you are allowed to access this experiment. Please contact" );
+            out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
+            System.out.println( e.getMessage() ); // print out error to catalina.out
+            e.printStackTrace();
         } catch ( Exception e ) {
             out.println( "<h3>" );
             out.println( "There has been an error processing the permissions associated with your selected" );
@@ -116,7 +113,7 @@ to a new one.
                     // Go directly to experimentValidate.jsp
                     out.println( "<form action=\"experimentValidate.jsp\">" );
                     out.println(
-                            "<input type=\"hidden\" name=\"experimentList\" value=\"" +
+                            "<input type=\"hidden\" name=\"fugeIdentifier\" value=\"" +
                                     fuge.getIdentifier() +
                                     "\"/>" );
                     out.println( "<input type=\"submit\" value=\"Add Data To This Experiment\"/>" );

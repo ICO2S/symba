@@ -14,6 +14,7 @@ in this distribution, please see LICENSE.txt
 <%@ page pageEncoding="UTF-8" %>
 <%@ page import="uk.ac.cisban.symba.webapp.util.FileRetrieve" %>
 <%@ page import="java.io.File" %>
+<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session">
 </jsp:useBean>
@@ -58,10 +59,16 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         FileRetrieve fr = new FileRetrieve();
         String LSID = request.getParameter( "identifier" );
         String friendly = request.getParameter( "friendly" );
-        File afile = fr.getFile( LSID, friendly, tempDir, scp );
+        try {
+            File afile = fr.getFile( LSID, friendly, tempDir, scp );
         out.println(
                 " <a target=\"_blank\" href=\"" + "temp" + "/" + afile.getName() + "\">" +
                         afile.getName() + "</a>" );
+        } catch ( RealizableEntityServiceException e ) {
+            out.println("There was an error retrieving your file. For help, please send this message to ");
+            out.println(application.getAttribute( "helpEmail" ));
+            e.printStackTrace();
+        }
     %>
     <jsp:include page="helpAndComments.jsp"/>
 

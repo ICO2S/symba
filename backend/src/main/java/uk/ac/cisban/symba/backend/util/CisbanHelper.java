@@ -248,10 +248,10 @@ public class CisbanHelper {
         return lsid.toString();
     }
 
-    public void assignAndLoadIdentifiable( Identifiable i,
+    public Identifiable assignAndLoadIdentifiable( Identifiable i,
                                            String className,
                                            PrintStream printStream ) throws RealizableEntityServiceException, LSIDException {
-        assignAndLoadIdentifiable( i, null, className, printStream );
+        return assignAndLoadIdentifiable( i, null, className, printStream );
     }
 
     // Person must already be loaded in the database

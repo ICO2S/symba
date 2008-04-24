@@ -15,7 +15,7 @@ in this distribution, please see LICENSE.txt
 
 <%--Imports so we can use the person object and the data portal utils --%>
 <%@ page import="fugeOM.Common.Audit.Person" %>
-<%@ page import="fugeOM.service.RealizableEntityService" %>
+<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
 
 <%-- Remove the validUser session bean, if any --%>
 <c:remove var="validUser"/>
@@ -34,9 +34,9 @@ in this distribution, please see LICENSE.txt
 <%-- This allows the page to talk to a database --%>
 <sql:setDataSource
         driver="org.postgresql.Driver"
-        url="jdbc:postgresql://petrinets:5434/dpi_security"
-        user="dpi"
-        password="dp1_d0rk"
+        url="jdbc:postgresql://yourmachine:portnumber/dpi_security"
+        user="user"
+        password="pass"
         />
 
 <%--This searches the database for the username/password combination entered 
@@ -77,30 +77,44 @@ must go back to the login page--%>
 <%
     validUser.startRe();
     validUser.setLsid( validUser.getLsid().trim() );
-    Person p = ( Person ) validUser.getReService().findLatestByEndurant( validUser.getLsid() );
-    if ( p != null ) {
-        System.out.println( "it's not null" );
+    boolean errorFound = false;
+    try {
+        Person p = ( Person ) validUser.getReService().findLatestByEndurant( validUser.getLsid() );
         validUser.setEndurantLsid( p.getEndurant().getIdentifier() );
         validUser.setEmail( p.getEmail() );
         validUser.setLsid( p.getIdentifier() );
         validUser.setFirstName( p.getFirstName() );
         validUser.setLastName( p.getLastName() );
 
-    } else {
-        System.out.println( "it is null" );
+    } catch ( RealizableEntityServiceException e ) {
+        errorFound = true;
+        out.println( "Error talking to the database in order to retrieve user details. Please send this message to" );
+        out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
+        System.out.println( e.getMessage() );
+        e.printStackTrace();
     }
 
     // todo now set the variables. A bit temporary, but will do until a real properties file setup is done
-    scp.setDirectory( "/data/dpi/sandbox/" );
-    scp.setHostname( "cisbclust.ncl.ac.uk" );
-    scp.setUsername( "dpi" );
-    scp.setPassword( "dp1_d0rk" );
-
-    // now get the counts
-    counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );
-    counter.setNumberOfDataFiles( validUser.getReService().countData() );
+    scp.setDirectory( "/your/directory" );
+    scp.setHostname( "yourmachine.com" );
+    scp.setUsername( "user" );
+    scp.setPassword( "pass" );
 
     application.setAttribute( "helpEmail", "helpdesk@cisban.ac.uk" );
+
+    // now get the counts
+    try {
+        counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );
+        counter.setNumberOfDataFiles( validUser.getReService().countData() );
+    } catch ( RealizableEntityServiceException e ) {
+        out.println(
+                "There was an error counting the number of experiments and data files. For help, please send this message to " );
+        out.println( application.getAttribute( "helpEmail" ) );
+        System.out.println( e.getMessage() );
+        e.printStackTrace();
+    }
+
+    if ( !errorFound ) {
 %>
 
 <%-- 
@@ -116,3 +130,7 @@ must go back to the login page--%>
         <c:redirect url="home.jsp"/>
     </c:otherwise>
 </c:choose>
+
+<%
+    }
+%>

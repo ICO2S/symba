@@ -1,8 +1,6 @@
 <%@ page import="fugeOM.Common.Ontology.OntologySource" %>
 <%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
-<%@ page import="fugeOM.Common.Protocol.*" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.io.StringWriter" %>
+<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
 <%@ page import="java.util.*" %>
 <%-- 
 This file is part of SyMBA.
@@ -33,57 +31,63 @@ in this distribution, please see LICENSE.txt
 <jsp:include page="visibleHeader.html"/>
 
 <div id="Content">
-    <p>
+<p>
 
-    <h3>Search for experiments <a
-            href="help.jsp#search"
-            onClick="return popup(this, 'notes')"> [ Help ] </a></h3>
+<h3>Search for experiments <a
+        href="help.jsp#search"
+        onClick="return popup(this, 'notes')"> [ Help ] </a></h3>
 
-    <h4>Please select the search appropriate for your query</h4>
+<h4>Please select the search appropriate for your query</h4>
 
-    <form action="ShowBasicResults.jsp" method="get">
-        <p>Please click "Show All" if you wish to view all of the experiments in the database. Please be aware that this may
-            take some time to retrieve.</p>
-        <!-- The id attribute is used internally for labels, etc, while the name attribute is passed to the receiving page -->
-        <input type="hidden" name="showAll" value="showAll"/>
-        <input type="submit" value="Show all"/>
-    </form>
+<form action="ShowBasicResults.jsp" method="get">
+    <p>Please click "Show All" if you wish to view all of the experiments in the database. Please be aware that this may
+        take some time to retrieve.</p>
+    <!-- The id attribute is used internally for labels, etc, while the name attribute is passed to the receiving page -->
+    <input type="hidden" name="showAll" value="showAll"/>
+    <input type="submit" value="Show all"/>
+</form>
+<br/>
+<hr/>
+
+<form action="ShowBasicResults.jsp" method="get">
+    <p>Please click "Show Yours" if you wish to view all of your experiments.</p>
+    <!-- The id attribute is used internally for labels, etc, while the name attribute is passed to the receiving page -->
+    <input type="hidden" name="showYours" value="showYours"/>
+    <input type="submit" value="Show Yours"/>
+</form>
+<br/>
+<hr/>
+
+<form action="ShowBasicResults.jsp" method="get">
+    <p>Please put the word you wish to search for in the text field below. Partial matches
+        to your search term will also be found.</p>
     <br/>
-    <hr/>
+    <input id="experimentName" name="experimentName"/>
+    <input type="submit" value="Search"/>
+</form>
+<br/>
+<br/>
+<%
+    // Search based on OntologyTerm. First, provide pull-downs grouped by OntologySource
 
-    <form action="ShowBasicResults.jsp" method="get">
-        <p>Please click "Show Yours" if you wish to view all of your experiments.</p>
-        <!-- The id attribute is used internally for labels, etc, while the name attribute is passed to the receiving page -->
-        <input type="hidden" name="showYours" value="showYours"/>
-        <input type="submit" value="Show Yours"/>
-    </form>
-    <br/>
-    <hr/>
-
-    <form action="ShowBasicResults.jsp" method="get">
-        <p>Please put the word you wish to search for in the text field below. Partial matches
-            to your search term will also be found.</p>
-        <br/>
-        <input id="experimentName" name="experimentName"/>
-        <input type="submit" value="Search"/>
-    </form>
-    <br/>
-    <br/>
-    <%
-        // Search based on OntologyTerm. First, provide pull-downs grouped by OntologySource
+    try {
 
         // Get a list of all of the latest ontology sources
-        List<OntologySource> ontologySources = ( List<OntologySource> ) validUser.getReService()
-                .getAllLatestOntologySources();
+        // unchecked cast warning provided by javac when using generics in Lists/Sets and
+        // casting from Object, even though runtime can handle this.
+        // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+        @SuppressWarnings( "unchecked" )
+        List<OntologySource> ontologySources = validUser.getReService().getAllLatestOntologySources();
 
         // Go through each source, retrieving all terms associated with it and putting those terms in
         // a pull-down menu.
-//        out.println( ontologySources.size() + " Sources Found.<br/>" );
         for ( OntologySource ontologySource : ontologySources ) {
-//            out.println( ontologySource.getName() + "<br/>" );
+            // unchecked cast warning provided by javac when using generics in Lists/Sets and
+            // casting from Object, even though runtime can handle this.
+            // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+            @SuppressWarnings( "unchecked" )
             List<OntologyTerm> ontologyTerms = ( List<OntologyTerm> ) validUser.getReService()
                     .getAllLatestTermsWithSource( ontologySource.getEndurant().getIdentifier() );
-//            out.println( ontologyTerms.size() + " Terms Found.<br/>" );
             List<String> ids = new ArrayList<String>();
             List<String> names = new ArrayList<String>();
             // for some reason, not all ontology terms get displayed in the pull-down menu if we iterate through
@@ -101,18 +105,22 @@ in this distribution, please see LICENSE.txt
             for ( String id : ids ) {
                 out.println(
                         "<option value=\"" + id + "\">" +
-                                names.get(counter) +
+                                names.get( counter ) +
                                 "</option>" );
                 counter++;
             }
             out.println( "</select>" );
             out.println( "<input type=\"submit\" value=\"Search\"/>" );
-            out.println("</form>");
+            out.println( "</form>" );
             out.println( "<br/>" );
             out.println( "<hr/>" );
         }
 
         // Now, list all OntologyTerms that do not have a source in a single pull-down menu.
+        // unchecked cast warning provided by javac when using generics in Lists/Sets and
+        // casting from Object, even though runtime can handle this.
+        // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+        @SuppressWarnings( "unchecked" )
         List<OntologyTerm> unsourcedTerms = ( List<OntologyTerm> ) validUser.getReService()
                 .getAllLatestUnsourcedOntologyTerms();
         out.println(
@@ -130,10 +138,17 @@ in this distribution, please see LICENSE.txt
         out.println( "<input type=\"submit\" value=\"Search\"/>" );
         out.println( "</form>" );
         out.println( "<br/>" );
-    %>
-    <br>
+    } catch ( RealizableEntityServiceException e ) {
+        out.println( "Error talking to the database in order to populate the search page. Please send this message to" );
+        out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
+        System.out.println( e.getMessage() );
+        e.printStackTrace();
+    }
 
-    <jsp:include page="helpAndComments.jsp"/>
+%>
+<br>
+
+<jsp:include page="helpAndComments.jsp"/>
 
 </div>
 

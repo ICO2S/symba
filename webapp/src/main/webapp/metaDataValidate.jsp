@@ -27,15 +27,12 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 <jsp:useBean id="symbaFormSessionBean" class="uk.ac.cisban.symba.webapp.util.SymbaFormSessionBean" scope="session"/>
 
 <%
-    // store whether or not we've started filling the materialCharacteristics objects, as we need to clean them
-    // out each time we get here so we don't load duplicates.
-    boolean startedMaterialCharacteristics = false;
-    
     // iterate through all parameters
     Enumeration enumeration = request.getParameterNames();
     while ( enumeration.hasMoreElements() ) {
         String parameterName = ( String ) enumeration.nextElement();
-        if ( parameterName.startsWith( "actionListDescription::" ) && request.getParameter( parameterName ).length() > 0 ) {
+        if ( parameterName.startsWith( "actionListDescription::" ) &&
+                request.getParameter( parameterName ).length() > 0 ) {
             String[] parsedStrings = parameterName.split( "::" );
             int number = Integer.valueOf( parsedStrings[1] );
 //                System.out.println( "number = " + number );
@@ -52,7 +49,8 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             String GpaParentEndurantId = parsedStrings[1];
             String parameterEndurantId = parsedStrings[2];
             // if there is already an existing map key, add to that one.
-            GenericProtocolApplicationSummary summary = ( temp.getGenericProtocolApplicationInfo() ).get( GpaParentEndurantId );
+            GenericProtocolApplicationSummary summary = ( temp.getGenericProtocolApplicationInfo() ).get(
+                    GpaParentEndurantId );
             if ( summary == null ) {
                 summary = new GenericProtocolApplicationSummary();
             }
@@ -68,7 +66,8 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             // get the endurant for the current equipment out.
             String GpaParentEndurantId = parsedStrings[1];
             // if there is already an existing map key, add to that one.
-            GenericProtocolApplicationSummary summary = ( temp.getGenericProtocolApplicationInfo() ).get( GpaParentEndurantId );
+            GenericProtocolApplicationSummary summary = ( temp.getGenericProtocolApplicationInfo() ).get(
+                    GpaParentEndurantId );
             if ( summary == null ) {
                 summary = new GenericProtocolApplicationSummary();
             }
@@ -84,8 +83,6 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             // take what is already there, and add only those fields that have not been made yet
             DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( number );
 
-            if ( temp.getMaterialFactorsStore() == null )
-                temp.setMaterialFactorsStore( new MaterialFactorsStore() );
             MaterialFactorsStore mfb = temp.getMaterialFactorsStore();
             mfb.putOntologyReplacementsPair( parsedStrings[1], request.getParameter( parameterName ) );
             temp.setMaterialFactorsStore( mfb );
@@ -95,9 +92,8 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             if ( request.getParameter( parameterName ) != null && request.getParameter( parameterName ).length() > 0 ) {
                 int number = Integer.valueOf( parameterName.substring( 12 ) );
                 // take what is already there, and add only those fields that have not been made yet
-                DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( number );
-                if ( temp.getMaterialFactorsStore() == null )
-                    temp.setMaterialFactorsStore( new MaterialFactorsStore() );
+                DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                        .get( number );
                 MaterialFactorsStore mfb = temp.getMaterialFactorsStore();
                 mfb.setMaterialName( request.getParameter( parameterName ) );
                 temp.setMaterialFactorsStore( mfb );
@@ -111,13 +107,8 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                             9, parameterName.lastIndexOf( '-' ) ) );
             // take what is already there, and add only those fields that have not been made yet
             DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( number );
-            if ( temp.getMaterialFactorsStore() == null ) {
-                temp.setMaterialFactorsStore( new MaterialFactorsStore() );
-            }
             MaterialFactorsStore mfb = temp.getMaterialFactorsStore();
-            if ( mfb.getTreatmentInfo() == null ) mfb.setTreatmentInfo( new ArrayList<String>() );
-            int pos = Collections.binarySearch( mfb.getTreatmentInfo(), request.getParameter( parameterName ) );
-            if ( pos < 0 ) mfb.addTreatmentInfo( request.getParameter( parameterName ) );
+            mfb.addTreatmentInfo( request.getParameter( parameterName ) );
             temp.setMaterialFactorsStore( mfb );
             symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
         } else if ( parameterName.startsWith( "fileFormat" ) ) {
@@ -194,15 +185,14 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             int number = Integer.valueOf( parameterName.substring( 12 ) );
             // take what is already there, and add only those fields that have not been made yet
             DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( number );
-            if ( temp.getMaterialFactorsStore() == null )
-                temp.setMaterialFactorsStore( new MaterialFactorsStore() );
             MaterialFactorsStore mfb = temp.getMaterialFactorsStore();
             mfb.setMaterialType( request.getParameter( parameterName ) );
             temp.setMaterialFactorsStore( mfb );
             symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
         } else if ( parameterName.startsWith( "characteristic" ) ) {
-            // each characteristic cannot be empty
-            if ( request.getParameter( parameterName ) == null || request.getParameter( parameterName ).length() == 0 ) {
+            // each characteristic cannot be empty, and might be multiple selections, which will be separated by commas
+            if ( request.getParameter( parameterName ) == null ||
+                    request.getParameter( parameterName ).length() == 0 ) {
 %>
 <c:redirect url="metaData.jsp">
     <c:param name="errorMsg"
@@ -214,20 +204,10 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     parameterName.substring(
                             14, parameterName.lastIndexOf( '-' ) ) );
             DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( number );
-            if ( temp.getMaterialFactorsStore() == null ) {
-                temp.setMaterialFactorsStore( new MaterialFactorsStore() );
-            } else {
-                if ( !startedMaterialCharacteristics ) {
-                    // store whether or not we've started filling the materialCharacteristics objects, as we need to
-                    // clean them out each time we get here so we don't load duplicates.
-                    startedMaterialCharacteristics = true;
-                    temp.getMaterialFactorsStore().setCharacteristics( new ArrayList<String>() );
-                }
-            }
             MaterialFactorsStore mfb = temp.getMaterialFactorsStore();
-            if ( mfb.getCharacteristics() == null ) mfb.setCharacteristics( new ArrayList<String>() );
-            int pos = Collections.binarySearch( mfb.getCharacteristics(), request.getParameter( parameterName ) );
-            if ( pos < 0 ) mfb.addCharacteristic( request.getParameter( parameterName ) );
+            for ( String singleParameter : request.getParameterValues( parameterName ) ) {
+                mfb.addCharacteristic( singleParameter );
+            }
             temp.setMaterialFactorsStore( mfb );
             symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
         } else {

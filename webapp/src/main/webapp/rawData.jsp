@@ -12,6 +12,8 @@ in this distribution, please see LICENSE.txt
 
 <%@ page import="fugeOM.Common.Protocol.*" %>
 <%@ page import="java.util.*" %>
+<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+<%@ page import="uk.ac.cisban.symba.webapp.util.SymbaFormSessionBean" %>
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -134,11 +136,19 @@ in this distribution, please see LICENSE.txt
             <%
                 // There will never be Protocol Dummies.
                 Map<String, String> topLevelNames = new HashMap<String, String>();
-                for ( Object obj : validUser.getReService().getAllLatestGenericProtocols() ) {
-                    GenericProtocol gp = ( GenericProtocol ) obj;
-                    if ( !gp.getName().contains( "Component" ) ) {
-                        topLevelNames.put( gp.getEndurant().getIdentifier(), gp.getName() );
+                try {
+                    for ( Object obj : validUser.getReService().getAllLatestGenericProtocols() ) {
+                        GenericProtocol gp = ( GenericProtocol ) obj;
+                        if ( !gp.getName().contains( "Component" ) ) {
+                            topLevelNames.put( gp.getEndurant().getIdentifier(), gp.getName() );
+                        }
                     }
+                } catch ( RealizableEntityServiceException e ) {
+                    out.println( "There was an error talking to the database when trying to retrieve the ");
+                    out.println( "names of the protocols for you to choose from. For help, please send this message to " );
+                    out.println( application.getAttribute( "helpEmail" ) );
+                    System.out.println( e.getMessage() );
+                    e.printStackTrace();
                 }
                 // Now add the option element to the HTML
                 for ( String key : topLevelNames.keySet() ) {
@@ -177,7 +187,9 @@ in this distribution, please see LICENSE.txt
         <br>
     </li>
 </ol>
-<% } %>
+<%
+    }
+%>
 
 </fieldset>
 

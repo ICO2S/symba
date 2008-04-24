@@ -25,8 +25,14 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
 <jsp:useBean id="validUser" class="uk.ac.cisban.symba.webapp.util.PersonBean" scope="session"/>
 
+<c:remove var="symbaFormSessionBean"/>
+
 <%
 
+    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+    // casting from Object, even though runtime can handle this.
+    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+    @SuppressWarnings( "unchecked" )
     Map<String, SymbaFormSessionBean> allPossibleMetadata = ( Map<String, SymbaFormSessionBean> ) session.getAttribute(
             "allPossibleMetadata" );
 

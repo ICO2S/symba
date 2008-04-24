@@ -14,6 +14,8 @@ in this distribution, please see LICENSE.txt
 <jsp:include page="checkUser.jsp"/>
 
 <%@ page import="uk.ac.cisban.symba.webapp.util.LoadPerson" %>
+<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+<%@ page import="com.ibm.lsid.LSIDException" %>
 
 <!-- this page is soly used for the logic flow. There is nothing that can be displayed in this page -->
 
@@ -42,12 +44,32 @@ forms field id's match EXACTLY the beans fields. -->
     //and use the LoadPerson objects method to load/update the information
     //into the database
     System.out.println( "VALID USER EMAIL " + validUser.getEmail() );
-    validUser = lp.loadInDB( validUser );
-%>
-<!-- end of scripting -->
+    boolean errorFound = false;    
+    try {
+        session.setAttribute("validUser", lp.loadInDB( validUser );
+    } catch ( LSIDException e ) {
+        errorFound = true;
+        out.println(
+                "There was an error assigning identifiers to your experiment. For help, please send this message to " );
+        out.println( application.getAttribute( "helpEmail" ) );
+        System.out.println( e.getMessage() );
+        e.printStackTrace();
+    } catch ( RealizableEntityServiceException e ) {
+        errorFound = true;
+        out.println( "There was an error talking to the database. For help, please send this message to " );
+        out.println( application.getAttribute( "helpEmail" ) );
+        System.out.println( e.getMessage() );
+        e.printStackTrace();
+    }
 
-<!-- finally redirect and pass a message for the user -->
+    // don't redirect if there has been an exception
+    if ( !errorFound ) {
+%>
 <c:redirect url="detailsChanged.jsp">
     <c:param name="msg"
              value="YOU HAVE UPDATED YOUR DETAILS"/>
 </c:redirect>
+
+<%
+    }
+%>

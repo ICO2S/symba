@@ -44,7 +44,7 @@ public class DisplayFuge {
      * @param sessionUserEndurant the endurant identifier for the person requesting the metadata.
      * @param fuge                the object to display
      * @param reService           the connection to the database to retrieve up-to-date versions
-     * @param out         the location to print out the HTML
+     * @param out                 the location to print out the HTML
      * @return the Map of session beans, one per data file in the FuGE object, with the key being the original
      *         ExternalData object's identifier.
      * @throws fugeOM.service.RealizableEntityServiceException
@@ -60,7 +60,6 @@ public class DisplayFuge {
         // We assume that the top-level fuge object itself is the newest version.
         out.println( "<h3>" );
         out.println( "Experiment Name: " + fuge.getName() );
-        sessionBean.setExperimentName( fuge.getName() );
         sessionBean.setFuGE( fuge );
         sessionBean.setFugeIdentifier( fuge.getIdentifier() );
         sessionBean.setFugeEndurant( fuge.getEndurant().getIdentifier() );
@@ -176,6 +175,7 @@ public class DisplayFuge {
             }
         }
         // We will print out information on a data file basis
+        int dataNumber = 0;
         for ( Object obj : assayGPAs ) {
             if ( obj instanceof GenericProtocolApplication ) {
                 GenericProtocolApplication dataFilledGPA = ( GenericProtocolApplication ) obj;
@@ -223,7 +223,7 @@ public class DisplayFuge {
                     gpaAssociatedWithTopLevelProtocol = getLatestParentGPA(
                             twoAboveAssayGPAs, oneLevelUpGPA.getIdentifier() );
                     oneAboveAssayProtocolEndurant = oneLevelUpGPA.getGenericProtocol().getEndurant().getIdentifier();
-                    oneAboveAssayProtocolName = oneLevelUpGPA.getGenericProtocol().getName();                         
+                    oneAboveAssayProtocolName = oneLevelUpGPA.getGenericProtocol().getName();
                 }
                 currentSessionBean.setTopLevelProtocolEndurant(
                         gpaAssociatedWithTopLevelProtocol.getGenericProtocol().getEndurant().getIdentifier() );
@@ -234,7 +234,6 @@ public class DisplayFuge {
                 // overwriting the current store object.
                 String externalDataIdentifier = "";
                 List<DatafileSpecificMetadataStore> datafileSpecificMetadataStores = new ArrayList<DatafileSpecificMetadataStore>();
-                int dataNumber = 0;
                 for ( Object outputDataObj : dataFilledGPA.getGenericOutputData() ) {
                     if ( outputDataObj instanceof ExternalData ) {
                         dataNumber++;
@@ -243,14 +242,12 @@ public class DisplayFuge {
 
 
                         if ( !twoAboveAssayGPAs.isEmpty() ) {
-                            store.setChosenChildProtocolEndurant( oneAboveAssayProtocolEndurant );
-                            store.setChosenChildProtocolName( oneAboveAssayProtocolName );
-                            store.setChosenSecondLevelChildProtocolEndurant( assayProtocolEndurant );
-                            store.setChosenSecondLevelChildProtocolName( assayProtocolName );
-                        } else {
-                            store.setChosenChildProtocolEndurant( assayProtocolEndurant );
-                            store.setChosenChildProtocolName( assayProtocolName );
+                            store.getOneLevelUpActionSummary()
+                                    .setChosenChildProtocolEndurant( oneAboveAssayProtocolEndurant );
+                            store.getOneLevelUpActionSummary().setChosenChildProtocolName( oneAboveAssayProtocolName );
                         }
+                        store.getAssayActionSummary().setChosenChildProtocolEndurant( assayProtocolEndurant );
+                        store.getAssayActionSummary().setChosenChildProtocolName( assayProtocolName );
 
                         // add the information for this data file to the out and a new SymbaFormSessionBean
                         ExternalData externalData = ( ExternalData ) outputDataObj;
@@ -309,33 +306,34 @@ public class DisplayFuge {
                                     externalData.getFileFormat().getEndurant().getIdentifier() );
                         }
                         // print and save the current GenericAction associated with this data-filled GPA
-                        ActionApplication oneLevelUpActionApplication = findActionApplication(
+                        ActionApplication dataFilledCallingAction = findActionApplication(
                                 oneLevelUpGPA, dataFilledGPA.getIdentifier() );
-                        if ( oneLevelUpActionApplication != null ) {
+                        if ( dataFilledCallingAction != null ) {
                             out.println( "<li>This data file was created in the following step of your experiment:" );
-                            if ( store.getChosenSecondLevelChildProtocolName() != null &&
-                                    store.getChosenSecondLevelChildProtocolName().length() > 0 ) {
-                                out.println(store.getChosenSecondLevelChildProtocolName() + ", part of the " );
-                            }
-                            out.println( store.getChosenChildProtocolName() + "," );
-                            if ( twoAboveAssayGPAs.isEmpty() ) {
-                                out.println( "</li>" );
-                                store.setChosenActionEndurant(
-                                        oneLevelUpActionApplication.getAction().getEndurant().getIdentifier() );
-                            } else {
+                            store.getAssayActionSummary().setChosenActionEndurant(
+                                    dataFilledCallingAction.getAction().getEndurant().getIdentifier() );
+                            store.getAssayActionSummary()
+                                    .setChosenActionName( dataFilledCallingAction.getAction().getName() );
+                            if ( !twoAboveAssayGPAs.isEmpty() ) {
                                 // if there is a second factor choice associated with this action, fill out that, too.
-                                // these don't need to be printed out.
-                                ActionApplication twoLevelsUpActionApplication = findActionApplication(
+                                ActionApplication oneLevelUpCallingAction = findActionApplication(
                                         getLatestParentGPA(
                                                 twoAboveAssayGPAs, oneLevelUpGPA.getIdentifier() ),
                                         oneLevelUpGPA.getIdentifier() );
-                                if ( twoLevelsUpActionApplication != null ) {
-                                    store.setChosenActionEndurant(
-                                            twoLevelsUpActionApplication.getAction().getEndurant().getIdentifier() );
-                                    store.setChosenSecondLevelActionEndurant(
-                                            oneLevelUpActionApplication.getAction().getEndurant().getIdentifier() );
+                                if ( oneLevelUpCallingAction != null ) {
+                                    store.getOneLevelUpActionSummary().setChosenActionEndurant(
+                                            oneLevelUpCallingAction.getAction().getEndurant().getIdentifier() );
+                                    store.getOneLevelUpActionSummary().setChosenActionName(
+                                            oneLevelUpCallingAction.getAction().getName() );
                                 }
                             }
+                            out.print( store.getAssayActionSummary().getChosenActionName() );
+                            if ( store.getOneLevelUpActionSummary() != null &&
+                                    store.getOneLevelUpActionSummary().getChosenActionName() != null ) {
+                                out.println(
+                                        ", part of the " + store.getOneLevelUpActionSummary().getChosenActionName() );
+                            }
+                            out.println( "</li>" );
                         }
 
                         // now get the information from the EquipmentApplications
@@ -379,7 +377,8 @@ public class DisplayFuge {
                                     equipmentSummary );
                         }
 
-                        if ( !dataFilledGPA.getParameterValues().isEmpty() || !dataFilledGPA.getDescriptions().isEmpty() ) {
+                        if ( !dataFilledGPA.getParameterValues().isEmpty() ||
+                                !dataFilledGPA.getDescriptions().isEmpty() ) {
                             GenericProtocolApplicationSummary protocolApplicationSummary = new GenericProtocolApplicationSummary();
                             // print and save all atomic parameters
                             out.println( "<li>Information about the protocol selected" );

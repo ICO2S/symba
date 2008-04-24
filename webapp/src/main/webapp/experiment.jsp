@@ -60,6 +60,7 @@ in this distribution, please see LICENSE.txt
                                     // unchecked cast warning provided by javac when using generics in Lists/Sets and
                                     // casting from Object, even though runtime can handle this.
                                     // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+                                    @SuppressWarnings("unchecked")
                                     List<String> summary = ( List<String> ) obj;
                                     String optionValueStart = "<option value=\"" + summary.get( 0 ) + "\"";
                                     if ( symbaFormSessionBean.getFugeIdentifier() != null &&

@@ -85,23 +85,16 @@ http://www.programmersheaven.com/mb/jsp/363016/363016/ReadMessage.aspx
             info = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii );
         }
 
-        // ensure that we choose the 2nd-level "chosen child" information, if it is present
-        String chosenChildProtocolEndurant, chosenChildProtocolName;
-        if ( info.getChosenSecondLevelChildProtocolEndurant() != null &&
-                info.getChosenSecondLevelChildProtocolEndurant().length() > 0 ) {
-            chosenChildProtocolEndurant = info.getChosenSecondLevelChildProtocolEndurant();
-            chosenChildProtocolName = info.getChosenSecondLevelChildProtocolName();
-        } else {
-            chosenChildProtocolEndurant = info.getChosenChildProtocolEndurant();
-            chosenChildProtocolName = info.getChosenChildProtocolName();
-        }
-
         String selectDescName = "actionListDescription::" + iii;
         out.println( "<br/>" );
         out.println( "<hr/>" );
         // overriding templateStore, if present.
-        out.println( "<h3>Information for " + symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getFriendlyId() + "</h3>" );
-        out.println( "<p>Original name: " + symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() + "</p>" );
+        out.println(
+                "<h3>Information for " +
+                        symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getFriendlyId() + "</h3>" );
+        out.println(
+                "<p>Original name: " +
+                        symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() + "</p>" );
 
         // First, print out the form fields for the Materials.
         // sometimes, we may get factors from Materials associated with the experiment. Search the materials
@@ -118,8 +111,10 @@ http://www.programmersheaven.com/mb/jsp/363016/363016/ReadMessage.aspx
                     requestTreatment = true;
                 }
 
-                // the dummy genericMaterial name should contain either the chosenChildProtocolName or the
-                if ( genericMaterial.getName().trim().contains( chosenChildProtocolName ) ) {
+                // the dummy genericMaterial name should contain info.getAssayActionSummary().getChosenChildProtocolName()
+                if ( genericMaterial.getName()
+                        .trim()
+                        .contains( info.getAssayActionSummary().getChosenChildProtocolName() ) ) {
                     // The displayName is just the name for this group of questions we are about to give to the user.
                     // Should be something like "Material Characteristics".
                     //                out.println( "Match Found<br/>" );
@@ -203,6 +198,15 @@ http://www.programmersheaven.com/mb/jsp/363016/363016/ReadMessage.aspx
                             out.println( "<ol>" );
                             for ( String singleTreatment : info.getMaterialFactorsStore().getTreatmentInfo() ) {
                                 out.println( "<li>Treatment already recorded: " + singleTreatment + "</li>" );
+                                // If we are using the template store right now, then we need to copy the
+                                // treatments from the template store to the session bean, as otherwise (because they
+                                // don't get stored in the next jsp) they will be wiped.
+                                if ( session.getAttribute( "templateStore" ) != null ) {
+                                    symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                                            .get( iii )
+                                            .getMaterialFactorsStore()
+                                            .addTreatmentInfo( singleTreatment );
+                                }
                             }
                             out.println( "</ol>" );
                             out.println( "You may add additional treatments by entering them below." );
@@ -334,9 +338,9 @@ http://www.programmersheaven.com/mb/jsp/363016/363016/ReadMessage.aspx
                                         info.getMaterialFactorsStore().getCharacteristics() != null ) {
                                     for ( String endurantIdentifier : info.getMaterialFactorsStore()
                                             .getCharacteristics() ) {
+                                        // there could be more than one match, if allowing multiple selects
                                         if ( endurantIdentifier.equals( ot.getEndurant().getIdentifier() ) ) {
                                             inputStartValue += " selected=\"selected\"";
-                                            break; // found a match.
                                         }
                                     }
                                 }
@@ -470,13 +474,16 @@ http://www.programmersheaven.com/mb/jsp/363016/363016/ReadMessage.aspx
                 //                            genericProtocolApplication.getName().trim() +
                 //                            ") with info.getChosenChildProtocolName() (" + info.getChosenChildProtocolName() +
                 //                            ")<br/>" );
-                if ( genericProtocolApplication.getName().trim().contains( chosenChildProtocolName ) ) {
+                if ( genericProtocolApplication.getName()
+                        .trim()
+                        .contains( info.getAssayActionSummary().getChosenChildProtocolName() ) ) {
                     out.println( "<fieldset>" );
                     // make a shorter version of the chosen child protocol name
-                    String shortProtocolName = chosenChildProtocolName;
-                    if ( chosenChildProtocolName.contains( "(Component of" ) ) {
-                        shortProtocolName = chosenChildProtocolName.substring(
-                                0, chosenChildProtocolName.indexOf( "(Component of" ) );
+                    String shortProtocolName = info.getAssayActionSummary().getChosenChildProtocolName();
+                    if ( info.getAssayActionSummary().getChosenChildProtocolName().contains( "(Component of" ) ) {
+                        shortProtocolName = info.getAssayActionSummary().getChosenChildProtocolName().substring(
+                                0,
+                                info.getAssayActionSummary().getChosenChildProtocolName().indexOf( "(Component of" ) );
                     }
                     out.println( "<legend>Further Details of the " + shortProtocolName + "</legend>" );
                     out.println( "<ol>" );
@@ -584,7 +591,7 @@ http://www.programmersheaven.com/mb/jsp/363016/363016/ReadMessage.aspx
         GenericProtocol chosenProtocol;
         try {
             chosenProtocol = ( GenericProtocol ) validUser.getReService()
-                    .findLatestByEndurant( chosenChildProtocolEndurant );
+                    .findLatestByEndurant( info.getAssayActionSummary().getChosenChildProtocolEndurant() );
             chosenProtocol = ( GenericProtocol ) validUser.getReService().greedyGet( chosenProtocol );
 
             if ( chosenProtocol.getGenPrtclToEquip() != null ) {
@@ -771,7 +778,7 @@ http://www.programmersheaven.com/mb/jsp/363016/363016/ReadMessage.aspx
 
     }
 
-    if (session.getAttribute("templateStore") != null) {
+    if ( session.getAttribute( "templateStore" ) != null ) {
         session.removeAttribute( "templateStore" );
     }
 %>

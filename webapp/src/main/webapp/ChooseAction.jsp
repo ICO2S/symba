@@ -71,55 +71,37 @@ in this distribution, please see LICENSE.txt
     // re-print the existing values if present
     if ( symbaFormSessionBean.isProtocolLocked() ) {
         for ( int iii = 0; iii < symbaFormSessionBean.getDatafileSpecificMetadataStores().size(); iii++ ) {
+
             // if there is a template store, then set session variables FOR THIS PAGE ONLY for the ones that are only in
             //  the templateStore right now. The rest will get filled normally in metaDataValidate.jsp
             if ( session.getAttribute( "templateStore" ) != null ) {
-                DatafileSpecificMetadataStore info = ( DatafileSpecificMetadataStore ) session.getAttribute(
+                DatafileSpecificMetadataStore template = ( DatafileSpecificMetadataStore ) session.getAttribute(
                         "templateStore" );
                 symbaFormSessionBean.getDatafileSpecificMetadataStores()
                         .get( iii )
-                        .setChosenActionEndurant( info.getChosenActionEndurant() );
+                        .setAssayActionSummary( template.getAssayActionSummary() );
                 symbaFormSessionBean.getDatafileSpecificMetadataStores()
                         .get( iii )
-                        .setChosenChildProtocolEndurant( info.getChosenChildProtocolEndurant() );
-                symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                        .get( iii )
-                        .setChosenChildProtocolName( info.getChosenChildProtocolName() );
-                symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                        .get( iii )
-                        .setChosenSecondLevelActionEndurant( info.getChosenSecondLevelActionEndurant() );
-                symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                        .get( iii )
-                        .setChosenSecondLevelChildProtocolEndurant( info.getChosenSecondLevelChildProtocolEndurant() );
-                symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                        .get( iii )
-                        .setChosenSecondLevelChildProtocolName( info.getChosenSecondLevelChildProtocolName() );
+                        .setOneLevelUpActionSummary( template.getOneLevelUpActionSummary() );
             }
-            if ( symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getChosenChildProtocolName() !=
-                    null ) {
+
+            DatafileSpecificMetadataStore currentStore = symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                    .get( iii );
+            if ( currentStore.getAssayActionSummary() != null ) {
                 out.println( "<ol><li>" );
                 out.println( "<strong>" );
-                // oldFilename will not be in the template, but alwaysin the session value
-                out.println(
-                        symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() + ": " );
+                out.println( currentStore.getOldFilename() + ": " );
                 out.println( "</strong><br/>" );
                 out.println( "You have already chosen the following protocol: " );
                 out.println( "<strong>" );
-                out.println(
-                        symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                                .get( iii )
-                                .getChosenChildProtocolName() + ". " );
+                out.println( currentStore.getAssayActionSummary().getChosenActionName() + ". " );
                 out.println( "</strong><br/>" );
-                if ( symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                        .get( iii )
-                        .getChosenSecondLevelChildProtocolName() != null ) {
+                if ( currentStore.getOneLevelUpActionSummary() != null &&
+                        currentStore.getOneLevelUpActionSummary().getChosenActionName() != null) {
                     out.println( "<br/>" );
-                    out.println( "You have already chosen the following child of the above protocol: " );
+                    out.println( "You have already chosen the following parent of the above protocol: " );
                     out.println( "<strong>" );
-                    out.println(
-                            symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                                    .get( iii )
-                                    .getChosenSecondLevelChildProtocolName() + ". " );
+                    out.println( currentStore.getOneLevelUpActionSummary().getChosenActionName() + ". " );
                     out.println( "</strong><br/>" );
                 }
                 out.println( "You can no longer change anything on this page. If you have made a mistake," );
@@ -130,21 +112,24 @@ in this distribution, please see LICENSE.txt
             } else {
                 // oldFilename will not be in the template, but alwaysin the session value
                 out.println(
-                        "Error trying to retrieve the protocol for the file: " +
-                                symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() );
+                        "Error trying to retrieve the protocol for the file: " + currentStore.getOldFilename() );
                 out.println( "Please send this message to " + application.getAttribute( "helpEmail" ) + "<br/>" );
             }
         }
     } else {
         for ( int iii = 0; iii < symbaFormSessionBean.getDatafileSpecificMetadataStores().size(); iii++ ) {
 
-            // selectAmongTopLevelActions will be filled with the actions provided directly inside the top-level protocol
-            String selectAmongTopLevelActions = "actionList" + iii;
-            List<String> selectAmongTopLevelActionsList = new ArrayList<String>();
+            DatafileSpecificMetadataStore currentStore = symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                    .get( iii );
 
-            // selectAmongLowerLevelActions will be filled with the actions provided in the protocols listed as actions in the top-level protocol
-            String selectAmongLowerLevelActions = "actionListFactor" + iii;
-            List<String> selectAmongLowerLevelActionsList = new ArrayList<String>();
+            // selectAmongAssayActions will be filled with the actions associated with the assay protocol
+            String selectAmongAssayActions = "actionListAssay" + iii;
+            List<String> directChildrenOfTopLevel = new ArrayList<String>();
+
+            // selectAmongOneLevelUpActions will be filled with the actions provided one level up from the assay
+            // protocol, if present
+            String selectAmongOneLevelUpActions = "actionListOneLevelUp" + iii;
+            List<String> grandchildrenOfTopLevel = new ArrayList<String>();
 
             // Print out any protocol that is present as a GenericAction in another protocol, and can therefore
             // have output/input files.
@@ -155,8 +140,8 @@ in this distribution, please see LICENSE.txt
                     validUser.getReService(), new CisbanDescribableHelper( validUser.getReService() ) ) );
 
             // loop through these protocols. If they are actions of the top-level protocol, put them into the select
-            // menu for selectAmongTopLevelActions. If they are actions one level below those of the top-level protocol, put them in
-            // the select menu for selectAmongLowerLevelActions.
+            // menu for selectAmongAssayActions. If they are actions one level below those of the top-level protocol, put them in
+            // the select menu for selectAmongOneLevelUpActions.
 //        out.println(
 //                "Searching for child protocols for top level protocol " + symbaFormSessionBean.getTopLevelProtocolEndurant() +
 //                        " with name " + symbaFormSessionBean.getTopLevelProtocolName() + "<br/>" );
@@ -171,7 +156,6 @@ in this distribution, please see LICENSE.txt
 //        out.println( "Number of associated protocols: " + associatedProtocols.size() + "<br/>" );
 
                 for ( Protocol protocol : associatedProtocols ) {
-
                     GenericProtocol gp = ( GenericProtocol ) protocol;
 
 //            out.println(
@@ -188,7 +172,7 @@ in this distribution, please see LICENSE.txt
                         for ( GenericAction genericAction : genericActions ) {
                             if ( count == genericAction.getActionOrdinal() ) {
                                 // If it is an action of the top-level protocol, print out the name in the
-                                // selectAmongTopLevelActions menu. If it is such an action, then the containing
+                                // selectAmongAssayActions menu. If it is such an action, then the containing
                                 // protocol will match the symbaFormSessionBean.getTopLevelProtocolName()
                                 if ( gp.getName().trim()
                                         .equals( symbaFormSessionBean.getTopLevelProtocolName().trim() ) ) {
@@ -197,24 +181,55 @@ in this distribution, please see LICENSE.txt
                                     if ( modified.startsWith( "Step Containing the" ) ) {
                                         modified = modified.substring( 20 );
                                     }
-
+                                    String actionOwningProtocolEndurant = genericAction.getGenProtocolRef()
+                                            .getEndurant()
+                                            .getIdentifier();
                                     String inputStartValue =
                                             "<option value= \"" + genericAction.getEndurant().getIdentifier() + "::" +
-                                                    genericAction.getGenProtocolRef().getEndurant().getIdentifier() +
+                                                    genericAction.getName() + "::" + actionOwningProtocolEndurant +
                                                     "::" +
                                                     genericAction.getGenProtocolRef().getName() + "\"";
-                                    selectAmongTopLevelActionsList.add(
+                                    // could match either the assay action summary or the one level up summary, depending
+                                    // on the type of investigation
+                                    if ( ( currentStore.getAssayActionSummary().getChosenChildProtocolEndurant() != null
+                                            && currentStore.getAssayActionSummary()
+                                            .getChosenChildProtocolEndurant()
+                                            .equals( actionOwningProtocolEndurant ) ) ||
+                                            ( currentStore.getOneLevelUpActionSummary()
+                                                    .getChosenChildProtocolEndurant() != null &&
+                                                    currentStore.getOneLevelUpActionSummary()
+                                                            .getChosenChildProtocolEndurant()
+                                                            .equals( actionOwningProtocolEndurant ) ) ) {
+                                        inputStartValue += " selected=\"selected\"";
+                                    }
+                                    directChildrenOfTopLevel.add(
                                             inputStartValue + ">" + modified + "</option>" );
                                 }
-                                // Otherwise, print out the name in the selectAmongLowerLevelActions menu.
+                                // Otherwise, print out the name in the selectAmongOneLevelUpActions menu.
                                 // Currently only works for Actions that are no more than one removed from the top-level actions.
                                 else {
+                                    String actionOwningProtocolEndurant = genericAction.getGenProtocolRef()
+                                            .getEndurant()
+                                            .getIdentifier();
                                     String inputStartValue =
                                             "<option value= \"" + genericAction.getEndurant().getIdentifier() + "::" +
-                                                    genericAction.getGenProtocolRef().getEndurant().getIdentifier() +
+                                                    genericAction.getName() + "::" + actionOwningProtocolEndurant +
                                                     "::" +
                                                     genericAction.getGenProtocolRef().getName() + "\"";
-                                    selectAmongLowerLevelActionsList.add(
+                                    // could match either the assay action summary or the one level up summary, depending
+                                    // on the type of investigation
+                                    if ( ( currentStore.getAssayActionSummary().getChosenChildProtocolEndurant() != null
+                                            && currentStore.getAssayActionSummary()
+                                            .getChosenChildProtocolEndurant()
+                                            .equals( actionOwningProtocolEndurant ) ) ||
+                                            ( currentStore.getOneLevelUpActionSummary()
+                                                    .getChosenChildProtocolEndurant() != null &&
+                                                    currentStore.getOneLevelUpActionSummary()
+                                                            .getChosenChildProtocolEndurant()
+                                                            .equals( actionOwningProtocolEndurant ) ) ) {
+                                        inputStartValue += " selected=\"selected\"";
+                                    }
+                                    grandchildrenOfTopLevel.add(
                                             inputStartValue + ">" + genericAction.getName() + "</option>" );
                                 }
                                 break;
@@ -223,24 +238,25 @@ in this distribution, please see LICENSE.txt
                     }
                 }
 
-                // now print out both select menus, where present. The top-level menu will always be present, but the
-                // lower-level menu is not always there.
+                // now print out both select menus, where present. If there are grandchildren of the top level protocol,
+                // then these are the assays. Otherwise the direct children of the top-level protocol are the assays
 
-                // Top-Level Menu
                 boolean hasLabel = false;
                 out.println( "<li>" );
-                out.println(
-                        symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() +
-                                ": <br/>" );
-                for ( String selectChoice : selectAmongTopLevelActionsList ) {
+                out.println( currentStore.getOldFilename() + ": <br/>" );
+                String selectValue = selectAmongAssayActions;
+                if ( !grandchildrenOfTopLevel.isEmpty() ) {
+                    selectValue = selectAmongOneLevelUpActions;
+                }
+                for ( String selectChoice : directChildrenOfTopLevel ) {
                     if ( !hasLabel ) {
                         out.println(
-                                "<label for=\"" + selectAmongTopLevelActions +
+                                "<label for=\"" + selectValue +
                                         "\">Please select the protocol that produced your data:</label>" );
                         out.println( "<!-- Top Level -->" );
                         out.println(
-                                "<select id=\"" + selectAmongTopLevelActions + "\" name=\"" +
-                                        selectAmongTopLevelActions +
+                                "<select id=\"" + selectValue + "\" name=\"" +
+                                        selectValue +
                                         "\">" );
                         hasLabel = true;
                     }
@@ -260,20 +276,20 @@ in this distribution, please see LICENSE.txt
                                     "had something to do with the top-level pull-down menu</p>" );
                 }
 
-                // Lower-Level Menu
+                // Possible parents of the assay that aren't the top-level protocol
                 hasLabel = false;
-                if ( !selectAmongLowerLevelActionsList.isEmpty() ) {
+                if ( !grandchildrenOfTopLevel.isEmpty() ) {
                     out.println( "<li>" );
-                    for ( String selectChoice : selectAmongLowerLevelActionsList ) {
+                    for ( String selectChoice : grandchildrenOfTopLevel ) {
                         if ( !hasLabel ) {
                             out.println(
-                                    "<label for=\"" + selectAmongLowerLevelActions +
+                                    "<label for=\"" + selectAmongAssayActions +
                                             "\">Please select the child protocol of the protocol above that produced your data:" +
                                             "</label>" );
                             out.println( "<!-- Lower Level -->" );
                             out.println(
-                                    "<select id=\"" + selectAmongLowerLevelActions + "\" name=\"" +
-                                            selectAmongLowerLevelActions + "\">" );
+                                    "<select id=\"" + selectAmongAssayActions + "\" name=\"" +
+                                            selectAmongAssayActions + "\">" );
                             hasLabel = true;
                         }
                         out.println( selectChoice );

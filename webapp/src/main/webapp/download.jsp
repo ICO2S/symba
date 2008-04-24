@@ -10,7 +10,6 @@ in this distribution, please see LICENSE.txt
 <!-- $Author$-->
 <!-- $HeadURL$-->
 
-<%@ page import="java.io.File" %>
 <%@ page import="uk.ac.cisban.symba.webapp.util.DatafileSpecificMetadataStore" %>
 
 <!-- This include will validate the user -->

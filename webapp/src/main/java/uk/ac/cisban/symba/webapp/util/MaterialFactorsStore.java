@@ -1,9 +1,6 @@
 package uk.ac.cisban.symba.webapp.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
  * This file is part of SyMBA.
@@ -29,17 +26,18 @@ public class MaterialFactorsStore {
     private String materialType;
 
     // free text for treatment type, dose and length of treatment. One String per treatment type
-    private List<String> treatmentInfo;
+    // having a linked hash set preserves the order while at the same time preventing treatment duplicates
+    private LinkedHashSet<String> treatmentInfo;
 
     // these are all stored as Identifiers in the characteristics array.
-    private List<String> characteristics;
+    private LinkedHashSet<String> characteristics;
 
     // the OntologyReplacement details
     private Map<String,String> ontologyReplacements;
 
     public MaterialFactorsStore() {
-        this.treatmentInfo = new ArrayList<String>();
-        this.characteristics = new ArrayList<String>();
+        this.treatmentInfo = new LinkedHashSet<String>();
+        this.characteristics = new LinkedHashSet<String>();
         this.ontologyReplacements = new HashMap<String,String>();
     }
 
@@ -68,11 +66,11 @@ public class MaterialFactorsStore {
         this.createdMaterial = createdMaterial;
     }
 
-    public List<String> getTreatmentInfo() {
+    public LinkedHashSet<String> getTreatmentInfo() {
         return treatmentInfo;
     }
 
-    public void setTreatmentInfo( ArrayList<String> treatmentInfo ) {
+    public void setTreatmentInfo( LinkedHashSet<String> treatmentInfo ) {
         this.treatmentInfo = treatmentInfo;
     }
 
@@ -88,11 +86,11 @@ public class MaterialFactorsStore {
         this.materialType = materialType;
     }
 
-    public List<String> getCharacteristics() {
+    public LinkedHashSet<String> getCharacteristics() {
         return characteristics;
     }
 
-    public void setCharacteristics( ArrayList<String> characteristics ) {
+    public void setCharacteristics( LinkedHashSet<String> characteristics ) {
         this.characteristics = characteristics;
     }
 
@@ -110,29 +108,5 @@ public class MaterialFactorsStore {
 
     public void putOntologyReplacementsPair( String key, String value ) {
         this.ontologyReplacements.put( key, value );
-    }
-
-    public MaterialFactorsStore copy() {
-        MaterialFactorsStore newStore = new MaterialFactorsStore();
-
-        newStore.materialName = materialName;
-
-        newStore.createdMaterial = createdMaterial;
-
-        newStore.materialType = materialType;
-
-        for (String treatment : treatmentInfo) {
-            newStore.addTreatmentInfo( treatment );
-        }
-
-        for (String characteristic : characteristics) {
-            newStore.addCharacteristic( characteristic );
-        }
-
-        for ( String ontReplacement : ontologyReplacements.keySet() ) {
-            newStore.putOntologyReplacementsPair( ontReplacement, ontologyReplacements.get( ontReplacement ) );
-        }
-
-        return newStore;
     }
 }

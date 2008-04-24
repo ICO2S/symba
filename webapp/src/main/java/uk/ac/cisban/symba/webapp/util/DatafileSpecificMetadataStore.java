@@ -33,12 +33,8 @@ public class DatafileSpecificMetadataStore {
     private String fileFormat;
     private String oldFilename; // the original filename, to make it easier for users to determine which file they're annotating
 
-    private String chosenActionEndurant; // the endurant of the action selected
-    private String chosenChildProtocolName; // the name of the protocol associated with the chosenActionEndurant
-    private String chosenChildProtocolEndurant; // the endurant of the protocol associated with the chosenActionEndurant
-    private String chosenSecondLevelActionEndurant; // only used when using 2nd-level protocols: the endurant of the 2nd-level action selected
-    private String chosenSecondLevelChildProtocolName;  // only used when using 2nd-level protocols: the name of the protocol associated with the chosenSecondLevelActionEndurant
-    private String chosenSecondLevelChildProtocolEndurant; // only used when using 2nd-level protocols: the endurant of the protocol associated with the chosenSecondLevelActionEndurant
+    private ActionSummary assayActionSummary; // information regarding the selected action associated with the assay
+    private ActionSummary oneLevelUpActionSummary; // information regarding the selected action one level up from the assay, IF PRESENT.
 
     private Map<String, GenericEquipmentSummary> genericEquipmentInfo; // the key is the equipment endurant id
     private Map<String, GenericProtocolApplicationSummary> genericProtocolApplicationInfo;  // the key is the GPA's Parent GenericProtocol endurant id
@@ -48,6 +44,11 @@ public class DatafileSpecificMetadataStore {
     public DatafileSpecificMetadataStore() {
         genericEquipmentInfo = new HashMap<String, GenericEquipmentSummary>();
         genericProtocolApplicationInfo = new HashMap<String, GenericProtocolApplicationSummary>();
+
+        assayActionSummary = new ActionSummary();
+        oneLevelUpActionSummary = new ActionSummary();
+
+        materialFactorsStore = new MaterialFactorsStore();
     }
 
     public File getDataFile() {
@@ -85,14 +86,6 @@ public class DatafileSpecificMetadataStore {
         this.endurantLsid = endurantLsid;
     }
 
-    public String getChosenActionEndurant() {
-        return chosenActionEndurant;
-    }
-
-    public void setChosenActionEndurant( String chosenActionEndurant ) {
-        this.chosenActionEndurant = chosenActionEndurant;
-    }
-
     public String getFriendlyId() {
         return friendlyId;
     }
@@ -102,23 +95,19 @@ public class DatafileSpecificMetadataStore {
     }
 
     public void clear() {
-        this.chosenActionEndurant = "";
         this.dataFile = null;
         this.barray = null;
         this.endurantLsid = "";
         this.friendlyId = "";
-        this.chosenActionEndurant = "";
         this.dataFileDescription = "";
         this.fileFormat = "";
         this.oldFilename = "";
 
-        this.chosenChildProtocolName = "";
-        this.chosenChildProtocolEndurant = "";
-        this.chosenSecondLevelChildProtocolName = "";
-        this.chosenSecondLevelChildProtocolEndurant = "";
+        this.assayActionSummary = new ActionSummary();
+        this.oneLevelUpActionSummary = new ActionSummary();
+
         this.genericEquipmentInfo.clear();
         this.genericProtocolApplicationInfo.clear();
-
         this.materialFactorsStore.clear();
     }
 
@@ -128,14 +117,6 @@ public class DatafileSpecificMetadataStore {
 
     public void setDataFileDescription( String dataFileDescription ) {
         this.dataFileDescription = dataFileDescription;
-    }
-
-    public String getChosenSecondLevelActionEndurant() {
-        return chosenSecondLevelActionEndurant;
-    }
-
-    public void setChosenSecondLevelActionEndurant( String chosenSecondLevelActionEndurant ) {
-        this.chosenSecondLevelActionEndurant = chosenSecondLevelActionEndurant;
     }
 
     public MaterialFactorsStore getMaterialFactorsStore() {
@@ -162,38 +143,6 @@ public class DatafileSpecificMetadataStore {
         this.oldFilename = oldFilename;
     }
 
-    public String getChosenChildProtocolName() {
-        return chosenChildProtocolName;
-    }
-
-    public void setChosenChildProtocolName( String chosenChildProtocolName ) {
-        this.chosenChildProtocolName = chosenChildProtocolName;
-    }
-
-    public String getChosenChildProtocolEndurant() {
-        return chosenChildProtocolEndurant;
-    }
-
-    public void setChosenChildProtocolEndurant( String chosenChildProtocolEndurant ) {
-        this.chosenChildProtocolEndurant = chosenChildProtocolEndurant;
-    }
-
-    public String getChosenSecondLevelChildProtocolName() {
-        return chosenSecondLevelChildProtocolName;
-    }
-
-    public void setChosenSecondLevelChildProtocolName( String chosenSecondLevelChildProtocolName ) {
-        this.chosenSecondLevelChildProtocolName = chosenSecondLevelChildProtocolName;
-    }
-
-    public String getChosenSecondLevelChildProtocolEndurant() {
-        return chosenSecondLevelChildProtocolEndurant;
-    }
-
-    public void setChosenSecondLevelChildProtocolEndurant( String chosenSecondLevelChildProtocolEndurant ) {
-        this.chosenSecondLevelChildProtocolEndurant = chosenSecondLevelChildProtocolEndurant;
-    }
-
     public Map<String, GenericEquipmentSummary> getGenericEquipmentInfo() {
         return genericEquipmentInfo;
     }
@@ -216,5 +165,21 @@ public class DatafileSpecificMetadataStore {
 
     public void putGenericProtocolApplicationInfoValue( String key, GenericProtocolApplicationSummary summary ) {
         this.genericProtocolApplicationInfo.put( key, summary );
+    }
+
+    public ActionSummary getAssayActionSummary() {
+        return assayActionSummary;
+    }
+
+    public void setAssayActionSummary( ActionSummary assayActionSummary ) {
+        this.assayActionSummary = assayActionSummary;
+    }
+
+    public ActionSummary getOneLevelUpActionSummary() {
+        return oneLevelUpActionSummary;
+    }
+
+    public void setOneLevelUpActionSummary( ActionSummary oneLevelUpActionSummary ) {
+        this.oneLevelUpActionSummary = oneLevelUpActionSummary;
     }
 }

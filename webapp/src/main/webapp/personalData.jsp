@@ -45,7 +45,6 @@ any necissary scripting code in a jsp (ie stuff not in the JSTL -->
             onClick="return popup(this, 'notes')"> [ Why? ] </a></h3>
 
 
-    <p>
         <!-- This is the form presented to the user. The information on the form is pre
 filled from information held in the session persistant person bean -->
 
@@ -77,7 +76,6 @@ filled from information held in the session persistant person bean -->
         --%>
 
 
-    </p>
     <br>
 
     <jsp:include page="helpAndComments.jsp"/>

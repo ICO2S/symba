@@ -11,17 +11,15 @@
     </bannerRight>
     <body>
         <links>
-            <item name="CISBAN" href="http://www.cisban.ac.uk"/>
+            <item name="SyMBA Home" href="http://symba.sourceforge.net"/>
         </links>
 
         <menu name="SyMBA Information">
-            <item name="SyMBA Home" href="index.html"/>
-            <item name="General Information" href="symba-books/general-information/index.html"/>
-            <item name="Installation" href="symba-books/installation/index.html"/>
-            <item name="Test Installation Information" href="details.html"/>
-            <item name="Future Plans" href="plans.html"/>
+            <item name="SyMBA Home" href="../index.html"/>
+            <item name="General Information" href="general-information/index.html"/>
+            <item name="Installation" href="installation/index.html"/>
+            <item name="Test Installation Information" href="../details.html"/>
+            <item name="Future Plans" href="../plans.html"/>
         </menu>
-
-        <menu ref="reports"/>
     </body>
 </project>

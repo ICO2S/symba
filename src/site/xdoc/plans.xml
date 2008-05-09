@@ -6,10 +6,19 @@
         <title>SyMBA</title>
     </properties>
     <meta name="keyword"
-          content="SyMBA, Systems Biology, Data Archive, CISBAN, FuGE, Computational Biology, Ageing, Aging, Nutrition, Kirkwood, Biological Modelling, Biological Modeling"/>
+          content="SyMBA, Systems Biology, Data Archive, CISBAN, FuGE, Computational Biology, Metadata"/>
     <body>
         <section name="Planned Improvements to SyMBA">
-
+            <p>
+                There is now a <a href="http://mygrid.ncl.ac.uk/symba">project management website for SyMBA</a>, which
+                has milestones and task lists. You can log-on with a read-only account with the username and password
+                both "symba-public". Please report any misuse of this account to the 
+                symba-devel.AT.lists.DOT.sourceforge.DOT.net
+            </p>
+            <p>
+                The older, original task list is below. I'll keep marking the already-listed tasks when they are
+                completed, but all new tasks get put on the project management system linked above.
+            </p>
             <ul>
                 <li>
                     <font color="#33cc00">completed, release 7.10</font> - Propogation to sourceforge.net, including the
@@ -43,14 +52,14 @@
                 <ul>
                     <li>
 
-                        ontology terms
+                        <font color="#33cc00">completed, release 8.03</font> - ontology terms
                     </li>
                     <li>
 
                         friendly names
                     </li>
                     <li>
-                        experiment names
+                       <font color="#33cc00">completed, release 8.03</font> -  experiment names
                     </li>
                     <li>
                         hypotheses
@@ -63,8 +72,9 @@
                         joining these searches together
                     </li>
                     <li>
-                        pre-loading of correct file type, filename, multi-select menus if you go
-                        back to a page, or to select at the beginning of a deposition
+                        <font color="#33cc00">completed, release 8.05</font> - pre-loading of correct file type,
+                        filename, multi-select menus if you go back to a page, or to select at the beginning of a
+                        deposition
                     </li>
                     <li>
                         linking of experiments together

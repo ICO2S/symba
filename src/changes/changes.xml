@@ -2,18 +2,125 @@
 <document>
     <properties>
         <title>SyMBA</title>
-        <author email="allysonlister.AT.users.DOT.sourceforge.DOT.net">Allyson Lister</author>        
+        <author email="allysonlister.AT.users.DOT.sourceforge.DOT.net">Allyson Lister</author>
     </properties>
     <body>
         <!--<release version="current" description="Current work version">-->
-            <!--<action dev="Allyson Lister" type="add">-->
-                <!--A new cool feature.-->
-            <!--</action>-->
+        <!--<action dev="Allyson Lister" type="add|fix|remove|update">-->
+        <!--A new cool feature.-->
+        <!--</action>-->
         <!--</release>-->
-        <release version="8.03" date="2008-03-13" description="Improvements to Protocol Template Functionality and Search Functionality">
+        <release version="8.05" date="2008-05-??"
+                 description="Bug Fixes, Improvements to Protocol Template and Search Functionality">
             <action dev="Allyson Lister" type="add">
-                More searches are now available, including the ability to view all experiments in the database
-                (i.e. not just your own), and the ability to search based on any ontology term in the database.
+                Up until now, as soon as the files were uploaded, they were put into byte arrays and kept in the session
+                memory until final submission of the information. While correct, it would quickly become inefficient
+                when large numbers of large files are being loaded. Now it just keeps the File object in the session,
+                and only reads in that file upon commit of the form. To Do: check (during rawData.jsp) that the file
+                is OK.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                Made an interface from which different types of copying of the data files (srb, scp, etc) can be used.
+                This can be found by examining the uk.ac.cisban.symba.webapp.util.storage classes in the webapp-helper
+                sub-project.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                Factored out the beans from the webapp directory and made them their own sub-project, so they can be
+                referred to by other sub-projects on their own, as a jar, without being bundled directly in the war.
+                Their new location is the webapp-helper directory.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                Improved session management when loading the data, as well as the ability to copy metadata from one
+                data file into the form for loading another data file, to save time and effort.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                SyMBA now integrates (optionally) with a security server. In earlier snapshot releases,
+                the jars needed to connect to this server were built within the SyMBA web/ subproject. However,
+                this jar is now part of the maven2 manual install in the lib/ directory. This means that users who do
+                not plan to use the security server are not required to build it.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                The search results screen now orders the returned experiments by date of creation, and also shows
+                the date created after the name of the experiment.
+            </action>
+            <action dev="Allyson Lister" type="fix" issue="1921120">
+                Added a direct link to downloading the PostgreSQL jar.
+            </action>
+            <action dev="Allyson Lister" type="fix" issue="1921046">
+                The opening &lt;settings&gt; element in the installation instructions (for the maven settings.xml file)
+                was missing, so if people copied it in its entirety, it wouldn't validate. This has been fixed.
+            </action>
+            <action dev="Allyson Lister" type="fix">
+                There was a bug that meant that the description of a file wasn't being entered into the final
+                FuGE entry. This has now been fixed.
+            </action>
+            <action dev="Allyson Lister" type="delete">
+                The now-obsolete CannedSearch class has been removed.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                Once the data file is loaded, the original filename is displayed in the successive forms to help
+                users remember which data file's metadata they're entering.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                SyMBA now has a public project management website! Visit http://mygrid.ncl.ac.uk/symba
+                (username and pwd: symba-public). If you wish to contribute to the tasks, or even take a task yourself
+                please email one of the developers (click on our names on this page) to ask for a login specific
+                to you.
+            </action>
+            <action dev="Allyson Lister" type="update">
+                The retrieval of the existing experiment selection (the first step in adding a new data file to an
+                already-extant experiment) now uses a much faster database query.
+            </action>
+            <action dev="Frank Gibson, Allyson Lister" type="add">
+                Additions to the CSS have been made that allow each group of form fields to be visually grouped
+                into separate boxes.
+            </action>
+            <action dev="Allyson Lister" type="fix" issue="1881897">
+                There was a problem where one of the ontology terms was getting displayed as its LSID rather than
+                as its proper name in confirm.jsp. This has now been fixed.
+            </action>
+            <action dev="Allyson Lister" type="update" issue="1934585">
+                There really isn't a suitable type for this change. It is a resolved tracker issue, but it is not
+                one where changes needed to be applied. Both the fieldset's label being half-in and half-out
+                of the fieldset, and the lack of an ability to resize these fieldsets are normal behaviour for
+                the operating systems and web browsers specified.
+            </action>
+            <action dev="Allyson Lister" type="update" issue="1934581">
+                Please see change directly above.
+            </action>
+            <action dev="Allyson Lister" type="fix" issue="1854867">
+                The underscore in the CHARACTER_VARYING of the SQL to use to create the "users" table in the
+                Installation Guide is unnecessary and confusing. This has been removed in the xdocs (install.xml).
+            </action>
+            <action dev="Allyson Lister" type="fix" issue="1918032">
+                There was a request to make "Type, Dose and Length of Treatment:" truly optional by removing it from the
+                code and placing in the XML, possibly as a treatment protocol.
+                There are two solutions: 1) create a treament protocol, tie it to your main protocol, and then put in
+                the relevant GenericParameters for the treatments you're interested in, or 2) make the treatment work
+                as a description on the GenericMaterial, and simply ensure that this (treatment) part of the form
+                will no longer appear if the Material Dummy's name attribute (in the Protocol Template) contains
+                the exact set of chars: " Notreatment" somewhere in the string. This should come after the " Dummy"
+                statement in that string. The latter is the solution applied to SyMBA, though the former might be
+                a more elegant way of solving the problem, and may be possible in the future. While the former idea
+                (using a treatment protocol) is a good one, at the moment SyMBA is set up around the concept of the data
+                file. This means that, currently, SyMBA users cannot add information to a protocol when they are not
+                also adding a data file.
+            </action>
+            <action dev="Allyson Lister" type="fix" issue="1918030">
+                There was a request to remove the hard-coded "Name/ID of this Material (optional):" option and move
+                it to a describable element in the XML. This has been accomplished in that this part of the form
+                will no longer appear if the Material Dummy's name attribute (in the Protocol Template) contains
+                the exact set of chars: " Noname" somewhere in the string. This should come after the " Dummy" statement
+                in that string.
+            </action>
+        </release>
+        <release version="8.03" date="2008-03-13"
+                 description="Improvements to Protocol Template Functionality and Search Functionality">
+            <action dev="Allyson Lister" type="add">
+                May now view all experiments in the database (i.e. not just your own).
+            </action>
+            <action dev="Allyson Lister" type="fix" issue="1881894">
+                Now have the ability to search based on any ontology term in the database.
             </action>
             <action dev="Allyson Lister" type="add">
                 EquipmentApplications have now been added.
@@ -62,7 +169,7 @@
             </action>
             <!--<action dev="Allyson Lister" type="fix" issue="1254">-->
             <!--<action dev="Allyson Lister" type="delete">-->
-                <!--Removed a feature that nobody liked.-->
+            <!--Removed a feature that nobody liked.-->
             <!--</action>-->
         </release>
     </body>

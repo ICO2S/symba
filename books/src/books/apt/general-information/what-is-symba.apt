@@ -1,0 +1,34 @@
+ ---
+ What is SyMBA?
+ ---
+ Allyson Lister
+ ---
+ May 2008
+
+Purpose of and Background to SyMBA, and its relation to the FuGE Toolkit Projects
+
+  Systems and other integrative approaches to biology generate a wide variety of genome-scale and high-throughput data
+  that must be annotated and reliably stored. Novel data repositories are required that not only allow the storage of
+  multiple datasets of differing types, but also capture the metadata required to record the experimental details and
+  provenance in a standard format that is amenable to data sharing. The Functional Genomics Experiment Mark-Up
+  Language (FuGE-ML) and associated Object Model (FuGE-OM) were created to facilitate the development and uptake
+  of metadata standards. FuGE developers have also created a number of base Software ToolKits (STKs) that are
+  good starting-points for further development of FuGE-based tools. Systems and Molecular Biology Data and Metadata
+  Archive (SyMBA) is based on the FuGE Milestone 3 STK, and is in the process of being upgraded to the FuGE Version 1
+  STK. SyMBA is based on the FuGE-OM and archives, stores, and retrieves raw high-throughput data. SyMBA integrates both
+  multiple 'omics' data types and information about experiments in a single database.
+
+  SyMBA is a flexible data repository specifically designed to address the requirements for primary data storage for
+  projects requiring the storage of many different data types. The metadata database stores all information using
+  the FuGE-OM, and as such can integrate all metadata using the same structure, irrespective of associated data type.
+  It is one of the first database implementations of Milestone 3 of the FuGE-OM, with an upgrade to FuGE Version 1 in
+  the works. SyMBA features a metadata database, general and expert user interfaces, and utilizes a Life Science
+  Identifier resolution and assigning service to uniquely identify objects and provide programmatic access to the
+  database.
+
+  FuGE, an emerging data standard, provides fast development time in the short term, and an export format that is easy
+  to extend and share in the longer term. Our implementation of FuGE also acts as an example for others wishing to apply
+  FuGE for their own purposes. We encourage other groups with similar needs to install, evaluate, and contribute to its
+  development. The most up-to-date version of this documentation can be found in the SyMBA SourceForge Subversion
+  repository. The system - and its documentation - is available for download and installation via the SourceForge
+  project site ({{http://symba.sourceforge.net}}).

@@ -1,0 +1,33 @@
+ ---
+ Compiling SyMBA
+ ---
+ Allyson Lister
+ ---
+ May 2008
+
+Optional Modification of the UML
+
+                OPTIONAL: If you wish to make changes to the
+                SyMBA UML prior to generating the code, the UML may be found in
+                trunk/mda/src/main/uml/symba.xmi and you should do it at this time.
+                <<Ensure that your UML diagram can find the AndroMDA zips.>>
+                When you open up the SyMBA UML diagram, MagicDraw will prompt you to define
+                the location of the AndroMDA zips: they are in your maven repository. You
+                may also do a global search-and-replace directly on the UML file, if you are
+                careful.
+
+Compilation
+
+                Change into the top-level trunk/ directory. Generate all of the
+                automatically-generated AndroMDA sources:
+                
+---
+                mvn install
+---
+
+                You should see a "BUILD SUCCESSFUL" message at the end of it.
+                <<You must be connected to the internet for this step to work, as there will be many jars that need to
+                be downloaded.>>
+
+                You now have all auto-generated code. The war file (symba.war) for your tomcat server
+                will be found in trunk/webapp/target after the <<mvn install>> command has successfully been run.

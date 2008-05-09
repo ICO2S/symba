@@ -1,0 +1,75 @@
+<book>
+    <id>installation</id>
+    <title>Instructions for Installing SyMBA</title>
+    <chapters>
+        <chapter>
+            <id>intro</id>
+            <title>Introduction and Background</title>
+            <sections>
+                <section>
+                    <id>download-book</id>
+                </section>
+                <section>
+                    <id>background</id>
+                </section>
+            </sections>
+        </chapter>
+        <chapter>
+            <id>requirements</id>
+            <title>What You'll Need</title>
+            <sections>
+                <section>
+                    <id>recommendations</id>
+                </section>
+                <section>
+                    <id>java</id>
+                </section>
+                <section>
+                    <id>maven</id>
+                </section>
+                <section>
+                    <id>andromda</id>
+                </section>
+                <section>
+                    <id>uml</id>
+                </section>
+                <section>
+                    <id>database</id>
+                </section>
+                <section>
+                    <id>how-to-checkout</id>
+                </section>
+            </sections>
+        </chapter>
+        <chapter>
+            <id>setup</id>
+            <title>Setting Up, Compiling, and Running SyMBA</title>
+            <sections>
+                <section>
+                    <id>database-setup</id>
+                </section>
+                <section>
+                    <id>create-file-store</id>
+                </section>
+                <section>
+                    <id>compiling</id>
+                </section>
+                <section>
+                    <id>filling-the-databases</id>
+                </section>
+                <section>
+                    <id>ide-integration</id>
+                </section>
+            </sections>
+        </chapter>
+        <chapter>
+            <id>references</id>
+            <title>Further Reading</title>
+            <sections>
+                <section>
+                    <id>credits</id>
+                </section>
+            </sections>
+        </chapter>
+    </chapters>
+</book>

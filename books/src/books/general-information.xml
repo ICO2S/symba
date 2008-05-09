@@ -1,0 +1,18 @@
+<book>
+    <id>general-information</id>
+    <title>General Information on SyMBA</title>
+    <chapters>
+        <chapter>
+            <id>intro</id>
+            <title>Introduction</title>
+            <sections>
+                <section>
+                    <id>download-book</id>
+                </section>
+                <section>
+                    <id>what-is-symba</id>
+                </section>
+            </sections>
+        </chapter>
+    </chapters>
+</book>

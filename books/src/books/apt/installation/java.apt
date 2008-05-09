@@ -1,0 +1,24 @@
+ ---
+ Installing Java 5
+ ---
+ Allyson Lister
+ ---
+ May 2008
+
+Installing Java 5
+
+* Install J2SE Development Kit 5.0 (JDK 5.0)
+
+                    Download Java 1.5.x from {{{http://java.sun.com/j2se/1.5.0/download.jsp}here}}.
+
+                    Currently, there is a problem building SyMBA using newer versions of Java: when compiling the code
+                    AndroMDA builds, there is an error that only appears for Java 1.6 and higher. I have submitted a
+                    question to the
+                    {{{http://galaxy.andromda.org/forum/viewtopic.php?t=5337}Andromda forum}}
+                    and am waiting for a reply.
+
+* Check Your Installation
+
+                Make sure that the <<<JAVA_HOME>>> environment variable is pointing to the directory where you installed
+                the JDK.
+

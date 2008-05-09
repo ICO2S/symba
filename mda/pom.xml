@@ -5,7 +5,7 @@
     <parent>
         <groupId>fugeOM</groupId>
         <artifactId>SyMBA</artifactId>
-        <version>8.03</version>
+        <version>8.05</version>
     </parent>
     <artifactId>mda</artifactId>
     <packaging>pom</packaging>
@@ -52,24 +52,6 @@
                 </executions>
                 <configuration>
                     <configurationUri>${pom.basedir}/src/main/config/andromda.xml</configurationUri>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.andromda.maven.plugins</groupId>
-                <artifactId>andromdapp-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>eclipse</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <excludes>
-                        <exclude>app/pom.xml</exclude>
-                        <exclude>mda/pom.xml</exclude>
-                        <exclude>webservice/pom.xml</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
         </plugins>

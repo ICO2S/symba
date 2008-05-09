@@ -1,0 +1,47 @@
+ ---
+ Introduction
+ ---
+ Allyson Lister
+ ---
+ May 2008
+
+
+Website and Contact Information
+
+                    You can find more information, plus the latest version of this document, at
+                    {{{http://symba.sourceforge.net}http://symba.sourceforge.net}}. 
+                    Contact us via email at symba-devel@lists.sourceforge.net
+
+Background
+
+  Thank you for your interest in the Systems and Molecular Biology Data and Metadata Archive
+            (hereafter known as SyMBA).
+
+  The Systems and Molecular Biology Data and Metadata Archive (SyMBA) is based on the
+                    Functional Genomics Object Model (FuGE-OM) and archives, stores, and retrieves raw
+                    high-throughput data. Until now, few published systems have successfully
+                    integrated multiple omics data types and information about experiments in a
+                    single database. Originally, SyMBA was created within to fulfil the requirements
+                    of {{{http://www.cisban.ac.uk}CISBAN}}, a Systems Biology Centre attached to
+                    Newcastle University that focuses on ageing and nutrition. However, the requirements of this centre
+                    to be able to store data from multiple types of experiments, and to store that data's metadata
+                    in an integrated, structured way has led to SyMBA being applicable to a wider audience. It is
+                    customizable and generic, and via protocol "templates" can be modified to suit the needs
+                    of many different research groups. The choice of a nascent metadata standard such as FuGE was a
+                    practical one. Not only does such a model provide a structure
+                    for the database, but it also provides a format that can be easily exchanged and compared. Using
+                    FuGE provides a quicker development time for the data archive in the short term, and also provides
+                    an export format that is easy to extend and share in the longer term.
+
+  SyMBA utilizes
+                {{{http://fuge.sourceforge.net/dev/index.php#beta_STK_m3}}FuGE M3 STK}}, written primarily by Andy
+                Jones with additions by Allyson Lister and
+                Olly Shaw. Some of the instructions are taken directly from this and other
+                documents (see the {{{credits.html}Credits Page}} of this book), however a large part of the
+                installation is specific to SyMBA.
+
+Using These Instructions
+
+                    Even if you have some of the required applications (e.g. maven or java) already installed, please
+                    read through their instructions anyway, to make sure you have the right versions installed, and
+                    also to confirm that they're working correctly on your system.

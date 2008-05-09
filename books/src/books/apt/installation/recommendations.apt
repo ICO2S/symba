@@ -1,0 +1,21 @@
+ ---
+ Recommendations
+ ---
+ Allyson Lister
+ ---
+ May 2008
+
+Recommendations
+
+                SyMBA can be installed on either Windows or linux, but we highly recommend a
+                linux system. While the FuGE STK that this is based on has been tested on both
+                systems, SyMBA has
+                <i>only</i>
+                been tested and run on a linux system. We also recommend MySQL or
+                PostgreSQL for the database choice, as these are the only two that have been tested with
+                SyMBA (PostgreSQL is the preferred choice of these two.)
+
+                These instructions are loosely based on those found in the {{{credits.html}Credits Section}},
+                but have been modified to suit the needs of SyMBA.
+
+

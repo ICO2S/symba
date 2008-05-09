@@ -62,6 +62,7 @@
     <licenses>
         <license>
             <name>GNU Lesser General Public License</name>
+            <!--<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>-->
             <url>http://www.gnu.org/copyleft/lesser.html</url>
             <distribution>repo</distribution>
         </license>
@@ -106,11 +107,22 @@
         </developer>
     </developers>
 
+    <!-- You will need the correct permissions to be able to publish here.-->
     <distributionManagement>
         <site>
             <id>shell.sf.net</id>
             <url>scp://shell.sf.net/home/groups/s/sy/symba/htdocs/</url>
         </site>
+        <repository>
+            <id>carmen</id>
+            <name>Carmen release repository</name>
+            <url>scp://carmen.ncl.ac.uk/var/www/maven/repo/</url>
+        </repository>
+        <snapshotRepository>
+            <id>carmen-snapshot</id>
+            <name>Carmen snapshot repository</name>
+            <url>scp://carmen.ncl.ac.uk/var/www/maven/repo-snapshot/</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <organization>
@@ -365,6 +377,7 @@
         <module>core</module>
         <module>jaxb2</module>
         <module>backend</module>
+        <module>webapp-helper</module>
         <module>webapp</module>
         <!--<module>web</module>-->
     </modules>
@@ -426,7 +439,7 @@
             <properties>
                 <!-- Properties for the Jaxb2 plugin. Added 4 Jul 2007 by Allyson Lister -->
                 <!-- End jaxb2 properties -->
-                <!--
+                <!--                                                        
                     Change driver jar for appropriate database
                     For MySQL use: mysql-connector-java-X-bin.jar
                     For Hypersonic use: hsqldb.jar
@@ -438,7 +451,7 @@
                 <!--<jdbc.driver.jar>/cygdrive/c/cygpath/h/.m2/repository/postgresql/postgresql/8.1-407.jdbc3/postgresql-8.1-407.jdbc3.jar</jdbc.driver.jar>-->
                 <!-- <jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/8.2-504.jdbc3/postgresql-8.2-506.jdbc3.jar
                 </jdbc.driver.jar>-->
-                <jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/8.1-407.jdbc3/postgresql-8.1-407.jdbc3.jar
+                <jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/8.2-504.jdbc3/postgresql-8.2-504.jdbc3.jar
                 </jdbc.driver.jar>
                 <!--<jdbc.driver.jar>postgresql-8.1-407.jdbc3.jar</jdbc.driver.jar>-->
                 <!--
@@ -613,6 +626,16 @@
             <name>Java.net Maven 1 Repository (legacy)</name>
             <url>http://download.java.net/maven/1</url>
             <layout>legacy</layout>
+        </repository>
+        <repository>
+          <id>carmen-snapshot</id>
+          <name>Carmen snapshot repository</name>
+          <url>http://carmen.ncl.ac.uk/maven/repo-snapshot</url>
+        </repository>
+        <repository>
+          <id>carmen</id>
+          <name>Carmen release repository</name>
+          <url>http://carmen.ncl.ac.uk/maven/repo</url>
         </repository>
     </repositories>
     <pluginRepositories>

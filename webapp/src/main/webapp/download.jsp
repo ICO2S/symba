@@ -38,33 +38,17 @@ in this distribution, please see LICENSE.txt
 
     <h2>Congratulations! Your data has been submitted to the repository.</h2>
 
-    <p class="bigger">The file must now be downloaded. <a
+    <p class="bigger">Depending on your centre's policy, the file with the new identifier may now have
+        to be downloaded. <a
             href="help.jsp#completeDeposition"
             onClick="return popup(this, 'notes')">[ Why Do I Need To Do This? ]</a></p>
 
     <p class="bigger">
-        By clicking on the download links below, you will be able to save your data with its new CISBAN identifier.
-        YOU MUST DOWNLOAD ALL FILES NOW.<a
-            href="help.jsp#completeDeposition"
-            onClick="return popup(this, 'notes')">[ Why? ]</a>
+        You may download your data files by going to
+        <a class="bigger" href="ShowBasicResults.jsp">your saved experiments</a> and chosing your just-loaded
+        experiment. From there, you can download each data file.
     </p>
 
-    <%
-        for ( DatafileSpecificMetadataStore fileStore : symbaFormSessionBean.getDatafileSpecificMetadataStores() ) {
-    %>
-
-    <a href="temp/<% out.print(fileStore.getDataFile().getName()); %>"
-       target="_blank"><% out.print( fileStore.getDataFile().getName() ); %></a>
-    <br/>
-    <%--<form action="downloadAndRedirect.jsp">--%>
-    <%--<input type="submit" onclick="popup('temp/<% out.print(fileStore.getAFile().getName()); %>', 'userfile')"--%>
-    <%--value="Get <% out.print(fileStore.getAFile().getName()); %>"/>--%>
-    <%--</form>--%>
-    <br/>
-
-    <%
-        }
-    %>
     <jsp:include page="helpAndComments.jsp"/>
 
 </div>

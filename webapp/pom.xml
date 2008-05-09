@@ -22,7 +22,7 @@
     <artifactId>webapp</artifactId>
     <packaging>war</packaging>
     <version>8.03</version>
-    <name>SyMBA Web Front-End</name>
+    <name>SyMBA Web Interface</name>
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
@@ -33,6 +33,11 @@
         <dependency>
             <groupId>fugeOM</groupId>
             <artifactId>core</artifactId>
+            <version>8.03</version>
+        </dependency>
+        <dependency>
+            <groupId>fugeOM</groupId>
+            <artifactId>webapp-helper</artifactId>
             <version>8.03</version>
         </dependency>
         <dependency>

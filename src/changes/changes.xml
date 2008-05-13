@@ -10,7 +10,7 @@
         <!--A new cool feature.-->
         <!--</action>-->
         <!--</release>-->
-        <release version="8.05" date="2008-05-??"
+        <release version="8.05" date="2008-05-09"
                  description="Bug Fixes, Improvements to Protocol Template and Search Functionality">
             <action dev="Allyson Lister" type="add">
                 Up until now, as soon as the files were uploaded, they were put into byte arrays and kept in the session

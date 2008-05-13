@@ -8,13 +8,10 @@
     <meta name="keyword"
           content="SyMBA, Systems Biology, Data Archive, CISBAN, FuGE, Computational Biology, Metadata"/>
     <body>
-        <section name="Current Release: 8.01">
+        <section name="Current Release: 8.05">
 
             <p>
-                This page describes technical details of SyMBA. For more
-                general information please see the
-                <a href="index.html">home page</a>
-                .
+                This page describes technical details of SyMBA.
             </p>
 
             <p>
@@ -30,6 +27,26 @@
                 to see if we could collaborate in any way.
             </p>
         </section>
+
+        <section name="Task Management">
+            If you wish to provide feedback, or learn what is planned in the future for SyMBA, here is how you can
+            do it:
+            <ul>
+                <li>
+                    The <a href="mailto:symba-devel@lists.sourceforge.net">SyMBA Developers</a> mailing list.
+                </li>
+                <li>
+                    The SourceForge tracker pages. Information on these pages can be found
+                    <a href="issue-tracking.html">on the issue tracking documentation page</a>.
+                </li>
+                <li>
+                    The <a href="http://mygrid.ncl.ac.uk/symba/">SyMBA Project Management</a> website. Username and
+                    password for read-only access are both 'symba-public'.
+                </li>
+            </ul>
+        </section>
+
+
 
         <section name="References">
 
@@ -65,25 +82,31 @@
             <subsection name="Logging In">
 
                 <p>
-                    You will need a logon to access this database, which you may request
-                    from the
-                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a> mailing list
-                    . This is a low-level of security that will
-                    only serve to prevent anonymous load on the database and to keep your sandbox area separate from
-                    others.
+                    There is now a general, all-purpose login to the sandbox (test) installation. The username is
+                    'MickeyM' and the pass is 'MousePass'. Please feel free to use this account, and please send an
+                    email to <a href="mailto:symba-devel@lists.sourceforge.net">the SyMBA developer's list</a>
+                    if something is wrong with the account. However, if you want your own space, then please contact the
+                    same mailing list to request it.
                 </p>
             </subsection>
 
             <subsection name="What we mean by a 'sandbox' release">
 
                 <p>
+                    The sandbox installation is a playground, and includes a few example experimental templates for
+                    you to play with. It is just an area where you can test the SyMBA web interface. However, the
+                    web interface is only a small part of the SyMBA project, and we encourage you to checkout
+                    the project from subversion (<a href="source-repository.html">here's how</a>) and have a more
+                    thorough look at it. This is not meant to be a large-scale repository, and may only have a few
+                    experiments in it at any one time, as we are constantly re-building the sandbox to reflect the
+                    latest changes to the codebase.
+                </p>
+                <p>
                     We reserve the right to stop and restart the SyMBA server at any time, and to drop and re-create the
-                    database
-                    at any time. You should not attempt to use this service as a long-term, permanent store.
+                    database at any time. You should not attempt to use this service as a long-term, permanent store.
                     However, we encourage you to upload data and create as many experiments as you like
                     so that you may determine if this application may be of use to your own research group. We also
-                    appreciate
-                    you
+                    appreciate you
                     <a href="mailto:symba-devel@lists.sourceforge.net">contacting us</a>
                     with any comments or questions you may have.
                 </p>
@@ -114,12 +137,9 @@
                 <a href="http://obi.sourceforge.net">OBI</a>,
                 and
                 <a href="http://mibbi.sourceforge.net">MIBBI</a>.
-                FuGE is
-                a maturing standard data model for storing experimental metadata, OBI is a developing standard ontology
-                for
-                biological/biomedical experiments, and MIBBI is a new effort to standardize the minimum information
-                needed
-                to describe a biological experiment.
+                FuGE is a maturing standard data model for storing experimental metadata, OBI is a developing standard
+                ontology for biological/biomedical experiments, and MIBBI is a new effort to standardize the minimum
+                information needed to describe a biological experiment.
             </p>
         </section>
         <section name="What does the release number mean?">
@@ -127,11 +147,9 @@
             <p>
                 We have based the release numbering system on the
                 <a href="http://www.ubuntu.com">Ubuntu</a>
-                style. This
-                means that the number prefixing the "." is the year of the release, and the number after the "." is the
-                month of the release. Therefore, release 7.03 was released in March 2007. Finally, we add a comment
-                after
-                the release number detailing whether the release is a beta version or a stable version.
+                style. This means that the number prefixing the "." is the year of the release, and the number after
+                the "." is the month of the release. Therefore, release 7.03 was released in March 2007. Finally, we add
+                a comment after the release number detailing whether the release is a beta version or a stable version.
             </p>
         </section>
         <section name="Does this project suit your needs?">

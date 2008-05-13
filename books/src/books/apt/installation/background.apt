@@ -33,8 +33,8 @@ Background
                     FuGE provides a quicker development time for the data archive in the short term, and also provides
                     an export format that is easy to extend and share in the longer term.
 
-  SyMBA utilizes
-                {{{http://fuge.sourceforge.net/dev/index.php#beta_STK_m3}}FuGE M3 STK}}, written primarily by Andy
+  SyMBA utilizes the
+                {{{http://fuge.sourceforge.net/dev/index.php#beta_STK_m3}FuGE M3 STK}}, written primarily by Andy
                 Jones with additions by Allyson Lister and
                 Olly Shaw. Some of the instructions are taken directly from this and other
                 documents (see the {{{credits.html}Credits Page}} of this book), however a large part of the

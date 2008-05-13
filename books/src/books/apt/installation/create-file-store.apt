@@ -9,7 +9,9 @@ Create a file system directory to hold the raw data
 
                     While the database holds all experimental metadata, it does not hold the raw
                     experimental data. Instead we chose to keep the raw data separate to reduce
-                    the size of the relational database. Currently, the location and name of the
+                    the size of the relational database. Create a directory on the computer where you plan to store
+                    the data, and then put the details of the machine - and the user that will be the owner of the data
+                    - into the fields below. Currently, the location and name of the
                     directory should be entered into the webapp/src/main/webapp/verify.jsp. This
                     is a temporary location. You need to change the following lines to something
                     appropriate to your file system:
@@ -18,7 +20,5 @@ Create a file system directory to hold the raw data
                         scp.setDirectory( "" );
                         scp.setHostname( "" );
                         scp.setUsername( "" );
-
                         scp.setPassword( "" );
 +---+
-

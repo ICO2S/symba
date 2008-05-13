@@ -19,7 +19,7 @@ Create databases to hold the metadata and security information
                     <jdbc.url>
                     </jdbc.url>
 
-                    <<<<jdbc.username>>>></<<<jdbc.username>>>>
+                    <jdbc.username></jdbc.username>
                     <jdbc.password></jdbc.password>
 +---+
 

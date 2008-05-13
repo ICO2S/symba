@@ -129,11 +129,12 @@
                 </li>
             </ul>
         </section>
-        <section name="Status: March 2008: 8.03">
+        <section name="Status: May 2008: 8.05">
 
             <p>
-                A number of new searches have been added, and we have extended the options available to users
-                building SyMBA templates (see the <a href="changes-report.html">Change Report</a>).
+                A large number of changes were incorporated into this release, mainly dealing with
+                session management, bug fixing, and code refactoring. For more information, please
+                see the <a href="changes-report.html">Change Report</a>.
             </p>
             <br/><br/>
             <p>
@@ -143,11 +144,11 @@
             </p>
             <br/><br/>
             <p>
-                You will need a logon to access this database, which you may request
-                from the
-                <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a> mailing list. This is a simple method
-                 of security that used to prevent anonymous load on the database and to keep your sandbox area separate
-                 from others. For more information on the sandbox installation, please visit SyMBA's
+                There is now a general, all-purpose login to the sandbox (test) installation. The username is 'MickeyM'
+                and the pass is 'MousePass'. Please feel free to use this account, and please send an email
+                to <a href="mailto:symba-devel@lists.sourceforge.net">the SyMBA developer's list</a> if something
+                is wrong with the account. However, if you want your own space, then please contact the same mailing
+                list to request it. For more information on the sandbox installation, please visit SyMBA's
                 <a href="details.html">technical documentation</a>
                 .
             </p>

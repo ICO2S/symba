@@ -5,13 +5,13 @@
     <parent>
         <groupId>fugeOM</groupId>
         <artifactId>SyMBA</artifactId>
-        <version>8.05</version>
+        <version>8.05-SNAPSHOT</version>
     </parent>
     <groupId>fugeOM</groupId>
     <artifactId>symba-books</artifactId>
     <packaging>jar</packaging>
     <name>SyMBA Book Documentation</name>
-    <version>1.0-SNAPSHOT</version>
+    <version>8.05-SNAPSHOT</version>
     <build>
         <defaultGoal>doxia:render-books</defaultGoal>
         <plugins>

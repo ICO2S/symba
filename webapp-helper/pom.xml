@@ -17,7 +17,7 @@
     <parent>
         <groupId>fugeOM</groupId>
         <artifactId>SyMBA</artifactId>
-        <version>8.05</version>
+        <version>8.05-SNAPSHOT</version>
     </parent>
     <artifactId>webapp-helper</artifactId>
     <packaging>jar</packaging>
@@ -26,12 +26,12 @@
         <dependency>
             <groupId>fugeOM</groupId>
             <artifactId>backend</artifactId>
-            <version>8.05</version>
+            <version>8.05-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fugeOM</groupId>
             <artifactId>core</artifactId>
-            <version>8.05</version>
+            <version>8.05-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uk.org.carmen.security</groupId>

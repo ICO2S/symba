@@ -1,0 +1,47 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxws http://cxf.apache.org/schema/jaxws.xsd">
+
+    <!-- This bean is used to check to see if the lsid your requesting is applicable to the retrieval service your using -->
+    <bean id="clientAssigner" class="net.sourceforge.symba.lsid.webservices.service.LsidAssigner"
+          factory-bean="clientAssignerFactory" factory-method="create"/>
+
+    <bean id="clientAssignerFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="net.sourceforge.symba.lsid.webservices.service.LsidAssigner"/>
+        <!-- This address should be set to your own database install of SyMBA, or failing that you can connect it
+        to the sandbox install of symba at http://bsu.ncl.ac.uk:8081/symba-lsid-ws-assigner/services/LsidResolver -->
+        <property name="address" value="http://bsu.ncl.ac.uk:8081/symba-lsid-ws-assigner/services/LsidAssigner"/>
+    </bean>
+
+    <!-- This bean is used to check to see if the lsid your requesting is applicable to the retrieval service your using -->
+    <bean id="clientResolver" class="net.sourceforge.symba.lsid.webservices.service.LsidResolver"
+          factory-bean="clientResolverFactory" factory-method="create"/>
+
+    <bean id="clientResolverFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="net.sourceforge.symba.lsid.webservices.service.LsidResolver"/>
+        <!-- This address should be set to your own database install of SyMBA, or failing that you can connect it
+        to the sandbox install of symba at http://bsu.ncl.ac.uk:8081/symba-lsid-ws-resolver/services/LsidResolver -->
+        <property name="address" value="http://bsu.ncl.ac.uk:8081/symba-lsid-ws-resolver/services/LsidResolver"/>
+    </bean>
+
+    <!-- This bean is used to actually retrieve the data and metadata -->
+    <bean id="clientRetriever" class="net.sourceforge.symba.lsid.webservices.service.LsidDataRetriever"
+          factory-bean="clientRetrieverFactory" factory-method="create">
+    </bean>
+
+    <bean id="clientRetrieverFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="net.sourceforge.symba.lsid.webservices.service.LsidDataRetriever"/>
+        <!-- This address should be set to your own database install of SyMBA, or failing that you can connect it
+        to the sandbox install of symba at http://bsu.ncl.ac.uk:8081/symba-lsid-ws-resolver/services/LsidDataRetriever -->
+        <property name="address" value="http://bsu.ncl.ac.uk:8081/symba-lsid-ws-resolver/services/LsidDataRetriever"/>
+        <property name="properties">
+            <map>
+                <entry key="mtom-enabled" value="true"/>
+            </map>
+        </property>
+    </bean>
+
+</beans>

@@ -21,7 +21,7 @@
             </action>
             <action dev="Allyson Lister" type="add">
                 Made an interface from which different types of copying of the data files (srb, scp, etc) can be used.
-                This can be found by examining the uk.ac.cisban.symba.webapp.util.storage classes in the webapp-helper
+                This can be found by examining the net.sourceforge.symba.webapp.util.storage classes in the webapp-helper
                 sub-project.
             </action>
             <action dev="Allyson Lister" type="add">

@@ -4,10 +4,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import net.sourceforge.symba.lsid.webservices.service.LsidAssigner;
 
 /**
- * $LastChangedDate: $
- * $LastChangedRevision: $
- * $Author:  $
- * $HeadURL: $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  */
 
 public class LsidAssignerClient {

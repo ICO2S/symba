@@ -28,10 +28,10 @@ import java.util.GregorianCalendar;
  *
  * In our case, only RDF is implemented.
  *
- * $LastChangedDate: 2008-04-24 14:35:51 +0100 (Thu, 24 Apr 2008) $
- * $LastChangedRevision: 129 $
- * $Author: allysonlister $
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/backend/src/main/java/uk/ac/cisban/symba/backend/util/CisbanHelper.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  */
 
 public class LsidMetadataResponse {

@@ -1,10 +1,10 @@
 package net.sourceforge.symba.lsid.webservices.service;
 
 /**
- * $LastChangedDate: $
- * $LastChangedRevision: $
- * $Author:  $
- * $HeadURL: $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  */
 
 public class LsidDataServiceResponse {

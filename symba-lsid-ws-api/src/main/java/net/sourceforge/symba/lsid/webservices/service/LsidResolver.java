@@ -11,10 +11,10 @@ import java.util.List;
  * The only way this fails the spec is that the argument is a String rather than an LSID object, but none of the
  * other parts of the LSID object are used within SyMBA.
  *
- * $LastChangedDate: 2008-04-24 14:35:51 +0100 (Thu, 24 Apr 2008) $
- * $LastChangedRevision: 129 $
- * $Author: allysonlister $
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/backend/src/main/java/uk/ac/cisban/symba/backend/util/CisbanHelper.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  */
 @WebService
 public interface LsidResolver {

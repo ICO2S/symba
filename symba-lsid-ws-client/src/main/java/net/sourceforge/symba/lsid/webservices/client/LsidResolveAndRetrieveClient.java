@@ -11,10 +11,10 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.util.List;
 /**
- * $LastChangedDate: $
- * $LastChangedRevision: $
- * $Author:  $
- * $HeadURL: $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  */
 
 public final class LsidResolveAndRetrieveClient {

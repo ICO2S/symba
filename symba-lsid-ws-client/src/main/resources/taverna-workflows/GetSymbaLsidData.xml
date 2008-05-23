@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:scufl xmlns:s="http://org.embl.ebi.escience/xscufl/0.1alpha" version="0.2" log="0">
+  <s:workflowdescription lsid="urn:lsid:net.sf.taverna:wfDefinition:2c41ee6e-a8c0-42e2-a09f-9be44bc11b98" author="Allyson Lister, a.l.lister@newcastle.ac.uk" title="GetSymbaLsidData">More information is available from http://symba.sf.net
+
+This webservice is not directly used within SyMBA, but is instead available as part of ongoing work to have the SyMBA LSID webservices conform to the LSID specification (http://lsids.sourceforge.net/quick-links/lsid-spec/). It can also be used by people wishing to access the SyMBA database directly, via programmatic means, rather than via the web interface.
+
+This workflow's purpose is to retrieve the FuGE-ML-structured metadata from SyMBA that is associated with the given LSID. Currently it only works for LSIDs associated with FuGE elements or ExternalData elements, though this will be extended shortly.
+
+However, it is agnostic to the type of use, and can be built from SyMBA Subversion to have a different set of requirements and return types, so that you can customize it for your own purposes. 
+
+SyMBA does much more than just provide some LSID services: it's a FuGE database, web interface, and API for loading and sharing FuGE-structured data and metadata for the life sciences. Contact us at symba-devel@lists.sourceforge.net or stop by the website for more information.</s:workflowdescription>
+  <s:processor name="getData">
+    <s:arbitrarywsdl>
+      <s:wsdl>http://bsu.ncl.ac.uk:8081/symba-lsid-ws-resolver/services/LsidDataRetriever?wsdl</s:wsdl>
+      <s:operation>getData</s:operation>
+    </s:arbitrarywsdl>
+  </s:processor>
+  <s:processor name="parametersXML">
+    <s:local>
+      org.embl.ebi.escience.scuflworkers.java.XMLInputSplitter
+      <s:extensions>
+        <s:complextype optional="false" unbounded="false" typename="getData" name="parameters" qname="{http://service.webservices.lsid.symba.sourceforge.net/}getData">
+          <s:elements>
+            <s:basetype optional="true" unbounded="false" typename="string" name="lsid" qname="getData&gt;lsid" />
+          </s:elements>
+        </s:complextype>
+      </s:extensions>
+    </s:local>
+  </s:processor>
+  <s:link source="lsid" sink="parametersXML:lsid" />
+  <s:link source="parametersXML:output" sink="getData:parameters" />
+  <s:source name="lsid">
+    <s:metadata>
+      <s:mimeTypes>
+        <s:mimeType>text/xml</s:mimeType>
+      </s:mimeTypes>
+    </s:metadata>
+  </s:source>
+  <s:sink name="LsidDataValue">
+    <s:metadata>
+      <s:description>While this generally will return FuGE-ML-structured metadata, if you call this method on a RawData-namespaced LSID, it will return the raw data itself, upon which all of the FuGE metadata is based.</s:description>
+    </s:metadata>
+  </s:sink>
+</s:scufl>
+

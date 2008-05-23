@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:scufl xmlns:s="http://org.embl.ebi.escience/xscufl/0.1alpha" version="0.2" log="0">
+  <s:workflowdescription lsid="urn:lsid:net.sf.taverna:wfDefinition:87c79b3b-acda-43a1-9a8f-c042e561bb03" author="Allyson Lister, a.l.lister@newcastle.ac.uk" title="GetSymbaLsidServices">More information is available from http://symba.sf.net
+
+This webservice is not directly used within SyMBA, but is instead available as part of ongoing work to have the SyMBA LSID webservices conform to the LSID specification (http://lsids.sourceforge.net/quick-links/lsid-spec/). 
+
+This workflow's purpose is to check LSIDs to make sure that they are suitable for resolution within the CISBAN webservices. 
+
+However, it is agnostic to the type of use, and can be built from SyMBA Subversion to have a different set of requirements and return types, so that you can customize it for your own purposes. 
+
+SyMBA does much more than just provide some LSID services: it's a FuGE database, web interface, and API for loading and sharing FuGE-structured data and metadata for the life sciences. Contact us at symba-devel@lists.sourceforge.net or stop by the website for more information.</s:workflowdescription>
+  <s:processor name="getAvailableServices">
+    <s:description>This implements the getAvailableServices() method as required by the LSID spec at http://lsids.sourceforge.net/quick-links/lsid-spec/
+
+It sends you the location of the client-beans.xml file appropriate to the current service setup, which you can get from this package. In other words, you shouldn't really need this method, and it's just implemented to get closer to the LSID spec. The spec says:
+
+      "A fault is returned if the LSID Resolution service does not know anything about the given lsid. The method returns a list in which each element represents a data retrieval service. "
+      
+The only way this fails the spec is that the argument is a String rather than an LSID object, but none of the other parts of the LSID object are used within SyMBA.</s:description>
+    <s:arbitrarywsdl>
+      <s:wsdl>http://bsu.ncl.ac.uk:8081/symba-lsid-ws-resolver/services/LsidResolver?wsdl</s:wsdl>
+      <s:operation>getAvailableServices</s:operation>
+    </s:arbitrarywsdl>
+  </s:processor>
+  <s:processor name="inputParametersXML">
+    <s:description>The input XML of the getAvailableServices method
+
+http://symba.sf.net</s:description>
+    <s:local>
+      org.embl.ebi.escience.scuflworkers.java.XMLInputSplitter
+      <s:extensions>
+        <s:complextype optional="false" unbounded="false" typename="getAvailableServices" name="parameters" qname="{http://service.webservices.lsid.symba.sourceforge.net/}getAvailableServices">
+          <s:elements>
+            <s:basetype optional="true" unbounded="false" typename="string" name="lsid" qname="getAvailableServices&gt;lsid" />
+          </s:elements>
+        </s:complextype>
+      </s:extensions>
+    </s:local>
+  </s:processor>
+  <s:processor name="outputParametersXML">
+    <s:description>The output XML of the getAvailableServices method
+
+http://symba.sf.net</s:description>
+    <s:local>
+      org.embl.ebi.escience.scuflworkers.java.XMLOutputSplitter
+      <s:extensions>
+        <s:complextype optional="false" unbounded="false" typename="getAvailableServicesResponse" name="parameters" qname="{http://service.webservices.lsid.symba.sourceforge.net/}getAvailableServicesResponse">
+          <s:elements>
+            <s:arraytype optional="true" unbounded="true" wrapped="false" typename="lsidDataServiceResponse" name="return" qname="getAvailableServicesResponse&gt;return">
+              <s:elementtype>
+                <s:complextype optional="false" unbounded="false" typename="lsidDataServiceResponse" name="" qname="{http://service.webservices.lsid.symba.sourceforge.net/}lsidDataServiceResponse">
+                  <s:elements>
+                    <s:basetype optional="true" unbounded="false" typename="string" name="response" qname="lsidDataServiceResponse&gt;response" />
+                  </s:elements>
+                </s:complextype>
+              </s:elementtype>
+            </s:arraytype>
+          </s:elements>
+        </s:complextype>
+      </s:extensions>
+    </s:local>
+  </s:processor>
+  <s:processor name="returnXML">
+    <s:description>The set of data retrieval services (see the metadata for the getAvailableServices method) that know about the data/metadata associated with the given LSID. Returns null if it knows nothing about the LSID.
+
+http://symba.sf.net</s:description>
+    <s:local>
+      org.embl.ebi.escience.scuflworkers.java.XMLOutputSplitter
+      <s:extensions>
+        <s:complextype optional="false" unbounded="false" typename="lsidDataServiceResponse" name="" qname="{http://service.webservices.lsid.symba.sourceforge.net/}lsidDataServiceResponse">
+          <s:elements>
+            <s:basetype optional="true" unbounded="false" typename="string" name="response" qname="lsidDataServiceResponse&gt;response" />
+          </s:elements>
+        </s:complextype>
+      </s:extensions>
+    </s:local>
+  </s:processor>
+  <s:link source="inputParametersXML:output" sink="getAvailableServices:parameters" />
+  <s:link source="lsid" sink="inputParametersXML:lsid" />
+  <s:link source="getAvailableServices:parameters" sink="outputParametersXML:input" />
+  <s:link source="outputParametersXML:return" sink="returnXML:input" />
+  <s:link source="returnXML:response" sink="listOfDataServices" />
+  <s:source name="lsid">
+    <s:metadata>
+      <s:description>The lsid you wish to retrieve information on concerning its availability.
+
+http://symba.sf.net</s:description>
+    </s:metadata>
+  </s:source>
+  <s:sink name="listOfDataServices">
+    <s:metadata>
+      <s:description>the set of data retrieval services that know about the data/metadata, and null if it knows nothing about the lsid.
+
+For SyMBA, this will ALWAYS be a list of size one, whose element contains some textual information about how to get the client-beans.xml file from</s:description>
+    </s:metadata>
+  </s:sink>
+</s:scufl>
+

@@ -65,7 +65,7 @@ public class LsidDataRetrieverImpl implements LsidDataRetriever {
         response.setTimestamp(null);
         Model model = ModelFactory.createDefaultModel();
 
-        String title = "Latest Version of Requested LSID";
+        String title = "LSID of the Latest Version of the Identifiable Sharing an Endurant with the Given LSID";
         model.add(model.createResource(lsid), DC.title, model.createTypedLiteral(title));
         String identifier;
         try {

@@ -14,5 +14,20 @@
                 </section>
             </sections>
         </chapter>
+        <chapter>
+            <id>web-services</id>
+            <title>Using SyMBA webservices</title>
+            <sections>
+                <section>
+                    <id>ws-introduction</id>
+                </section>
+                <section>
+                    <id>access-sandbox-ws</id>
+                </section>
+                <section>
+                    <id>modify-ws</id>
+                </section>
+            </sections>
+        </chapter>
     </chapters>
 </book>

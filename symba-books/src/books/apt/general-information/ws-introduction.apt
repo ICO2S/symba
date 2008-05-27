@@ -1,0 +1,49 @@
+ ---
+ Introduction to SyMBA Web Services
+ ---
+ Allyson Lister
+ ---
+ May 2008
+
+Introduction to SyMBA Web Services
+
+  Web services (WS) are used to make simple applications available as web applications (more information can be found
+  {{http://www.w3schools.com/webservices/ws_intro.asp}here}} and {{http://en.wikipedia.org/wiki/Web_service}here}}).
+  SyMBA makes use of {{{http://cxf.apache.org}Crossfire (CXF)}} in a {{{http://maven.apache.org}Maven 2}}
+  {{http://cwiki.apache.org/CXF20DOC/maven-integration-and-plugin.html}plugin}} to
+  build web services into a war that can be loaded into a Tomcat server. CXF is "an open source services framework
+  [...] that helps you build and develop services using frontend programming APIs, like JAX-WS. These services can speak
+  a variety of protocols such as SOAP, XML/HTTP, RESTful HTTP, or CORBA and work over a variety of transports such as
+  HTTP, JMS or JBI."
+
+Services Currently Available
+
+  Currently, SyMBA has 3 services with a total of 4 methods. All of these services relate to the
+  LSIDs contained within SyMBA, and via these LSIDs perform a number of useful tasks.
+
+  * LsidAssigner
+    * <<assignLsid()>>. Get an LSID.
+  * LsidResolver
+    * <<getAvailableServices()>>. Check that the available web services can deal with your LSID.
+  * LsidDataRetriever
+    * <<getMetadata()>>. Get some information about an LSID.
+    * <<getData()>>. Get the data pointed to from an LSID.
+    []
+  []
+
+Deviations From the LSID Specification.
+
+  The SyMBA LSID web services mentioned currently implement only those parts of the specification in active use
+  within SyMBA.
+  ({{http://lsids.sourceforge.net/quick-links/lsid-spec/}LSID specification}}. In particular, these web services
+  (as well as the general SyMBA API) implement LSIDs as Java Strings rather than as complex objects. SyMBA developers
+  have found no need to use the parameters and properties portion of the specification, and wish to keep the SyMBA
+  implementation as straightforward to use and understand as possible. Additionally, only those methods from the LSID
+  specification that SyMBA developers have found a use for have been implemented at this stage. If you wish a more
+  complete implementation, please email the symba-devel@lists.sourceforge.net mailing list and let us know what you
+  need.
+
+LSID Metadata Compared With FuGE-OM Metadata
+
+  There are differences between what the LSID specification describes as "metadata", and what the FuGE-OM means by
+  the same term.

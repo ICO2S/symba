@@ -22,8 +22,9 @@ public interface LsidResolver {
     /**
      * This implements the getAvailableServices() method as required by the LSID spec:
      * http://lsids.sourceforge.net/quick-links/lsid-spec/
-     * but it only sends you the client-beans.xml file appropriate to the current service setup, which you can get from this
-     * package. In other words, you shouldn't really need it. The spec says:
+     * but it only sends you the location of the client-beans.xml file appropriate to the current service setup, which
+     * you can get from this package. In other words, you shouldn't really need this method, and it's just implemented
+     * to get closer to the LSID spec. The spec says:
      * <p/>
      * "A fault is returned if the LSID Resolution service does not know anything about the given lsid.
      * The method returns a list in which each element represents a data retrieval service. "

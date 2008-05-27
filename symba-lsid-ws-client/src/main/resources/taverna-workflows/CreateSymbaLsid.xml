@@ -5,15 +5,6 @@
 This webservice is used within SyMBA to assign LSIDs at the time of deposition into the FuGE-based database. However, it is agnostic to the type of use, and can be used, as shown here, to generate LSIDs within the cisban.cisbs.org domain for any purpose.
 
 By checking-out SyMBA from Subversion from the above link, you can easily build your own version of this webservice with a different authority identification to have your own lightweight LSID assigner. SyMBA does much more than just provide some LSID services: it's a FuGE database, web interface, and API for loading and sharing FuGE-structured data and metadata for the life sciences. Contact us at symba-devel@lists.sourceforge.net or stop by the website for more information.</s:workflowdescription>
-  <s:processor name="assignLSID">
-    <s:description>Method to generate an LSID. You may specify the namespace identification as an argument to this method, and you will get back a string of the LSID with "cisban.cisbs.org" as the authority identification and a random UUID for the object identification.
-
-http://symba.sf.net</s:description>
-    <s:arbitrarywsdl>
-      <s:wsdl>http://bsu.ncl.ac.uk:8081/symba-lsid-ws-assigner/services/LsidAssigner?wsdl</s:wsdl>
-      <s:operation>assignLSID</s:operation>
-    </s:arbitrarywsdl>
-  </s:processor>
   <s:processor name="InputParametersXML">
     <s:description>A helper processor to take care of the XML nitty-gritty for the input structure.
 
@@ -44,10 +35,19 @@ http://symba.sf.net</s:description>
       </s:extensions>
     </s:local>
   </s:processor>
+  <s:processor name="assignLSID">
+    <s:description>Method to generate an LSID. You may specify the namespace identification as an argument to this method, and you will get back a string of the LSID with "cisban.cisbs.org" as the authority identification and a random UUID for the object identification.
+
+http://symba.sf.net</s:description>
+    <s:arbitrarywsdl>
+      <s:wsdl>http://bsu.ncl.ac.uk:8081/symba-lsid-ws-assigner/services/LsidAssigner?wsdl</s:wsdl>
+      <s:operation>assignLSID</s:operation>
+    </s:arbitrarywsdl>
+  </s:processor>
   <s:link source="InputParametersXML:output" sink="assignLSID:parameters" />
   <s:link source="Namespace" sink="InputParametersXML:namespace" />
-  <s:link source="OutputParametersXML:return" sink="SymbaLsid" />
   <s:link source="assignLSID:parameters" sink="OutputParametersXML:input" />
+  <s:link source="OutputParametersXML:return" sink="SymbaLsid" />
   <s:source name="Namespace">
     <s:metadata>
       <s:description>This is the fourth section of an LSID ("SomeClass" in the example below): urn:lsid:cisban.cisbs.org:SomeClass:b2975522-29eb-4fb4-aac8-b398e6c62634

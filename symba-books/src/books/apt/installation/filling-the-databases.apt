@@ -1,5 +1,5 @@
  ---
- Loading the Database with templates
+ Loading the Database with Templates
  ---
  Allyson Lister
  ---
@@ -22,17 +22,17 @@ Pre-loading People and Protocol Templates into the Metadata Database
                 database. You can use these samples to guide the creation of your own people
                 and template protocols.
 
-Pre-loading People into the Login Database
+Pre-loading People into the Login/Security Database
 
                 Once you have loaded your people into the SyMBA database, you will also need
-                to tell your
-                <<symba_security>>
-                database about those people. The Java class
+                to tell your <<symba_security>> database about those people. The Java class
                 <<net.sourceforge.symba.util.conversion.xml.SecurityPeopleLoader>>
-                will help you load people in, and create initial passwords for them.
+                will help you load people in, and create initial passwords for them. Remember, a FuGE Person's Endurant
+                LSID is what goes into the security database in the "lsid" column.
 
 Assigning Identifiers
 
-                By default SyMBA utilizes CISBAN's LSID authority for assigning new LSIDs
-                to your FuGE objects. To create your own LSID authority, you may choose to
-                use the LSID toolkit provided by IBM.
+  By default SyMBA utilizes its own LSID assigner Web Service for assigning new LSIDs
+  to the FuGE objects. There is much more information on using the LSID Web Services provided by SyMBA in the
+  {{../general-information/web-services.html}LSID section}} of the {{../installation/index.html}General Information}}
+  documentation pages.

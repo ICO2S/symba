@@ -9,11 +9,12 @@ Create databases to hold the metadata and security information
 
 * Create an appropriate metadata database
 
-                    Create a database inside your chosen DBMS entitled "symba". If you wish an alternative name for your
-                    database, modify the following elements in the top-level
-                    <<<pom.xml>>>
-                    located at<<<your-checkout/trunk/pom.xml>>>,
-                    and add your username and password to the pom:
+                    Create a database inside your chosen DBMS entitled "symba". You will also need to have a database
+                    user that is the owner of this database, e.g create a new user called "symba" that you use
+                    specifically for accessing and modifying the SyMBA metadata and security database.
+                    Modify the following elements in the top-level <<<pom.xml>>> located at
+                    <<<your-checkout/trunk/pom.xml>>>. Firstly, change the jdbc connection details to a value
+                    suitable for your database connection, and secondly add your database username and password:
 
 +---+
                     <jdbc.url>
@@ -35,13 +36,13 @@ Create databases to hold the metadata and security information
                     </jdbc.driver.jar>
 +---+
 
-* Create an appropriate login database
+* Create an appropriate security/login database
 
-                    Create a login database inside your chosen DBMS entitled "symba_security", or anything else
-                    you wish. All this has is a single table with login details, and remains
-                    intentionally separate from the FuGE-based database as it is not part of
-                    FuGE. The database table should be created with the following command if
-                    using PostgreSQL - please modify accordingly if using another database:
+                    Create a security/login database inside your chosen DBMS entitled "symba_security", or anything else
+                    you wish. There will be only one table within this database. This "USER" table will hold the login
+                    details, and intentionally kept separate from the FuGE-based metadata database. The database table 
+                    should be created with the following command if using PostgreSQL - please modify accordingly if
+                    using another database:
 
 +---+
                     create table users (
@@ -53,10 +54,18 @@ Create databases to hold the metadata and security information
                     );
 +---+
 
+ This SQL is also stored in the subversion checkout inside <<<symba-webapp/src/main/sql/create-security-table.sql>>>.
+
+ The <<user_name>> field stores what the login username will be for the user, while the <<password>> is the
+ password for that user. The lsid is the Endurant LSID of the FuGE Person object as stored in the FuGE metadata
+ database.
+
 * Tell the front-end about the jdbc connection url
 
-                    Modify the "url" variable in the following section of
-                    <<<your-checkout/trunk/webapp/src/main/webapp/verify.jsp>>>:
+                    Modify the following section of
+                    <<<your-checkout/trunk/webapp/src/main/webapp/verify.jsp>>>. The "url" variable should hold
+                    the JDBC connection details for the security database, and the "user" and "password" should
+                    be filled with the database username and password of your freshly-created SyMBA database user. 
                     
 +---+
                     <sql:setDataSource

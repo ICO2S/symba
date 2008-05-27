@@ -7,15 +7,27 @@
 
 Recommendations
 
-                SyMBA can be installed on either Windows or linux, but we highly recommend a
-                linux system. While the FuGE STK that this is based on has been tested on both
-                systems, SyMBA has
-                <i>only</i>
-                been tested and run on a linux system. We also recommend MySQL or
-                PostgreSQL for the database choice, as these are the only two that have been tested with
-                SyMBA (PostgreSQL is the preferred choice of these two.)
+* Operating Systems
 
-                These instructions are loosely based on those found in the {{{credits.html}Credits Section}},
-                but have been modified to suit the needs of SyMBA.
+  SyMBA can be installed on either Windows or Linux, but we highly recommend a
+  Linux system. While the FuGE STK that this is based on has been tested on both, SyMBA is generally
+  <i>only</i> tested and run on a linux system, specifically Ubuntu Gutsy Gibbon and higher.
+
+  Some users work with Ubuntu on a day-to-day basis, and with this OS it is simple to apt-get the components
+  required for SyMBA.
+
+  Some of our users have found it easiest to create a Virtual Machine and install the latest Ubuntu Server (or Standard)
+  release (8.04, Hardy Heron) on it. This has the advantage that it has tomcat5.5, postgresql
+  8.3 and maven 2.0.8 in its package repository. During the installation it even asks whether you want to install a
+  postgresql database server.
+
+* Database Choice
+
+  We also recommend PostgreSQL or MySQL for the database choice, as these are the only two that have been tested with
+  SyMBA. Of these, PostgreSQL is the preferred choice and is the only one regularly used by the SyMBA
+  development team.
+
+  These instructions were originally and loosely based on those found in the {{{credits.html}Credits Section}},
+  but have been modified to suit the needs of SyMBA.
 
 

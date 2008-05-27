@@ -22,3 +22,6 @@ Create a file system directory to hold the raw data
                         scp.setUsername( "" );
                         scp.setPassword( "" );
 +---+
+
+  The directory and the hostname are the appropriate location of the remote host/directory to copy the files to. The
+  username and password are the username and password for the connection to that remote host.

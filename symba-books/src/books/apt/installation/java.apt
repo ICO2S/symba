@@ -9,16 +9,36 @@ Installing Java 5
 
 * Install J2SE Development Kit 5.0 (JDK 5.0)
 
-                    Download Java 1.5.x from {{{http://java.sun.com/j2se/1.5.0/download.jsp}here}}.
+  If you are using Ubuntu 7.04 or higher, you can install Sun Java 5 simply with an apt-get command:
 
-                    Currently, there is a problem building SyMBA using newer versions of Java: when compiling the code
-                    AndroMDA builds, there is an error that only appears for Java 1.6 and higher. I have submitted a
-                    question to the
-                    {{{http://galaxy.andromda.org/forum/viewtopic.php?t=5337}Andromda forum}}
-                    and am waiting for a reply.
++---+
+  sudo apt-get install sun-java5-bin
++---+
+
+  and then optionally set the default version in your system with
+
++---+
+  sudo update-java-alternatives
++---+
+
+  <<Full details of the installation of Sun Java on Ubuntu 7.04 or higher is available at
+  {{{https://help.ubuntu.com/community/Java}}}. These instructions are for
+  java 6, so just replace any instance of the number "6" in the instructions with the number "5".
+
+  Alternatively, you can download Java 1.5.x from {{{http://java.sun.com/j2se/1.5.0/download.jsp}Sun directly}}.
+
+* Why not Java 6?
+
+  Currently, there is a problem building SyMBA using newer versions of Java: when compiling the code
+  AndroMDA builds, there is an error that only appears for Java 1.6 and higher. I have submitted a
+  question to the {{{http://galaxy.andromda.org/forum/viewtopic.php?t=5337}Andromda forum}}
+  and am waiting for a reply.
 
 * Check Your Installation
 
-                Make sure that the <<<JAVA_HOME>>> environment variable is pointing to the directory where you installed
-                the JDK.
+  Make sure that the <<<JAVA_HOME>>> environment variable is pointing to the directory where you installed
+  the JDK.
+
+  If using the "apt-get install" method for Ubuntu described above combined with the update-java-alternatives
+  command, you should already have this variable set.
 

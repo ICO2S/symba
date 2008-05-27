@@ -87,8 +87,9 @@ public class FuGEDaoImpl
                         "                     join internalexp.auditTrail as internalaudit " +
                         "                     where internalexp.endurant.id = exp.endurant.id) " +
                         "and " +
-                        "exp.name like :investigationName", "%" + investigationName + "% " +
-                "order by audit.date desc");
+                        "exp.name like :investigationName " +
+                        "order by audit.date desc",
+                        "%" + investigationName + "%");
     }
 
     public java.util.List getAllLatestSummariesWithOntologyTerm( final int transform, final java.lang.String endurantId ) {

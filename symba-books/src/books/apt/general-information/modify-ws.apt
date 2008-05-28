@@ -1,8 +1,27 @@
  ---
- Modifying and Running Your Own SyMBA Web Services
+ Modifying SyMBA Web Services
  ---
  Allyson Lister
  ---
  May 2008
 
 Modifying and Running Your Own SyMBA Web Services
+
+  If you wish to use the SyMBA LSID web service API, but need a different implementation of the Assigner and/or
+  the Resolver/Retriever, you can easily accomplish this via your own implementation of the three interfaces present
+  within the symba-lsid-ws-api module. Create your own implementations for whichever class needs to have behaviour
+  different from the provided implementations. You can do this by
+
+  * Copy the SyMBA module you wish to make your own implementation of (e.g. the symba-lsid-ws-assigner module), giving
+    a different name to the new directory.
+
+  * Change the name of the module in the copied pom.xml.
+
+  * Change the LsidAssignerImpl code to suit your needs, ensuring that you also change the name of the class and/or
+    the package it is contained in to avoid any possibility of a clash.
+
+  * Build the war with "mvn install" and then access your new WS with your own version of the client code, as 
+    exemplified in the symba-lsid-ws-client module.
+
+  * If you wish this module to be built as part of the parent's "mvn install" command from the trunk/ directory,
+    then you will need to add the module name to the trunk/pom.xml, in the <module> section.

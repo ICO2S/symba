@@ -1,10 +1,10 @@
 package net.sourceforge.symba.util.conversion.xml;
 
+import net.sourceforge.symba.util.security.UserPassword;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import net.sourceforge.symba.util.security.UserPassword;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.util.StringTokenizer;
 public class SecurityPeopleLoader {
 
     /*
-    * This parses the file using JDOM and then calls the DB method
+    * This parses a file structured like symba-backend/xml/samples/SamplePeople.xml using JDOM and then calls the DB method
     *
     */
     public List<UserPassword> loadPeopleFromFile( String filePath ) throws IOException, JDOMException {

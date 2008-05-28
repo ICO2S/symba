@@ -34,7 +34,7 @@ in this distribution, please see LICENSE.txt
 <%-- This allows the page to talk to a database --%>
 <sql:setDataSource
         driver="org.postgresql.Driver"
-        url="jdbc:postgresql://yourmachine:portnumber/dpi_security"
+        url="jdbc:postgresql://yourmachine:portnumber/symba_security"
         user="user"
         password="pass"
         />

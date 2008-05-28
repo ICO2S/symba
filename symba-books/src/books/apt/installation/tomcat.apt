@@ -1,0 +1,60 @@
+ ---
+ Tomcat 5.5 or Higher
+ ---
+ Allyson Lister
+ ---
+ May 2008
+
+Installation: Tomcat 5.5 or Higher
+
+  We recommend using Tomcat 5.5 or higher. There are a variety of installation methods available. Full user instructions
+  for Tomcat are beyond the scope of this documentation, but the are documents off of the main Apache Tomcat
+  website: {{http://tomcat.apache.org}}.
+
+* Ubuntu
+
+  For Ubuntu, you can use apt-get:
+
++---+
+  apt-get install tomcat5.5 
++---+
+
+  Please note that some Ubuntu users do not like the installation provided by apt-get, and wish to both put the
+  installation directory under their express control, and run tomcat under their own username.
+
+  In this case, you can instead download an unzip / untar a single compressed file from Apache
+  ({{http://tomcat.apache.org/}}) into a location of your choice. That is the entirety of the installation.
+
+* Other OSs
+
+  You can download an unzip / untar a single compressed file from Apache ({{http://tomcat.apache.org/}}) into
+  a location of your choice. That is the entirety of the installation for most platforms, though please read
+  the installation instructions suitable for your system.
+
+War Upload
+
+  A successful install will allow you to access tomcat via both its web manager, and directly by changing into the
+  installation directory of tomcat.
+
+* Via Tomcat Manager
+
+  You can access the web manager from http://yourmachine:yourport:/manager/html . This allows you to undeploy and
+  deploy wars without having to stop and start the tomcat server. In order to access this page, you will need to add
+  both a "manager" role and a user that makes use of that role within the tomcat-users element of conf/tomcat-users.xml
+  as so:
+
++---+
+   <role rolename="manager"/>
+   <user username="username" password="pass" roles="manager"/>  
++---+
+
+* Via the Command-Line
+
+  You can also stop (bin/shutdown.sh), start (bin/startup.sh) and deploy wars (by copying them directly into the
+  webapps/ directory of the tomcat installation) via the command line.
+
+Note for Ubuntu Users Installing with apt-get
+
+  When using apt-get, you may find that Debian/Ubuntu installs Tomcat with the security manager enabled.
+  For the SyMBA web application to work, the security manager must either be switched off (in
+  /etc/default/tomcat5.5) or configured (in /etc/tomcat5.5/policy.d/).

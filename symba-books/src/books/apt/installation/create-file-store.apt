@@ -12,7 +12,7 @@ Create a file system directory to hold the raw data
                     the size of the relational database. Create a directory on the computer where you plan to store
                     the data, and then put the details of the machine - and the user that will be the owner of the data
                     - into the fields below. Currently, the location and name of the
-                    directory should be entered into the webapp/src/main/webapp/verify.jsp. This
+                    directory should be entered into the symba-webapp/src/main/webapp/verify.jsp. This
                     is a temporary location. You need to change the following lines to something
                     appropriate to your file system:
                     

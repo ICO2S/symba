@@ -29,7 +29,7 @@
          |        as long as you do not violate the Maven POM schema, see
          |        http://maven.apache.org/reference/project-descriptor.htmlt
          |
-         +-- /mda
+         +-- /symba-mda
          |     |
          |     |    The MDA module is the heart of this project, this is where
          |     |    AndroMDA is configured to generate the files needed to
@@ -47,20 +47,20 @@
          |              their own namespace; global settings are done in the
          |              'default' namespace
          |     
-         +-- /common
+         +-- /symba-common
          |     |
-         |     |    The COMMON module collects those resources and classes
+         |     |    The symba-common module collects those resources and classes
          |     |    that are shared between the other modules.
          |     |
          |     +-- pom.xml
-         |     |        lists common dependencies
+         |     |        lists symba-common dependencies
          |     +-- /target
          |              shared resources and java classes are generated here,
          |              such as value objects and exceptions
          |
-         +-- /core
+         +-- /symba-core
          |     |
-         |     |    The CORE module collects those resources and classes
+         |     |    The symba-core module collects those resources and classes
          |     |    that use the Spring framework, optionally making
          |     |    use of Hibernate and/or EJB under the hood.
          |     |
@@ -116,68 +116,68 @@
 
             undeploys the war from your app server
 
-        %> mvn -N andromdapp:build -Dmodules=core (or mvn -f core/pom.xml)
+        %> mvn -N andromdapp:build -Dmodules=symba-core (or mvn -f symba-core/pom.xml)
 
-            only build the core module
+            only build the symba-core module
 
         %> mvn nuke
 
             cleans out all /target directories and removes all Java classes with names
-            ending with 'Impl' from the source directories (from the common, core and
+            ending with 'Impl' from the source directories (from the symba-common, symba-core and
             web modules); this goal asks for confirmation, but be careful calling it
             anyway as you will lose your manually edited files
 
-        %>  mvn -f core/pom.xml andromdapp:schema -Dtasks=create
+        %>  mvn -f symba-core/pom.xml andromdapp:schema -Dtasks=create
 
             generates the DDL create code and subsequently tells the database
             to create the schema for the entities
 
-        %> mvn -f core/pom.xml andromdapp:schema -Dtasks=drop
+        %> mvn -f symba-core/pom.xml andromdapp:schema -Dtasks=drop
 
             generates the DDL drop code and subsequently tells the database
             to drop the schema for the entities
             
-        %> mvn -f core/pom.xml andromdapp:schema -Dtasks=drop,create
+        %> mvn -f symba-core/pom.xml andromdapp:schema -Dtasks=drop,create
 
             generates the drop and create DDL code and subsequently tells the database
             to drop and then create the schema for the entities
 
-        %> mvn -f core/pom.xml andromdapp:schema -Dtasks=update
+        %> mvn -f symba-core/pom.xml andromdapp:schema -Dtasks=update
 
             attempts to update the database schema with incremental changes, might not work with all JDBC drivers
             see http://www.hibernate.org/hib_docs/v3/reference/en/html_single/#toolsetguide-s1-6
 
-        %> mvn -f core/pom.xml andromdapp:schema -Dtasks=validate
+        %> mvn -f symba-core/pom.xml andromdapp:schema -Dtasks=validate
 
             validates the current Hibernate mappings against the database, you can also use this to simply
             check whether or not the mappings have been properly generated (in case of customizations)
 
-        %> mvn -N andromdapp:build -Dmodules=mda:[andromda:start-server] (or mvn -f mda/pom.xml andromda:start-server)
+        %> mvn -N andromdapp:build -Dmodules=symba-mda:[andromda:start-server] (or mvn -f symba-mda/pom.xml andromda:start-server)
 
             starts the AndroMDA server, with this server running you will be able
             to significantly speedup the generation process although it will require
             you to use another console while it is running
 
-        %> mvn -N andromdapp:build -Dmodules=mda:[andromda:stop-server] (or mvn -f mda/pom.xml andromda:stop-server)
+        %> mvn -N andromdapp:build -Dmodules=symba-mda:[andromda:stop-server] (or mvn -f symba-mda/pom.xml andromda:stop-server)
 
             stops the AndroMDA server
 
-        %> mvn -N andromdapp:build -Dmodules=mda (or mvn -f mda/pom.xml)
+        %> mvn -N andromdapp:build -Dmodules=symba-mda (or mvn -f symba-mda/pom.xml)
 
             runs AndroMDA on your model and thereby generating files in
             the subdirectories of the existing modules
 
-        %> mvn -N andromdapp:build -Dmodules=mda -Dfilter=java,hibernate (or mvn -f mda/pom.xml -Dfilter=java,hibernate)
+        %> mvn -N andromdapp:build -Dmodules=symba-mda -Dfilter=java,hibernate (or mvn -f symba-mda/pom.xml -Dfilter=java,hibernate)
 
             runs AndroMDA, but this time only using the Java and Hibernate
             cartridges (in that order)
 
-        %> mvn -N andromdapp:build -Dmodules=mda -Dfilter=~java,hibernate (or mvn -f mda/pom.xml -Dfilter=~java,hibernate)
+        %> mvn -N andromdapp:build -Dmodules=symba-mda -Dfilter=~java,hibernate (or mvn -f symba-mda/pom.xml -Dfilter=~java,hibernate)
 
             runs AndroMDA, but this time using all cartridges *except*
             the Java and Hibernate cartridges
 
-        %> mvn -N andromdapp:build -Dmodules=mda,core,web -Dfilter=java -Ddeploy
+        %> mvn -N andromdapp:build -Dmodules=symba-mda,symba-core,web -Dfilter=java -Ddeploy
 
             runs AndroMDA using only the Java cartridge, rebuilds the core
             module and web module and deploys afterwards
@@ -186,7 +186,7 @@
             
             runs the AndroMDApp build goal in 'console' mode, once running, this allows you to execute any goal or subproject
             goal in the manner described above without having to specify the andromdapp:build goal or 
-            restarting maven (i.e. you can run the mda goal by typing 'mda', build the core module by type 'core', etc).
+            restarting maven (i.e. you can run the symba-mda goal by typing 'symba-mda', build the core module by type 'core', etc).
 
 
     Please note that you may use the '-o' flag at any time to avoid

@@ -79,7 +79,6 @@
                 <role>Developer</role>
             </roles>
             <timezone>0</timezone>
-            <properties></properties>
         </developer>
         <developer>
             <id>fgibson_sf</id>
@@ -91,7 +90,6 @@
                 <role>Developer</role>
             </roles>
             <timezone>0</timezone>
-            <properties></properties>
         </developer>
         <developer>
             <id>ollyshaw</id>
@@ -103,7 +101,6 @@
                 <role>Developer</role>
             </roles>
             <timezone>0</timezone>
-            <properties></properties>
         </developer>
     </developers>
 
@@ -592,6 +589,7 @@
                 </pluginManagement>
             </build>
         </profile>
+        <!-- Not using the other profiles at the moment. -->
         <profile>
             <id>development</id>
             <activation>
@@ -600,14 +598,14 @@
                     <value>dev</value>
                 </property>
             </activation>
-            <properties>
-                <jdbc.driver.jar></jdbc.driver.jar>
-                <jdbc.driver></jdbc.driver>
-                <jdbc.url></jdbc.url>
-                <jdbc.username></jdbc.username>
-                <jdbc.password></jdbc.password>
-                <jdbc.exception.sorter></jdbc.exception.sorter>
-            </properties>
+            <!--<properties>-->
+                <!--<jdbc.driver.jar></jdbc.driver.jar>-->
+                <!--<jdbc.driver></jdbc.driver>-->
+                <!--<jdbc.url></jdbc.url>-->
+                <!--<jdbc.username></jdbc.username>-->
+                <!--<jdbc.password></jdbc.password>-->
+                <!--<jdbc.exception.sorter></jdbc.exception.sorter>-->
+            <!--</properties>-->
         </profile>
         <profile>
             <id>validation</id>
@@ -617,14 +615,14 @@
                     <value>val</value>
                 </property>
             </activation>
-            <properties>
-                <jdbc.driver.jar></jdbc.driver.jar>
-                <jdbc.driver></jdbc.driver>
-                <jdbc.url></jdbc.url>
-                <jdbc.username></jdbc.username>
-                <jdbc.password></jdbc.password>
-                <jdbc.exception.sorter></jdbc.exception.sorter>
-            </properties>
+            <!--<properties>-->
+                <!--<jdbc.driver.jar></jdbc.driver.jar>-->
+                <!--<jdbc.driver></jdbc.driver>-->
+                <!--<jdbc.url></jdbc.url>-->
+                <!--<jdbc.username></jdbc.username>-->
+                <!--<jdbc.password></jdbc.password>-->
+                <!--<jdbc.exception.sorter></jdbc.exception.sorter>-->
+            <!--</properties>-->
         </profile>
         <profile>
             <id>production</id>
@@ -634,14 +632,14 @@
                     <value>prod</value>
                 </property>
             </activation>
-            <properties>
-                <jdbc.driver.jar></jdbc.driver.jar>
-                <jdbc.driver></jdbc.driver>
-                <jdbc.url></jdbc.url>
-                <jdbc.username></jdbc.username>
-                <jdbc.password></jdbc.password>
-                <jdbc.exception.sorter></jdbc.exception.sorter>
-            </properties>
+            <!--<properties>-->
+                <!--<jdbc.driver.jar></jdbc.driver.jar>-->
+                <!--<jdbc.driver></jdbc.driver>-->
+                <!--<jdbc.url></jdbc.url>-->
+                <!--<jdbc.username></jdbc.username>-->
+                <!--<jdbc.password></jdbc.password>-->
+                <!--<jdbc.exception.sorter></jdbc.exception.sorter>-->
+            <!--</properties>-->
         </profile>
     </profiles>
     <repositories>

@@ -2,13 +2,11 @@ package net.sourceforge.symba.util.conversion.xml;
 
 
 import fugeOM.Collection.AuditCollection;
-import net.sourceforge.symba.ServiceLocator;
 import fugeOM.service.RealizableEntityService;
 import fugeOM.service.RealizableEntityServiceException;
 import fugeOM.util.generatedJAXB2.FugeOMCollectionAuditCollectionType;
+import net.sourceforge.symba.ServiceLocator;
 import net.sourceforge.symba.util.conversion.helper.CisbanAuditCollectionHelper;
-import net.sourceforge.symba.util.conversion.helper.CisbanDescribableHelper;
-import net.sourceforge.symba.util.conversion.helper.CisbanIdentifiableHelper;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -36,10 +34,10 @@ public class PeopleUnmarshaler {
     private final String XMLFilename;
     private final RealizableEntityService reService;
 
-    public PeopleUnmarshaler( String xf ) {
+    public PeopleUnmarshaler( String inputXML ) {
         ServiceLocator serviceLocator = ServiceLocator.instance();
         this.reService = serviceLocator.getRealizableEntityService();
-        this.XMLFilename = xf;
+        this.XMLFilename = inputXML;
     }
 
     public void Jaxb2ToFuGE() throws JAXBException, FileNotFoundException, RealizableEntityServiceException, URISyntaxException {
@@ -58,8 +56,6 @@ public class PeopleUnmarshaler {
         FugeOMCollectionAuditCollectionType collectionType = ( FugeOMCollectionAuditCollectionType ) genericTopLevelElement
                 .getValue();
 
-        CisbanDescribableHelper cd = new CisbanDescribableHelper();
-        CisbanIdentifiableHelper ci = new CisbanIdentifiableHelper();
         // get and store all information in the database
         CisbanAuditCollectionHelper cac = new CisbanAuditCollectionHelper();
 

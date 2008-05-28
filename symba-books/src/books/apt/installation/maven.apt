@@ -66,7 +66,7 @@ Environment Variables and Settings for Maven
                 Set up the environment variable M2_HOME to point to your maven installation
                 directory, and then ensure that both $M2_HOME/bin and $JAVA_HOME/bin are
                 present in your PATH. Also set M2_REPO, which is the location of your Maven2 repository. Not only is
-                it recommended by Maven, it is also avariable used by SyMBA later on.
+                it recommended by Maven, it is also a variable used by SyMBA later on.
 
 Test Maven (Part One)
 

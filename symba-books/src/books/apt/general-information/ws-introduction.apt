@@ -8,9 +8,9 @@
 Introduction to SyMBA Web Services
 
   Web services (WS) are used to make simple applications available as web applications (more information can be found
-  {{http://www.w3schools.com/webservices/ws_intro.asp}here}} and {{http://en.wikipedia.org/wiki/Web_service}here}}).
+  {{{http://www.w3schools.com/webservices/ws_intro.asp}here}} and {{{http://en.wikipedia.org/wiki/Web_service}here}}).
   SyMBA makes use of {{{http://cxf.apache.org}Crossfire (CXF)}} in a {{{http://maven.apache.org}Maven 2}}
-  {{http://cwiki.apache.org/CXF20DOC/maven-integration-and-plugin.html}plugin}} to
+  {{{http://cwiki.apache.org/CXF20DOC/maven-integration-and-plugin.html}plugin}} to
   build web services into a war that can be loaded into a Tomcat server. CXF is "an open source services framework
   [...] that helps you build and develop services using frontend programming APIs, like JAX-WS. These services can speak
   a variety of protocols such as SOAP, XML/HTTP, RESTful HTTP, or CORBA and work over a variety of transports such as
@@ -22,24 +22,27 @@ Services Currently Available
   LSIDs contained within SyMBA, and via these LSIDs perform a number of useful tasks.
 
   * LsidAssigner
-    * <<assignLsid()>>. Get an LSID.
+
+    * <<assignLsid().>> Create a new LSID.
+
   * LsidResolver
-    * <<getAvailableServices()>>. Check that the available web services can deal with your LSID.
+
+    * <<getAvailableServices().>> Check that the available web services can deal with your LSID.
+
   * LsidDataRetriever
-    * <<getMetadata()>>. Get some information about an LSID.
-    * <<getData()>>. Get the data pointed to from an LSID.
-    []
-  []
+
+    * <<getMetadata().>> Get some information about an LSID.
+
+    * <<getData().>> Get the data pointed to from an LSID.
 
 Deviations From the LSID Specification.
 
   The SyMBA LSID web services mentioned currently implement only those parts of the specification in active use
-  within SyMBA.
-  ({{http://lsids.sourceforge.net/quick-links/lsid-spec/}LSID specification}}. In particular, these web services
-  (as well as the general SyMBA API) implement LSIDs as Java Strings rather than as complex objects. SyMBA developers
-  have found no need to use the parameters and properties portion of the specification, and wish to keep the SyMBA
-  implementation as straightforward to use and understand as possible. Additionally, only those methods from the LSID
-  specification that SyMBA developers have found a use for have been implemented at this stage. If you wish a more
+  within SyMBA ({{{http://lsids.sourceforge.net/quick-links/lsid-spec/}LSID specification}}). In particular, these web
+  services (as well as the general SyMBA API) implement LSIDs as Java Strings rather than as complex objects. SyMBA
+  developers have found no need to use the parameters and properties portion of the specification, and wish to keep the
+  SyMBA implementation as straightforward to use and understand as possible. Additionally, only those methods from the
+  LSID specification that SyMBA developers have found a use for have been implemented at this stage. If you wish a more
   complete implementation, please email the symba-devel@lists.sourceforge.net mailing list and let us know what you
   need.
 
@@ -47,3 +50,18 @@ LSID Metadata Compared With FuGE-OM Metadata
 
   There are differences between what the LSID specification describes as "metadata", and what the FuGE-OM means by
   the same term.
+
+  LSID metadata is information about <the LSID>, as opposed to LSID Data, which is the information
+  associated with the LSID. LSID metadata tells you things about the status of the LSID: it includes a expiration
+  timestamp (which, if null, means the LSID does not expire), and any other information that the supplier of the LSID
+  wishes to provide. The LSID metadata, unlike the LSID data, can change at any time, and is not required to always
+  return the same thing. In SyMBA, the timestamp will always be null, and the metadata currently returns an
+  RDF-formatted object with a title and a value. At the moment, this object is just the LSID of the latest version
+  of Identifiable object associated with the same Endurant object as the LSID you provided.
+
+  FuGE metadata is every bit of information stored in the FuGE-OM structure, whereas the data is the actual data
+  file(s) associated with this metadata. Each Identifiable object in FuGE (which includes the reference to the
+  data file(s)) is marked with an LSID. Therefore, to retrieve FuGE metadata concerning a given LSID, call the
+  getData() method in the LSID Data Retrieval WS. To retrieve the data file itself, you also call the getData()
+  method, but provide the LSID that points to the raw data rather than the LSID that points to one of the structures
+  that forms the FuGE-OM.

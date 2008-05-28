@@ -12,27 +12,120 @@ Creating the Database Tables
                 below. You will need to create the database before using SyMBA.
                 
 ---
-                mvn -f core/pom.xml andromdapp:schema -Dtasks=create
+                mvn -f symba-core/pom.xml andromdapp:schema -Dtasks=create
 ---
-
-Pre-loading People and Protocol Templates into the Metadata Database
-
-                There are some commands prepared for you in trunk/backend/README.txt that
-                will help you load sample people and sample protocols into your new
-                database. You can use these samples to guide the creation of your own people
-                and template protocols.
-
-Pre-loading People into the Login/Security Database
-
-                Once you have loaded your people into the SyMBA database, you will also need
-                to tell your <<symba_security>> database about those people. The Java class
-                <<net.sourceforge.symba.util.conversion.xml.SecurityPeopleLoader>>
-                will help you load people in, and create initial passwords for them. Remember, a FuGE Person's Endurant
-                LSID is what goes into the security database in the "lsid" column.
 
 Assigning Identifiers
 
   By default SyMBA utilizes its own LSID assigner Web Service for assigning new LSIDs
-  to the FuGE objects. There is much more information on using the LSID Web Services provided by SyMBA in the
-  {{../general-information/web-services.html}LSID section}} of the {{../installation/index.html}General Information}}
+  to the FuGE objects. There is much more information on using the LSID Web Services (WS) provided by SyMBA in the
+  {{{../general-information/web-services.html}LSID section}} of the {{{../installation/index.html}General Information}}
   documentation pages.
+
+  This installation comes expecting to connect to the LSID Assigning Service available in the SyMBA Sandbox. You may
+  use this for testing, but there is no guarantee of availability or reliability, and therefore you should really
+  maintain your own version of this war once you are ready to use SyMBA in a more production-style environment. This
+  is straightforward to do, and the instructions are available in the
+  {{{../general-information/web-services.html}LSID section}} mentioned above. Just remember you need an active
+  internet connection to be able to use this WS.
+  
+Checking the Connection to Your LSID Assigner
+
+  To fill the metadata database with either people or template protocols, you need to be able to connect to an active
+  LSID Assigner. When you ran "mvn install", you not only created the symba.war file needed for the web interface,
+  but also two Web Service wars: symba-lsid-ws-assigner.war and symba-lsid-ws-resolver.war. It is the first
+  of these that creates new LSIDs for SyMBA.
+
+  You may choose to use your own assigner WS or the one provided for the SyMBA sandbox. If you are using the
+  sandbox WS, there is no guarantee of availability or reliability, and therefore you should really
+  maintain your own version of this WS once you are ready to use SyMBA in a more production-style environment. This
+  is straightforward to do, and the instructions are available in the
+  {{{../general-information/web-services.html}LSID section.}}
+
+  The SyMBA subversion version of the symba-backend already expects to connect to the Sandbox Assigner WS, so you
+  don't need to change anything to get that to work. However, if you are using your own version of the WS, you will
+  need to remember to modify client-beans.xml found in symba-backend/src/main/resources. The address property
+  needs to be updated to the address of your own WS.
+
+  You can check your connection to the assigner WS by running the following command from within the
+  symba-lsid-ws-assigner directory:
+
++---+
+  mvn exec:java -Dexec.mainClass="net.sourceforge.symba.lsid.webservices.client.LsidAssignerClient"
++---+
+
+  The response from the program should look something like (but not necessarily identical to) this:
+
++---+
+28-May-2008 11:56:00 org.apache.cxf.service.factory.ReflectionServiceFactoryBean buildServiceFromClass
+INFO: Creating Service {http://service.webservices.lsid.symba.sourceforge.net/}LsidAssignerService from class
+net.sourceforge.symba.lsid.webservices.service.LsidAssigner
+[...]
+Response assignLSID: urn:lsid:cisban.cisbs.org:TestClassName:13b36013-a768-4d2a-8302-64e1e9952ece
++---+
+
+  The last line is the response from the web service, and contains the test LSID.
+
+Preparing Your List of Users
+
+  The symba-backend module contains a file of sample people to load as users in your database
+  (xml/samples/SamplePeople.xml). Open SamplePeople.xml in an editor, and make any modifications/additions you want,
+  based on that template, to add the users you need. You may wish to save this file with a different name, and in
+  a safe place for future reference.
+
+Pre-loading Users into the Metadata Database
+
+  First, we'll store your users into the FuGE metadata database. You can do this with the following command, replacing
+  the SamplePeople.xml filename with the correct file and path for your own user XML file:
+
++---+
+  mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.UnmarshalPeople" -Dexec.args="xml/samples/SamplePeople.xml"
++---+  
+
+Pre-loading People into the Login/Security Database
+
+  Once you have loaded your people into the SyMBA database, you will also need to tell your <<symba_security>> database
+  about those people. Remember, a FuGE Person's Endurant LSID is what goes into the security database in the "lsid"
+  column.
+
+  There are two methods of loading usernames and passwords into the security database:
+
+  * <<Automatically.>> If you would like SyMBA to generate your passwords and usernames for you, there are a number
+    of Java classes provided with main() methods that will create usernames and passwords for you from your user XML
+    file made in the previous step. The first time you ever generate usernames/passwords, run the following command,
+    replacing the SamplePeople.xml filename and path with your own user XML file, if different:
+
++---+
+  mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.security.CreateUserPassAndLoad" -Dexec.args="xml/samples/SamplePeople.xml"
++---+
+
+    You should double-check that the users have been added to the USERS table by conventional means (e.g. pgadmin III
+    or psql). Also, save the STDOUT to a safe place, as these are the generated usernames and passwords.
+
+    If you look in the same package as CreateUserPassAndLoad, you will see a number of other similar classes.
+    CreateUserPass will create the file of usernames and passwords, but won't load in the database. LoadUserPassIntoDB
+    takes an already-generated user/pass file from one of the two previously-mentioned classes and loads it into the
+    database. You may find these classes useful later on, for maintenance or re-creation of the security database.
+    
+  * <<Manually.>> Using your favorite method of connecting to your database, run the appropriate SQL INSERT statements
+    directly into the USERS table, putting in whatever usernames and passwords you want that match your user XML from
+    the previous step.
+
+Pre-loading Protocol Templates into the Metadata Database
+
+  There are a number of sample protocol templates available for you to load into your SyMBA installation. You can either
+  start by loading these, or you can create your own based on these templates. This section details how to load up
+  the pre-provided sample template protocols. Change into the symba-backend directory and run the following command:
+
++---+
+  mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.UnmarshalWorkflow" -Dexec.args="out.html xml/samples/SampleMicroarray.xml \
+  xml/samples/SampleMicroscopy.xml xml/referenceTemplates/CarmenElectrophysiology.xml"
++---+
+
+  This loads all of the currently-extant sample protocols.
+
+Further Reference
+
+  There are some commands prepared for you in trunk/symba-backend/README.txt that will help you load sample people and
+  sample protocols into your new database. You can use these samples to guide the creation of your own people
+  and template protocols. These can be used as a handy reference, so you don't have to go back to these docs each time.

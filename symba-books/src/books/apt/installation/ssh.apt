@@ -1,0 +1,20 @@
+ ---
+ Installing SSH
+ ---
+ Allyson Lister
+ ---
+ May 2008
+
+Installing SSH
+
+  SyMBA requires SSH on both the web server and on the destination server for the raw data files.
+
+  * <<Ubuntu.>> In Ubuntu, you can just run the following command to install ssh if you don't have it yet
+    on the appropriate two machines:
+
++---+
+  sudo apt-get install ssh
++---+
+
+  * <<Other OSs.>> You may already have ssh installed on the appropriate machines. You can use either commercial SSH
+    or the open alternative, OpenSSH (this is what Ubuntu installs using the above command). 

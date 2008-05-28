@@ -22,7 +22,7 @@ Installing Java 5
 +---+
 
   <<Full details of the installation of Sun Java on Ubuntu 7.04 or higher is available at
-  {{{https://help.ubuntu.com/community/Java}}}. These instructions are for
+  {{https://help.ubuntu.com/community/Java}}>>. These instructions are for
   java 6, so just replace any instance of the number "6" in the instructions with the number "5".
 
   Alternatively, you can download Java 1.5.x from {{{http://java.sun.com/j2se/1.5.0/download.jsp}Sun directly}}.

@@ -11,7 +11,7 @@ Recommendations
 
   SyMBA can be installed on either Windows or Linux, but we highly recommend a
   Linux system. While the FuGE STK that this is based on has been tested on both, SyMBA is generally
-  <i>only</i> tested and run on a linux system, specifically Ubuntu Gutsy Gibbon and higher.
+  <only> tested and run on a linux system, specifically Ubuntu Gutsy Gibbon and higher.
 
   Some users work with Ubuntu on a day-to-day basis, and with this OS it is simple to apt-get the components
   required for SyMBA.

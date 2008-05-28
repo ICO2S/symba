@@ -63,7 +63,7 @@ Create databases to hold the metadata and security information
 * Tell the front-end about the jdbc connection url
 
                     Modify the following section of
-                    <<<your-checkout/trunk/webapp/src/main/webapp/verify.jsp>>>. The "url" variable should hold
+                    <<<your-checkout/trunk/symba-webapp/src/main/webapp/verify.jsp>>>. The "url" variable should hold
                     the JDBC connection details for the security database, and the "user" and "password" should
                     be filled with the database username and password of your freshly-created SyMBA database user. 
                     

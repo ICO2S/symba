@@ -19,3 +19,7 @@ Integration of SyMBA with your favourite IDE
 
             There are other similar commands for IDEs such as Eclipse. Details can be
             found on the {{{http://maven.apache.org}Maven}} website.
+
+  If you are using IntelliJ 7.x or higher, the first time you use the project files, IntelliJ will tell you it needs
+  to upgrade the project files. Just agree to all dialog boxes.
+

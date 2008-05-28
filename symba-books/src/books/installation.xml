@@ -22,7 +22,13 @@
                     <id>recommendations</id>
                 </section>
                 <section>
+                    <id>ssh</id>
+                </section>
+                <section>
                     <id>java</id>
+                </section>
+                <section>
+                    <id>tomcat</id>
                 </section>
                 <section>
                     <id>maven</id>
@@ -55,10 +61,10 @@
                     <id>compiling</id>
                 </section>
                 <section>
-                    <id>filling-the-databases</id>
+                    <id>ide-integration</id>
                 </section>
                 <section>
-                    <id>ide-integration</id>
+                    <id>filling-the-databases</id>
                 </section>
             </sections>
         </chapter>

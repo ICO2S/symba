@@ -9,7 +9,7 @@ Optional Modification of the UML
 
                 OPTIONAL: If you wish to make changes to the
                 SyMBA UML prior to generating the code, the UML may be found in
-                trunk/mda/src/main/uml/symba.xmi and you should do it at this time.
+                trunk/symba-mda/src/main/uml/symba.xmi and you should do it at this time.
                 <<Ensure that your UML diagram can find the AndroMDA zips.>>
                 When you open up the SyMBA UML diagram, MagicDraw will prompt you to define
                 the location of the AndroMDA zips: they are in your maven repository. You
@@ -30,4 +30,20 @@ Compilation
                 be downloaded.>>
 
                 You now have all auto-generated code. The war file (symba.war) for your tomcat server
-                will be found in trunk/webapp/target after the <<mvn install>> command has successfully been run.
+                will be found in trunk/symba-webapp/target after the <<mvn install>> command has successfully been run.
+
+                Additionally, there will be a war in the target/ directories of both symba-lsid-ws-assigner
+                and symba-lsid-ws-resolver. More details of the SyMBA LSID Web Services can be found in the
+                {{{../general-information/web-services.html}LSID Web Services}} instructions.
+
+Loading the SyMBA Web Interface into Tomcat
+
+  You should load the symba.war file found in symba-webapp/target into your Tomcat server now. Details of
+  configuring and installing Tomcat can be found in the {{{tomcat.html}Tomcat}} page of this documentation.
+
+  Successful loading of the war will result in the SyMBA login screen appearing at the following URL (replace the
+  name of the machine and tomcat port number to what is suitable for your installation):
+
+---
+  http://yourmachine:yourport/symba/
+---

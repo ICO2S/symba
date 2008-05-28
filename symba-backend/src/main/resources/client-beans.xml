@@ -12,8 +12,8 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schema/jaxws.xsd">
     <bean id="clientAssignerFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
         <property name="serviceClass" value="net.sourceforge.symba.lsid.webservices.service.LsidAssigner"/>
         <!-- This address should be set to your own database install of SyMBA, or failing that you can connect it
-        to the sandbox install of symba at http://bsu.ncl.ac.uk:8081/symba-lsid-ws-assigner/services/LsidResolver -->
-        <property name="address" value="http://localhost:8081/symba-lsid-ws-assigner/services/LsidAssigner"/>
+        to the sandbox install of symba at http://bsu.ncl.ac.uk:8081/symba-lsid-ws-assigner/services/LsidAssigner -->
+        <property name="address" value="http://bsu.ncl.ac.uk:8081/symba-lsid-ws-assigner/services/LsidAssigner"/>
     </bean>
 
 </beans>

@@ -13,12 +13,24 @@ in this distribution, please see LICENSE.txt
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 
+<%--Import the ResourceBundle class so that we can load *.properties files --%>
+<%@ page import="java.util.ResourceBundle" %>
+
 <%--Imports so we can use the person object and the data portal utils --%>
 <%@ page import="fugeOM.Common.Audit.Person" %>
 <%@ page import="fugeOM.service.RealizableEntityServiceException" %>
 
 <%-- Remove the validUser session bean, if any --%>
 <c:remove var="validUser"/>
+
+<%-- Load application resource bundle --%>
+<%!
+ResourceBundle bundle = null;
+public void jspInit() {
+      bundle = ResourceBundle.getBundle("symba");
+      }
+
+%>
 
 <%-- 
   See if the user name and password combination is valid. If not,
@@ -33,10 +45,10 @@ in this distribution, please see LICENSE.txt
 
 <%-- This allows the page to talk to a database --%>
 <sql:setDataSource
-        driver="org.postgresql.Driver"
-        url="jdbc:postgresql://yourmachine:portnumber/symba_security"
-        user="user"
-        password="pass"
+        driver="<%=bundle.getString(\"security.driver\")%>"
+        url="<%=bundle.getString(\"security.url\")%>"
+        user="<%=bundle.getString(\"security.username\")%>"
+        password="<%=bundle.getString(\"security.password\")%>"
         />
 
 <%--This searches the database for the username/password combination entered 
@@ -95,12 +107,12 @@ must go back to the login page--%>
     }
 
     // todo now set the variables. A bit temporary, but will do until a real properties file setup is done
-    scp.setDirectory( "/your/directory" );
-    scp.setHostname( "yourmachine.com" );
-    scp.setUsername( "user" );
-    scp.setPassword( "pass" );
+    scp.setDirectory( bundle.getString("scp.directory") );
+    scp.setHostname( bundle.getString("scp.hostname") );
+    scp.setUsername( bundle.getString("scp.username") );
+    scp.setPassword( bundle.getString("scp.password") );
 
-    application.setAttribute( "helpEmail", "helpdesk@cisban.ac.uk" );
+    application.setAttribute( "helpEmail", bundle.getString("helpEmail") );
 
     // now get the counts
     try {

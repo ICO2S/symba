@@ -113,5 +113,22 @@
     </dependencies>
     <build>
         <finalName>symba</finalName>
+        <resources>
+			<resource>
+        		<directory>src/main/resources</directory>
+        		<filtering>true</filtering>
+        	</resource>
+        </resources>
     </build>
+    <properties>
+    	<helpEmail>helpdesk@cisban.ac.uk</helpEmail>
+    	<security.driver>org.postgresql.Driver</security.driver>
+    	<security.url>jdbc:postgresql://yourmachine:portnumber/symba_security</security.url>
+    	<security.username>user</security.username>
+    	<security.password>pass</security.password>
+    	<scp.directory>/your/directory</scp.directory>
+    	<scp.hostname>yourmachine.com</scp.hostname>
+    	<scp.username>user</scp.username>
+    	<scp.password>pass</scp.password>
+    </properties>
 </project>

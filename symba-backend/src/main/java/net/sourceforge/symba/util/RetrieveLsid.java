@@ -19,17 +19,21 @@ import net.sourceforge.symba.lsid.webservices.service.LsidAssigner;
 
 public class RetrieveLsid {
     // get the context of the web services
+    // use the one below if using within the web interface / tomcat
     private static final ClassPathXmlApplicationContext context
-            = new ClassPathXmlApplicationContext( ClassLoader.getSystemClassLoader().getResource("/client-beans.xml").toString() );
+                = new ClassPathXmlApplicationContext( ClassLoader.getSystemClassLoader().getResource("/client-beans.xml").toString() );
+    // use the one below if not using within the web interface / tomcat
+//    private static final ClassPathXmlApplicationContext context
+//            = new ClassPathXmlApplicationContext( "/client-beans.xml" );
     // get the assigner
-    private static final LsidAssigner assigner = ( LsidAssigner) context.getBean( "clientAssigner" );
+    private static final LsidAssigner assigner = ( LsidAssigner ) context.getBean( "clientAssigner" );
 
-    public static String getLSID( String namespace )  {
+    public static String getLSID( String namespace ) {
         // create the new LSID
         return assigner.assignLSID( namespace );
     }
 
-    public static void main( String[] args )  {
+    public static void main( String[] args ) {
 
         System.err.println( "Retrieving LSIDs" );
         for ( int i = 0; i < 5; i++ ) {

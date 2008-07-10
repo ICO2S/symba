@@ -12,6 +12,7 @@
     <name>SyMBA LSID webservices: Client Example Code</name>
     <properties>
         <cxf.version>2.1</cxf.version>
+        <java.util.logging.config.file>logging.properties</java.util.logging.config.file>
     </properties>
     <dependencies>
         <dependency>

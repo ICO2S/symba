@@ -94,17 +94,17 @@ public class CisbanGenericProtocolApplicationHelper implements MappingHelper<Gen
             FugeOMCommonProtocolGenericProtocolApplicationType genericProtocolApplicationXML,
             GenericProtocolApplication genericProtocolApplication ) throws RealizableEntityServiceException {
 
-        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
-                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
-            System.out.println( "Found Output Materials directly before greedy get for GPA " +
-                    genericProtocolApplication.getIdentifier() );
-        } else {
-            System.out.println( "Found No Output Materials directly before greedy get for GPA " +
-                    genericProtocolApplication.getIdentifier() );
-        }
-
         // get any lazily loaded objects
         genericProtocolApplication = ( GenericProtocolApplication ) reService.greedyGet( genericProtocolApplication );
+
+//        if ( genericProtocolApplication.getGenericOutputMaterials() != null &&
+//                !genericProtocolApplication.getGenericOutputMaterials().isEmpty() ) {
+//            System.out.println( "Found Output Materials directly before greedy get for GPA " +
+//                    genericProtocolApplication.getIdentifier() );
+//        } else {
+//            System.out.println( "Found No Output Materials directly before greedy get for GPA " +
+//                    genericProtocolApplication.getIdentifier() );
+//        }
 
         // protocol ref
         genericProtocolApplicationXML.setProtocolRef( genericProtocolApplication.getGenericProtocol().getIdentifier() );

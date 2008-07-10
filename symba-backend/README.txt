@@ -5,7 +5,7 @@
 # sub-directory:
 
 # Add official staff members to the SyMBA database
-mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.UnmarshalPeople" -Dexec.args="xml/samples/SamplePeople.xml src/main/resources/client-beans.xml"
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.UnmarshalPeople" -Dexec.args="xml/samples/SamplePeople.xml"
 
 # Add workflow(s) to the SyMBA database
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.UnmarshalWorkflow" -Dexec.args="out.html xml/samples/SampleMicroarray.xml"
@@ -14,7 +14,7 @@ mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.UnmarshalWorkflow" -D
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.UnmarshalWorkflow" -Dexec.args="out.html xml/samples/SampleMicroarray.xml xml/samples/SampleMicroscopy.xml xml/referenceTemplates/CarmenElectrophysiology.xml"
 
 # Unload a FuGE experiment into FuGE XML
-mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.MarshalXML" -Dexec.args="../webapp/src/main/webapp/schemaFiles/FuGE_M3_test_13_07_2006.xsd your-identifier output-xml-file"
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.MarshalXML" -Dexec.args="../symba-webapp/src/main/webapp/schemaFiles/FuGE_M3_test_13_07_2006.xsd your-identifier output-xml-file"
 
 # Write out 5 LSIDs based on the namespace of your choice
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.RetrieveLsid" -Dexec.args="GenericProtocol"

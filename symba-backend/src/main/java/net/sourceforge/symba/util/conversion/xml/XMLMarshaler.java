@@ -51,9 +51,9 @@ public class XMLMarshaler {
         //    1 = FuGE Helper class to use to marshal the object to XML
         // todo other identifiable objects, esp rawdata
         JAXB_MAPPINGS.put( "FuGE", new String[]{
-                "fugeOM.util.generatedJAXB2.FugeOMCollectionFuGEType", "net.sourceforge.symba.util.conversion.helper.CisbanFuGEHelper"} );
+                "fugeOM.util.generatedJAXB2.FugeOMCollectionFuGEType", "net.sourceforge.symba.util.conversion.helper.CisbanFuGEHelper" } );
         JAXB_MAPPINGS.put( "ExternalData", new String[]{
-                "fugeOM.util.generatedJAXB2.FugeOMBioDataExternalDataType", "net.sourceforge.symba.util.conversion.helper.CisbanDataHelper"} );
+                "fugeOM.util.generatedJAXB2.FugeOMBioDataExternalDataType", "net.sourceforge.symba.util.conversion.helper.CisbanDataHelper" } );
     }
 
     private static final String EXTERNALDATA_NAMESPACE = "ExternalData";
@@ -136,12 +136,12 @@ public class XMLMarshaler {
         CisbanFuGEHelper helper = new CisbanFuGEHelper();
         FugeOMCollectionFuGEType frXML = new FugeOMCollectionFuGEType();
 
-        helper.marshal( frXML, fr );
+        frXML = helper.marshal( frXML, fr );
 
         // Marshall the object to the provided PrintWriter
-        marshaller.marshal(
-                new JAXBElement(
-                        new QName( "http://fuge.org/core", "FuGE" ), FugeOMCollectionFuGEType.class, frXML ), os );
+        @SuppressWarnings( "unchecked" )
+        JAXBElement element = new JAXBElement( new QName( "http://fuge.org/core", "FuGE" ), FugeOMCollectionFuGEType.class, frXML );
+        marshaller.marshal( element, os );
 
     }
 
@@ -174,9 +174,9 @@ public class XMLMarshaler {
         if ( JAXB_MAPPINGS.get( namespace ) == null ) {
             // should be either an unrecognized lsid type or a RawData lsid.
             if ( namespace.equals( EXTERNALDATA_NAMESPACE ) ) {
-                throw new RuntimeException("Raw Data not downloadable at the current time. This is planned.");
+                throw new RuntimeException( "Raw Data not downloadable at the current time. This is planned." );
             } else {
-                throw new RuntimeException("Unrecognized namespace for data retrieval: " + namespace);
+                throw new RuntimeException( "Unrecognized namespace for data retrieval: " + namespace );
             }
         }
 
@@ -218,10 +218,10 @@ public class XMLMarshaler {
         }
 
         // Convert to XML and send back
-        marshaller.marshal(
-                new JAXBElement(
-                        new QName( "http://fuge.org/core", "FuGE" ), referencedJaxbClass, marshaledXML ),
-                writer );
+        // todo: this shouldn't have "FuGE" in the QName - it has to be the element name that is going to be created.
+        @SuppressWarnings( "unchecked" )
+        JAXBElement element = new JAXBElement( new QName( "http://fuge.org/core", "FuGE" ), referencedJaxbClass, marshaledXML );
+        marshaller.marshal( element, writer );
 
         return writer;
     }

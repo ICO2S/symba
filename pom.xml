@@ -139,6 +139,14 @@
             <!--<id>shell.sf.net</id>-->
             <!--<url>scp://shell.sf.net/home/groups/s/sy/symba/htdocs/</url>-->
         <!--</site>-->
+
+        <!--
+        The repository and snapshotRepository can be used to upload jars that are used within SyMBA, but which are
+        currently unavailable within public maven repositories. You can upload jars individually via a deploy-file
+        command such as:
+        mvn deploy:deploy-file -DgroupId=owlapi -DartifactId=api -Dversion=2.2.0 -Dpackaging=jar -DrepositoryId=carmen \
+        -Durl=scp://carmen.ncl.ac.uk/var/www/maven/repo/ -Dfile=/path/to/file
+        -->
         <repository>
             <id>carmen</id>
             <name>Carmen release repository</name>
@@ -404,6 +412,7 @@
         <module>symba-jaxb2</module>
         <module>symba-lsid-ws-api</module>
         <module>symba-backend</module>
+        <module>symba-obiloader</module>
         <module>symba-lsid-ws-assigner</module>
         <module>symba-lsid-ws-resolver</module>
         <module>symba-lsid-ws-client</module>

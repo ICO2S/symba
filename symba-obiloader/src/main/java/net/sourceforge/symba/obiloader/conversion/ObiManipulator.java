@@ -18,18 +18,18 @@ import net.sourceforge.symba.util.CisbanHelper;
 import net.sourceforge.symba.ServiceLocator;
 
 /**
- * This file is part of the sbml2owl package.
- * <p/>
- * Copyright (C) 2007-8, Allyson Lister and her employers
- * <p/>
- * Modifications to the initial code base are copyright of their respective authors, or their employers as appropriate.
- * Authorship of the modifications may be determined from the Subversion history.
- * <p/>
- * To view the full licensing information for this software and ALL other packages contained in this distribution,
- * please see LICENSE.txt
- * <p/>
- * $LastChangedDate: $ $LastChangedRevision: $ $Author:  $ $HeadURL: $
+ * This file is part of SyMBA.
+ * SyMBA is covered under the GNU Lesser General Public License (LGPL).
+ * Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
+ * To view the full licensing information for this software and ALL other files contained
+ * in this distribution, please see LICENSE.txt
+ *
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  */
+
 public class ObiManipulator {
 
     private String obiLogicalURI;

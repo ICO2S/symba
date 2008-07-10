@@ -23,6 +23,9 @@ import java.net.URISyntaxException;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
+ * This class will load all of the contents of an AuditCollection into the database, for later use
+ * by user logins, etc.
+ *
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$

@@ -26,10 +26,10 @@ import java.net.URISyntaxException;
  * net.sourceforge.symba.obiloader.examples.CreateFuGEOntologyCollection) into the database, for later use
  * by SyMBA templates.
  *
- * $LastChangedDate: 2008-05-28 15:50:32 +0100 (Wed, 28 May 2008) $
- * $LastChangedRevision: 155 $
- * $Author: allysonlister $
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-backend/src/main/java/net/sourceforge/symba/util/conversion/xml/PeopleUnmarshaler.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 public class OntologyUnmarshaler {

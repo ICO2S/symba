@@ -11,10 +11,10 @@ import net.sourceforge.symba.util.conversion.xml.OntologyUnmarshaler;
  *
  * Unmarshal an OntologyCollection (but only load its contents, and not the collection itself) into the database.
  *
- * $LastChangedDate: 2008-05-22 15:03:34 +0100 (Thu, 22 May 2008) $
- * $LastChangedRevision: 138 $
- * $Author: allysonlister $
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-backend/src/main/java/net/sourceforge/symba/util/UnmarshalPeople.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  *
  */
 public class UnmarshalOntologyCollection {

@@ -20,6 +20,16 @@ import java.io.*;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  *
+ * This is a very plain-jane way of generating OntologyCollection xml elements from a very basic list of
+ * ontology individuals. Just provide an input file like the following:
+ * accession1::name1
+ * accession2::name2
+ * [...]
+ * accessionN::nameN
+ *
+ * And you'll get out some FuGE-ML to load into your database. The ontologySource URI is hard-coded right now, so you
+ * will need to modify that to suit your needs.
+ *
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
@@ -68,14 +78,6 @@ public class GenerateOntologyIndividuals {
             // create a jaxb root object
             System.err.println( "Starting generation..." );
 
-//            String name = XMLFilename.substring( 0, XMLFilename.lastIndexOf( "." ) );
-//            String ext = XMLFilename.substring( XMLFilename.lastIndexOf( "." ) );
-
-//            FugeOMCollectionFuGEType frXML = cf.generateRandomXML();
-            FugeOMCollectionFuGEType frXML = new FugeOMCollectionFuGEType();
-            frXML.setIdentifier( "Fake Identifier" );
-            frXML.setEndurant( "Fake Endurant" );
-
             FugeOMCollectionOntologyCollectionType ontoCollXML = new FugeOMCollectionOntologyCollectionType();
 
             // first make the ontology source object
@@ -90,21 +92,26 @@ public class GenerateOntologyIndividuals {
             ObjectFactory factory = new ObjectFactory();
             while ( ( readIn = br.readLine() ) != null ) {
 //                System.out.println( "Read in " + readIn + "|" );
-                FugeOMCommonOntologyOntologyIndividualType individualType = new FugeOMCommonOntologyOntologyIndividualType();
-                individualType.setEndurant( RetrieveLsid.getLSID( "OntoIndvEndurant" ) );
-                individualType.setIdentifier( RetrieveLsid.getLSID( "OntologyIndividual" ) );
-                individualType.setTermAccession( "accession to come" );
-                individualType.setTerm( readIn.trim() );
-                individualType.setOntologySourceRef( sourceType.getIdentifier() );
+                String line = readIn.trim();
+                String[] columns = line.split( "::" );
+                if ( columns.length == 2 ) {
+                    FugeOMCommonOntologyOntologyIndividualType individualType = new FugeOMCommonOntologyOntologyIndividualType();
+                    individualType.setEndurant( RetrieveLsid.getLSID( "OntoIndvEndurant" ) );
+                    individualType.setIdentifier( RetrieveLsid.getLSID( "OntologyIndividual" ) );
+                    individualType.setTermAccession( columns[0] );
+                    individualType.setTerm( columns[1] );
+                    individualType.setName( columns[1] );
+                    individualType.setOntologySourceRef( sourceType.getIdentifier() );
 //                FugeOMCommonDescribableType.PropertySets ps = individualType.getPropertySets();
-                ontoCollXML.getOntologyTerm().add( factory.createOntologyIndividual( individualType ) );
+                    ontoCollXML.getOntologyTerm().add( factory.createOntologyIndividual( individualType ) );
+                }
             }
 
-            frXML.setOntologyCollection( ontoCollXML );
             os = new FileOutputStream( XMLFilename );
-            m.marshal(
-                    new JAXBElement(
-                            new QName( "http://fuge.org/core", "FuGE" ), FugeOMCollectionFuGEType.class, frXML ), os );
+
+            @SuppressWarnings( "unchecked" )
+            JAXBElement element = new JAXBElement(new QName( "http://fuge.org/core", "OntologyCollection" ), FugeOMCollectionOntologyCollectionType.class, ontoCollXML );
+            m.marshal( element, os );
 
         } catch ( JAXBException je ) {
             System.err.println( "JAXB Exception:" );
@@ -123,7 +130,7 @@ public class GenerateOntologyIndividuals {
             e.printStackTrace();
         } catch ( SAXException e ) {
             e.printStackTrace();
-        } catch ( Exception e ) {
+        } catch ( IOException e ) {
             e.printStackTrace();
         }
     }

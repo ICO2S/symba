@@ -63,7 +63,7 @@ public class CreateFuGEOntologyCollection {
         FugeOMCollectionOntologyCollectionType finalOntologyCollection = new FugeOMCollectionOntologyCollectionType();
 
         for ( String source : sources ) {
-            if ( !source.trim().isEmpty() ) {
+            if ( source.trim().length() > 0 ) {
                 Set<OWLDescription> owlDescriptions = obiManipulator.getChildren( source.trim() );
 //                Set<OWLDescription> owlDescriptions = obiManipulator.getAllSubclasses( source.trim() );
 

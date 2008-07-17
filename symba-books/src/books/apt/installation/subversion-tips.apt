@@ -1,0 +1,40 @@
+ ---
+ Tips and Tricks: Subversion
+ ---
+ Allyson Lister
+ Rainer Schoepf
+ ---
+ July 2008
+
+Configuring Subversion to Automatically Enable Keywords in New Files
+
+  When Subversion keywords are enabled for a particular file under version control, Subversion will automatically update
+  the file with information about the last modifier of the file, the revision number, and more. It can be applied to all
+  sorts of different file types. You can enable keywords in a particular file type one-by-one with commands like this:
+
++---+
+  find . \( -name '.svn' -prune \) -o -name '*.java' -exec svn propset svn:keywords "Date Rev Author HeadURL" {} \;
++---+
+
+  The above command will enable the specified keywords for all *.java files in the directory.
+
+  However, if (like me) you constantly are forgetting to run such a command with each svn add of a new file, you
+  can make modifications to your <<<.subversion/config>>> file (which lives in your home directory) so that subversion
+  performs the tagging for you.
+
+  Open <<<.subversion/config>>> and un-comment the following line:
+
++---+
+enable-auto-props = yes
++---+
+
+  Next, add a line (or un-comment the appropriate line if already present) in the <<<[auto-props]>>> section for each
+  file extension you wish to contain svn keywords. An example auto-props section is shown below:
+
++---+
+*.xml = svn:eol-style=native; svn:keywords=Author Date Id Revision
+*.java = svn:eol-style=native; svn:keywords=Author Date Id Revision
+*.apt = svn:eol-style=native; svn:keywords=Author Date Id Revision
++---+
+
+  If you have any problems, please contact symba-devel@lists.sourceforge.net.

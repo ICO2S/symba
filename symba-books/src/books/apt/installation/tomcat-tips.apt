@@ -1,0 +1,60 @@
+ ---
+ Tips and Tricks: Tomcat
+ ---
+ Allyson Lister
+ Rainer Schoepf
+ ---
+ July 2008
+
+Using the Tomcat Manager
+
+  One method of re-starting the SyMBA web application on Tomcat is as follows:
+
+    * Stop Tomcat
+
+    * Delete the old symba.war and associated symba/ directory from Tomcat's webapps/ directory
+
+    * Copy the new symba.war into Tomcat's webapps/ directory
+
+    * Start Tomcat
+
+  However, this involves stopping and starting Tomcat each time you make a change. There is an easier way: using
+  your Tomcat Manager. With the manager, you can re-deploy a war file without stopping the Tomcat server.
+
+  The first step is to make a user for Tomcat that has permissions to use the Tomcat Manager. Go into the directory
+  containing your Tomcat installation. Find the <<<conf/tomcat-users.xml>>> file and add a user with the "manager"
+  role. Below is an example (complete) tomcat-users.xml file:
+
++---
+
+  <?xml version='1.0' encoding='utf-8'?>
+  <tomcat-users>
+    <role rolename="manager"/>
+    <user username="tomcat" password="tomcat" roles="manager"/>
+  </tomcat-users>
+
++---+
+
+  Ensure that you've restarted Tomcat to have the changes take effect, and then go to the root URL for your Tomcat
+  installtion (e.g. if Tomcat is installed on your local machine on port 8081, then go to http://localhost:8081).
+  You should get a welcome to Tomcat screen, which states "If you're seeing this page via a web browser,
+  it means you've setup Tomcat successfully. Congratulations!". On the left-hand side is a menu. The second item on
+  the menu is "Tomcat Manager". Click on this. The following screen allows you to deploy and undeploy wars to your
+  heart's content, without having to restart Tomcat. However, you need to watch for dragons when using the
+  Tomcat Manager. Details of possible problems with using it are in the next section.
+
+"PermGen Space" Error
+
+  As described {{{http://opensource.atlassian.com/confluence/spring/pages/viewpage.action?pageId=2669}here}},
+  when you undeploy a webapp using Tomcat Manager, the classes aren't neccessarily garbage collected. This means that,
+  over time, when you undeploy/deploy multiple times in a single Tomcat instance using the manager, you will eventually
+  get an OutOfMemory Exception, with a mention of "PermGen Space". This may happen with a properly-controlled
+  exception, or may show itself with a blank jsp that just doesn't seem to load properly. As SyMBA uses CGLIB,
+  commons-logging, spring and hibernate (all culprits mentioned in the web page below), it will be tough going
+  through with a profiler and finding all instances where it's not being garbage collected. Until there are the
+  resources to do this, there is a simple answer: <<Just stop and restart your Tomcat Server.>> This sort of error
+  always happens early on, so you can test after a deploy to see if it is happening. You don't need to re-deploy or
+  anything after such an error, just stop and start Tomcat.
+
+
+  If you have any problems, please contact symba-devel@lists.sourceforge.net.

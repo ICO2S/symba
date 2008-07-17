@@ -347,6 +347,12 @@
     </dependencies>
     <build>
         <defaultGoal>install</defaultGoal>
+        <resources>
+			<resource>
+        		<directory>src/main/resources</directory>
+        		<filtering>true</filtering>
+        	</resource>
+        </resources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -469,6 +475,16 @@
         <application.version>7.07-beta</application.version>
         <dataSource.name>jdbc/${application.id}</dataSource.name>
         <dataSource>java:comp/env/${dataSource.name}</dataSource>
+
+        <helpEmail>helpdesk@cisban.ac.uk</helpEmail>
+        <security.driver>org.postgresql.Driver</security.driver>
+        <security.url>jdbc:postgresql://your.machine:5432/symba_security</security.url>
+        <security.username>user</security.username>
+        <security.password>pass</security.password>
+        <scp.directory>/your/directory</scp.directory>
+        <scp.hostname>localhost</scp.hostname>
+        <scp.username>user</scp.username>
+        <scp.password>pass</scp.password>
     </properties>
     <profiles>
         <profile>
@@ -477,9 +493,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <!-- Properties for the Jaxb2 plugin. Added 4 Jul 2007 by Allyson Lister -->
-                <!-- End jaxb2 properties -->
-                <!--                                                        
+                <!--
                     Change driver jar for appropriate database
                     For MySQL use: mysql-connector-java-X-bin.jar
                     For Hypersonic use: hsqldb.jar

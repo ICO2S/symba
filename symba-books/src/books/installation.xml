@@ -69,11 +69,35 @@
             </sections>
         </chapter>
         <chapter>
+            <id>tips</id>
+            <title>Tips and Tricks</title>
+            <sections>
+                <section>
+                    <id>maven-tips</id>
+                </section>
+                <section>
+                    <id>subversion-tips</id>
+                </section>
+                <section>
+                    <id>tomcat-tips</id>
+                </section>
+                <section>
+                    <id>windows-tips</id>
+                </section>
+                <section>
+                    <id>proxy-tips</id>
+                </section>
+            </sections>
+        </chapter>
+        <chapter>
             <id>references</id>
             <title>Further Reading</title>
             <sections>
                 <section>
                     <id>credits</id>
+                </section>
+                <section>
+                    <id>useful-links</id>
                 </section>
             </sections>
         </chapter>

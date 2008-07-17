@@ -12,10 +12,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /*
  * This file is part of SyMBA.
@@ -48,9 +45,9 @@ public class SecurityPeopleLoader {
         // System.out.println(root);
         List childs = root.getChildren();
         System.out.println( "Size of Children of Root Element: " + childs.size() );
-        List<Element> people;
 
-        people = root.getChildren();
+        @SuppressWarnings("unchecked")
+        List<Element> people = root.getChildren();
         System.out.println( "Size of People.xml: " + people.size() );
         for ( Element el : people ) {
             if ( el.getName().equals( "Person" ) ) {
@@ -77,38 +74,35 @@ public class SecurityPeopleLoader {
     * This is where the DB update happens
     */
     public void loadIntoSecurityDB( List<UserPassword> upList ) throws SQLException {
+        ResourceBundle rb = ResourceBundle.getBundle( "symba" );
+
         try {
-            Class.forName( "org.postgresql.Driver" );
+            Class.forName( rb.getString("security.driver") );
         }
         catch ( ClassNotFoundException cnfe ) {
             System.out.println( "Couldn't find the driver! Exiting." );
             cnfe.printStackTrace();
             System.exit( 1 );
         }
-        Connection c = null;
+        Connection c;
 
-        // The second and third arguments are the username and password,
-        // respectively. They should be whatever is necessary to connect
-        // to the database.
-        Statement s = null;
+        Statement s;
+
+        // get the connection details from the properties file.
+
         c = DriverManager.getConnection(
-                "jdbc:postgresql://your.machine:5434/symba_security", "", "" );
+                rb.getString("security.url"), rb.getString("security.username"), rb.getString("security.password") );
         s = c.createStatement();
         for ( UserPassword up : upList ) {
             String username = up.getUsername();
             String password = up.getPassword();
             String endurant = up.getEndID();
-            int m = 0;
             String insertStmt = "INSERT INTO USERS VALUES " +
                     "('" + username + "', '" + password + "', '" + endurant + "')";
             System.out.println( insertStmt );
-            m = s.executeUpdate( insertStmt );
+            s.executeUpdate( insertStmt );
         }
 
-        if ( c == null ) {
-            System.err.println( "Error with the database connection after insert statements have been run" );
-            throw new SQLException();
-        }
     }
 
     public List<UserPassword> loadUserPassFromFile( String filename ) throws IOException {

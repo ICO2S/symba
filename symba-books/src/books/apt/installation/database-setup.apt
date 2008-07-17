@@ -13,8 +13,9 @@ Create databases to hold the metadata and security information
                     user that is the owner of this database, e.g create a new user called "symba" that you use
                     specifically for accessing and modifying the SyMBA metadata and security database.
                     Modify the following elements in the top-level <<<pom.xml>>> located at
-                    <<<your-checkout/trunk/pom.xml>>>. Firstly, change the jdbc connection details to a value
-                    suitable for your database connection, and secondly add your database username and password:
+                    <<<your-checkout/trunk/pom.xml>>>. This will change the jdbc connection details to a value
+                    suitable for your database connection, and also provide SyMBA with your database username and
+                    password:
 
 +---+
                     <jdbc.url>
@@ -26,35 +27,54 @@ Create databases to hold the metadata and security information
 
 * Point Maven at the correct jdbc jar
 
-                    Modify the following element in the top-level
-                    <<<pom.xml>>>
-                    located at<<<your-checkout/trunk/pom.xml>>>,
-                    and point it to the appropriate location for your jdbc jar:
+                    Modify the following elements in the top-level <<<pom.xml>>> located at
+                    <<<your-checkout/trunk/pom.xml>>> by pointing it to the appropriate location for your jdbc jar
+                    and the appropriate class name for your jdbc driver:
 
 +---+
-                    <jdbc.driver.jar>
-                    </jdbc.driver.jar>
+                <jdbc.driver>
+                </jdbc.driver>
+
+                <jdbc.driver.jar>
+                </jdbc.driver.jar>
 +---+
+
+  The values of these elements will depend on what database type you've chosen to use. For example, the value
+  of <<jdbc.driver>> would be <<<org.postgresql.Driver>>> for PostgreSQL, and <<<com.mysql.jdbc.Driver>>> for
+  MySQL.
 
 * Create an appropriate security/login database
 
                     Create a security/login database inside your chosen DBMS entitled "symba_security", or anything else
                     you wish. There will be only one table within this database. This "USER" table will hold the login
                     details, and intentionally kept separate from the FuGE-based metadata database. The database table 
-                    should be created with the following command if using PostgreSQL - please modify accordingly if
-                    using another database:
+                    should be created with the following command if <<using PostgreSQL>>:
 
 +---+
-                    create table users (
-                    user_name CHARACTER VARYING(1024) not null,
-                    password CHARACTER VARYING(1024) not null,
-                    lsid CHARACTER VARYING(1024) not null,
+        create table users (
+        user_name CHARACTER VARYING(1024) not null,
+        password CHARACTER VARYING(1024) not null,
+        lsid CHARACTER VARYING(1024) not null,
 
-                    primary key (lsid)
-                    );
+        primary key (lsid)
+        );
 +---+
 
- This SQL is also stored in the subversion checkout inside <<<symba-webapp/src/main/sql/create-security-table.sql>>>.
+  This SQL (for PostgreSQL) is also stored in the subversion checkout inside <<<symba-webapp/src/main/sql/create-security-table.sql>>>.
+
+  You can use the following command if creating the USERS table with <<MySQL>> (Please note that the user that provided
+  this code was using the InnoDB form of MySQL):
+
++---+
+        CREATE TABLE `users` (
+           `user_name` varchar(1024) NOT NULL,
+           `password` varchar(1024) NOT NULL,
+           `lsid` varchar(255) NOT NULL,
+            PRIMARY KEY (`lsid`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
++---+
+
+  If using another database type, please modify the above SQL accordingly.
 
  The <<user_name>> field stores what the login username will be for the user, while the <<password>> is the
  password for that user. The lsid is the Endurant LSID of the FuGE Person object as stored in the FuGE metadata
@@ -63,7 +83,7 @@ Create databases to hold the metadata and security information
 * Tell the front-end about the jdbc connection url
 
                     Modify the following elements of
-                    <<<your-checkout/trunk/symba-webapp/pom.xml>>>. The "security.url" element should hold
+                    <<<your-checkout/trunk/pom.xml>>>. The "security.url" element should hold
                     the JDBC connection details for the security database, and the "security.username" and "security.password" elements should
                     be filled with the database username and password to access your freshly-created SyMBA security database. 
                     

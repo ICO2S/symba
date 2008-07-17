@@ -48,7 +48,7 @@ Checking the Connection to Your LSID Assigner
   needs to be updated to the address of your own WS.
 
   You can check your connection to the assigner WS by running the following command from within the
-  symba-lsid-ws-assigner directory:
+  symba-lsid-ws-client directory:
 
 +---+
   mvn exec:java -Dexec.mainClass="net.sourceforge.symba.lsid.webservices.client.LsidAssignerClient"

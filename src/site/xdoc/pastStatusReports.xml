@@ -15,11 +15,19 @@
                 Status reports that are no longer current may be found here.
             </p>
 
+            <subsection name="Status: May 2008: 8.05">
+                <p>
+                    A large number of changes were incorporated into this release, mainly dealing with
+                    session management, bug fixing, and code refactoring. For more information, please
+                    see the<a href="changes-report.html">Change Report</a>.
+                </p>
+            </subsection>
+            
             <subsection name="Status: March 2008: 8.03">
 
                 <p>
                     A number of new searches have been added, and we have extended the options available to users
-                    building SyMBA templates (see the <a href="changes-report.html">Change Report</a>).
+                    building SyMBA templates (see the<a href="changes-report.html">Change Report</a>).
                 </p>
             </subsection>
             <subsection name="Status: January 2008: 8.01">
@@ -27,7 +35,7 @@
                 <p>
                     The CARMEN neuroscience project required a modification to the way the Protocol Templates are
                     handled by the SyMBA webapp. All code changes for this release reflect this need.
-                    (see the <a href="changes-report.html">Change Report</a>).
+                    (see the<a href="changes-report.html">Change Report</a>).
                 </p>
             </subsection>
 
@@ -35,15 +43,16 @@
 
                 <p>
                     The main feature of this release is the upgrading of the Andromda plugin from 3.2-SNAPSHOT to 3.2
-                    (see the <a href="changes-report.html">Change Report</a>).
+                    (see the<a href="changes-report.html">Change Report</a>).
                 </p>
             </subsection>
-            
+
             <subsection name="Status: October 2007: 7.10">
 
                 <p>
                     This is an incremental release that was mainly created to fix a few minor bugs and added a feature
-                    (see the <a href="changes-report.html">Change Report</a>). The entire SyMBA project now runs wholly from
+                    (see the<a href="changes-report.html">Change Report</a>). The entire SyMBA project now runs wholly
+                    from
                     SourceForge.
                 </p>
 
@@ -51,15 +60,18 @@
 
             <subsection name="Status: September 2007: Second Stable Release (7.09 stable)">
 
-            <p>
-                This is an incremental release that was mainly created to fix a few minor bugs, and to bring the code
-                up to a standard that could be deposited into the SourceForge Subversion repository. It is built with
-                Maven 2.0.7, an improvement on the earlier maven 1 build system.
-                At the same time as the sandbox release of 7.09 is published, the full code of SyMBA will be deposited
-                on SourceForge.
-            </p>
+                <p>
+                    This is an incremental release that was mainly created to fix a few minor bugs, and to bring the
+                    code
+                    up to a standard that could be deposited into the SourceForge Subversion repository. It is built
+                    with
+                    Maven 2.0.7, an improvement on the earlier maven 1 build system.
+                    At the same time as the sandbox release of 7.09 is published, the full code of SyMBA will be
+                    deposited
+                    on SourceForge.
+                </p>
 
-        </subsection>
+            </subsection>
             <subsection name="Status: June 2007: First Stable Release (7.06 stable)">
 
                 <p>
@@ -103,7 +115,8 @@
                     and a more generic system for reading and displaying the protocols from the database.
                     You will need a logon to access this database, which you may request
                     from the
-                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a> mailing list
+                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a>
+                    mailing list
                     . This is low-level security that
                     only serves to prevent anonymous load on the database and to keep your sandbox area separate from
                     others.
@@ -122,7 +135,8 @@
                     server may be deleted at any time. You will need a logon to access this database, which you may
                     request
                     from the
-                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a> mailing list
+                    <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel</a>
+                    mailing list
                     . This is a low-level of security that will
                     only serve to prevent anonymous load on the database and to keep your sandbox area separate from
                     others.

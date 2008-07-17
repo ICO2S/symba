@@ -1,0 +1,36 @@
+ ---
+ Tips and Tricks: Windows
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+MySQL on Windows: java.sql.SQLException: Can't create/write to file 'C:\WINDOWS\TEMP\#sql_318_0.MYD' (Errcode: 13)
+
+  If you are using MySQL on Windows, you may intermittently encounter an exception similar to
+
++---+
+java.sql.SQLException: Can't create/write to file 'C:\WINDOWS\TEMP\#sql_318_0.MYD' (Errcode: 13)
++---+
+
+  There is a lot of chatter on the web about such errors, without any real clear answers as to what is happening.
+  You'll get an error like this when you try to load content into the SyMBA database, e.g. via UnmarshalPeople,
+  UnmarshalWorkflow or other similar classes.
+
+  There are a variety of thoughts as to the reason. Even though MySQL seems to have the permissions to write to the
+  directory in question (as there are other temp files present there when you look), it seems to have a sudden
+  problem with one of the files, namely the one that is mentioned in the exception. A temporary fix is to delete
+  all of the tmp files in that directory. However, this does NOT solve the problem, and it will just occur again.
+  Various forums have suggested defragging your hard disk, changing permissions in directories, and turning off
+  the virus checking in the directory where MySQL keeps its temp files (the directory mentioned in the exception).
+
+  Our suggestion is as follows:
+
+    * Ensure that you have a specific directory set aside for the MySQL temp files. You can create such a directory
+      by following the instructions {{{http://dev.mysql.com/doc/refman/5.0/en/cannot-create.html}here}}.
+    * Following the suggestions made {{{http://forums.mysql.com/read.php?24,169274,178492#msg-178492}here}},
+      turn off the virus scanning for that directory. This should resolve the problem.
+
+Windows: Escaping Characters
+
+  If you have any problems, please contact symba-devel@lists.sourceforge.net.

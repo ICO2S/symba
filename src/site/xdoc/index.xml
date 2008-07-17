@@ -43,6 +43,21 @@
             <p>SyMBA has been presented at or mentioned in:</p>
             <ul>
                 <li>
+                    Summer 2008 <a href="http://www.obi-ontology.org">OBI</a> Workshop. At this workshop a short
+                    presentation was given showing how pieces of OBI could be automatically retrieved from the OWL file
+                    and translated into FuGE-ML structures. From there, it can be loaded and used within SyMBA.
+                    Screencast avaialble soon.
+                </li>
+                <li>
+                    Susanna-Assunta Sansone, Philippe Rocca-Serra, Marco Brandizi, Alvis Brazma, Dawn Field, Jennifer
+                    Fostel, Andrew G. Garrow, Jack Gilbert, Federico Goodsaid, Nigel Hardy, Phil Jones, Allyson Lister,
+                    Michael Miller, Norman Morrison, Tim Rayner, Nataliya Sklyar, Chris Taylor, Weida Tong, Guy Warner,
+                    Stefan Wiemann.
+                    <a href="http://www.liebertonline.com/doi/abs/10.1089/omi.2008.0019">The First RSBI (ISA-TAB)
+                        Workshop: ?Can a Simple Format Work for Complex Studies??</a>,
+                    OMICS: A Journal of Integrative Biology. ahead of print. doi:10.1089/omi.2008.0019.
+                </li>
+                <li>
                     Kirkwood, T., A systematic look at an old problem, Nature. 2008 Feb 7;451(7179):644-7.
                     (<a href="http://www.nature.com/nature/journal/v451/n7179/full/451644a.html">Full Text</a>,
                     <a href="http://www.nature.com/nature/journal/v451/n7179/edsumm/e080207-01.html">Editor's Summary</a>)
@@ -129,20 +144,11 @@
                 </li>
             </ul>
         </section>
-        <section name="Status: May 2008: 8.05">
+        <section name="Status: May 2008 Onwards: 8.05-SNAPSHOT">
 
             <p>
-                A large number of changes were incorporated into this release, mainly dealing with
-                session management, bug fixing, and code refactoring. For more information, please
-                see the <a href="changes-report.html">Change Report</a>.
+                Ongoing snapshot releases.
             </p>
-            <br/><br/>
-            <p>
-                <font color="green">There is, however, a bug when running Andromda with Java 6</font>. Please do not try
-                to develop SyMBA with Java 6 yet. I have submitted my question to the
-                <a href="http://galaxy.andromda.org/forum/viewtopic.php?t=5337">Andromda forum</a>.
-            </p>
-            <br/><br/>
             <p>
                 There is now a general, all-purpose login to the sandbox (test) installation. The username is 'MickeyM'
                 and the pass is 'MousePass'. Please feel free to use this account, and please send an email

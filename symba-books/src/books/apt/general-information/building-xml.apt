@@ -1,0 +1,71 @@
+ ---
+ Creating a SyMBA Template: Building the XML
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+Create Your Input XML
+
+* Describe Your Material
+
+  Inputs to the assays that create your data files are generally FuGE Materials.
+
+** Name Your Material
+
+  You should name your material using a number of reserve words to modify the behaviour of the dummy Material in
+  the web interface. Any Material you put in your SyMBA template will remain untouched by users: instead, a copy
+  is made of the Material, and the appropriate user-defined parameters are added before it gets associated with a
+  particular user's experiment.
+
+*** Reserve Words for Material
+
+  Below is an example name attribute for a GenericMaterial in a SyMBA Template. A full explanation of how this name
+  was built follows.
+
+ +---+
+ Material Characteristics Dummy Noname Notreatment for Recording Protocol (Component of Carmen Electrophysiology Investigation)
+ +---+
+
+   * "Material Characteristics" : Anything before the "Dummy" Keyword will be used to title the fieldset that the
+     material metadata is grouped into in the web interface.
+   * "Dummy" : This keyword MUST be used in the Material name, as it tells SyMBA that this is not a real Material. It
+     is also a keyword that is used in the Search methods within SyMBA so that Dummy Materials won't be shown in
+     search results.
+   * "Noname" : This keyword ensures that the user isn't asked for a general name for their Material. This value
+     would otherwise go into the "name" attribute of the user's GenericMaterial element. If you want to control the
+     name of the Material (e.g. through an ontology term), you should use this keyword.
+   * "Notreatment" : This keyword will disable SyMBA's default display of a text box that would allow users to enter
+     free text about the treatments of their Material. You may wish to disable this if you have specific parameters
+     describing your treatments.
+   * "for Recording Protocol (Component of Carmen Electrophysiology Investigation)" : This section is REQUIRED, and
+     must contain the full name, including the "(Component of...") section, of the Protocol that this Material
+     will be associated with as an input material.
+
+* Describe the Parameters of the Protocol Application (PA)
+
+** Name Your PA
+
+  You should name your material using a number of reserve words to modify the behaviour of the dummy Material in
+  the web interface. Any Material you put in your SyMBA template will remain untouched by users: instead, a copy
+  is made of the Material, and the appropriate user-defined parameters are added before it gets associated with a
+  particular user's experiment.
+
+*** Reserve Words for PA
+
+  Below is an example name attribute for a GenericProtocolApplication in a SyMBA Template. A full explanation of how this name
+  was built follows.
+
+ +---+
+ Parameters Associated with Creating the Data File Dummy for Real-Time PCR Protocol (Component of MiMage Investigation)
+ +---+
+
+   * "Parameters Associated with Creating the Data File" : Not used by the web interface, but useful for the template
+     developer as a comment.
+   * "Dummy" : This keyword MUST be used in the PA name, as it tells SyMBA that this is not a real Material. It
+     is also a keyword that is used in the Search methods within SyMBA so that Dummy Materials won't be shown in
+     search results.
+   * "for Real-Time PCR Protocol (Component of MiMage Investigation)" : This section is REQUIRED, and
+     must contain the word "for", the full name, including the "(Component of...") section, of the Protocol that this
+     PA will be associated with.
+

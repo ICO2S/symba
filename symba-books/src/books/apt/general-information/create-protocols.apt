@@ -1,0 +1,84 @@
+ ---
+ Creating a SyMBA Template: Materials
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+ Joerg has different organisms, different approaches, and different setups. They are looking at ageing.
+
+ * estimate of age of specimen: specific ageing status. (one organism is senescent at 1 week, another at 3 years).
+
+   * Wants a subjective scale of senescence (dragable bar). Could this be done with a set of ontology terms?
+
+   * Also an objective age.
+
+ * links between genes in different organism
+
+
+Describe Your Inputs
+
+* Describe Your Material
+
+  Inputs to the assays that create your data files are generally FuGE Materials.
+
+ * Specimen / Organism : FuGE = Material (Input)
+
+   * Ageing Status : GenericMaterialMeasurement
+
+     * REQUIRED: percentage senescence (Integer, percent = unit). FuGE = AtomicParameter
+
+     * REQUIRED: Actual age (Integer, unit = ontology ( cm, sec, min, hour day, year)). FuGE = AtomicParameter
+
+     * OPTIONAL: Average lifespan, if known ( Same units as Actual Age). FuGE = AtomicParameter
+
+   * Free-Text Values For eventual on-the-fly ontology creation
+
+     *          <Description text="OntologyReplacement::Species::Help::this means nothing"/>
+                <Description text="OntologyReplacement::Strain::Help::this means everything"/>
+                <Description text="OntologyReplacement::Cell line::Help::I need help"/>
+                <Description text="OntologyReplacement::Genetic characteristics"/>
+                <Description text="OntologyReplacement::Genetic variation"/>
+                <Description text="OntologyReplacement::Disease state"/>
+                <Description text="OntologyReplacement::Subject label"/>
+                <Description text="OntologyReplacement::Subject identifier type"/>
+                <Description text="OntologyReplacement::Subject identifier value"/>
+                <Description text="OntologyReplacement::Associated subject details"/>
+                <Description text="OntologyReplacement::Preparation protocol"/>
+                <Description text="OntologyReplacement::Preparation date"/>
+
+  * The user must be able to create multiple instances of the Materials stored in the SyMBA template. (REQUIRES CHANGE)
+
+  * The user must be able to use on-the-fly ontology generation for the Description fields above. (REQUIRES CHANGE)
+
+  * The user must be able to copy just the metadata for the material into their own experiment. (REQUIRES CHANGE)
+
+  * The Materials used within the MiMage experiments should be shared across all experiments, rather than
+    creating from dummy material each time. (REQUIRES CHANGE)
+
+* Describe Your Software
+
+* Describe Your Equipment
+
+Describe Your Protocols
+
+
+
+Connect Software, Equipment, and Material to Your Protocols                 
+
+* Adding Materials
+
+  Materials are only connected to the run of the experiment when the GenericProtocolApplications are made.
+  Therefore connecting your material to the appropriate Assay Protocol will happen using the "name" attribute
+  of your Dummy Material. No additional steps are required here.
+
+
+Describing Your Investigation
+
+* Investigation Components
+
+  To be added for Joerg's protocol (REQUIRES CHANGE).
+
+** Links to Protocol Applications
+
+** Creating Factors and Factor Values 

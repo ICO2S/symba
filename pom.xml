@@ -121,12 +121,12 @@
      The only problem with the site deployment at the moment is that it doesn't copy the non-html books properly.
      This means that the pdf version of the installation instructions doesn't get put on the server. So, if you could
      do the following any time you make a change to one of the books:
-     1. cd to the books/ subdir
+     1. cd to the symba-books/ subdir
      2. run "mvn doxia:render-books"
      3. go back up to the top-level directory
      4. run "mvn site:site"
      5. run "mvn site:deploy" first on your local test then, once you're happy, to the FuGE website.
-     6. manually copy books/target/generated-site/pdf/installation/installation.pdf to shell.sf.net in the directory
+     6. manually copy symba-books/target/generated-site/pdf/installation/installation.pdf to shell.sf.net in the directory
      /home/groups/s/sy/symba/htdocs/
      7. Do the same for the general-information.pdf as you did in #6 for installation.pdf
      -->

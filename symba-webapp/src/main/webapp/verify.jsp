@@ -87,6 +87,11 @@ must go back to the login page--%>
 <jsp:useBean id="scp" class="net.sourceforge.symba.webapp.util.ScpBean" scope="application"/>
 
 <%
+
+    // set the application attribute first, since it may be needed
+    // if an error occurs during the initial database access.
+    application.setAttribute( "helpEmail", bundle.getString("helpEmail") );
+
     validUser.startRe();
     validUser.setLsid( validUser.getLsid().trim() );
     boolean errorFound = false;
@@ -112,7 +117,7 @@ must go back to the login page--%>
     scp.setUsername( bundle.getString("scp.username") );
     scp.setPassword( bundle.getString("scp.password") );
 
-    application.setAttribute( "helpEmail", bundle.getString("helpEmail") );
+//    application.setAttribute( "helpEmail", bundle.getString("helpEmail") );
 
     // now get the counts
     try {

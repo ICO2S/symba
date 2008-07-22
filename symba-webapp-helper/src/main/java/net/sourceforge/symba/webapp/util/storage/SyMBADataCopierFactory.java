@@ -25,11 +25,12 @@ public class SyMBADataCopierFactory {
      *
      * @param copyType The domain name you want your identifier to include. If null, unrecognized, or "scp", will create
      *                 a ScpSyMBADataCopier
+     * @param remoteDataStoreOs MUST be either "dos" or "unix".
      * @return the appropriate subclass of SyMBADataCopier
      */
-    public static SyMBADataCopier createSyMBADataCopier( String copyType, String hostname, String username, String password, String directory ) {
+    public static SyMBADataCopier createSyMBADataCopier( String copyType, String hostname, String username, String password, String directory, String remoteDataStoreOs ) {
         if ( copyType.equals( "scp" ) ) {
-            return new ScpSyMBADataCopier( hostname, username, password, directory );
+            return new ScpSyMBADataCopier( hostname, username, password, directory, "dos" );
         }
         // When you create your own SyMBADataCopier, put in an if-statement to divert people to that
         // class where necessary.
@@ -38,6 +39,6 @@ public class SyMBADataCopierFactory {
         // }
 
         // default return type is ScpSyMBADataCopier. 
-        return new ScpSyMBADataCopier( hostname, username, password, directory );
+        return new ScpSyMBADataCopier( hostname, username, password, directory, "dos" );
     }
 }

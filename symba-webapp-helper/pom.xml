@@ -109,6 +109,13 @@
             <version>8.2-504.jdbc3</version>
             <!--<version>8.1-407.jdbc3</version>-->
         </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.8</version>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
@@ -117,4 +124,15 @@
             <url>http://repo1.maven.org/maven2/</url>
         </repository>
     </repositories>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <groups>webapp-helper</groups>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

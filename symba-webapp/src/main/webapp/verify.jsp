@@ -25,10 +25,11 @@ in this distribution, please see LICENSE.txt
 
 <%-- Load application resource bundle --%>
 <%!
-ResourceBundle bundle = null;
-public void jspInit() {
-      bundle = ResourceBundle.getBundle("symba");
-      }
+    ResourceBundle bundle = null;
+
+    public void jspInit() {
+        bundle = ResourceBundle.getBundle( "symba" );
+    }
 
 %>
 
@@ -90,7 +91,7 @@ must go back to the login page--%>
 
     // set the application attribute first, since it may be needed
     // if an error occurs during the initial database access.
-    application.setAttribute( "helpEmail", bundle.getString("helpEmail") );
+    application.setAttribute( "helpEmail", bundle.getString( "helpEmail" ) );
 
     validUser.startRe();
     validUser.setLsid( validUser.getLsid().trim() );
@@ -112,11 +113,21 @@ must go back to the login page--%>
     }
 
     // todo now set the variables. A bit temporary, but will do until a real properties file setup is done
-    scp.setDirectory( bundle.getString("scp.directory") );
-    scp.setHostname( bundle.getString("scp.hostname") );
-    scp.setUsername( bundle.getString("scp.username") );
-    scp.setPassword( bundle.getString("scp.password") );
-    scp.setRemoteDataStoreOs( bundle.getString("scp.remote.data.store.os") );
+    scp.setDirectory( bundle.getString( "scp.directory" ) );
+    scp.setHostname( bundle.getString( "scp.hostname" ) );
+    scp.setUsername( bundle.getString( "scp.username" ) );
+    scp.setPassword( bundle.getString( "scp.password" ) );
+    scp.setRemoteDataStoreOs( bundle.getString( "scp.remote.data.store.os" ) );
+    if ( scp.getRemoteDataStoreOs().equals( "dos" ) ) {
+        if ( bundle.getString( "scp.lsid.colon.replacement" ) != null &&
+                bundle.getString( "scp.lsid.colon.replacement" ).length() > 0 ) {
+            scp.setLsidColonReplacement( bundle.getString( "scp.lsid.colon.replacement" ) );
+        } else {
+            scp.setLsidColonReplacement( "__" ); // provide a default value.
+        }
+    } else {
+        scp.setLsidColonReplacement( "" ); // provide an empty value for unix.
+    }
 
 //    application.setAttribute( "helpEmail", bundle.getString("helpEmail") );
 

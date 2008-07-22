@@ -487,7 +487,11 @@
         <scp.username>user</scp.username>
         <scp.password>pass</scp.password>
         <!-- scp.remote.data.store.os MUST be either "unix" or "dos" -->
-        <scp.remote.data.store.os>dos</scp.remote.data.store.os>
+        <scp.remote.data.store.os>unix</scp.remote.data.store.os>
+        <!-- In DOS, you need to replace all of the colons in an LSID. Tell SyMBA want to replace
+         them with using this variable. This variable is ignored when the scp.remote.data.store.os is set to "unix"
+         If you don't provide anything at all and are using "dos", the default will be a double underscore, "__" -->
+        <scp.lsid.colon.replacement></scp.lsid.colon.replacement>
     </properties>
     <profiles>
         <profile>

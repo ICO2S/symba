@@ -252,6 +252,12 @@ public class LoadFuge {
 
             // "cisban." just there to get removed.
             String fileLSID = helper.getLSID( "cisban.RawData" );
+
+            // Change the file LSID *just* for outputting, and just if it is DOS
+            if ( scpBean.getRemoteDataStoreOs().equals( "dos" ) ) {
+                fileLSID = fileLSID.replaceAll( ":", scpBean.getLsidColonReplacement() );
+            }
+
             if ( !copier.copy( rdib.getDataFile(), fileLSID, rdib.getFriendlyId() ) ) {
                 // error making the copy
                 throw new IOException();

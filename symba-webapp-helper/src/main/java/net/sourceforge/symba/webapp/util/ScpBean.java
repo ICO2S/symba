@@ -22,7 +22,8 @@ public class ScpBean implements Serializable {
     private String username;
     private String password;
     private String directory;
-    private String remoteDataStoreOs;
+    private String remoteDataStoreOs;  /// may only be "unix" or "dos"
+    private String lsidColonReplacement; /// only used if remoteDataStoreOs is set to "dos"
 
     public ScpBean() {
     }
@@ -65,5 +66,13 @@ public class ScpBean implements Serializable {
 
     public void setRemoteDataStoreOs( String remoteDataStoreOs ) {
         this.remoteDataStoreOs = remoteDataStoreOs;
+    }
+
+    public String getLsidColonReplacement() {
+        return lsidColonReplacement;
+    }
+
+    public void setLsidColonReplacement( String lsidColonReplacement ) {
+        this.lsidColonReplacement = lsidColonReplacement;
     }
 }

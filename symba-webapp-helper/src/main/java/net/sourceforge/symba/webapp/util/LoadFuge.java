@@ -245,7 +245,7 @@ public class LoadFuge {
         // we store data in a file store and use scpBean to get the information on where to put it
         String directoryForFile = scpBean.getDirectory() + "/data";
         SyMBADataCopier copier = SyMBADataCopierFactory.createSyMBADataCopier( "scp", scpBean.getHostname(),
-                scpBean.getUsername(), scpBean.getPassword(), directoryForFile );
+                scpBean.getUsername(), scpBean.getPassword(), directoryForFile, scpBean.getRemoteDataStoreOs() );
 
         int iii = 0;
         for ( DatafileSpecificMetadataStore rdib : formSessionBean.getDatafileSpecificMetadataStores() ) {
@@ -282,28 +282,14 @@ public class LoadFuge {
             // set the file format, if it has one.
             if ( rdib.getFileFormat() != null ) {
 
-                // we will be updating the ontology collection.
+                // we will be updating the ontology collection, therefore ensure that we start with everything
+                // that was in it to begin with.
+                OntologyCollection ontologyCollection = prepareOntologyCollection( fuge );
 
-                OntologyCollection ontologyCollection = ( OntologyCollection ) reService.createDescribableOb(
-                        "fugeOM.Collection.OntologyCollection" );
+                // the pre-existing information has been copied. Now add to it in any way you need to
+                Set<OntologyTerm> ontologyTerms = ( Set<OntologyTerm> ) ontologyCollection.getOntologyTerms();
+                Set<OntologySource> ontologySources = ( Set<OntologySource> ) ontologyCollection.getOntologySources();
 
-                Set<OntologyTerm> ontologyTerms;
-                Set<OntologySource> ontologySources;
-                if ( fuge.getOntologyCollection() == null ) {
-                    ontologyTerms = new HashSet<OntologyTerm>();
-                    ontologySources = new HashSet<OntologySource>();
-                } else {
-                    if ( fuge.getOntologyCollection().getOntologyTerms() != null ) {
-                        ontologyTerms = ( Set<OntologyTerm> ) fuge.getOntologyCollection().getOntologyTerms();
-                    } else {
-                        ontologyTerms = new HashSet<OntologyTerm>();
-                    }
-                    if ( fuge.getOntologyCollection().getOntologySources() != null ) {
-                        ontologySources = ( Set<OntologySource> ) fuge.getOntologyCollection().getOntologySources();
-                    } else {
-                        ontologySources = new HashSet<OntologySource>();
-                    }
-                }
                 // todo proper algorithm
                 boolean matchFound = findMatchingEndurant( rdib.getFileFormat(), ontologyTerms );
                 // irrespective of whether or not we found a match, we still need to add the term to the new material
@@ -355,12 +341,7 @@ public class LoadFuge {
         return fuge;
     }
 
-    // for now, a new GenericMaterial each time.
-    // unchecked cast warning provided by javac when using generics in Lists/Sets and
-    // casting from Object, even though runtime can handle this.
-    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
-    @SuppressWarnings( "unchecked" )
-    private FuGE loadMaterial( FuGE fuge ) throws RealizableEntityServiceException {
+    private OntologyCollection prepareOntologyCollection( FuGE fuge ) throws RealizableEntityServiceException {
 
         OntologyCollection ontologyCollection = ( OntologyCollection ) reService.createDescribableOb(
                 "fugeOM.Collection.OntologyCollection" );
@@ -382,6 +363,22 @@ public class LoadFuge {
                 ontologySources = new HashSet<OntologySource>();
             }
         }
+        ontologyCollection.setOntologyTerms( ontologyTerms );
+        ontologyCollection.setOntologySources( ontologySources );
+        return ontologyCollection;
+    }
+
+    // for now, a new GenericMaterial each time.
+    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+    // casting from Object, even though runtime can handle this.
+    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+    @SuppressWarnings( "unchecked" )
+    private FuGE loadMaterial( FuGE fuge ) throws RealizableEntityServiceException {
+
+        OntologyCollection ontologyCollection = prepareOntologyCollection( fuge );
+
+        Set<OntologyTerm> ontologyTerms = ( Set<OntologyTerm> ) ontologyCollection.getOntologyTerms();
+        Set<OntologySource> ontologySources = ( Set<OntologySource> ) ontologyCollection.getOntologySources();
 
         MaterialCollection materialCollection = ( MaterialCollection ) reService
                 .createDescribableOb( "fugeOM.Collection.MaterialCollection" );
@@ -833,8 +830,7 @@ public class LoadFuge {
 //            System.err.println( "Error trying to print out the material contents of the fuge protocol collection." );
 //        }
 
-        CisbanOntologyCollectionHelper och = new CisbanOntologyCollectionHelper(
-        );
+        CisbanOntologyCollectionHelper och = new CisbanOntologyCollectionHelper();
         fuge = och.addRelevantOntologyTerms( fuge );
 
         return fuge;
@@ -849,9 +845,7 @@ public class LoadFuge {
      * @param actionAssociatedWithGpaToBeAdded
      *                                    the action that will be linked to the gpaToBeAdded
      * @param gpaToAddActionApplicationTo the gpa to have the ActionApplication added to
-     *
      * @return the modified version of gpaToAddActionApplication, and null if gpaToAddActionApplication was null
-     *
      * @throws fugeOM.service.RealizableEntityServiceException
      *          if there is a problem creating the ActionApplication in the database
      */
@@ -1084,14 +1078,11 @@ public class LoadFuge {
         contactRole.setContact( auditor );
 
         // the provider contains an ontology term, so we need to add that term to the experiment
-        OntologyCollection ontologyCollection = ( OntologyCollection ) reService.createDescribableOb(
-                "fugeOM.Collection.OntologyCollection" );
-        Set<OntologyTerm> ontologyTerms;
-        if ( fuge.getOntologyCollection() != null ) {
-            ontologyTerms = ( Set<OntologyTerm> ) fuge.getOntologyCollection().getOntologyTerms();
-        } else {
-            ontologyTerms = new HashSet<OntologyTerm>();
-        }
+        OntologyCollection ontologyCollection = prepareOntologyCollection( fuge );
+
+        // the pre-existing information has been copied. Now add to it in any way you need to
+        Set<OntologyTerm> ontologyTerms = ( Set<OntologyTerm> ) ontologyCollection.getOntologyTerms();
+
         // then create an ontology term to identify the role, or load the most recent version of that term
         OntologyIndividual ontologyIndividual = ( OntologyIndividual ) reService.createIdentifiableAndEndurantObs(
                 helper.getLSID( "fugeOM.Common.Ontology.OntologyIndividual" ),
@@ -1113,9 +1104,6 @@ public class LoadFuge {
         contactRole.setRole( ontologyIndividual );
         ontologyCollection.setOntologyTerms( ontologyTerms );
 
-        if ( fuge.getOntologyCollection() != null ) {
-            ontologyCollection.setOntologySources( fuge.getOntologyCollection().getOntologySources() );
-        }
         // load the fuge object into the database
         reService.createObInDB( "fugeOM.Collection.OntologyCollection", ontologyCollection );
         fuge.setOntologyCollection( ontologyCollection );
@@ -1138,8 +1126,6 @@ public class LoadFuge {
         helper.loadIdentifiable( provider, auditor, "fugeOM.Collection.Provider", null );
         // add the role to the provider
         fuge.setProvider( provider );
-        // ..and add the ontology collection to the experiment
-        fuge.getOntologyCollection().setOntologyTerms( ontologyTerms );
 
         return fuge;
     }

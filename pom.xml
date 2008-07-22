@@ -133,7 +133,7 @@
     <distributionManagement>
         <site>
             <id>local-test</id>
-            <url>scp://localhost/media/share/website-test/</url>
+            <url>scp://localhost/media/disk/website-test/</url>
         </site>
         <!--<site>-->
             <!--<id>shell.sf.net</id>-->
@@ -481,10 +481,13 @@
         <security.url>jdbc:postgresql://your.machine:5432/symba_security</security.url>
         <security.username>user</security.username>
         <security.password>pass</security.password>
-        <scp.directory>/your/directory</scp.directory>
+        <!-- The full path to the actual directory where the files should reside -->
+        <scp.directory>/your/directory/data/</scp.directory>
         <scp.hostname>localhost</scp.hostname>
         <scp.username>user</scp.username>
         <scp.password>pass</scp.password>
+        <!-- scp.remote.data.store.os MUST be either "unix" or "dos" -->
+        <scp.remote.data.store.os>dos</scp.remote.data.store.os>
     </properties>
     <profiles>
         <profile>

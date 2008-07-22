@@ -22,6 +22,7 @@ public class ScpBean implements Serializable {
     private String username;
     private String password;
     private String directory;
+    private String remoteDataStoreOs;
 
     public ScpBean() {
     }
@@ -56,5 +57,13 @@ public class ScpBean implements Serializable {
 
     public void setDirectory( String directory ) {
         this.directory = directory;
+    }
+
+    public String getRemoteDataStoreOs() {
+        return remoteDataStoreOs;
+    }
+
+    public void setRemoteDataStoreOs( String remoteDataStoreOs ) {
+        this.remoteDataStoreOs = remoteDataStoreOs;
     }
 }

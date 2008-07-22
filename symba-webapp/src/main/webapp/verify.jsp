@@ -116,6 +116,7 @@ must go back to the login page--%>
     scp.setHostname( bundle.getString("scp.hostname") );
     scp.setUsername( bundle.getString("scp.username") );
     scp.setPassword( bundle.getString("scp.password") );
+    scp.setRemoteDataStoreOs( bundle.getString("scp.remote.data.store.os") );
 
 //    application.setAttribute( "helpEmail", bundle.getString("helpEmail") );
 

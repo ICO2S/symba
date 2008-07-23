@@ -151,22 +151,21 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
 
             try {
-                item.write( localFile );
-            } catch ( Exception e ) {
-                errorDuringUpload = true;
-                out.println( "Error uploading file: " + item.getName() + ". Please contact " );
-                out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
-                System.out.println( e.getMessage() );
-                e.printStackTrace();
-            }
-            if ( !localFile.exists() || localFile.length() == 0 ) {
-                errorDuringUpload = true;
-            } else {
+                item.write( localFile ); // exception will be thrown here if the file is not part of the local filesystem.
                 localFileMetadataStore.setDataFile( localFile );
-                //System.out.println( item.getName() );
-
+                if ( !localFile.exists() || localFile.length() == 0 ) {
+                    errorDuringUpload = true;
+                } else {
+                    symbaFormSessionBean.addDatafileSpecificMetadataStore( localFileMetadataStore );
+                }
+            } catch ( Exception e ) {
+                // assume that the reason the file couldn't be found is because it's already on the remote server
+                // (where SyMBA's data store lives), and the user is passing the remote location. We will warn
+                // the user about this assumption on the next page.
+                localFileMetadataStore.setFilenameToLink( item.getName() );
                 symbaFormSessionBean.addDatafileSpecificMetadataStore( localFileMetadataStore );
             }
+
         }
     }
 
@@ -177,7 +176,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
 <c:redirect url="rawData.jsp">
     <c:param name="errorMsg"
-             value="There must be at least one data file. All provided data files must exist and be non-empty."/>
+             value="There must be at least one data file or location of the data file on the remote server. All provided data files must exist and be non-empty."/>
 </c:redirect>
 <%
     }

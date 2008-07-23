@@ -348,10 +348,10 @@
     <build>
         <defaultGoal>install</defaultGoal>
         <resources>
-			<resource>
-        		<directory>src/main/resources</directory>
-        		<filtering>true</filtering>
-        	</resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
         </resources>
         <pluginManagement>
             <plugins>
@@ -476,22 +476,44 @@
         <dataSource.name>jdbc/${application.id}</dataSource.name>
         <dataSource>java:comp/env/${dataSource.name}</dataSource>
 
-        <helpEmail>helpdesk@cisban.ac.uk</helpEmail>
-        <security.driver>org.postgresql.Driver</security.driver>
-        <security.url>jdbc:postgresql://your.machine:5432/symba_security</security.url>
-        <security.username>user</security.username>
-        <security.password>pass</security.password>
-        <!-- The full path to the actual directory where the files should reside -->
-        <scp.directory>/your/directory/data/</scp.directory>
-        <scp.hostname>localhost</scp.hostname>
-        <scp.username>user</scp.username>
-        <scp.password>pass</scp.password>
-        <!-- scp.remote.data.store.os MUST be either "unix" or "dos" -->
-        <scp.remote.data.store.os>unix</scp.remote.data.store.os>
+        <!-- What follows are symba-specific variables that aren't present in the FuGE STK. Because
+         of this, we use the symba namespace to mark them out. -->
+
+        <!-- The help email address for your group -->
+        <net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>
+
+        <!-- The class name for the jdbc driver for the SyMBA security database. Should be the same
+         as jdbc.driver variable above, unless you are using a completely different database for the
+         security database. -->
+        <net.sourceforge.symba.webapp.security.driver>org.postgresql.Driver
+        </net.sourceforge.symba.webapp.security.driver>
+
+        <!-- jdbc connection details for the SyMBA security database -->
+        <net.sourceforge.symba.webapp.security.url>jdbc:postgresql://your.machine:5432/symba_security
+        </net.sourceforge.symba.webapp.security.url>
+
+        <!-- The username and password for the SyMBA security database. -->
+        <net.sourceforge.symba.webapp.security.username>user</net.sourceforge.symba.webapp.security.username>
+        <net.sourceforge.symba.webapp.security.password>pass</net.sourceforge.symba.webapp.security.password>
+
+        <!-- The machine name of the remote machine where the data files will be stored -->
+        <net.sourceforge.symba.webapp.scp.hostname>localhost</net.sourceforge.symba.webapp.scp.hostname>
+
+        <!-- The full path to the actual directory where the files should reside. The data files will be put directly
+          into this directory.Currently, don't forget the trailing slash here. -->
+        <net.sourceforge.symba.webapp.scp.directory>/your/directory/for/data/</net.sourceforge.symba.webapp.scp.directory>
+
+        <!-- The username and password to use to connect to the remote machine where the data files are stored -->
+        <net.sourceforge.symba.webapp.scp.username>user</net.sourceforge.symba.webapp.scp.username>
+        <net.sourceforge.symba.webapp.scp.password>pass</net.sourceforge.symba.webapp.scp.password>
+
+        <!-- net.sourceforge.symba.webapp.global.remote.data.store.os MUST be either "unix" or "dos" -->
+        <net.sourceforge.symba.webapp.scp.remote.data.store.os>unix
+        </net.sourceforge.symba.webapp.scp.remote.data.store.os>
         <!-- In DOS, you need to replace all of the colons in an LSID. Tell SyMBA want to replace
          them with using this variable. This variable is ignored when the scp.remote.data.store.os is set to "unix"
          If you don't provide anything at all and are using "dos", the default will be a double underscore, "__" -->
-        <scp.lsid.colon.replacement></scp.lsid.colon.replacement>
+        <net.sourceforge.symba.webapp.scp.lsid.colon.replacement></net.sourceforge.symba.webapp.scp.lsid.colon.replacement>
     </properties>
     <profiles>
         <profile>
@@ -547,11 +569,9 @@
                     For SapDB use: jdbc:sapdb://127.0.0.1/symba
                     For Progress use: jdbc:JdbcProgress:T:localhost:3305:symba
                 -->
-                <!-- Allyson Lister (3 Jul 2007) changed this to add port number -->
                 <jdbc.url>
-                    jdbc:postgresql://your.machine:5434/symba
+                    jdbc:postgresql://your.machine:5432/symba
                 </jdbc.url>
-                <!-- Allyson Lister (3 Jul 2007) changed this to add username and password -->
                 <jdbc.username>user</jdbc.username>
                 <jdbc.password>pass</jdbc.password>
                 <!--
@@ -629,12 +649,12 @@
                 </property>
             </activation>
             <!--<properties>-->
-                <!--<jdbc.driver.jar></jdbc.driver.jar>-->
-                <!--<jdbc.driver></jdbc.driver>-->
-                <!--<jdbc.url></jdbc.url>-->
-                <!--<jdbc.username></jdbc.username>-->
-                <!--<jdbc.password></jdbc.password>-->
-                <!--<jdbc.exception.sorter></jdbc.exception.sorter>-->
+            <!--<jdbc.driver.jar></jdbc.driver.jar>-->
+            <!--<jdbc.driver></jdbc.driver>-->
+            <!--<jdbc.url></jdbc.url>-->
+            <!--<jdbc.username></jdbc.username>-->
+            <!--<jdbc.password></jdbc.password>-->
+            <!--<jdbc.exception.sorter></jdbc.exception.sorter>-->
             <!--</properties>-->
         </profile>
         <profile>
@@ -646,12 +666,12 @@
                 </property>
             </activation>
             <!--<properties>-->
-                <!--<jdbc.driver.jar></jdbc.driver.jar>-->
-                <!--<jdbc.driver></jdbc.driver>-->
-                <!--<jdbc.url></jdbc.url>-->
-                <!--<jdbc.username></jdbc.username>-->
-                <!--<jdbc.password></jdbc.password>-->
-                <!--<jdbc.exception.sorter></jdbc.exception.sorter>-->
+            <!--<jdbc.driver.jar></jdbc.driver.jar>-->
+            <!--<jdbc.driver></jdbc.driver>-->
+            <!--<jdbc.url></jdbc.url>-->
+            <!--<jdbc.username></jdbc.username>-->
+            <!--<jdbc.password></jdbc.password>-->
+            <!--<jdbc.exception.sorter></jdbc.exception.sorter>-->
             <!--</properties>-->
         </profile>
         <profile>
@@ -663,12 +683,12 @@
                 </property>
             </activation>
             <!--<properties>-->
-                <!--<jdbc.driver.jar></jdbc.driver.jar>-->
-                <!--<jdbc.driver></jdbc.driver>-->
-                <!--<jdbc.url></jdbc.url>-->
-                <!--<jdbc.username></jdbc.username>-->
-                <!--<jdbc.password></jdbc.password>-->
-                <!--<jdbc.exception.sorter></jdbc.exception.sorter>-->
+            <!--<jdbc.driver.jar></jdbc.driver.jar>-->
+            <!--<jdbc.driver></jdbc.driver>-->
+            <!--<jdbc.url></jdbc.url>-->
+            <!--<jdbc.username></jdbc.username>-->
+            <!--<jdbc.password></jdbc.password>-->
+            <!--<jdbc.exception.sorter></jdbc.exception.sorter>-->
             <!--</properties>-->
         </profile>
     </profiles>
@@ -690,14 +710,14 @@
             <layout>legacy</layout>
         </repository>
         <repository>
-          <id>carmen-snapshot</id>
-          <name>Carmen snapshot repository</name>
-          <url>http://carmen.ncl.ac.uk/maven/repo-snapshot</url>
+            <id>carmen-snapshot</id>
+            <name>Carmen snapshot repository</name>
+            <url>http://carmen.ncl.ac.uk/maven/repo-snapshot</url>
         </repository>
         <repository>
-          <id>carmen</id>
-          <name>Carmen release repository</name>
-          <url>http://carmen.ncl.ac.uk/maven/repo</url>
+            <id>carmen</id>
+            <name>Carmen release repository</name>
+            <url>http://carmen.ncl.ac.uk/maven/repo</url>
         </repository>
     </repositories>
     <pluginRepositories>

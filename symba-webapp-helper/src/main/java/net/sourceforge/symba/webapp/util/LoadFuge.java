@@ -243,9 +243,8 @@ public class LoadFuge {
         }
 
         // we store data in a file store and use scpBean to get the information on where to put it
-        String directoryForFile = scpBean.getDirectory() + "/data";
         SyMBADataCopier copier = SyMBADataCopierFactory.createSyMBADataCopier( "scp", scpBean.getHostname(),
-                scpBean.getUsername(), scpBean.getPassword(), directoryForFile, scpBean.getRemoteDataStoreOs() );
+                scpBean.getUsername(), scpBean.getPassword(), scpBean.getDirectory(), scpBean.getRemoteDataStoreOs() );
 
         int iii = 0;
         for ( DatafileSpecificMetadataStore rdib : formSessionBean.getDatafileSpecificMetadataStores() ) {

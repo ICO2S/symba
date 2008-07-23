@@ -22,7 +22,7 @@ in this distribution, please see LICENSE.txt
 <%
     // immediately redirect if the user doesn't have any experiments yet.
     try {
-    if ( validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ).isEmpty() ) {
+        if ( validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ).isEmpty() ) {
 %>
 
 <c:redirect url="newExperiment.jsp"/>
@@ -49,15 +49,15 @@ in this distribution, please see LICENSE.txt
     </p>
 
     <%
-    } catch( RealizableEntityServiceException e) {
-        out.println( "There was an error checking to see if you already had an experiment in the database. For help, please send this message to " );
-        out.println( application.getAttribute( "helpEmail" ) );
-        System.out.println( e.getMessage() );
-        e.printStackTrace();
-    }
+        } catch ( RealizableEntityServiceException e ) {
+            out.println( "There was an error checking to see if you already had an experiment in the database. For help, please send this message to " );
+            out.println( application.getAttribute( "helpEmail" ) );
+            System.out.println( e.getMessage() );
+            e.printStackTrace();
+        }
 
     %>
-    
+
     <h3>Do you wish to create a new experiment or add to an existing one? <a
             href="help.jsp#newOrExist"
             onClick="return popup(this, 'notes')"> [ What Choice Do I Make? ] </a>

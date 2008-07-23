@@ -143,7 +143,7 @@ in this distribution, please see LICENSE.txt
                         }
                     }
                 } catch ( RealizableEntityServiceException e ) {
-                    out.println( "There was an error talking to the database when trying to retrieve the ");
+                    out.println( "There was an error talking to the database when trying to retrieve the " );
                     out.println( "names of the protocols for you to choose from. For help, please send this message to " );
                     out.println( application.getAttribute( "helpEmail" ) );
                     System.out.println( e.getMessage() );
@@ -154,8 +154,8 @@ in this distribution, please see LICENSE.txt
                     String inputStartValue =
                             "<option value=\"" + key + "::Identifier::" + topLevelNames.get( key ) + "\"";
                     if ( symbaFormSessionBean.getTopLevelProtocolEndurant() != null &&
-                            key.equals(symbaFormSessionBean.getTopLevelProtocolEndurant())) {
-                    out.println( inputStartValue + " selected=\"selected\">" + topLevelNames.get( key ) + "</option>" );
+                            key.equals( symbaFormSessionBean.getTopLevelProtocolEndurant() ) ) {
+                        out.println( inputStartValue + " selected=\"selected\">" + topLevelNames.get( key ) + "</option>" );
                     } else {
                         out.println( inputStartValue + ">" + topLevelNames.get( key ) + "</option>" );
                     }
@@ -206,7 +206,7 @@ in this distribution, please see LICENSE.txt
     continue on to the next form page</strong><br/>
     <%
         }
-            out.println( "<input type=\"submit\" value=\"Submit\"/>" );
+        out.println( "<input type=\"submit\" value=\"Submit\"/>" );
     %>
 </fieldset>
 </form>

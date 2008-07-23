@@ -46,10 +46,10 @@ in this distribution, please see LICENSE.txt
 
 <%-- This allows the page to talk to a database --%>
 <sql:setDataSource
-        driver="<%=bundle.getString(\"security.driver\")%>"
-        url="<%=bundle.getString(\"security.url\")%>"
-        user="<%=bundle.getString(\"security.username\")%>"
-        password="<%=bundle.getString(\"security.password\")%>"
+        driver="<%=bundle.getString(\"net.sourceforge.symba.webapp.security.driver\")%>"
+        url="<%=bundle.getString(\"net.sourceforge.symba.webapp.security.url\")%>"
+        user="<%=bundle.getString(\"net.sourceforge.symba.webapp.security.username\")%>"
+        password="<%=bundle.getString(\"net.sourceforge.symba.webapp.security.password\")%>"
         />
 
 <%--This searches the database for the username/password combination entered 
@@ -91,7 +91,7 @@ must go back to the login page--%>
 
     // set the application attribute first, since it may be needed
     // if an error occurs during the initial database access.
-    application.setAttribute( "helpEmail", bundle.getString( "helpEmail" ) );
+    application.setAttribute( "helpEmail", bundle.getString( "net.sourceforge.symba.webapp.helpEmail" ) );
 
     validUser.startRe();
     validUser.setLsid( validUser.getLsid().trim() );
@@ -112,24 +112,23 @@ must go back to the login page--%>
         e.printStackTrace();
     }
 
-    // todo now set the variables. A bit temporary, but will do until a real properties file setup is done
-    scp.setDirectory( bundle.getString( "scp.directory" ) );
-    scp.setHostname( bundle.getString( "scp.hostname" ) );
-    scp.setUsername( bundle.getString( "scp.username" ) );
-    scp.setPassword( bundle.getString( "scp.password" ) );
-    scp.setRemoteDataStoreOs( bundle.getString( "scp.remote.data.store.os" ) );
+    // set the values within the SCP Bean
+    scp.setDirectory( bundle.getString( "net.sourceforge.symba.webapp.scp.directory" ) );
+    scp.setHostname( bundle.getString( "net.sourceforge.symba.webapp.scp.hostname" ) );
+    scp.setUsername( bundle.getString( "net.sourceforge.symba.webapp.scp.username" ) );
+    scp.setPassword( bundle.getString( "net.sourceforge.symba.webapp.scp.password" ) );
+
+    scp.setRemoteDataStoreOs( bundle.getString( "net.sourceforge.symba.webapp.scp.remote.data.store.os" ) );
     if ( scp.getRemoteDataStoreOs().equals( "dos" ) ) {
-        if ( bundle.getString( "scp.lsid.colon.replacement" ) != null &&
-                bundle.getString( "scp.lsid.colon.replacement" ).length() > 0 ) {
-            scp.setLsidColonReplacement( bundle.getString( "scp.lsid.colon.replacement" ) );
+        if ( bundle.getString( "net.sourceforge.symba.webapp.scp.lsid.colon.replacement" ) != null &&
+                bundle.getString( "net.sourceforge.symba.webapp.scp.lsid.colon.replacement" ).length() > 0 ) {
+            scp.setLsidColonReplacement( bundle.getString( "net.sourceforge.symba.webapp.scp.lsid.colon.replacement" ) );
         } else {
             scp.setLsidColonReplacement( "__" ); // provide a default value.
         }
     } else {
         scp.setLsidColonReplacement( "" ); // provide an empty value for unix.
     }
-
-//    application.setAttribute( "helpEmail", bundle.getString("helpEmail") );
 
     // now get the counts
     try {

@@ -1,27 +1,57 @@
  ---
- Creation of the Data Filestore
+ Providing Variables to the Web Interface
  ---
  Allyson Lister
  ---
  May 2008
 
-Create a file system directory to hold the raw data
+Filling in SyMBA variables within the top-level pom.xml
 
-                    While the database holds all experimental metadata, it does not hold the raw
-                    experimental data. Instead we chose to keep the raw data separate to reduce
-                    the size of the relational database. Create a directory on the computer where you plan to store
-                    the data, and then put the details of the machine - and the user that will be the owner of the data
-                    - into the fields below. Currently, the location and name of the
-                    directory should be entered into the symba-webapp/pom.xml.
-                    You need to change the following lines to something
-                    appropriate to your file system:
-                    
-+---+
-                    <scp.directory>/your/directory</scp.directory>
-                    <scp.hostname>yourmachine.com</scp.hostname>
-                    <scp.username>user</scp.username>
-                    <scp.password>pass</scp.password>
+  While the database holds all experimental metadata, it does not hold the raw
+  experimental data. Instead we chose to keep the raw data separate to reduce
+  the size of the relational database. Create a directory on the computer where you plan to store
+  the data, and then put the details of the machine - and the user that will be the owner of the data
+  - into the fields below, which are present within <<<your-checkout/trunk/pom.xml>>>. These elements will be read by
+  the web interface and stored.
+
+  Also included in the variables below are a variety of other items that are required within the web interface.
+  Each variable has a comment stating what the variable is used for.
+
 +---+
 
-  The directory and the hostname are the appropriate location of the remote host/directory to copy the files to. The
-  username and password are the username and password for the connection to that remote host.
+        <!-- The help email address for your group -->
+        <net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>
+
+        <!-- The class name for the jdbc driver for the SyMBA security database. Should be the same
+         as jdbc.driver variable above, unless you are using a completely different database for the
+         security database. -->
+        <net.sourceforge.symba.webapp.security.driver>org.postgresql.Driver
+        </net.sourceforge.symba.webapp.security.driver>
+
+        <!-- jdbc connection details for the SyMBA security database -->
+        <net.sourceforge.symba.webapp.security.url>jdbc:postgresql://localhost:5432/symba_security
+        </net.sourceforge.symba.webapp.security.url>
+
+        <!-- The username and password for the SyMBA security database. -->
+        <net.sourceforge.symba.webapp.security.username>user</net.sourceforge.symba.webapp.security.username>
+        <net.sourceforge.symba.webapp.security.password>pass</net.sourceforge.symba.webapp.security.password>
+
+        <!-- The machine name of the remote machine where the data files will be stored -->
+        <net.sourceforge.symba.webapp.scp.hostname>localhost</net.sourceforge.symba.webapp.scp.hostname>
+
+        <!-- The full path to the actual directory where the files should reside. The data files will be put directly
+          into this directory. -->
+        <net.sourceforge.symba.webapp.scp.directory>/your/directory/for/data/</net.sourceforge.symba.webapp.scp.directory>
+
+        <!-- The username and password to use to connect to the remote machine where the data files are stored -->
+        <net.sourceforge.symba.webapp.scp.username>user</net.sourceforge.symba.webapp.scp.username>
+        <net.sourceforge.symba.webapp.scp.password>pass</net.sourceforge.symba.webapp.scp.password>
+
+        <!-- net.sourceforge.symba.webapp.global.remote.data.store.os MUST be either "unix" or "dos" -->
+        <net.sourceforge.symba.webapp.scp.remote.data.store.os>unix
+        </net.sourceforge.symba.webapp.scp.remote.data.store.os>
+        <!-- In DOS, you need to replace all of the colons in an LSID. Tell SyMBA want to replace
+         them with using this variable. This variable is ignored when the scp.remote.data.store.os is set to "unix"
+         If you don't provide anything at all and are using "dos", the default will be a double underscore, "__" -->
+        <net.sourceforge.symba.webapp.scp.lsid.colon.replacement></net.sourceforge.symba.webapp.scp.lsid.colon.replacement>
++---+

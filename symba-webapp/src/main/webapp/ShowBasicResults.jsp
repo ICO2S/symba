@@ -64,7 +64,7 @@ in this distribution, please see LICENSE.txt
         // casting from Object, even though runtime can handle this.
         // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
         @SuppressWarnings( "unchecked" )
-        List<List<Object>> summaries = (List<List<Object>>) plainList;
+        List<List<Object>> summaries = ( List<List<Object>> ) plainList;
 
         if ( summaries != null ) {
             if ( summaries.isEmpty() ) {

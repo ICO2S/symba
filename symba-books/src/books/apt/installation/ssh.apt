@@ -9,12 +9,32 @@ Installing SSH
 
   SyMBA requires SSH on both the web server and on the destination server for the raw data files.
 
-  * <<Ubuntu.>> In Ubuntu, you can just run the following command to install ssh if you don't have it yet
-    on the appropriate two machines:
+* Ubuntu or Similar
+
+  In Ubuntu, you can just run the following command to install ssh if you don't have it yet
+  on the appropriate two machines:
 
 +---+
   sudo apt-get install ssh
 +---+
 
-  * <<Other OSs.>> You may already have ssh installed on the appropriate machines. You can use either commercial SSH
-    or the open alternative, OpenSSH (this is what Ubuntu installs using the above command). 
+* Windows
+
+  It is more difficult to install ssh on Windows. You will need to install the openSSH server as a Windows service
+  in order to run the SyMBA web interface, and you should also include the client so that you can easily test the
+  installation.
+
+  We recommend installing cygwin to help you with this task. When running <<<setup.exe>>> during the cygwin
+  installation, ensure that you select "openssh" for installation. This application lives underneath
+  the "Net" section of the cygwin install. There are some useful instructions for setting up SSH via cygwin
+  {{{http://ist.uwaterloo.ca/~kscully/CygwinSSHD_W2K3.html}here}}. In short, however, once cygwin is installed
+  and the users set up, you can set up the SSH service with two commands. Firstly, run <<<ssh-host-config>>>, which
+  sets up the server information for SSH. This is an interactive setup program. Secondly, you will want to set
+  up user private and public keys with <<<ssh-user-config>>>. <<Remember that the user you run <<<ssh-user-config>>>
+  for is the user that you need to provide the details of within the <<<net.sourceforge.symba.webapp.scp.*>>> variables
+  inside the top-level pom.xml.
+
+* Other OSs
+
+  You may already have ssh installed on the appropriate machines. You can use either commercial SSH
+  or the open alternative, OpenSSH (this is what Ubuntu installs using the above command).

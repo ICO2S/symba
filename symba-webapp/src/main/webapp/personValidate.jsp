@@ -43,9 +43,9 @@ forms field id's match EXACTLY the beans fields. -->
     //and use the LoadPerson objects method to load/update the information
     //into the database
     System.out.println( "VALID USER EMAIL " + validUser.getEmail() );
-    boolean errorFound = false;    
+    boolean errorFound = false;
     try {
-        session.setAttribute("validUser", lp.loadInDB( validUser ));
+        session.setAttribute( "validUser", lp.loadInDB( validUser ) );
     } catch ( RealizableEntityServiceException e ) {
         errorFound = true;
         out.println( "There was an error talking to the database. For help, please send this message to " );

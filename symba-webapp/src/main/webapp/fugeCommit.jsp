@@ -45,7 +45,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         System.out.println( e.getMessage() );
         e.printStackTrace();
     }
-    
+
     // Update the counts
     try {
         counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );

@@ -60,7 +60,7 @@ in this distribution, please see LICENSE.txt
                                     // unchecked cast warning provided by javac when using generics in Lists/Sets and
                                     // casting from Object, even though runtime can handle this.
                                     // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
-                                    @SuppressWarnings("unchecked")
+                                    @SuppressWarnings( "unchecked" )
                                     List<String> summary = ( List<String> ) obj;
                                     String optionValueStart = "<option value=\"" + summary.get( 0 ) + "\"";
                                     if ( symbaFormSessionBean.getFugeIdentifier() != null &&
@@ -70,9 +70,9 @@ in this distribution, please see LICENSE.txt
                                     out.println( optionValueStart + ">" + summary.get( 1 ) + "</option>" );
                                 }
                             } catch ( RealizableEntityServiceException e ) {
-                                out.println("</select><br>There has been a problem retrieving your experiments. Please ");
-                                out.println("</select><br>contact the " + application.getAttribute( "helpEmail" ) + "<br/>" );
-                                System.out.println(e.getMessage());
+                                out.println( "</select><br>There has been a problem retrieving your experiments. Please " );
+                                out.println( "</select><br>contact the " + application.getAttribute( "helpEmail" ) + "<br/>" );
+                                System.out.println( e.getMessage() );
                                 e.printStackTrace();
                             }
                         %>

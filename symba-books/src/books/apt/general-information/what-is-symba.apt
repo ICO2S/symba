@@ -5,7 +5,7 @@
  ---
  May 2008
 
-Purpose of and Background to SyMBA, and its relation to the FuGE Toolkit Projects
+Purpose of SyMBA, and its
 
   Systems and other integrative approaches to biology generate a wide variety of genome-scale and high-throughput data
   that must be annotated and reliably stored. Novel data repositories are required that not only allow the storage of
@@ -14,15 +14,15 @@ Purpose of and Background to SyMBA, and its relation to the FuGE Toolkit Project
   Language (FuGE-ML) and associated Object Model (FuGE-OM) were created to facilitate the development and uptake
   of metadata standards. FuGE developers have also created a number of base Software ToolKits (STKs) that are
   good starting-points for further development of FuGE-based tools. Systems and Molecular Biology Data and Metadata
-  Archive (SyMBA) is based on the FuGE Milestone 3 STK, and is in the process of being upgraded to the FuGE Version 1
-  STK. SyMBA is based on the FuGE-OM and archives, stores, and retrieves raw high-throughput data. SyMBA integrates both
+  Archive (SyMBA) is based on the FuGE Version 1 Hibernate STK. SyMBA is based on the FuGE-OM and archives, stores,
+  and retrieves raw high-throughput data. SyMBA integrates both
   multiple 'omics' data types and information about experiments in a single database.
 
   SyMBA is a flexible data repository specifically designed to address the requirements for primary data storage for
   projects requiring the storage of many different data types. The metadata database stores all information using
   the FuGE-OM, and as such can integrate all metadata using the same structure, irrespective of associated data type.
-  It is one of the first database implementations of Milestone 3 of the FuGE-OM, with an upgrade to FuGE Version 1 in
-  the works. SyMBA features a metadata database, general and expert user interfaces, and utilizes a Life Science
+  It is one of the first database implementations of Version 1 of the FuGE-OM. SyMBA features a metadata database,
+  general and expert user interfaces, and utilizes a Life Science
   Identifier resolution and assigning service to uniquely identify objects and provide programmatic access to the
   database.
 
@@ -32,3 +32,78 @@ Purpose of and Background to SyMBA, and its relation to the FuGE Toolkit Project
   development. The most up-to-date version of this documentation can be found in the SyMBA SourceForge Subversion
   repository. The system - and its documentation - is available for download and installation via the SourceForge
   project site ({{{http://symba.sourceforge.net}}}).
+
+Relation to the FuGE Toolkit Projects
+
+    Some sections of the documentation has its origins in the
+    {{{http://fuge.sourceforge.net/stks/hibernate-stk/index.html}FuGE Hibernate STK documentation}}, which in turn
+    was based on a number of sources, including the Milestone 3 documentation of SyMBA itself.
+
+    SyMBA utilizes Version 1.0 of the FuGE Standard. It provides a database and
+    persistence layer based on the FuGE Object Model (FuGE-OM), together with other helper classes. These are ideal for
+    community developers wishing to store their FuGE-related data in a more structured way than XML files provide, and
+    as a foundation to build FuGE tools or a FuGE-based system.
+
+    SyMBA is built with Apache Maven 2, a software project management and build system similar to, but more
+    comprehensive than other build tools such as Apache Ant or GNU Make. It also utilizes AndroMDA, a model-driven
+    architecture (MDA) and code generation system, to build a variety of Java classes, configuration files, documents
+    and database scripts. AndroMDA plugs into Maven and during the build process parses a developer's UML Object Model
+    (OM) and generates the appropriate output. It is the core tool used within all FuGE toolkits, and is highly
+    configurable. The type of output can be tailored using different AndroMDA conversion tools, called 'cartridges'.
+    These encapsulated cartridges each do a separate task: for instance, there is an XML Schema cartridge that builds
+    XSDs from UML, and there are Hibernate and Spring or EJB3 cartridges that build a database and persistence layer
+    based on the provided UML.
+
+    SyMBA provides:
+
+    * a FuGE-structured relational database
+
+    * a object-relational persistence and query layer
+
+    * a set of Plain Old Java Object (POJO) entity classes representing FuGE UML entities
+
+    * a set of Data Access Object (DAO) POJO classes that facilitate and encapsulate access to entity classes
+
+    * unit tests of all queries and version retrieval
+
+    * a user-friendly web interface that interacts with the FuGE database and the remote file store for storing
+      raw data outputted from experimental assays
+
+    []
+
+    A persistence layer bridges the gap between a relational database and POJOs, abstracting the low-level database
+    code by providing the programmer with an object-oriented interface. Using AndroMDA-generated classes in conjunction
+    with Hibernate + Spring allows the developer to work only with POJOs, and, when ready to populate, query or
+    modify the database, the persistence layer handles the underlying database commands.
+
+
+   SyMBA makes use of the {{{http://fuge.sourceforge.net/stks/xsd-stk/index.html}FuGE XSD STK}} project and the
+   {{{http://fuge.sourceforge.net/stks/hibernate-stk/index.html}FuGE Hibernate STK}} project
+   but builds greatly upon these two. Changes to the FuGE-OM (mainly extra querying and the versioning expansion) means
+   that both of these STKs need to be part of SyMBA, and re-built when SyMBA is built. A Maven 2 repository
+   specifically holding these jars is available, can be accessed by adding the following repository to your own pom (if you
+   wish to use SyMBA jars, but not SyMBA itself).
+
+  +---+
+       <repository>
+         <id>carmen-snapshot</id>
+         <name>Carmen snapshot repository</name>
+         <url>http://carmen.ncl.ac.uk/maven/repo-snapshot</url>
+       </repository>
+       <repository>
+         <id>carmen</id>
+         <name>Carmen release repository</name>
+         <url>http://carmen.ncl.ac.uk/maven/repo</url>
+       </repository>
+  +---+
+
+   Please note that these jars will not have any real database connection details, so cannot be used to connect to an
+   in-house database, but are useful if you just want to make use of, or view, some of the helper classes.
+
+    When you check-out the <<<symba>>> subversion repository, you will get a {{{http://maven.apache.org} Maven2 }}
+    project. Full instructions for compiling this project and generating and accessing the FuGE database are included in
+    this documentation.
+
+
+
+

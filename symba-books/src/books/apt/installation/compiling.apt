@@ -1,26 +1,17 @@
  ---
- Compiling SyMBA
+ Compiling the Hibernate STK
  ---
  Allyson Lister
  ---
- May 2008
-
-Optional Modification of the UML
-
-                OPTIONAL: If you wish to make changes to the
-                SyMBA UML prior to generating the code, the UML may be found in
-                trunk/symba-mda/src/main/uml/symba.xmi and you should do it at this time.
-                <<Ensure that your UML diagram can find the AndroMDA zips.>>
-                When you open up the SyMBA UML diagram, MagicDraw will prompt you to define
-                the location of the AndroMDA zips: they are in your maven repository. You
-                may also do a global search-and-replace directly on the UML file, if you are
-                careful.
+ July 2008
 
 Compilation
 
+* Default (Local) Profile
+
                 Change into the top-level trunk/ directory. Generate all of the
                 automatically-generated AndroMDA sources:
-                
+
 ---
                 mvn install
 ---
@@ -29,21 +20,66 @@ Compilation
                 <<You must be connected to the internet for this step to work, as there will be many jars that need to
                 be downloaded.>>
 
-                You now have all auto-generated code. The war file (symba.war) for your tomcat server
-                will be found in trunk/symba-webapp/target after the <<mvn install>> command has successfully been run.
+                You now have all auto-generated code.
 
-                Additionally, there will be a war in the target/ directories of both symba-lsid-ws-assigner
-                and symba-lsid-ws-resolver. More details of the SyMBA LSID Web Services can be found in the
-                {{{../general-information/web-services.html}LSID Web Services}} instructions.
+* Testing (Validation) Profile
 
-Loading the SyMBA Web Interface into Tomcat
-
-  You should load the symba.war file found in symba-webapp/target into your Tomcat server now. Details of
-  configuring and installing Tomcat can be found in the {{{tomcat.html}Tomcat}} page of this documentation.
-
-  Successful loading of the war will result in the SyMBA login screen appearing at the following URL (replace the
-  name of the machine and tomcat port number to what is suitable for your installation):
+ This is the same as the Default profile, except you have to explicitly state that you want to compile using the
+ Validation profile. Further, during the initial install, you don't want the unit tests to be run, as you want all
+ jars to be made first.
 
 ---
-  http://yourmachine:yourport/symba/
+                mvn -Denv=val -DskipTests install
 ---
+
+ The Validation profile has now been used to make all FuGE Hibernate STK jars.
+
+* Fixing a Bug in the AndroMDA plugin
+
+  <<This step must be run only once, directly after the first time you run the first maven install command.
+  Follow this step and then run the same maven install command you ran the first time to pick up the modified plugin.>>
+
+    When you downloaded and installed the AndroMDA plugin for Maven 2, there was a small bug in one of the jars.
+    (Details of this bug can be found on the {{{http://galaxy.andromda.org/forum/viewtopic.php?t=2598} AndroMDA forum}},
+    and thanks to Olga Tchuvatkina for including the instructions for fixing it.)
+
+    Without this fix, the XSDs generated will be virtually empty, containing only the top-level namespace information.
+    Therefore, the first time you run maven install, the AndroMDA plugin files are automatically downloaded, but with
+    the incorrect xmlschema cartridge. This copy step only needs to happen once.
+
+    [[1]] <<Go>> into the top-level directory (directly underneath the trunk/ directory) of SyMBA. You'll find a file
+    called <<<andromda-xmlschema-cartridge-3.2.jar>>> there.
+
+    [[top-level list item]] <<Copy>> this into the correct part of your Maven 2 Repository. Below the environment
+    variable <<<$M2_REPO>>> is used to mark the location of your local Maven 2 Repository. Overwrite the default jar
+    file with the fixed one, making the directory first, if required:
+
++--
+    mkdir -p $M2_REPO/org/andromda/cartridges/andromda-xmlschema-cartridge/3.2/
+    cp andromda-xmlschema-cartridge-3.2.jar $M2_REPO/org/andromda/cartridges/andromda-xmlschema-cartridge/3.2/
++--
+
+Optional Modification of the UML
+
+ Once you have run the maven install at least once, and fixed the bug in the AndroMDA plugin as stated above,
+ you can start modifying the UML, if you so wish.
+
+ OPTIONAL: If you wish to make changes to the FuGE UML prior to generating the code, the UML may be found in
+ <<<trunk/symba-mda/src/main/uml/SyMBA-FuGE-v1.mdzip>>>. Any changes you make in the UML
+ must be converted from this MagicDraw proprietary file type to a standard UML2 file type.
+
+       * Open up MagicDraw 15.0. <<Before>> you open any of the FuGE mdzip files, you need to set the
+         <<<maven2.repository>>> path variable. This is equivalent to the <<<$M2_REPO>>> environment variable you will
+         have already set when installing maven. It points to the location of the andromda 3.2 profiles, which are
+         inside the maven repository. This value should be wherever you have your maven repository: if you installed
+         Maven2 using the default repository location, then <<<maven2.repository>>> would be $HOME/.m2/repository for
+         linux, or the equivalent in windows.
+
+       * If you are having problems, you can manually copy all of the andromda profiles from the maven repository
+         (<<<$M2_REPO/org/andromda/profiles>>>) into the same directory as the model file, or into the
+         <<<profiles/>>> directory of the MagicDraw installation location.
+
+       * Test that your setup works after setting this variable by opening
+         <<<trunk/symba-mda/src/main/uml/SyMBA-FuGE-v1.mdzip>>>. If it loads without error, you MagicDraw installation is
+         complete.
+

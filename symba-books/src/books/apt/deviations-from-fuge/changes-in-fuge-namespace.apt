@@ -1,0 +1,78 @@
+ ---
+ Changes to the FuGE namespace
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+net.sourceforge.fuge.EntityService
+
+  The EntityService of the FuGE Hibernate STK is left alone except the following modifications.
+
+* Create, Save and Update
+
+   As SyMBA deals with versioning
+  within its code, it is very important that no existing object in the database be deleted or modified. As the
+  standard implementation of EntityService allows for the update of rows in the database, this feature must be
+  disabled in SyMBA. This could be done by deleting the update() methods within EntityService, but the SyMBA developers
+  wish to retain as much possibility of compatibility with pre-existing FuGE Hibernate STK code, as well as change
+  as little of the Hibernate STK FuGE-OM as possible. Therefore
+  save() and update() methods have been re-implemented. <<If any Identifiable object is passed to save() that already
+  has a database ID, an EntityServiceException will be thrown. If any Describable object is passed to save() that
+  already has a database ID, that database ID will be set to null and a new Describable object created. If update() is
+  used at all, an EntityServiceException will be thrown.>>
+
+  For Identifiable objects, in order to ensure that you don't constantly pass objects to save() or create() that have
+  already existing database IDs in the database, you may use
+  <<<net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper>>>'s <<<assignAndSave()>>> method.
+  This method overwrites the LSID identifier of an Identifiable object, and sets the database ID to null.
+
+  Please note that this is NOT a change within the FuGE-OM, but instead a change that only needs to be implemented
+  at the level of the EntityServiceImpl class.
+
+* Addition of Dependency to Endurant
+
+  In order for the EntityService (which handles all create and save work for the project) to be able to create and
+  save Endurant objects, a link was created between these two classes. There is now a dependency starting at
+  EntityService and ending at Endurant.
+
+net.sourceforge.fuge.common.Identifiable
+
+* New Association to net.sourceforge.symba.versioning.Endurant
+
+  The main addition to the FuGE-OM to generate SyMBA is the addition of an association from Identifiable to Endurant.
+  This allows Identifiable objects to be grouped together, and therefore provide a history for FuGE objects.
+  This change to the FuGE-OM is then propogated through into the auto-generated code. To examine this change, please
+  open the "Endurant" class diagram within the <<<SyMBA-FuGEv1.mdzip>>> file stored in the
+  <<<symba-mda/src/main/uml>>> directory.
+
+New Queries
+
+  This section describes the set of new queries that were added to specific entities within the FuGE-OM. They
+  do NOT modify the behavior, attributes, XSD, or associations of any of the FuGE model. They simply provide more
+  searches than are available in the standard FuGE Hibernate STK. However, such queries belong within the entities
+  they are searching, and as such they modify the FuGE-OM entities.
+
+  This is just a summary of the added queries. For documentation on the queries themselves, please see the UML.
+
+* Queries over Identifiable
+
+  * getForDate(String identifier, Date date)
+
+  * getWithEndurantForDate(String endurantIdentifier, Date date)
+
+* Queries over FuGE
+
+  * countLatest()
+
+  * getSummaries()
+
+  * getSummariesWithPartialName()
+
+  * getSummariesWithContact()
+
+  * getSummariesWithOntologyTerm()
+
+* Queries over ExternalData
+
+  * countRealData()

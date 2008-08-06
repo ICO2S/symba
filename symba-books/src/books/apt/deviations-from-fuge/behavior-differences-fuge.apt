@@ -1,0 +1,35 @@
+ ---
+ Restrictions on the Use of the FuGE Hibernate STK
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+Introduction
+
+  Some aspects of the FuGE-OM do not have any code that needs to be changed, but restrictions need to be placed on the
+  usage of that code within SyMBA. This section illustrates those restrictions.
+
+net.sourceforge.fuge.EntityService
+
+* Addition of an Audit item within the Audit Trail
+
+  The FuGE Hibernate STK has two options for determining if an item should be annotated with an additional Audit item
+  when it is loaded into the database.
+
+  * <<net.sourceforge.fuge.addDbAuditTrail>> within fuge-hibernate.properties
+
+  * <<addAuditInfo>> as a boolean argument for save, create, or update
+
+  []
+
+  The first option, set via a properties file, overrides a "true" value passed from the calling method with whatever
+  the value in the properties file is. This is meant for uses such as unit testing, where you want the data that goes
+  into the database to exactly match the data coming out, to ensure that all information is being passed correctly.
+
+  However, it is important that, when SyMBA is running in production mode, the audit information is always added
+  to Identifiable objects (SyMBA does not require its addition to Describable objects that are not Identifiable).
+  This is because the audit date is the attribute compared when retrieving the latest version of an object. Therefore
+  you must not override the true value from the net.sourceforge.fuge.addDbAuditTrail property for production
+  use. Further, when adding items to the database, please ensure that you use one of the varieties of save() or
+  create() within the EntityService that will add an audit trail item to the object.

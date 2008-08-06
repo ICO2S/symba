@@ -1,31 +1,21 @@
-
-<!-- This file is part of SyMBA.-->
-<!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
-<!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
-<!-- To view the full licensing information for this software and ALL other files contained-->
-<!-- in this distribution, please see LICENSE.txt-->
-<!-- $LastChangedDate$-->
-<!-- $LastChangedRevision$-->
-<!-- $Author$-->
-<!-- $HeadURL$-->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>net.sourceforge.symba</groupId>
-        <artifactId>SyMBA</artifactId>
-        <version>8.05-SNAPSHOT</version>
+        <artifactId>symba</artifactId>
+        <version>8.08-alpha</version>
     </parent>
+    <groupId>net.sourceforge.symba</groupId>
     <artifactId>symba-jaxb2</artifactId>
     <packaging>jar</packaging>
-    <name>SyMBA JAXB2 Code</name>
+    <name>SyMBA: Modified FuGE JAXB2 Code</name>
     <dependencies>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>2.1</version>
+            <version>2.1.6</version>
         </dependency>
     </dependencies>
     <build>
@@ -43,7 +33,7 @@
                 </executions>
                 <configuration>
                     <generateDirectory>${project.build.directory}</generateDirectory>
-                    <generatePackage>fugeOM.util.generatedJAXB2</generatePackage>
+                    <generatePackage>net.sourceforge.fuge.util.generatedJAXB2</generatePackage>
                 </configuration>
             </plugin>
             <!--Reconfigure the compiler plugin to use 1.5-->

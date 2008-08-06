@@ -3,7 +3,7 @@
  ---
  Allyson Lister
  ---
- May 2008
+ July 2008
 
 Installing Sun Java 5 or Java 6
 
@@ -29,7 +29,7 @@ Installing Sun Java 5 or Java 6
   <<Full details of the installation of Sun Java on Ubuntu 7.04 or higher is available at
   {{https://help.ubuntu.com/community/Java}}>>.
 
-  Alternatively, you can download the latest Java from 
+  Alternatively, you can download the latest Java from
   {{{http://java.sun.com/javase/downloads/index.jsp}Sun directly}}.
 
 * Install Sun J2SE Development Kit 5.0 (JDK 5.0)

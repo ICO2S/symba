@@ -27,7 +27,7 @@ in this distribution, please see LICENSE.txt
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
     <h1>Welcome, ${fn:escapeXml(validUser.userName)}</h1>

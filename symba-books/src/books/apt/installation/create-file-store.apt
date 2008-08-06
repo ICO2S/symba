@@ -15,12 +15,18 @@ Filling in SyMBA variables within the top-level pom.xml
   the web interface and stored.
 
   Also included in the variables below are a variety of other items that are required within the web interface.
-  Each variable has a comment stating what the variable is used for.
+  Each variable has a comment stating what the variable is used for. The variable set below are represented once
+  per profile within the pom, and therefore you will need to set the variables specifically for each profile
+  you wish to use.
 
 +---+
 
         <!-- The help email address for your group -->
         <net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>
+        <!-- The name and verison of this software: there are already reasonable defaults, so you don't need to
+        change this unless you want to -->
+        <net.sourceforge.symba.webapp.softwareName>${pom.artifactId}</net.sourceforge.symba.webapp.softwareName>
+        <net.sourceforge.symba.webapp.softwareVersion>${pom.version}</net.sourceforge.symba.webapp.softwareVersion>
 
         <!-- The class name for the jdbc driver for the SyMBA security database. Should be the same
          as jdbc.driver variable above, unless you are using a completely different database for the

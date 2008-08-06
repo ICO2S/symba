@@ -17,8 +17,8 @@ in this distribution, please see LICENSE.txt
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 
 <%--Imports so we can use the person object and the data portal utils --%>
-<%@ page import="fugeOM.Collection.FuGE" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+<%@ page import="net.sourceforge.fuge.collection.FuGE" %>
+
 <%@ page import="net.sourceforge.symba.webapp.util.DisplayFuge" %>
 <%@ page import="net.sourceforge.symba.webapp.util.SecurityEngineInterrogator" %>
 <%@ page import="net.sourceforge.symba.webapp.util.SymbaFormSessionBean" %>
@@ -46,126 +46,108 @@ to a new one.
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
-<%
-    if ( request.getParameter( "investigationID" ) != null &&
-            request.getParameter( "investigationID" ).length() > 0 ) {
+    <%
+        if ( request.getParameter( "investigationID" ) != null &&
+             request.getParameter( "investigationID" ).length() > 0 ) {
 
-        // This combo should always return an access granted message if actually connected.
+            // This combo should always return an access granted message if actually connected.
 //        String role = "demo";
 //        String action = "Write";
 //        String resource = "urn:lsid:carmen.org:file:1";
 
-        boolean passedSecurity = false;
+            boolean passedSecurity = false;
 
-        try {
-            SecurityEngineInterrogator interrogator = new SecurityEngineInterrogator();
+            try {
+                SecurityEngineInterrogator interrogator = new SecurityEngineInterrogator();
 
-            // everyone gets assigned to the allUsers role.
-            passedSecurity = interrogator.hasPermission(
-                    "symbaAllUsers", request.getParameter( "investigationID" ), "read" );
-            // if allUsers are not allowed, check to see if the role for this particular user allows access
-            if ( !passedSecurity ) {
+                // everyone gets assigned to the allUsers role.
                 passedSecurity = interrogator.hasPermission(
-                        validUser.getEndurantLsid(), request.getParameter( "investigationID" ), "read" );
-            }
+                        "symbaAllUsers", request.getParameter( "investigationID" ), "read" );
+                // if allUsers are not allowed, check to see if the role for this particular user allows access
+                if ( !passedSecurity ) {
+                    passedSecurity = interrogator.hasPermission(
+                            validUser.getEndurantLsid(), request.getParameter( "investigationID" ), "read" );
+                }
 //        } catch ( ServiceException e ) {
 //            out.println( "Unable to confirm that you are allowed to access this experiment. Please contact" );
 //            out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
 //            System.out.println( e.getMessage() ); // print out error to catalina.out
 //            e.printStackTrace();
-        } catch ( Exception e ) {
-            out.println( "<h3>" );
-            out.println( "There has been an error processing the permissions associated with your selected" );
-            out.println( "investigation." );
-            out.println( "If you wish, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">deposit" );
-            out.println(
-                    "some data</a>, or perform <a href=\"search.jsp\">another search</a>." );
-            out.println( "</h3>" );
-            out.println( e.getMessage() );
-            e.printStackTrace();
-        }
+            } catch ( Exception e ) {
+                out.println( "<h3>" );
+                out.println( "There has been an error processing the permissions associated with your selected" );
+                out.println( "investigation." );
+                out.println( "If you wish, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">deposit" );
+                out.println(
+                        "some data</a>, or perform <a href=\"search.jsp\">another search</a>." );
+                out.println( "</h3>" );
+                out.println( e.getMessage() );
+                e.printStackTrace();
+            }
 
-        if ( passedSecurity ) {
-            // Ok to print out the experiment
-            out.println( "For further searches, please visit our <a href=\"search.jsp\">Search Page</a><br/>" );
-            out.println( "<h2>Your Data is shown below <a href=\"help.jsp#viewExperiments\"" );
-            out.println( "onClick=\"return popup(this, 'notes')\"> [ Help? ]</a></h2>" );
+            if ( passedSecurity ) {
+                // Ok to print out the experiment
+                out.println( "For further searches, please visit our <a href=\"search.jsp\">Search Page</a><br/>" );
+                out.println( "<h2>Your Data is shown below <a href=\"help.jsp#viewExperiments\"" );
+                out.println( "onClick=\"return popup(this, 'notes')\"> [ Help? ]</a></h2>" );
 
 //                CisbanFuGEHelper cfh = new CisbanFuGEHelper( validUser.getReService() );
-            // don't get latest version here: the display method will get the latest version ONLY for those
-            // objects it is displaying.
-            try {
-                FuGE fuge = ( FuGE ) validUser.getReService()
-                        .findIdentifiable( request.getParameter( "investigationID" ) );
+                // don't get latest version here: the display method will get the latest version ONLY for those
+                // objects it is displaying.
+                FuGE fuge = ( FuGE ) validUser.getEntityService()
+                        .getIdentifiable( request.getParameter( "investigationID" ) );
                 // a local version of SymbaFormSessionBean will be filled with the information needed to "copy"
                 // the metadata from each data file, and presented as an individual form
 //                cfh.prettyHtml( fuge, new PrintWriter( out ) );
-                try {
-                    Map<String, SymbaFormSessionBean> allPossibleMetadata = DisplayFuge.displayHtml(
-                            validUser.getEndurantLsid(), fuge, validUser.getReService(), new PrintWriter( out ) );
-                    // Load all of this into the session. It should get removed as soon as possible. This is a little
-                    // odd, but cannot currently find a better way to do it.
-                    session.setAttribute( "allPossibleMetadata", allPossibleMetadata );
+                Map<String, SymbaFormSessionBean> allPossibleMetadata = DisplayFuge.displayHtml(
+                        validUser.getEndurantLsid(), fuge, new PrintWriter( out ) );
+                // Load all of this into the session. It should get removed as soon as possible. This is a little
+                // odd, but cannot currently find a better way to do it.
+                session.setAttribute( "allPossibleMetadata", allPossibleMetadata );
 
-                    // Go directly to experimentValidate.jsp
-                    out.println( "<form action=\"experimentValidate.jsp\">" );
-                    out.println(
-                            "<input type=\"hidden\" name=\"fugeIdentifier\" value=\"" +
-                                    fuge.getIdentifier() +
-                                    "\"/>" );
-                    out.println( "<input type=\"submit\" value=\"Add Data To This Experiment\"/>" );
-                    out.println( "</form>" );
-
-                    // View the xml format for this entry.
-                    out.println( "<form action=\"viewFugeML.jsp\">" );
-                    out.println(
-                            "<input type=\"hidden\" name=\"endurant\" value=\"" + fuge.getEndurant().getIdentifier() +
-                                    "\"/>" );
-                    out.println( "<input type=\"submit\" size=\"10\" value=\"show XML\"/>" );
-                    out.println( "</form><br>" );
-                } catch ( RealizableEntityServiceException e ) {
-                    out.println( "<p>" );
-                    out.println( "There has been a problem trying to display all of your information. Please contact" );
-                    out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
-                    out.println( "</p>" );
-                    System.out.println( e.getMessage() ); // print out error to catalina.out
-                    e.printStackTrace();
-                }
-
-            } catch ( RealizableEntityServiceException e ) {
+                // Go directly to experimentValidate.jsp
+                out.println( "<form action=\"experimentValidate.jsp\">" );
                 out.println(
-                        "There was an error when trying to retrieve the experiment (id: " +
-                                request.getParameter( "investigationID" ) + "). Please contact " +
-                                application.getAttribute( "helpEmail" ) + ", citing this message.<br/>" );
-                System.out.println( e.getMessage() );
-                e.printStackTrace();
+                        "<input type=\"hidden\" name=\"fugeIdentifier\" value=\"" +
+                        fuge.getIdentifier() +
+                        "\"/>" );
+                out.println( "<input type=\"submit\" value=\"Add Data To This Experiment\"/>" );
+                out.println( "</form>" );
+
+                // View the xml format for this entry.
+                out.println( "<form action=\"viewFugeML.jsp\">" );
+                out.println(
+                        "<input type=\"hidden\" name=\"endurant\" value=\"" + fuge.getEndurant().getIdentifier() +
+                        "\"/>" );
+                out.println( "<input type=\"submit\" size=\"10\" value=\"show XML\"/>" );
+                out.println( "</form><br>" );
+
+            } else {
+                out.println( "<h3>" );
+                out.println( "You do not have permission to view this experiment. Use your browser's \"Back\" button" );
+                out.println( "to choose another experiment to view." );
+                out.println( "Alternatively, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">deposit" );
+                out.println(
+                        "some data</a>, or perform <a href=\"search.jsp\">another search</a>." );
+                out.println( "</h3>" );
+
             }
         } else {
             out.println( "<h3>" );
-            out.println( "You do not have permission to view this experiment. Use your browser's \"Back\" button" );
-            out.println( "to choose another experiment to view." );
-            out.println( "Alternatively, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">deposit" );
-            out.println(
-                    "some data</a>, or perform <a href=\"search.jsp\">another search</a>." );
+            out.println( "This is the page that displays the results of a search." );
+            out.println( "Please visit the <a href=\"search.jsp\">Search Page</a> to perform a search." );
             out.println( "</h3>" );
 
         }
-    } else {
-        out.println( "<h3>" );
-        out.println( "This is the page that displays the results of a search." );
-        out.println( "Please visit the <a href=\"search.jsp\">Search Page</a> to perform a search." );
-        out.println( "</h3>" );
 
-    }
+    %>
 
-%>
+    <br><br>
 
-<br><br>
-
-<jsp:include page="helpAndComments.jsp"/>
+    <jsp:include page="helpAndComments.jsp"/>
 
 </div>
 

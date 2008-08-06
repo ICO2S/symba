@@ -1,0 +1,19 @@
+ ---
+ Licensing in FuGE and SyMBA
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+
+Licensing in FuGE
+
+ The FuGE STK is licensed under the MIT license. This license covers the FuGE-OM and all code within the STK generated
+ from it. Full details are available from the {{{http://fuge.sf.net}FuGE website}}.
+
+Licensing in SyMBA
+
+ SyMBA is licensed under the Lesser GNU Public License (LGPL). However, SyMBA is also based on the FuGE Hibernate STK.
+ All unmodified sections of the FuGE Hibernate STK retain the original MIT license statement. However, most aspects
+ of the STK were modified in the creation of SyMBA. We still acknowledge the original creators and licensing of
+ the FuGE Hibernate STK, but retain rights under the LGPL on those modifications made during SyMBA development.

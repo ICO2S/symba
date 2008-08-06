@@ -22,7 +22,7 @@ Using the Maven 2 exec:java Command
     <<<symba-backend/README.txt>>> file is:
 
 +---+
-  mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.UnmarshalPeople" -Dexec.args="xml/samples/SamplePeople.xml"
+  mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalPeople" -Dexec.args="xml/samples/SamplePeople.xml"
 +---+
 
 * Specifying the Full Name for exec:java
@@ -32,7 +32,7 @@ Using the Maven 2 exec:java Command
     example below:
 
 +---+
-  mvn org.codehaus.mojo:exec-maven-plugin:1.1:java -Dexec.mainClass="net.sourceforge.symba.util.UnmarshalPeople" -Dexec.args="xml/samples/SamplePeople.xml"
+  mvn org.codehaus.mojo:exec-maven-plugin:1.1:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalPeople" -Dexec.args="xml/samples/SamplePeople.xml"
 +---+
 
     If you still have problems, please contact symba-devel@lists.sourceforge.net.

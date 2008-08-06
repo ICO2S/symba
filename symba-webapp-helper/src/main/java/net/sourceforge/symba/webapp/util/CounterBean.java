@@ -17,25 +17,25 @@ import java.io.Serializable;
  */
 public class CounterBean implements Serializable {
 
-    private int numberOfExperiments;
-    private int numberOfDataFiles;
+    private long numberOfExperiments;
+    private long numberOfDataFiles;
 
     public CounterBean() {
     }
 
-    public int getNumberOfExperiments() {
+    public long getNumberOfExperiments() {
         return numberOfExperiments;
     }
 
-    public void setNumberOfExperiments( int numberOfExperiments ) {
+    public void setNumberOfExperiments( long numberOfExperiments ) {
         this.numberOfExperiments = numberOfExperiments;
     }
 
-    public int getNumberOfDataFiles() {
+    public long getNumberOfDataFiles() {
         return numberOfDataFiles;
     }
 
-    public void setNumberOfDataFiles( int numberOfDataFiles ) {
+    public void setNumberOfDataFiles( long numberOfDataFiles ) {
         this.numberOfDataFiles = numberOfDataFiles;
     }
 }

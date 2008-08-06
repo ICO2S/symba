@@ -13,9 +13,9 @@ import java.util.HashSet;
 import java.lang.reflect.InvocationTargetException;
 import java.io.PrintStream;
 
-import fugeOM.util.generatedJAXB2.*;
-import net.sourceforge.symba.util.CisbanHelper;
-import net.sourceforge.symba.ServiceLocator;
+import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
+
+import net.sourceforge.fuge.util.generatedJAXB2.*;
 
 /**
  * This file is part of SyMBA.
@@ -207,18 +207,17 @@ public class ObiManipulator {
         }
     }
 
-    public FugeOMCollectionOntologyCollectionType createFuGEOntologyCollection( FugeOMCollectionOntologyCollectionType finalOntologyCollection, String sourceClassString, Set<OWLDescription> owlDescriptions ) {
+    public FuGECollectionOntologyCollectionType createFuGEOntologyCollection( FuGECollectionOntologyCollectionType finalOntologyCollection, String sourceClassString, Set<OWLDescription> owlDescriptions ) {
 
-        CisbanHelper ch = CisbanHelper.create( ServiceLocator.instance().getRealizableEntityService() );
         ObjectFactory factory = new ObjectFactory();
 
         // add ontology sources only if they have not been added before
-        FugeOMCommonOntologyOntologySourceType ontologySource = classAlreadyPresent( finalOntologyCollection, obiLogicalURI + sourceClassString );
+        FuGECommonOntologyOntologySourceType ontologySource = classAlreadyPresent( finalOntologyCollection, obiLogicalURI + sourceClassString );
         if ( ontologySource == null ) {
             OWLClass sourceClass = manager.getOWLDataFactory().getOWLClass( URI.create( obiLogicalURI + sourceClassString ) );
-            ontologySource = new FugeOMCommonOntologyOntologySourceType();
-            ontologySource.setIdentifier( ch.getLSID( "fugeOM.Common.Ontology.OntologySource" ) );
-            ontologySource.setEndurant( ch.getLSID( "fugeOM.Common.Ontology.OntoSourceEndurant" ) );
+            ontologySource = new FuGECommonOntologyOntologySourceType();
+            ontologySource.setIdentifier( DatabaseObjectHelper.getLsid( "net.sourceforge.fuge.Common.Ontology.OntologySource" ) );
+            ontologySource.setEndurantRef( DatabaseObjectHelper.getLsid( "net.sourceforge.fuge.Common.Ontology.OntoSourceEndurant" ) );
             ontologySource.setOntologyURI( obiLogicalURI + sourceClassString );
             for ( OWLAnnotation annotation : sourceClass.getAnnotations( obi ) ) {
                 if ( annotation.getAnnotationURI().toString().equals( "http://www.w3.org/2000/01/rdf-schema#label" ) ) {
@@ -235,12 +234,12 @@ public class ObiManipulator {
 
         // add ontology individuals only if they have not been added before
         for ( OWLDescription owlDescription : owlDescriptions ) {
-            FugeOMCommonOntologyOntologyIndividualType ontologyIndividual = ( FugeOMCommonOntologyOntologyIndividualType ) classAlreadyPresent( finalOntologyCollection, owlDescription.toString(), ontologySource.getIdentifier() );
+            FuGECommonOntologyOntologyIndividualType ontologyIndividual = ( FuGECommonOntologyOntologyIndividualType ) classAlreadyPresent( finalOntologyCollection, owlDescription.toString(), ontologySource.getIdentifier() );
             if ( ontologyIndividual == null ) {
-                ontologyIndividual = new FugeOMCommonOntologyOntologyIndividualType();
+                ontologyIndividual = new FuGECommonOntologyOntologyIndividualType();
                 ontologyIndividual.setTermAccession( owlDescription.toString() );
-                ontologyIndividual.setIdentifier( ch.getLSID( "fugeOM.Common.Ontology.OntologyIndividual" ) );
-                ontologyIndividual.setEndurant( ch.getLSID( "fugeOM.Common.Ontology.OntoIndvEndurant" ) );
+                ontologyIndividual.setIdentifier( DatabaseObjectHelper.getLsid( "net.sourceforge.fuge.Common.Ontology.OntologyIndividual" ) );
+                ontologyIndividual.setEndurantRef( DatabaseObjectHelper.getLsid( "net.sourceforge.fuge.Common.Ontology.OntoIndvEndurant" ) );
                 ontologyIndividual.setOntologySourceRef( ontologySource.getIdentifier() );
                 for ( OWLAnnotation annotation : owlDescription.asOWLClass().getAnnotations( obi ) ) {
                     if ( annotation.getAnnotationURI().toString().equals( "http://www.w3.org/2000/01/rdf-schema#label" ) ) {
@@ -274,10 +273,10 @@ public class ObiManipulator {
      * @param ontologySourceIdentifier the ontology source that this new term belongs to: used as an extra comparison
      * @return the pre-exising object, or null if not already present
      */
-    private FugeOMCommonOntologyOntologyTermType classAlreadyPresent( FugeOMCollectionOntologyCollectionType finalOntologyCollection, String termAccession, String ontologySourceIdentifier ) {
+    private FuGECommonOntologyOntologyTermType classAlreadyPresent( FuGECollectionOntologyCollectionType finalOntologyCollection, String termAccession, String ontologySourceIdentifier ) {
 
 
-        for ( javax.xml.bind.JAXBElement<? extends FugeOMCommonOntologyOntologyTermType> ontologyTerm : finalOntologyCollection.getOntologyTerm() ) {
+        for ( javax.xml.bind.JAXBElement<? extends FuGECommonOntologyOntologyTermType> ontologyTerm : finalOntologyCollection.getOntologyTerm() ) {
             if ( ontologyTerm.getValue().getTermAccession().equals( termAccession )
                     && ontologyTerm.getValue().getOntologySourceRef().equals( ontologySourceIdentifier ) ) {
                 return ontologyTerm.getValue();
@@ -300,9 +299,9 @@ public class ObiManipulator {
      * @param ontologySourceURI the uri of the new source - used as the comparison with the pre-existing sources
      * @return the pre-exising object, or null if not already present
      */
-    private FugeOMCommonOntologyOntologySourceType classAlreadyPresent( FugeOMCollectionOntologyCollectionType finalOntologyCollection, String ontologySourceURI ) {
+    private FuGECommonOntologyOntologySourceType classAlreadyPresent( FuGECollectionOntologyCollectionType finalOntologyCollection, String ontologySourceURI ) {
 
-        for ( FugeOMCommonOntologyOntologySourceType ontologySource : finalOntologyCollection.getOntologySource() ) {
+        for ( FuGECommonOntologyOntologySourceType ontologySource : finalOntologyCollection.getOntologySource() ) {
             if ( ontologySource.getOntologyURI().equals( ontologySourceURI ) ) {
                 return ontologySource;
             }

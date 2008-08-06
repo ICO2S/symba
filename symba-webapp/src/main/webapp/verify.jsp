@@ -1,4 +1,4 @@
-<%-- 
+<%--
 This file is part of SyMBA.
 SyMBA is covered under the GNU Lesser General Public License (LGPL).
 Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
@@ -17,8 +17,7 @@ in this distribution, please see LICENSE.txt
 <%@ page import="java.util.ResourceBundle" %>
 
 <%--Imports so we can use the person object and the data portal utils --%>
-<%@ page import="fugeOM.Common.Audit.Person" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+<%@ page import="net.sourceforge.fuge.common.audit.Person" %>
 
 <%-- Remove the validUser session bean, if any --%>
 <c:remove var="validUser"/>
@@ -33,7 +32,7 @@ in this distribution, please see LICENSE.txt
 
 %>
 
-<%-- 
+<%--
   See if the user name and password combination is valid. If not,
   redirect back to the login page with a message.
 --%>
@@ -52,7 +51,7 @@ in this distribution, please see LICENSE.txt
         password="<%=bundle.getString(\"net.sourceforge.symba.webapp.security.password\")%>"
         />
 
-<%--This searches the database for the username/password combination entered 
+<%--This searches the database for the username/password combination entered
 using the parameter beans  --%>
 <sql:query var="empInfo">
     SELECT * FROM users
@@ -70,8 +69,8 @@ must go back to the login page--%>
     </c:redirect>
 </c:if>
 
-<%--    
-  Create an EmployeeBean and save it in 
+<%--
+  Create an EmployeeBean and save it in
   the session scope and redirect to the appropriate page.
 --%>
 <c:set var="dbValues" value="${empInfo.rows[0]}"/>
@@ -87,30 +86,25 @@ must go back to the login page--%>
 
 <jsp:useBean id="scp" class="net.sourceforge.symba.webapp.util.ScpBean" scope="application"/>
 
+<jsp:useBean id="softwareMeta" class="net.sourceforge.symba.webapp.util.SoftwareMetaInformationBean" scope="application"/>
+
 <%
 
     // set the application attribute first, since it may be needed
     // if an error occurs during the initial database access.
+
     application.setAttribute( "helpEmail", bundle.getString( "net.sourceforge.symba.webapp.helpEmail" ) );
+    softwareMeta.setName( bundle.getString( "net.sourceforge.symba.webapp.softwareName" ));
+    softwareMeta.setVersion( bundle.getString( "net.sourceforge.symba.webapp.softwareVersion" ));
 
-    validUser.startRe();
+    validUser.startServices();
     validUser.setLsid( validUser.getLsid().trim() );
-    boolean errorFound = false;
-    try {
-        Person p = ( Person ) validUser.getReService().findLatestByEndurant( validUser.getLsid() );
-        validUser.setEndurantLsid( p.getEndurant().getIdentifier() );
-        validUser.setEmail( p.getEmail() );
-        validUser.setLsid( p.getIdentifier() );
-        validUser.setFirstName( p.getFirstName() );
-        validUser.setLastName( p.getLastName() );
-
-    } catch ( RealizableEntityServiceException e ) {
-        errorFound = true;
-        out.println( "Error talking to the database in order to retrieve user details. Please send this message to" );
-        out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
-        System.out.println( e.getMessage() );
-        e.printStackTrace();
-    }
+    Person p = ( Person ) validUser.getSymbaEntityService().getLatestByEndurant( validUser.getLsid() );
+    validUser.setEndurantLsid( p.getEndurant().getIdentifier() );
+    validUser.setEmail( p.getEmail() );
+    validUser.setLsid( p.getIdentifier() );
+    validUser.setFirstName( p.getFirstName() );
+    validUser.setLastName( p.getLastName() );
 
     // set the values within the SCP Bean
     scp.setDirectory( bundle.getString( "net.sourceforge.symba.webapp.scp.directory" ) );
@@ -121,8 +115,9 @@ must go back to the login page--%>
     scp.setRemoteDataStoreOs( bundle.getString( "net.sourceforge.symba.webapp.scp.remote.data.store.os" ) );
     if ( scp.getRemoteDataStoreOs().equals( "dos" ) ) {
         if ( bundle.getString( "net.sourceforge.symba.webapp.scp.lsid.colon.replacement" ) != null &&
-                bundle.getString( "net.sourceforge.symba.webapp.scp.lsid.colon.replacement" ).length() > 0 ) {
-            scp.setLsidColonReplacement( bundle.getString( "net.sourceforge.symba.webapp.scp.lsid.colon.replacement" ) );
+             bundle.getString( "net.sourceforge.symba.webapp.scp.lsid.colon.replacement" ).length() > 0 ) {
+            scp.setLsidColonReplacement(
+                    bundle.getString( "net.sourceforge.symba.webapp.scp.lsid.colon.replacement" ) );
         } else {
             scp.setLsidColonReplacement( "__" ); // provide a default value.
         }
@@ -131,21 +126,11 @@ must go back to the login page--%>
     }
 
     // now get the counts
-    try {
-        counter.setNumberOfExperiments( validUser.getReService().countLatestExperiments() );
-        counter.setNumberOfDataFiles( validUser.getReService().countData() );
-    } catch ( RealizableEntityServiceException e ) {
-        out.println(
-                "There was an error counting the number of experiments and data files. For help, please send this message to " );
-        out.println( application.getAttribute( "helpEmail" ) );
-        System.out.println( e.getMessage() );
-        e.printStackTrace();
-    }
-
-    if ( !errorFound ) {
+    counter.setNumberOfExperiments( validUser.getSymbaEntityService().countExperiments() );
+    counter.setNumberOfDataFiles( validUser.getSymbaEntityService().countData() );
 %>
 
-<%-- 
+<%--
   Redirect to the main page or to the original URL, if
   invoked as a result of a access attempt to a protected
   page.
@@ -158,7 +143,3 @@ must go back to the login page--%>
         <c:redirect url="home.jsp"/>
     </c:otherwise>
 </c:choose>
-
-<%
-    }
-%>

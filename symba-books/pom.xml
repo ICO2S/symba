@@ -4,14 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>net.sourceforge.symba</groupId>
-        <artifactId>SyMBA</artifactId>
-        <version>8.05-SNAPSHOT</version>
+        <artifactId>symba</artifactId>
+        <version>8.08-alpha</version>
     </parent>
-    <groupId>net.sourceforge.symba</groupId>
     <artifactId>symba-books</artifactId>
     <packaging>jar</packaging>
-    <name>SyMBA Book Documentation</name>
-    <version>8.05-SNAPSHOT</version>
+    <name>SyMBA Documentation</name>
     <build>
         <defaultGoal>doxia:render-books</defaultGoal>
         <plugins>
@@ -31,8 +29,8 @@
                 <configuration>
                     <books>
                         <book>
-                            <directory>src/books/apt/general-information</directory>
-                            <descriptor>src/books/general-information.xml</descriptor>
+                            <directory>src/books/apt/deviations-from-fuge</directory>
+                            <descriptor>src/books/deviations-from-fuge.xml</descriptor>
                             <formats>
                                 <!--<format>-->
                                     <!--<id>latex</id>-->
@@ -51,6 +49,24 @@
                         <book>
                             <directory>src/books/apt/installation</directory>
                             <descriptor>src/books/installation.xml</descriptor>
+                            <formats>
+                                <!--<format>-->
+                                    <!--<id>latex</id>-->
+                                <!--</format>-->
+                                <!--<format>-->
+                                    <!--<id>rtf</id>-->
+                                <!--</format>-->
+                                <format>
+                                    <id>xdoc</id>
+                                </format>
+                                <format>
+                                    <id>pdf</id>
+                                </format>
+                            </formats>
+                        </book>
+                        <book>
+                            <directory>src/books/apt/general-information</directory>
+                            <descriptor>src/books/general-information.xml</descriptor>
                             <formats>
                                 <!--<format>-->
                                     <!--<id>latex</id>-->

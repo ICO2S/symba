@@ -32,7 +32,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
 

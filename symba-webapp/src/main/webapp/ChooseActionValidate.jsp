@@ -51,7 +51,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 // take what is already there, and add only those fields that have not been made yet
                 DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores()
                         .get( number );
-                if (temp == null) {
+                if ( temp == null ) {
                     temp = new DatafileSpecificMetadataStore();
                 }
                 String[] parsedStrings = request.getParameter( parameterName ).split( "::" );
@@ -66,7 +66,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 // take what is already there, and add only those fields that have not been made yet
                 DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores()
                         .get( number );
-                if (temp == null) {
+                if ( temp == null ) {
                     temp = new DatafileSpecificMetadataStore();
                 }
                 String[] parsedStrings = request.getParameter( parameterName ).split( "::" );
@@ -78,7 +78,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             }
         }
     } else if ( request.getParameter( "go2confirm" ) != null &&
-            request.getParameter( "go2confirm" ).trim().equals( "true" ) ) { %>
+                request.getParameter( "go2confirm" ).trim().equals( "true" ) ) { %>
 <c:redirect url="confirm.jsp"/>
 <% } %>
 

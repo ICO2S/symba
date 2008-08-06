@@ -17,11 +17,9 @@ in this distribution, please see LICENSE.txt
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@ page import="fugeOM.Common.Protocol.*" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
-<%@ page import="net.sourceforge.symba.util.conversion.helper.CisbanDescribableHelper" %>
-<%@ page import="net.sourceforge.symba.util.conversion.helper.CisbanIdentifiableHelper" %>
-<%@ page import="net.sourceforge.symba.util.conversion.helper.CisbanProtocolCollectionHelper" %>
+<%@ page import="net.sourceforge.fuge.common.protocol.*" %>
+
+<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.helper.ProtocolCollectionMappingHelper" %>
 <%@ page import="net.sourceforge.symba.webapp.util.*" %>
 <%@ page import="java.util.*" %>
 
@@ -38,7 +36,7 @@ in this distribution, please see LICENSE.txt
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
 <p>
@@ -97,7 +95,7 @@ in this distribution, please see LICENSE.txt
                 out.println( currentStore.getAssayActionSummary().getChosenActionName() + ". " );
                 out.println( "</strong><br/>" );
                 if ( currentStore.getOneLevelUpActionSummary() != null &&
-                        currentStore.getOneLevelUpActionSummary().getChosenActionName() != null) {
+                     currentStore.getOneLevelUpActionSummary().getChosenActionName() != null ) {
                     out.println( "<br/>" );
                     out.println( "You have already chosen the following parent of the above protocol: " );
                     out.println( "<strong>" );
@@ -135,8 +133,7 @@ in this distribution, please see LICENSE.txt
             // have output/input files.
 
             // Start by identifying all protocols that live underneath the top-level protocol
-            CisbanProtocolCollectionHelper cpc = new CisbanProtocolCollectionHelper(
-            );
+            ProtocolCollectionMappingHelper cpc = new ProtocolCollectionMappingHelper();
 
             // loop through these protocols. If they are actions of the top-level protocol, put them into the select
             // menu for selectAmongAssayActions. If they are actions one level below those of the top-level protocol, put them in
@@ -144,31 +141,33 @@ in this distribution, please see LICENSE.txt
 //        out.println(
 //                "Searching for child protocols for top level protocol " + symbaFormSessionBean.getTopLevelProtocolEndurant() +
 //                        " with name " + symbaFormSessionBean.getTopLevelProtocolName() + "<br/>" );
-            try {
-                GenericProtocol topLevelProtocol = ( GenericProtocol ) validUser.getReService()
-                        .findLatestByEndurant( symbaFormSessionBean.getTopLevelProtocolEndurant() );
-                Set<Protocol> associatedProtocols = cpc.getChildProtocols( topLevelProtocol, null );
+//            try {
+            GenericProtocol topLevelProtocol = ( GenericProtocol ) validUser.getSymbaEntityService()
+                    .getLatestByEndurant( symbaFormSessionBean.getTopLevelProtocolEndurant() );
+            Set<Protocol> associatedProtocols = cpc.getChildProtocols( topLevelProtocol, null );
 
-                // always add the top-level protocol, as the getChildProtocols method does not do this.
-                associatedProtocols.add( topLevelProtocol );
+            // always add the top-level protocol, as the getChildProtocols method does not do this.
+            associatedProtocols.add( topLevelProtocol );
 
 //        out.println( "Number of associated protocols: " + associatedProtocols.size() + "<br/>" );
 
-                for ( Protocol protocol : associatedProtocols ) {
-                    GenericProtocol gp = ( GenericProtocol ) protocol;
+            for ( Protocol protocol : associatedProtocols ) {
+                GenericProtocol gp = ( GenericProtocol ) protocol;
 
 //            out.println(
 //                    "Associated protocol: " + gp.getEndurant().getIdentifier() +
 //                            " with name " + gp.getName() + "<br/>" );
 
-                    // unchecked cast warning provided by javac when using generics in Lists/Sets and
-                    // casting from Object, even though runtime can handle this.
-                    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
-                    @SuppressWarnings( "unchecked" )
-                    Set<GenericAction> genericActions = ( Set<GenericAction> ) gp.getGenericActions();
+                // unchecked cast warning provided by javac when using generics in Lists/Sets and
+                // casting from Object, even though runtime can handle this.
+                // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+                @SuppressWarnings( "unchecked" )
+                Set<Action> actions = ( Set<Action> ) gp.getActions();
 
-                    for ( int count = 1; count <= genericActions.size(); count++ ) {
-                        for ( GenericAction genericAction : genericActions ) {
+                for ( int count = 1; count <= actions.size(); count++ ) {
+                    for ( Action action : actions ) {
+                        if ( action instanceof GenericAction ) {
+                            GenericAction genericAction = ( GenericAction ) action;
                             if ( count == genericAction.getActionOrdinal() ) {
                                 // If it is an action of the top-level protocol, print out the name in the
                                 // selectAmongAssayActions menu. If it is such an action, then the containing
@@ -180,25 +179,30 @@ in this distribution, please see LICENSE.txt
                                     if ( modified.startsWith( "Step Containing the" ) ) {
                                         modified = modified.substring( 20 );
                                     }
-                                    String actionOwningProtocolEndurant = genericAction.getGenProtocolRef()
+                                    String actionOwningProtocolEndurant = genericAction.getChildProtocol()
                                             .getEndurant()
                                             .getIdentifier();
                                     String inputStartValue =
                                             "<option value= \"" + genericAction.getEndurant().getIdentifier() + "::" +
-                                                    genericAction.getName() + "::" + actionOwningProtocolEndurant +
-                                                    "::" +
-                                                    genericAction.getGenProtocolRef().getName() + "\"";
+                                            genericAction.getName() + "::" + actionOwningProtocolEndurant +
+                                            "::" +
+                                            genericAction.getChildProtocol().getName() + "\"";
                                     // could match either the assay action summary or the one level up summary, depending
                                     // on the type of investigation
-                                    if ( ( currentStore.getAssayActionSummary().getChosenChildProtocolEndurant() != null
-                                            && currentStore.getAssayActionSummary()
+                                    if ( ( currentStore.getAssayActionSummary().getChosenChildProtocolEndurant() !=
+                                           null
+                                           && currentStore.getAssayActionSummary()
                                             .getChosenChildProtocolEndurant()
                                             .equals( actionOwningProtocolEndurant ) ) ||
-                                            ( currentStore.getOneLevelUpActionSummary()
-                                                    .getChosenChildProtocolEndurant() != null &&
-                                                    currentStore.getOneLevelUpActionSummary()
-                                                            .getChosenChildProtocolEndurant()
-                                                            .equals( actionOwningProtocolEndurant ) ) ) {
+                                                                                      ( currentStore
+                                                                                              .getOneLevelUpActionSummary()
+                                                                                              .getChosenChildProtocolEndurant() !=
+                                                                                                                                null &&
+                                                                                                                                     currentStore
+                                                                                                                                             .getOneLevelUpActionSummary()
+                                                                                                                                             .getChosenChildProtocolEndurant()
+                                                                                                                                             .equals(
+                                                                                                                                                     actionOwningProtocolEndurant ) ) ) {
                                         inputStartValue += " selected=\"selected\"";
                                     }
                                     directChildrenOfTopLevel.add(
@@ -207,25 +211,30 @@ in this distribution, please see LICENSE.txt
                                 // Otherwise, print out the name in the selectAmongOneLevelUpActions menu.
                                 // Currently only works for Actions that are no more than one removed from the top-level actions.
                                 else {
-                                    String actionOwningProtocolEndurant = genericAction.getGenProtocolRef()
+                                    String actionOwningProtocolEndurant = genericAction.getChildProtocol()
                                             .getEndurant()
                                             .getIdentifier();
                                     String inputStartValue =
                                             "<option value= \"" + genericAction.getEndurant().getIdentifier() + "::" +
-                                                    genericAction.getName() + "::" + actionOwningProtocolEndurant +
-                                                    "::" +
-                                                    genericAction.getGenProtocolRef().getName() + "\"";
+                                            genericAction.getName() + "::" + actionOwningProtocolEndurant +
+                                            "::" +
+                                            genericAction.getChildProtocol().getName() + "\"";
                                     // could match either the assay action summary or the one level up summary, depending
                                     // on the type of investigation
-                                    if ( ( currentStore.getAssayActionSummary().getChosenChildProtocolEndurant() != null
-                                            && currentStore.getAssayActionSummary()
+                                    if ( ( currentStore.getAssayActionSummary().getChosenChildProtocolEndurant() !=
+                                           null
+                                           && currentStore.getAssayActionSummary()
                                             .getChosenChildProtocolEndurant()
                                             .equals( actionOwningProtocolEndurant ) ) ||
-                                            ( currentStore.getOneLevelUpActionSummary()
-                                                    .getChosenChildProtocolEndurant() != null &&
-                                                    currentStore.getOneLevelUpActionSummary()
-                                                            .getChosenChildProtocolEndurant()
-                                                            .equals( actionOwningProtocolEndurant ) ) ) {
+                                                                                      ( currentStore
+                                                                                              .getOneLevelUpActionSummary()
+                                                                                              .getChosenChildProtocolEndurant() !=
+                                                                                                                                null &&
+                                                                                                                                     currentStore
+                                                                                                                                             .getOneLevelUpActionSummary()
+                                                                                                                                             .getChosenChildProtocolEndurant()
+                                                                                                                                             .equals(
+                                                                                                                                                     actionOwningProtocolEndurant ) ) ) {
                                         inputStartValue += " selected=\"selected\"";
                                     }
                                     grandchildrenOfTopLevel.add(
@@ -236,27 +245,64 @@ in this distribution, please see LICENSE.txt
                         }
                     }
                 }
+            }
 
-                // now print out both select menus, where present. If there are grandchildren of the top level protocol,
-                // then these are the assays. Otherwise the direct children of the top-level protocol are the assays
+            // now print out both select menus, where present. If there are grandchildren of the top level protocol,
+            // then these are the assays. Otherwise the direct children of the top-level protocol are the assays
 
-                boolean hasLabel = false;
-                out.println( "<li>" );
-                out.println( currentStore.getOldFilename() + ": <br/>" );
-                String selectValue = selectAmongAssayActions;
-                if ( !grandchildrenOfTopLevel.isEmpty() ) {
-                    selectValue = selectAmongOneLevelUpActions;
+            boolean hasLabel = false;
+            out.println( "<li>" );
+            out.println( currentStore.getOldFilename() + ": <br/>" );
+            if ( currentStore.getFilenameToLink() != null ) {
+                out.println( "Reminder: this is a file on the same machine as the SyMBA data store. " +
+                             currentStore.getOldFilename() + ": <br/>" );
+            }
+            String selectValue = selectAmongAssayActions;
+            if ( !grandchildrenOfTopLevel.isEmpty() ) {
+                selectValue = selectAmongOneLevelUpActions;
+            }
+            for ( String selectChoice : directChildrenOfTopLevel ) {
+                if ( !hasLabel ) {
+                    out.println(
+                            "<label for=\"" + selectValue +
+                            "\">Please select the protocol that produced your data:</label>" );
+                    out.println( "<!-- Top Level -->" );
+                    out.println(
+                            "<select id=\"" + selectValue + "\" name=\"" +
+                            selectValue +
+                            "\">" );
+                    hasLabel = true;
                 }
-                for ( String selectChoice : directChildrenOfTopLevel ) {
+                out.println( selectChoice );
+            }
+            // ensure that the select menu has been printed before closing it
+            if ( hasLabel ) {
+                out.println( "</select>" );
+                out.println( "<br/>" );
+                out.println( "</li>" );
+            } else {
+                out.flush();
+                out.println(
+                        "<p class=\"bigger\">There has been an error listing all of the factors important to your data " +
+                        "file. Please contact the <a href=\"mailto:helpdesk@cisban.ac.uk\">helpdesk</a>, " +
+                        "letting us know what workflow you were trying to associate with your data file, and that it" +
+                        "had something to do with the top-level pull-down menu</p>" );
+            }
+
+            // Possible parents of the assay that aren't the top-level protocol
+            hasLabel = false;
+            if ( !grandchildrenOfTopLevel.isEmpty() ) {
+                out.println( "<li>" );
+                for ( String selectChoice : grandchildrenOfTopLevel ) {
                     if ( !hasLabel ) {
                         out.println(
-                                "<label for=\"" + selectValue +
-                                        "\">Please select the protocol that produced your data:</label>" );
-                        out.println( "<!-- Top Level -->" );
+                                "<label for=\"" + selectAmongAssayActions +
+                                "\">Please select the child protocol of the protocol above that produced your data:" +
+                                "</label>" );
+                        out.println( "<!-- Lower Level -->" );
                         out.println(
-                                "<select id=\"" + selectValue + "\" name=\"" +
-                                        selectValue +
-                                        "\">" );
+                                "<select id=\"" + selectAmongAssayActions + "\" name=\"" +
+                                selectAmongAssayActions + "\">" );
                         hasLabel = true;
                     }
                     out.println( selectChoice );
@@ -270,49 +316,17 @@ in this distribution, please see LICENSE.txt
                     out.flush();
                     out.println(
                             "<p class=\"bigger\">There has been an error listing all of the factors important to your data " +
-                                    "file. Please contact the <a href=\"mailto:helpdesk@cisban.ac.uk\">helpdesk</a>, " +
-                                    "letting us know what workflow you were trying to associate with your data file, and that it" +
-                                    "had something to do with the top-level pull-down menu</p>" );
+                            "file. Please contact the <a href=\"mailto:helpdesk@cisban.ac.uk\">helpdesk</a>, " +
+                            "letting us know what workflow you were trying to associate with your data file, and that it" +
+                            "had something to do with the lower-level pull-down menu</p>" );
                 }
-
-                // Possible parents of the assay that aren't the top-level protocol
-                hasLabel = false;
-                if ( !grandchildrenOfTopLevel.isEmpty() ) {
-                    out.println( "<li>" );
-                    for ( String selectChoice : grandchildrenOfTopLevel ) {
-                        if ( !hasLabel ) {
-                            out.println(
-                                    "<label for=\"" + selectAmongAssayActions +
-                                            "\">Please select the child protocol of the protocol above that produced your data:" +
-                                            "</label>" );
-                            out.println( "<!-- Lower Level -->" );
-                            out.println(
-                                    "<select id=\"" + selectAmongAssayActions + "\" name=\"" +
-                                            selectAmongAssayActions + "\">" );
-                            hasLabel = true;
-                        }
-                        out.println( selectChoice );
-                    }
-                    // ensure that the select menu has been printed before closing it
-                    if ( hasLabel ) {
-                        out.println( "</select>" );
-                        out.println( "<br/>" );
-                        out.println( "</li>" );
-                    } else {
-                        out.flush();
-                        out.println(
-                                "<p class=\"bigger\">There has been an error listing all of the factors important to your data " +
-                                        "file. Please contact the <a href=\"mailto:helpdesk@cisban.ac.uk\">helpdesk</a>, " +
-                                        "letting us know what workflow you were trying to associate with your data file, and that it" +
-                                        "had something to do with the lower-level pull-down menu</p>" );
-                    }
-                }
-            } catch ( RealizableEntityServiceException e ) {
-                out.println( "Error selecting your protocol options. Please send this message to" );
-                out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
-                System.out.println( e.getMessage() );
-                e.printStackTrace();
             }
+//            } catch ( RealizableEntityServiceException e ) {
+//                out.println( "Error selecting your protocol options. Please send this message to" );
+//                out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
+//                System.out.println( e.getMessage() );
+//                e.printStackTrace();
+//            }
         }
     }
 %>

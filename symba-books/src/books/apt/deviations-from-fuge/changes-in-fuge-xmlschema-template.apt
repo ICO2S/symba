@@ -1,0 +1,25 @@
+ ---
+ Changes to the FuGE XML Schema Velocity Template
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+Template Changes
+
+  Within the <<<symba-mda>>> subproject are custom Velocity cartridge templates taken from the FuGE XSD STK. These
+  templates are used to generate the correct FuGE XSD. The list below details the changes made to this template
+  for SyMBA.
+
+  * <<.replaceAll('net.sourceforge.fuge','FuGE')>> Any time where the fullyQualifiedClassName variable was used
+    in the template, the replaceAll method shown here was added. In the creation of both the EJB3 and Hibernate
+    STKs, the FuGE package name within the FuGE-OM was replaced with "net.sourceforge.fuge" so that more common
+    Java package naming schemes could be used. This had the knock-on effect of changing the way the XSD package
+    names were shown. In order to bring a closer equivalence to the SyMBA-generated XSD and the official FuGE
+    XSD, the following replacement was done.
+
+  * Line 72: Replace <<<#if ($attribute.hasExactStereotype("XmlAttribute")==false)>>> with
+    <<<#if ($attribute.hasExactStereotype("XmlAttribute")==false && !($attribute.name  == "id"))>>>.
+    This is important when building a database with AndroMDA as well as the XML Schema. Otherwise,
+    when generating a database it decides it needs a unique key on every attribute. Thanks to Andy Jones for helping
+    with this bug. If just building the XML Schema, this problem doesn't crop up.

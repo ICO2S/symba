@@ -1,16 +1,14 @@
 package net.sourceforge.symba.webapp.util;
 
-import fugeOM.Collection.FuGE;
-import fugeOM.Common.Ontology.OntologyTerm;
-import fugeOM.Common.Protocol.GenericParameter;
-import fugeOM.service.RealizableEntityService;
-import fugeOM.service.RealizableEntityServiceException;
-
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sourceforge.fuge.collection.FuGE;
+import net.sourceforge.fuge.common.ontology.OntologyTerm;
+import net.sourceforge.symba.service.SymbaEntityService;
 
 /**
  * This file is part of SyMBA.
@@ -185,8 +183,7 @@ public class SymbaFormSessionBean implements Serializable {
         this.fugeIdentifier = fugeIdentifier;
     }
 
-    public void displayHtml( JspWriter out,
-                             RealizableEntityService reService ) throws IOException, RealizableEntityServiceException {
+    public void displayHtml( JspWriter out, SymbaEntityService symbaEntityService ) throws IOException {
         if ( fuGE == null ) {
             // the user has created a new experiment
             out.println( "<p class=\"bigger\">" );
@@ -258,7 +255,7 @@ public class SymbaFormSessionBean implements Serializable {
             if ( info.getFileFormat() != null ) {
                 out.println( "<li>You have specified a file format for the data file: " );
                 out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                OntologyTerm ot = ( OntologyTerm ) reService.findLatestByEndurant( info.getFileFormat() );
+                OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( info.getFileFormat() );
                 out.println( ot.getTerm() );
                 out.println( "</a>" );
                 out.println( "</li>" );
@@ -270,7 +267,7 @@ public class SymbaFormSessionBean implements Serializable {
 
                         out.println( "<li>" );
                         out.println(
-                                ( ( GenericParameter ) reService.findLatestByEndurant( parameterEndurant ) ).getName() +
+                                ( symbaEntityService.getLatestByEndurant( parameterEndurant ) ).getName() +
                                         ": " );
                         out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
                         out.println( value.getParameterAndAtomics().get( parameterEndurant ) );
@@ -312,7 +309,7 @@ public class SymbaFormSessionBean implements Serializable {
                         for ( String paramValue : value.getParameterAndTerms().values() ) {
                             out.println( "<li><a class=\"bigger\" href=\"metaData.jsp\">" );
                             out.println(
-                                    ( ( OntologyTerm ) reService.findLatestByEndurant( paramValue ) ).getTerm() );
+                                    ( ( OntologyTerm ) symbaEntityService.getLatestByEndurant( paramValue ) ).getTerm() );
                             out.println( "</a>" );
                             out.println( "</li>" );
                         }
@@ -326,7 +323,7 @@ public class SymbaFormSessionBean implements Serializable {
 
                             out.println( "<li>" );
                             out.println(
-                                    ( ( GenericParameter ) reService.findLatestByEndurant( parameterEndurant ) ).getName() +
+                                    ( symbaEntityService.getLatestByEndurant( parameterEndurant ) ).getName() +
                                             ": " );
                             out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
                             out.println( value.getParameterAndAtomics().get( parameterEndurant ) );
@@ -379,7 +376,7 @@ public class SymbaFormSessionBean implements Serializable {
                 if ( info.getMaterialFactorsStore().getMaterialType() != null ) {
                     out.println( "<li>Material Type: " );
                     out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                    OntologyTerm ot = ( OntologyTerm ) reService.findLatestByEndurant( info.getMaterialFactorsStore().getMaterialType() );
+                    OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( info.getMaterialFactorsStore().getMaterialType() );
                     out.println( ot.getTerm() );
                     out.println( "</a>" );
                     out.println( "</li>" );
@@ -399,20 +396,43 @@ public class SymbaFormSessionBean implements Serializable {
                     out.println( "</ol>" );
                     out.println( "</li>" );
                 }
-                if ( info.getMaterialFactorsStore().getCharacteristics() != null &&
-                        !info.getMaterialFactorsStore().getCharacteristics().isEmpty() ) {
-                    out.println( "<li>General Characteristics: " );
-                    out.println( "<ol>" );
-                    for ( String characteristics : info.getMaterialFactorsStore().getCharacteristics() ) {
-                        out.println( "<li>" );
-                        out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                        OntologyTerm ot = ( OntologyTerm ) reService.findLatestByEndurant( characteristics );
-                        out.println( ot.getTerm() );
-                        out.println( "</a>" );
-                        out.println( "</li>" );
+                if ((info.getMaterialFactorsStore().getCharacteristics() != null &&
+                        !info.getMaterialFactorsStore().getCharacteristics().isEmpty()) ||
+                        info.getMaterialFactorsStore().getMultipleCharacteristics() != null &&
+                                !info.getMaterialFactorsStore().getMultipleCharacteristics().isEmpty()) {
+                    out.println("<li>UsedSpecimen: ");
+                    out.println("<ol>");
+                }
+                if (info.getMaterialFactorsStore().getCharacteristics() != null &&
+                        !info.getMaterialFactorsStore().getCharacteristics().isEmpty()) {
+                    for (String mfbKey : info.getMaterialFactorsStore().getCharacteristics().keySet()) {
+                        out.println("<li>");
+                        out.println("<a class=\"bigger\" href=\"metaData.jsp\">");
+                        OntologyTerm ot = (OntologyTerm) symbaEntityService.getLatestByEndurant(info.getMaterialFactorsStore().getCharacteristics().get(mfbKey));
+                        out.println(ot.getTerm());
+                        out.println("</a>");
+                        out.println("</li>");
                     }
-                    out.println( "</ol>" );
-                    out.println( "</li>" );
+                }
+                if (info.getMaterialFactorsStore().getMultipleCharacteristics() != null &&
+                        !info.getMaterialFactorsStore().getMultipleCharacteristics().isEmpty()) {
+                    for (String mfbKey : info.getMaterialFactorsStore().getMultipleCharacteristics().keySet()) {
+                        for (String currentValue : info.getMaterialFactorsStore().getMultipleCharacteristics().get(mfbKey)) {
+                            out.println("<li>");
+                            out.println("<a class=\"bigger\" href=\"metaData.jsp\">");
+                            OntologyTerm ot = (OntologyTerm) symbaEntityService.getLatestByEndurant(currentValue);
+                            out.println(ot.getTerm());
+                            out.println("</a>");
+                            out.println("</li>");
+                        }
+                    }
+                }
+                if ((info.getMaterialFactorsStore().getCharacteristics() != null &&
+                        !info.getMaterialFactorsStore().getCharacteristics().isEmpty()) ||
+                        info.getMaterialFactorsStore().getMultipleCharacteristics() != null &&
+                                !info.getMaterialFactorsStore().getMultipleCharacteristics().isEmpty()) {
+                    out.println("</ol>");
+                    out.println("</li>");
                 }
                 out.println( "</ul>" );
             }

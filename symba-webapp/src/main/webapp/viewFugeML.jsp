@@ -13,15 +13,15 @@ in this distribution, please see LICENSE.txt
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
-<%@ page import="fugeOM.Collection.FuGE" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+<%@ page import="net.sourceforge.fuge.collection.FuGE" %>
+
 <%@ page import="org.xml.sax.SAXException" %>
-<%@ page import="net.sourceforge.symba.util.conversion.helper.CisbanFuGEHelper" %>
-<%@ page import="net.sourceforge.symba.util.conversion.xml.XMLMarshaler" %>
 <%@ page import="javax.xml.bind.JAXBException" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.io.StringWriter" %>
 <%@ page import="java.net.URISyntaxException" %>
+<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.xml.XMLMarshaler" %>
+<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.helper.FuGEMappingHelper" %>
 
 <jsp:useBean id="validUser" class="net.sourceforge.symba.webapp.util.PersonBean" scope="session"/>
 
@@ -33,16 +33,17 @@ in this distribution, please see LICENSE.txt
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
 
     <%
-        String sf = config.getServletContext().getRealPath( "schemaFiles/FuGE_M3_test_13_07_2006.xsd" );
-        CisbanFuGEHelper cf = new CisbanFuGEHelper();
+        String sf = config.getServletContext().getRealPath( "schemaFiles/xmlSchema.xsd" );
+        FuGEMappingHelper fugeMappingHelper = new FuGEMappingHelper();
+        // todo test latest version
+        FuGE exp = ( FuGE ) validUser.getSymbaEntityService().getLatestByEndurant( request.getParameter( "endurant" ) );
+//            FuGE exp = fugeMappingHelper.getLatestVersion( request.getParameter( "endurant" ) );
         try {
-            FuGE exp = cf.getLatestVersion( request.getParameter( "endurant" ) );
-
             XMLMarshaler xmlMarsh = new XMLMarshaler( sf );
             StringWriter stringOut = new StringWriter();
             PrintWriter pw = new PrintWriter( stringOut );
@@ -53,12 +54,6 @@ in this distribution, please see LICENSE.txt
             out.println( "<pre><code>" );
             out.print( s );
             out.println( "</code></pre>" );
-        } catch ( RealizableEntityServiceException e ) {
-            out.println(
-                    "There was an error retrieving the latest version of the experiment. For help, please send this message to " );
-            out.println( application.getAttribute( "helpEmail" ) );
-            System.out.println( e.getMessage() );
-            e.printStackTrace();
         } catch ( JAXBException e ) {
             out.println( "There was an error creating the XML. For help, please send this message to " );
             out.println( application.getAttribute( "helpEmail" ) );

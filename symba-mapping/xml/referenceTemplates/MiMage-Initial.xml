@@ -1,0 +1,86 @@
+<FuGE xmlns="http://fuge.sourceforge.net/fuge/1.0">
+
+    <ProtocolCollection>
+
+        <GenericProtocol
+                name="Real-Time PCR Protocol (Component of MiMage Investigation)"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:7c722b60-6e6a-4f4e-a473-36f7925bb0d2"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:89feec0d-db1f-407c-a243-0f866167af21">
+        </GenericProtocol>
+
+        <GenericProtocol name="MiMage Investigation"
+                         Endurant_ref="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:38fbd24b-57ee-43db-bea9-1b69de097713"
+                         identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:0d12e43d-2984-4792-8362-c2869941a50e">
+            <GenericAction
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericActionEndurant:0bbd97ec-d5ac-4fe7-9474-6b3209344402"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:480cf320-7c21-4c72-95d3-2927d2b545ce"
+                    name="Step Containing the Real-Time PCR Protocol"
+                    actionOrdinal="1"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:89feec0d-db1f-407c-a243-0f866167af21">
+            </GenericAction>
+        </GenericProtocol>
+
+        <GenericProtocolApplication
+                Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:89feec0d-db1f-407c-a243-0f866167af21"
+                name="Parameters Associated with Creating the Data File Dummy for Real-Time PCR Protocol (Component of MiMage Investigation)"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:8db0a1bd-2c91-4a61-87e0-83ddbdbc5582"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:eb3ce55e-9703-4c7d-8d17-38e1b24f153a">
+            <_descriptions>
+                <Description
+                        text="TextBox::ProtocolDescription::Please describe the specifics of your Real-Time PCR protocol"/>
+            </_descriptions>
+            <!--
+                 * REQUIRED: percentage senescence (Integer, percent = unit). FuGE = AtomicParameter
+
+                 * REQUIRED: Actual age (Integer, unit = ontology ( cm, sec, min, hour day, year)). FuGE = AtomicParameter
+
+                 * OPTIONAL: Average lifespan, if known ( Same units as Actual Age). FuGE = AtomicParameter
+
+            -->
+        </GenericProtocolApplication>
+    </ProtocolCollection>
+
+    <MaterialCollection>
+        <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
+        <GenericMaterial
+                name="Material Characteristics Dummy Noname for Real-Time PCR Protocol (Component of MiMage Investigation)"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:2020f87a-e130-4abe-a091-fde5deaac670"
+                identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d2c32106-60f4-40ff-91fc-a8bef5f90392">
+            <_descriptions>
+                <Description text="OntologyReplacement::species::Help::this means nothing"/>
+                
+                <Description text="OntologyReplacement::cell line::Help::I need help"/>
+                <Description text="OntologyReplacement::genetic _characteristics"/>
+                <Description text="OntologyReplacement::genetic variation"/>
+                <!-- after modification here run unmarshal command -->
+                <Description text="OntologyReplacement::developmental stage"/>
+                <Description text="OntologyReplacement::subject label"/>
+                <Description text="OntologyReplacement::subject identifier type"/>
+                <Description text="OntologyReplacement::subject identifier value"/>
+                <Description text="OntologyReplacement::associated subject details"/>
+                <Description text="OntologyReplacement::preparation protocol"/>
+                <Description text="OntologyReplacement::preparation date"/>
+            </_descriptions>
+            <_characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:b87ca6fc-0018-4817-bb2c-8cf3b7a1904e"/>
+        </GenericMaterial>
+    </MaterialCollection>
+    <OntologyCollection>
+        <OntologyIndividual name="OntologyIndividual Dummy" termAccession="not applicable" term="none"
+                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:3235c7ac-a452-4593-9849-0a17511a37dc"
+                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:28619283-9046-4b21-b029-162d752b50be"
+                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:b87ca6fc-0018-4817-bb2c-8cf3b7a1904e"/>
+
+
+        <OntologySource ontologyURI="http://www.mimage.org"
+                        name="specimen"
+                        Endurant_ref="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:7c68dac0-ed16-4ee0-877f-1b9184a2f054"
+                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:3235c7ac-a452-4593-9849-0a17511a37dc">
+            <_descriptions>
+                <Description text="Instructions: If there are multiple specimen, please choose all that apply."/>
+            </_descriptions>
+        </OntologySource>
+    </OntologyCollection>
+</FuGE>
+
+<!--        //duplicat the whole _characteristics element and ontologyinidual/onotologysource-pair to extend to other -->

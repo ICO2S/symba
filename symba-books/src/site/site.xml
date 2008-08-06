@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="SyMBA">
+    <version position="right"/>
     <bannerLeft>
         <name>SyMBA</name>
         <src>images/lion.jpg</src>
         <href>http://symba.sourceforge.net/</href>
     </bannerLeft>
     <bannerRight>
-        <src>images/symba-text.png</src>
-        <href>http://symba.sourceforge.net/</href>
+    <src>images/symba-text.png</src>
+    <href>http://symba.sourceforge.net/</href>
     </bannerRight>
     <body>
         <links>
-            <item name="SyMBA Home" href="http://symba.sourceforge.net"/>
+            <item name="SyMBA Project Home" href="http://symba.sourceforge.net"/>
+            <item name="FuGE Home" href="http://fuge.sourceforge.net"/>
         </links>
 
         <menu name="SyMBA Information">
-            <item name="SyMBA Home" href="../index.html"/>
+            <item name="SyMBA Project Home" href="http://symba.sourceforge.net"/>
             <item name="General Information" href="general-information/index.html"/>
-            <item name="Installation and Development" href="installation/index.html"/>
-            <item name="Test Installation Information" href="../details.html"/>
-            <item name="Future Plans" href="../plans.html"/>
+            <item name="Installation" href="installation/index.html"/>
+            <item name="Deviations from the FuGE Hibernate STK" href="deviations-from-fuge/index.html"/>
+            <!--<item name="Future Plans" href="plans.html"/>-->
         </menu>
     </body>
 </project>

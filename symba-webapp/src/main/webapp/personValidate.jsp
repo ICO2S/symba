@@ -13,8 +13,8 @@ in this distribution, please see LICENSE.txt
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
-<%@ page import="net.sourceforge.symba.webapp.util.LoadPerson" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.LoadPerson" %>
+
 
 <!-- this page is soly used for the logic flow. There is nothing that can be displayed in this page -->
 
@@ -31,37 +31,17 @@ forms field id's match EXACTLY the beans fields. -->
 <jsp:setProperty name="validUser" property="*"/>
 
 
-<!-- here begins some scripting, cant do this stuff within JSTL-->
 <%
 
-    if ( validUser.getReService() != null ) {
-        //out.println("its not null");
-    }
     //create a new LoadPerson object
-    LoadPerson lp = new LoadPerson( validUser.getReService() );
-    //lp.loadInDB(pb);
+    LoadPerson lp = new LoadPerson( validUser.getEntityService() );
+
     //and use the LoadPerson objects method to load/update the information
     //into the database
-    System.out.println( "VALID USER EMAIL " + validUser.getEmail() );
-    boolean errorFound = false;
-    try {
-        session.setAttribute( "validUser", lp.loadInDB( validUser ) );
-    } catch ( RealizableEntityServiceException e ) {
-        errorFound = true;
-        out.println( "There was an error talking to the database. For help, please send this message to " );
-        out.println( application.getAttribute( "helpEmail" ) );
-        System.out.println( e.getMessage() );
-        e.printStackTrace();
-    }
+    session.setAttribute( "validUser", lp.loadInDB( validUser ) );
 
-    // don't redirect if there has been an exception
-    if ( !errorFound ) {
 %>
 <c:redirect url="detailsChanged.jsp">
     <c:param name="msg"
              value="YOU HAVE UPDATED YOUR DETAILS"/>
 </c:redirect>
-
-<%
-    }
-%>

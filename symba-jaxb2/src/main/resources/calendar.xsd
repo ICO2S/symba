@@ -10,8 +10,8 @@
         <xs:appinfo>
             <jaxb:globalBindings>
                 <jaxb:javaType name="java.util.Date" xmlType="xs:date"
-                               parseMethod="fugeOM.util.DateAdapter.parseDate"
-                               printMethod="fugeOM.util.DateAdapter.printDate"
+                               parseMethod="net.sourceforge.fuge.util.DateAdapter.parseDate"
+                               printMethod="net.sourceforge.fuge.util.DateAdapter.printDate"
                         />
             </jaxb:globalBindings>
         </xs:appinfo>

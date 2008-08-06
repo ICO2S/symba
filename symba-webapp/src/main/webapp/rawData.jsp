@@ -10,9 +10,9 @@ in this distribution, please see LICENSE.txt
 <!-- $Author$-->
 <!-- $HeadURL$-->
 
-<%@ page import="fugeOM.Common.Protocol.*" %>
+<%@ page import="net.sourceforge.fuge.common.protocol.*" %>
 <%@ page import="java.util.*" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -37,7 +37,7 @@ in this distribution, please see LICENSE.txt
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
 <p>
@@ -93,8 +93,8 @@ in this distribution, please see LICENSE.txt
             for ( int iii = 0;
                   iii < symbaFormSessionBean.getDatafileSpecificMetadataStores().size(); iii++ ) {
                 if ( symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() != null &&
-                        symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename().length() >
-                                0 ) {
+                     symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename().length() >
+                     0 ) {
                     if ( !alreadyPrintedHeader ) {
                         out.println( "<li>" );
                         out.println( "You have also chosen the following data to associate with this investigation:" );
@@ -135,27 +135,20 @@ in this distribution, please see LICENSE.txt
             <%
                 // There will never be Protocol Dummies.
                 Map<String, String> topLevelNames = new HashMap<String, String>();
-                try {
-                    for ( Object obj : validUser.getReService().getAllLatestGenericProtocols() ) {
-                        GenericProtocol gp = ( GenericProtocol ) obj;
-                        if ( !gp.getName().contains( "Component" ) ) {
-                            topLevelNames.put( gp.getEndurant().getIdentifier(), gp.getName() );
-                        }
+                for ( Object obj : validUser.getSymbaEntityService().getLatestGenericProtocols() ) {
+                    GenericProtocol gp = ( GenericProtocol ) obj;
+                    if ( !gp.getName().contains( "Component" ) ) {
+                        topLevelNames.put( gp.getEndurant().getIdentifier(), gp.getName() );
                     }
-                } catch ( RealizableEntityServiceException e ) {
-                    out.println( "There was an error talking to the database when trying to retrieve the " );
-                    out.println( "names of the protocols for you to choose from. For help, please send this message to " );
-                    out.println( application.getAttribute( "helpEmail" ) );
-                    System.out.println( e.getMessage() );
-                    e.printStackTrace();
                 }
                 // Now add the option element to the HTML
                 for ( String key : topLevelNames.keySet() ) {
                     String inputStartValue =
                             "<option value=\"" + key + "::Identifier::" + topLevelNames.get( key ) + "\"";
                     if ( symbaFormSessionBean.getTopLevelProtocolEndurant() != null &&
-                            key.equals( symbaFormSessionBean.getTopLevelProtocolEndurant() ) ) {
-                        out.println( inputStartValue + " selected=\"selected\">" + topLevelNames.get( key ) + "</option>" );
+                         key.equals( symbaFormSessionBean.getTopLevelProtocolEndurant() ) ) {
+                        out.println(
+                                inputStartValue + " selected=\"selected\">" + topLevelNames.get( key ) + "</option>" );
                     } else {
                         out.println( inputStartValue + ">" + topLevelNames.get( key ) + "</option>" );
                     }
@@ -169,7 +162,7 @@ in this distribution, please see LICENSE.txt
         // Additionally, if either the protocol isn't locked OR the protocol is locked but the data hasn't been
         // inputted yet, then the user can upload a file.
         if ( !symbaFormSessionBean.isProtocolLocked() ||
-                ( symbaFormSessionBean.isProtocolLocked() && !symbaFormSessionBean.isDataPresent() ) ) {
+             ( symbaFormSessionBean.isProtocolLocked() && !symbaFormSessionBean.isDataPresent() ) ) {
     %>
     <li>
         <label for="attachment0">Your File: </label>
@@ -220,7 +213,7 @@ in this distribution, please see LICENSE.txt
          null. Therefore you can set the value of the form action based on this.
          */
         if ( symbaFormSessionBean.getFugeIdentifier() == null ||
-                symbaFormSessionBean.getFugeIdentifier().length() == 0 ) {
+             symbaFormSessionBean.getFugeIdentifier().length() == 0 ) {
             out.println( "<form name=\"changeNewExperiment\" action=\"newExperiment.jsp\" method=\"post\">" );
         } else {
             out.println( "<form name=\"changeExistingExperiment\" action=\"experiment.jsp\" method=\"post\">" );

@@ -1,7 +1,6 @@
-<%@ page import="fugeOM.Common.Ontology.OntologySource" %>
-<%@ page import="fugeOM.Common.Ontology.OntologyTerm" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
 <%@ page import="java.util.*" %>
+<%@ page import="net.sourceforge.fuge.common.ontology.OntologySource" %>
+<%@ page import="net.sourceforge.fuge.common.ontology.OntologyTerm" %>
 <%-- 
 This file is part of SyMBA.
 SyMBA is covered under the GNU Lesser General Public License (LGPL).
@@ -28,7 +27,7 @@ in this distribution, please see LICENSE.txt
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
 <p>
@@ -70,80 +69,72 @@ in this distribution, please see LICENSE.txt
 <%
     // Search based on OntologyTerm. First, provide pull-downs grouped by OntologySource
 
-    try {
+    // Get a list of all of the latest ontology sources
+    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+    // casting from Object, even though runtime can handle this.
+    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+    @SuppressWarnings( "unchecked" )
+    List<OntologySource> ontologySources = validUser.getSymbaEntityService().getLatestOntologySources();
 
-        // Get a list of all of the latest ontology sources
+    // Go through each source, retrieving all terms associated with it and putting those terms in
+    // a pull-down menu.
+    for ( OntologySource ontologySource : ontologySources ) {
         // unchecked cast warning provided by javac when using generics in Lists/Sets and
         // casting from Object, even though runtime can handle this.
         // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
         @SuppressWarnings( "unchecked" )
-        List<OntologySource> ontologySources = validUser.getReService().getAllLatestOntologySources();
-
-        // Go through each source, retrieving all terms associated with it and putting those terms in
-        // a pull-down menu.
-        for ( OntologySource ontologySource : ontologySources ) {
-            // unchecked cast warning provided by javac when using generics in Lists/Sets and
-            // casting from Object, even though runtime can handle this.
-            // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
-            @SuppressWarnings( "unchecked" )
-            List<OntologyTerm> ontologyTerms = ( List<OntologyTerm> ) validUser.getReService()
-                    .getAllLatestTermsWithSource( ontologySource.getEndurant().getIdentifier() );
-            List<String> ids = new ArrayList<String>();
-            List<String> names = new ArrayList<String>();
-            // for some reason, not all ontology terms get displayed in the pull-down menu if we iterate through
-            // the OntologyTerms directly with the out.println statements. Therefore instead, we store the values
-            // we're interested in and then display them after storage.
-            for ( OntologyTerm ontologyTerm : ontologyTerms ) {
-                ids.add( ontologyTerm.getEndurant().getIdentifier() );
-                names.add( ontologyTerm.getTerm() );
-            }
-            String modifiedSourceName = ontologySource.getName();
-            out.println( "<p>Please select your " + modifiedSourceName + "</p>" );
-            out.println( "<form action=\"ShowBasicResults.jsp\" method=\"get\">" );
-            out.println( "<select name=\"ontologyTerm\">" );
-            int counter = 0;
-            for ( String id : ids ) {
-                out.println(
-                        "<option value=\"" + id + "\">" +
-                                names.get( counter ) +
-                                "</option>" );
-                counter++;
-            }
-            out.println( "</select>" );
-            out.println( "<input type=\"submit\" value=\"Search\"/>" );
-            out.println( "</form>" );
-            out.println( "<br/>" );
-            out.println( "<hr/>" );
+        List<OntologyTerm> ontologyTerms = ( List<OntologyTerm> ) validUser.getSymbaEntityService()
+                .getLatestTermsWithSource( ontologySource.getEndurant().getIdentifier() );
+        List<String> ids = new ArrayList<String>();
+        List<String> names = new ArrayList<String>();
+        // for some reason, not all ontology terms get displayed in the pull-down menu if we iterate through
+        // the OntologyTerms directly with the out.println statements. Therefore instead, we store the values
+        // we're interested in and then display them after storage.
+        for ( OntologyTerm ontologyTerm : ontologyTerms ) {
+            ids.add( ontologyTerm.getEndurant().getIdentifier() );
+            names.add( ontologyTerm.getTerm() );
         }
-
-        // Now, list all OntologyTerms that do not have a source in a single pull-down menu.
-        // unchecked cast warning provided by javac when using generics in Lists/Sets and
-        // casting from Object, even though runtime can handle this.
-        // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
-        @SuppressWarnings( "unchecked" )
-        List<OntologyTerm> unsourcedTerms = ( List<OntologyTerm> ) validUser.getReService()
-                .getAllLatestUnsourcedOntologyTerms();
-        out.println(
-                "<form action=\"ShowBasicResults.jsp\" method=\"get\">\n" +
-                        "<p>Please select from the following keywords</p>" );
+        String modifiedSourceName = ontologySource.getName();
+        out.println( "<p>Please select your " + modifiedSourceName + "</p>" );
+        out.println( "<form action=\"ShowBasicResults.jsp\" method=\"get\">" );
         out.println( "<select name=\"ontologyTerm\">" );
-        for ( OntologyTerm ontologyTerm : unsourcedTerms ) {
+        int counter = 0;
+        for ( String id : ids ) {
             out.println(
-                    "<option value=\"" + ontologyTerm.getEndurant().getIdentifier() + "\">" +
-                            ontologyTerm.getTerm() +
-                            "</option>" );
+                    "<option value=\"" + id + "\">" +
+                    names.get( counter ) +
+                    "</option>" );
+            counter++;
         }
         out.println( "</select>" );
-        out.println( "<br/>" );
         out.println( "<input type=\"submit\" value=\"Search\"/>" );
         out.println( "</form>" );
         out.println( "<br/>" );
-    } catch ( RealizableEntityServiceException e ) {
-        out.println( "Error talking to the database in order to populate the search page. Please send this message to" );
-        out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
-        System.out.println( e.getMessage() );
-        e.printStackTrace();
+        out.println( "<hr/>" );
     }
+
+    // Now, list all OntologyTerms that do not have a source in a single pull-down menu.
+    // unchecked cast warning provided by javac when using generics in Lists/Sets and
+    // casting from Object, even though runtime can handle this.
+    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+    @SuppressWarnings( "unchecked" )
+    List<OntologyTerm> unsourcedTerms =
+            ( List<OntologyTerm> ) validUser.getSymbaEntityService().getLatestUnsourcedTerms();
+    out.println(
+            "<form action=\"ShowBasicResults.jsp\" method=\"get\">\n" +
+            "<p>Please select from the following keywords</p>" );
+    out.println( "<select name=\"ontologyTerm\">" );
+    for ( OntologyTerm ontologyTerm : unsourcedTerms ) {
+        out.println(
+                "<option value=\"" + ontologyTerm.getEndurant().getIdentifier() + "\">" +
+                ontologyTerm.getTerm() +
+                "</option>" );
+    }
+    out.println( "</select>" );
+    out.println( "<br/>" );
+    out.println( "<input type=\"submit\" value=\"Search\"/>" );
+    out.println( "</form>" );
+    out.println( "<br/>" );
 
 %>
 <br>

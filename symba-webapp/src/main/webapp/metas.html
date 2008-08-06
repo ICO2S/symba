@@ -64,4 +64,25 @@
         document.getElementById("moreUploads").appendChild(d);
         upload_number++;
     }
+
+        function doNewTermEntered( ontologyTextfieldLabel, selectionName ) {
+
+            //contains info rg the to be made field and the path to the respective form and selectfield
+            var userEntry = prompt("Please enter the new term");
+            if ( ! confirm("Would you really like the term " + userEntry +
+                           " to be available for this selection? (Take care, it will get stored on Database!)") ) {
+                alert("Action cancelled");
+
+                document.selectMetadata.hiddennewterminfofield.value = ""; //just to be sure
+            } else {
+                var splitableInfo;
+                // selectionName equals parametername in session (used to this time ignore that field in the
+                // MetadataValidate.jsp)
+                splitableInfo = ontologyTextfieldLabel + ":::" + userEntry + ":::" + selectionName;
+                document.selectMetadata.hiddennewterminfofield.value = splitableInfo;
+                alert("Your request might take a few seconds, please ok and wait until the new page is loaded completely. You will then find your new term in the list.")
+                document.selectMetadata.submit();
+            }
+        }
+
 </script>

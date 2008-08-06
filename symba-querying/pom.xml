@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.sourceforge.symba</groupId>
+        <artifactId>symba</artifactId>
+        <version>8.08-alpha</version>
+    </parent>
+    <artifactId>symba-querying</artifactId>
+    <packaging>jar</packaging>
+    <name>SyMBA Querying Code</name>
+    <dependencies>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>symba-mapping</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.fuge</groupId>
+            <artifactId>fuge-jaxb2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>8.2-504.jdbc3</version>
+            <!--<version>8.1-407.jdbc3</version>-->
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.8</version>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <!-- mvn exec:java -Dexec.mainClass="net.sourceforge.symba.util.RetrieveLsid" -Dexec.args="GenericProtocol" -->
+    <repositories>
+        <repository>
+            <id>repo1.maven.org/maven2</id>
+            <name>Official Maven 2 Repository</name>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <!-- All tests are in the hibernate group. Further restrictions on test can be placed
+                    by using the other groups instead of the hibernate group. -->
+                    <groups>hibernate</groups>
+                    <!--<groups>audit, counters, data, fuge, material, ontology, protocol, software</groups>-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

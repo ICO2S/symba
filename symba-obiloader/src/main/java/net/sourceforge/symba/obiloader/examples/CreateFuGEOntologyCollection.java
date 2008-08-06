@@ -4,6 +4,7 @@ import org.semanticweb.owl.inference.OWLReasonerException;
 import org.semanticweb.owl.model.*;
 import org.xml.sax.SAXException;
 import net.sourceforge.symba.obiloader.conversion.ObiManipulator;
+import net.sourceforge.fuge.util.generatedJAXB2.FuGECollectionOntologyCollectionType;
 
 import java.io.IOException;
 import java.io.FileInputStream;
@@ -13,8 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.Properties;
 import java.net.URISyntaxException;
-
-import fugeOM.util.generatedJAXB2.FugeOMCollectionOntologyCollectionType;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.validation.SchemaFactory;
@@ -60,7 +59,7 @@ public class CreateFuGEOntologyCollection {
 
         String[] sources = properties.getProperty( "net.sourceforge.symba.obiloader.ontologySources" ).split( "[,[ ]]" );
 
-        FugeOMCollectionOntologyCollectionType finalOntologyCollection = new FugeOMCollectionOntologyCollectionType();
+        FuGECollectionOntologyCollectionType finalOntologyCollection = new FuGECollectionOntologyCollectionType();
 
         for ( String source : sources ) {
             if ( source.trim().length() > 0 ) {
@@ -80,8 +79,8 @@ public class CreateFuGEOntologyCollection {
 
         // print out the final ontology collection
         // create a JAXBContext capable of handling classes generated into
-        // the fugeOM.util.generatedJAXB2 package
-        JAXBContext jc = JAXBContext.newInstance( "fugeOM.util.generatedJAXB2" );
+        // the net.sourceforge.fuge.util.generatedJAXB2 package
+        JAXBContext jc = JAXBContext.newInstance( "net.sourceforge.fuge.util.generatedJAXB2" );
 
         // create a Marshaller
         Marshaller marshaller = jc.createMarshaller();
@@ -94,7 +93,7 @@ public class CreateFuGEOntologyCollection {
         marshaller.setSchema( schema );
 
         @SuppressWarnings( "unchecked" )
-        JAXBElement element = new JAXBElement( new QName( "http://fuge.org/core", "OntologyCollection" ), FugeOMCollectionOntologyCollectionType.class, finalOntologyCollection );
+        JAXBElement element = new JAXBElement( new QName( "http://fuge.sourceforge.net/fuge/1.0", "OntologyCollection" ), FuGECollectionOntologyCollectionType.class, finalOntologyCollection );
 
         FileOutputStream fos = new FileOutputStream( new File(properties.getProperty( "net.sourceforge.symba.obiloader.outputFile")) );
         marshaller.marshal( element, fos );

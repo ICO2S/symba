@@ -2,7 +2,6 @@ package net.sourceforge.symba.webapp.util;
 
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
-import fugeOM.service.RealizableEntityServiceException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,7 +32,7 @@ public class FileRetrieve {
 //    public File getFile( String LSID,
 //                         PersonBean pb,
 //                         String path ) throws RealizableEntityServiceException, FileNotFoundException, IOException {
-//        RealizableEntityService reService = pb.getReService();
+//        RealizableEntityService reService = pb.getEntityService();
 //        RawData rd = ( RawData ) reService.findIdentifiable( LSID );
 //        byte[] byteArray = rd.getStorage();
 //
@@ -48,7 +47,7 @@ public class FileRetrieve {
     public File getFile( String LSID,
                          String friendly,
                          String path,
-                         ScpBean scp ) throws RealizableEntityServiceException, IOException {
+                         ScpBean scp ) throws IOException {
 
         // we no longer store data within the database - instead, we store in a file store and use scp.
 

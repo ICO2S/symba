@@ -1,0 +1,39 @@
+<book>
+    <id>deviations-from-fuge</id>
+    <title>Deviations from FuGE in the Creation of SyMBA</title>
+    <chapters>
+        <chapter>
+            <id>deviations</id>
+            <title>Why and How</title>
+            <sections>
+                <section>
+                    <id>licensing</id>
+                </section>
+                <section>
+                    <id>introduction</id>
+                </section>
+                <section>
+                    <id>behavior-differences-fuge</id>
+                </section>
+                <section>
+                    <id>changes-in-fuge-namespace</id>
+                </section>
+                <section>
+                    <id>changes-in-fuge-java-code</id>
+                </section>
+                <section>
+                    <id>changes-in-fuge-xmlschema-template</id>
+                </section>
+                <section>
+                    <id>behavior-differences-symba</id>
+                </section>
+                <section>
+                    <id>additions-in-symba-namespace</id>
+                </section>
+                <section>
+                    <id>testing</id>
+                </section>
+            </sections>
+        </chapter>
+    </chapters>
+</book>

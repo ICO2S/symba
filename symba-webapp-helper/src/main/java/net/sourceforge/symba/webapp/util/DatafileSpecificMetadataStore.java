@@ -21,7 +21,17 @@ import java.util.Map;
 
 public class DatafileSpecificMetadataStore {
 
+    /*
+     * There are two ways of uploading files to symba
+     * 1. Direct upload from the local (user's) computer
+     * 2. Linking from a file already on the remote host
+     *
+     * Number 1 is more common, and in those cases, the variable dataFile is populated.
+     * Number 2 is less common, and in those cases, the variable filenameToLink is populated.
+     */
     private File dataFile;
+    private String filenameToLink;
+
     private String endurantLsid;
 
     // Data file variables
@@ -59,6 +69,14 @@ public class DatafileSpecificMetadataStore {
 
     public void clearDataFile() {
         this.dataFile = null;
+    }
+
+    public String getFilenameToLink() {
+        return filenameToLink;
+    }
+
+    public void setFilenameToLink( String filenameToLink ) {
+        this.filenameToLink = filenameToLink;
     }
 
     public String getEndurantLsid() {

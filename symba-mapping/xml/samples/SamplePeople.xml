@@ -1,0 +1,21 @@
+<!-- Please note that this AuditCollection is an artificial construct, and when this file is loaded
+via UnmarshalPeople, it is only the contents of the Collection, and NOT the collection itself, which is loaded.
+Normally, you would not be allowed an xmlns attribute in the AuditCollection -->
+
+<AuditCollection xmlns="http://fuge.sourceforge.net/fuge/1.0">
+    <Organization name="CISBAN" phone="+44 (0)191 256 3325" email="helpdesk@cisban.ac.uk"
+                  address="CISBAN, Henry Wellcome Laboratory for Biogerontology Research, Newcastle University, Newcastle General Hospital, Newcastle upon Tyne, NE4 6BE, United Kingdom"
+                  Endurant_ref="urn:lsid:cisban.cisbs.org:OrganizationEndurant:230f3f0e-6fe4-4982-bd83-e9415ec23eb4"
+                  identifier="urn:lsid:cisban.cisbs.org:Organization:10175418-3427-4f1e-baea-66d53d2044db"/>
+    <Person name="Allyson L. Lister (Research Associate)" midInitials="L." lastName="Lister" firstName="Allyson"
+            email="a.l.lister@newcastle.ac.uk"
+            Endurant_ref="urn:lsid:cisban.cisbs.org:PersonEndurant:61e4842e-045a-445d-bcb8-ea9665e88698"
+            identifier="urn:lsid:cisban.cisbs.org:Person:a13e18d7-e283-4067-8938-02164904857e">
+        <_affiliations Organization_ref="urn:lsid:cisban.cisbs.org:Organization:10175418-3427-4f1e-baea-66d53d2044db"/>
+    </Person>
+    <Person name="Olly Shaw (Research Associate)" lastName="Shaw" firstName="Olly" email="o.j.shaw@newcastle.ac.uk"
+            Endurant_ref="urn:lsid:cisban.cisbs.org:PersonEndurant:157496e4-edc1-413d-85c3-639f0c8464a3"
+            identifier="urn:lsid:cisban.cisbs.org:Person:e9cffcb0-e2eb-4aad-ac75-a7848fc6369b">
+        <_affiliations Organization_ref="urn:lsid:cisban.cisbs.org:Organization:10175418-3427-4f1e-baea-66d53d2044db"/>
+    </Person>
+</AuditCollection>

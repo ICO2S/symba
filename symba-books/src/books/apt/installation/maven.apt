@@ -3,7 +3,7 @@
  ---
  Allyson Lister
  ---
- May 2008
+ July 2008
 
 Download and Install Maven 2.0.7 or Later
 
@@ -15,7 +15,7 @@ Maven Setup
                 Create a directory in your home directory called .m2 with a single file inside called
                 <<<settings.xml>>>. This is what
                 my<<<settings.xml>>>looks like:
-                
+
 +---+
                 <settings>
                 <localRepository>/media/share/synched/Documents/.m2/repository/</localRepository>
@@ -46,7 +46,6 @@ Maven Setup
 
                 <mirrorOf>central</mirrorOf>
                 </mirror>
-                <mirror>
 
                 </mirrors>
                 </settings>
@@ -66,13 +65,13 @@ Environment Variables and Settings for Maven
                 Set up the environment variable M2_HOME to point to your maven installation
                 directory, and then ensure that both $M2_HOME/bin and $JAVA_HOME/bin are
                 present in your PATH. Also set M2_REPO, which is the location of your Maven2 repository. Not only is
-                it recommended by Maven, it is also a variable used by SyMBA later on.
+                it recommended by Maven, it is also a variable used by this project later on.
 
 Test Maven (Part One)
 
                 Test that you've instaled maven correctly by running<<<mvn --version>>>.
                 You should see something similar (but not necessarily identical) to the following:
-                
+
 +---+
                 $ mvn --version
                 Maven version: 2.0.7

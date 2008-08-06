@@ -1,0 +1,64 @@
+ ---
+ Changes to the FuGE Java Code
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+Changed Methods
+
+  Due to the addition of the Endurant class, and the association to this class from the Identifiable class,
+  a number of base methods must be modified. Specifically, any helper methods that create new, empty,
+  Identifiables in the database must ensure that an Endurant is assigned to that identifiable and loaded in
+  the database prior to returning the newly-created object. Below are a list of methods which, therefore, now deviate
+  from the standard method in the FuGE Version 1 Hibernate STK.
+
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper getOrCreate()>>>. This method now
+    also creates a new Endurant if it also needs to create a new Identifiable. As it loads the Endurant into the
+    database, it also may optionally pass a performer to assign to the audit trail. (This means it becomes an
+    overloaded function.) It also means there is an additional argument - the <<<Endurant.identifier>>>. If this
+    is null, it will create a new Endurant, but if present, then will either retrieve the existing Endurant
+    or make a new one using that ID.
+
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper createEndurantAndIdentifiable()>>>. A new
+    method that will create both a new Endurant and Identifiable.
+
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper getOrCreateEndurant()>>>. A new method that
+    will either retrieve the Endurant from the database or create a new one
+
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper createAndLoadEndurant()>>>. A private new
+    method that will create a new Endurant and load it into the database.
+
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper getLsid()>>> Helper method so the user
+    doesn't have to create their own instance of the Identifier maker.    
+
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper save()>>>. New core logic has been added
+    (as per the intended spec of this method) so that assignAndSave will be run if there is already a database id in
+    the object.
+
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelperTest>>>. Modified to
+    use Endurants.
+
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.StoreAndRetrieveTest>>>. Modified to use Endurants.
+
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.GenericSoftwareMappingHelperTest>>>. Modified to use Endurants.
+
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.helperIdentifiableMappingHelper.marshal()>>> Modified to set the
+    Endurant identifier.
+  
+  * <<<net.sourceforge.symba.mapping.hibernatejaxb2.helperIdentifiableMappingHelper.generateRandomXML()>>> Modified to
+    set the Endurant identifier.
+
+Changed Class Names
+
+  Due to the FuGE Hibernate STK changing all instances of URI to Uri (The "URI" entity is problematic for Spring, as any
+  class name whose second letter is upper case can cause problems. The best way to solve it is to change the name of
+  this entity to "Uri"), the resulting XSD and JAXB2 code is different from the XSD STK's equivalents. Any place
+  in the code from the Hibernate STK (which uses the XSD STK's official fuge-jaxb2 jar rather than creating one
+  itself) that uses URI had to be changed to URI.
+
+Added XSD creation to SyMBA from the FuGE XSD STK
+
+  Because we've added the Endurant class to the OM, all Identifiable objects now have an additional attribute that is
+  mandatory when loading into the database: "endurant". This is represented in the XML as an Endurant_ref, and the XSD
+  and associated JAXB2 code must therefore be made afresh for SyMBA.

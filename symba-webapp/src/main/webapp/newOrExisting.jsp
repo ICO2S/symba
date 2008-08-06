@@ -1,4 +1,3 @@
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
 <%--
 This file is part of SyMBA.
 SyMBA is covered under the GNU Lesser General Public License (LGPL).
@@ -21,8 +20,7 @@ in this distribution, please see LICENSE.txt
 
 <%
     // immediately redirect if the user doesn't have any experiments yet.
-    try {
-        if ( validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ).isEmpty() ) {
+    if ( validUser.getSymbaEntityService().getSummariesWithContact( validUser.getEndurantLsid() ).isEmpty() ) {
 %>
 
 <c:redirect url="newExperiment.jsp"/>
@@ -39,7 +37,7 @@ in this distribution, please see LICENSE.txt
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
     <p>
@@ -47,16 +45,6 @@ in this distribution, please see LICENSE.txt
         Confirmation of Upload ->
         (5) Select Protocol -> (6) Confirm Your Submission -> (8) Completion and Download
     </p>
-
-    <%
-        } catch ( RealizableEntityServiceException e ) {
-            out.println( "There was an error checking to see if you already had an experiment in the database. For help, please send this message to " );
-            out.println( application.getAttribute( "helpEmail" ) );
-            System.out.println( e.getMessage() );
-            e.printStackTrace();
-        }
-
-    %>
 
     <h3>Do you wish to create a new experiment or add to an existing one? <a
             href="help.jsp#newOrExist"

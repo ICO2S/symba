@@ -1,0 +1,43 @@
+ ---
+ Additions within the SyMBA namespace
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+Additions to the Object Model within the SyMBA namepace
+
+* net.sourceforge.symba.versioning.Endurant
+
+  A new entity, net.sourceforge.symba.versioning.Endurant, has been created within the net.sourceforge.symba namespace
+  within the FuGE-OM. To examine this entity, please open the "Endurant" class diagram within the
+  <<<SyMBA-FuGEv1.mdzip>>> file stored in the <<<symba-mda/src/main/uml>>> directory.
+
+  The Endurant entity is a concrete instance of Describable, as all entities utilizing the FuGE-OM are meant to be.
+  However, in practical terms, none of the Describable aspects of the Endurant class are currently in use within
+  SyMBA. The only attribute of this entity is an "identifier" attribute. Within SyMBA, this is always an LSID. Each
+  Identifiable object within the FuGE-OM now has an association (named "endurant") to one of these objects.
+  The Endurant is a grouping object that links different Identifiables of the same concrete class.
+
+* net.sourceforge.symba.service.SymbaEntityService
+
+  <<<net.sourceforge.symba.service.SymbaEntityService>>> is a service class similar in design to
+  <<<net.sourceforge.fuge.service.EntityService>>>. Its purpose is to liase with the persistence layer, and perform
+  additional functions that require connections to the database. While EntityService provides basic functions
+  relating to saving, creating and updating objects in the database, the SymbaEntityService is more geared to
+  complex or specialized search queries over the database. This class is described in the SymbaEntityService
+  class diagram in the UML.
+
+* net.sourceforge.symba.service.SymbaEntityServiceException
+
+  <<<net.sourceforge.symba.service.SymbaEntityServiceException>>> is the exception class that is thrown if there is
+  any problem when running methods from SymbaEntityService. This class is described in the SymbaEntityService
+  class diagram in the UML.
+
+* net.sourceforge.symba.mapping.hibernatejaxb2.xml.WorkflowUnmarshaler
+
+  This file is taken directly from the original SyMBA code and updated for FuGE version 1.
+
+* net.sourceforge.symba.mapping.hibernatejaxb2.xml.UnmarshalWorkflow
+
+  This file is taken directly from the original SyMBA code and updated for FuGE version 1.

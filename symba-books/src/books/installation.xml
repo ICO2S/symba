@@ -1,16 +1,16 @@
 <book>
     <id>installation</id>
-    <title>Instructions for Installing SyMBA</title>
+    <title>SyMBA User Manual</title>
     <chapters>
         <chapter>
             <id>intro</id>
-            <title>Introduction and Background</title>
+            <title>Introduction</title>
             <sections>
                 <section>
-                    <id>download-book</id>
+                    <id>downloading-for-offline-use</id>
                 </section>
                 <section>
-                    <id>background</id>
+                    <id>relation-to-uml</id>
                 </section>
             </sections>
         </chapter>
@@ -26,9 +26,6 @@
                 </section>
                 <section>
                     <id>java</id>
-                </section>
-                <section>
-                    <id>tomcat</id>
                 </section>
                 <section>
                     <id>maven</id>
@@ -49,7 +46,7 @@
         </chapter>
         <chapter>
             <id>setup</id>
-            <title>Setting Up, Compiling, and Running SyMBA</title>
+            <title>Setting Up, Compiling, and Running the Hibernate STK</title>
             <sections>
                 <section>
                     <id>database-setup</id>
@@ -65,6 +62,30 @@
                 </section>
                 <section>
                     <id>filling-the-databases</id>
+                </section>
+            </sections>
+        </chapter>
+        <chapter>
+            <id>problems</id>
+            <title>Known Problems</title>
+            <sections>
+                <section>
+                    <id>access-rights</id>
+                </section>
+                <section>
+                    <id>software2equipment</id>
+                </section>
+            </sections>
+        </chapter>
+        <chapter>
+            <id>testing</id>
+            <title>Testing the STK</title>
+            <sections>
+                <section>
+                    <id>testng</id>
+                </section>
+                <section>
+                    <id>unit-tests</id>
                 </section>
             </sections>
         </chapter>
@@ -86,6 +107,45 @@
                 </section>
                 <section>
                     <id>proxy-tips</id>
+                </section>
+            </sections>
+        </chapter>
+        <chapter>
+            <id>contribute</id>
+            <title>Would You Like to Contribute?</title>
+            <sections>
+                <section>
+                    <id>become-symba-developer</id>
+                </section>
+                <section>
+                    <id>help-for-symba-developers</id>
+                </section>
+            </sections>
+        </chapter>
+        <chapter>
+            <id>modifications</id>
+            <title>Modifications to the FuGE-OM</title>
+            <sections>
+                <section>
+                    <id>fugeom-modifications</id>
+                </section>
+            </sections>
+        </chapter>
+        <chapter>
+            <id>example-code</id>
+            <title>Example Java Code Provided With the original Hibernate STK</title>
+            <sections>
+                <section>
+                    <id>xml-db-mapping</id>
+                </section>
+                <section>
+                    <id>helper</id>
+                </section>
+                <section>
+                    <id>load-unload-xml</id>
+                </section>
+                <section>
+                    <id>speed-ontology</id>
                 </section>
             </sections>
         </chapter>

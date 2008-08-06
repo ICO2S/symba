@@ -1,0 +1,12 @@
+ ---
+ More testing has been added
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+Testing Within SyMBA
+
+ All new queries provided within SymbaEntityService have full unit tests. This means adding unit test classes within
+ the fuge namespace, although these tests have been written specifically for SyMBA, and only exist within
+ the SyMBA project.

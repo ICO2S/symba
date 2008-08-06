@@ -14,7 +14,7 @@ in this distribution, please see LICENSE.txt
 <%@ page pageEncoding="UTF-8" %>
 <%@ page import="net.sourceforge.symba.webapp.util.FileRetrieve" %>
 <%@ page import="java.io.File" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+
 <%@ page import="net.sourceforge.symba.webapp.util.LsidFilenameConverter" %>
 
 <jsp:useBean id="validUser" class="net.sourceforge.symba.webapp.util.PersonBean" scope="session">
@@ -46,7 +46,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 --%>
 
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
     <h2>Click on the link to download the file</h2>
@@ -63,16 +63,10 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             LSID = LsidFilenameConverter.convert( LSID, scp.getLsidColonReplacement() );
         }
         String friendly = request.getParameter( "friendly" );
-        try {
-            File afile = fr.getFile( LSID, friendly, tempDir, scp );
-            out.println(
-                    " <a target=\"_blank\" href=\"" + "temp" + "/" + afile.getName() + "\">" +
-                            afile.getName() + "</a>" );
-        } catch ( RealizableEntityServiceException e ) {
-            out.println( "There was an error retrieving your file. For help, please send this message to " );
-            out.println( application.getAttribute( "helpEmail" ) );
-            e.printStackTrace();
-        }
+        File afile = fr.getFile( LSID, friendly, tempDir, scp );
+        out.println(
+                " <a target=\"_blank\" href=\"" + "temp" + "/" + afile.getName() + "\">" +
+                afile.getName() + "</a>" );
     %>
     <jsp:include page="helpAndComments.jsp"/>
 

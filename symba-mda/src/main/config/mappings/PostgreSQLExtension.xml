@@ -5,4 +5,9 @@
         <from>datatype::Date</from>
         <to>TIMESTAMP WITH TIME ZONE</to>
     </mapping>
+    <mapping>
+        <!--Allyson Lister 6/2008: This datatype::URI mapping has been created to force URIs to be stored as a string -->
+        <from>datatype::URI</from>
+        <to>CHARACTER VARYING(1024)</to>
+    </mapping>
 </mappings>

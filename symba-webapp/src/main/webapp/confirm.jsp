@@ -1,4 +1,3 @@
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
 <%@ page import="net.sourceforge.symba.webapp.util.*" %>
 <%--
 This file is part of SyMBA.
@@ -31,7 +30,7 @@ in this distribution, please see LICENSE.txt
     <jsp:include page="metas.html"/>
 </head>
 <body>
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
     <p>
@@ -62,7 +61,8 @@ in this distribution, please see LICENSE.txt
         // raw data page. Shouldn't ever be able to get this far with such an error, but should always check.
         if ( !symbaFormSessionBean.getDatafileSpecificMetadataStores().isEmpty() ) {
             for ( DatafileSpecificMetadataStore store : symbaFormSessionBean.getDatafileSpecificMetadataStores() ) {
-                if ( store.getDataFile() == null || store.getDataFile().length() == 0 ) {
+                if ( ( store.getDataFile() == null || store.getDataFile().length() == 0 ) &&
+                     ( store.getFilenameToLink() == null || store.getFilenameToLink().length() == 0 ) ) {
     %>
     <c:redirect url="rawData.jsp"/>
     <%
@@ -78,16 +78,7 @@ in this distribution, please see LICENSE.txt
     <%
         }
 
-        try {
-            symbaFormSessionBean.displayHtml( out, validUser.getReService() );
-        } catch ( RealizableEntityServiceException e ) {
-            out.println( "<p>" );
-            out.println( "There has been a problem trying to display all of your information. Please contact" );
-            out.println( "the helpdesk (helpdesk@cisban.ac.uk)." );
-            out.println( "</p>" );
-            System.out.println( e.getMessage() ); // print out error to catalina.out
-            e.printStackTrace();
-        }
+        symbaFormSessionBean.displayHtml( out, validUser.getSymbaEntityService() );
     %>
 
     <p class="bigger">

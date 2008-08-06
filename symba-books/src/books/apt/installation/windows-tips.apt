@@ -24,12 +24,14 @@ java.sql.SQLException: Can't create/write to file 'C:\WINDOWS\TEMP\#sql_318_0.MY
   Various forums have suggested defragging your hard disk, changing permissions in directories, and turning off
   the virus checking in the directory where MySQL keeps its temp files (the directory mentioned in the exception).
 
-  Our suggestion is as follows:
+  We have not found a satisfactory solution to this problem. The following was tried, but in the particular case
+  was not effective.
 
     * Ensure that you have a specific directory set aside for the MySQL temp files. You can create such a directory
       by following the instructions {{{http://dev.mysql.com/doc/refman/5.0/en/cannot-create.html}here}}.
+
     * Following the suggestions made {{{http://forums.mysql.com/read.php?24,169274,178492#msg-178492}here}},
-      turn off the virus scanning for that directory. This should resolve the problem.
+      turn off the virus scanning for that directory.
 
 Windows: Escaping Characters
 

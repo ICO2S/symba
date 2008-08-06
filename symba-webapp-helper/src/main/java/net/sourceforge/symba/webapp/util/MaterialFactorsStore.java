@@ -29,16 +29,21 @@ public class MaterialFactorsStore {
     // having a linked hash set preserves the order while at the same time preventing treatment duplicates
     private LinkedHashSet<String> treatmentInfo;
 
-    // these are all stored as Identifiers in the characteristics array.
-    private LinkedHashSet<String> characteristics;
+    // key = ontology source endurant lsid, value = ontology term endurant lsid. Stores singleton characteristics
+    private HashMap<String,String> characteristics;
+
+    // key = ontology source endurant lsid, value = ontology term endurant lsids. Stores those characteristics that
+    // are allowed to have multiple selects.
+    private HashMap<String,LinkedHashSet<String>> multipleCharacteristics;
 
     // the OntologyReplacement details
     private Map<String,String> ontologyReplacements;
 
     public MaterialFactorsStore() {
         this.treatmentInfo = new LinkedHashSet<String>();
-        this.characteristics = new LinkedHashSet<String>();
+        this.characteristics = new HashMap<String, String>();
         this.ontologyReplacements = new HashMap<String,String>();
+        this.multipleCharacteristics = new HashMap<String, LinkedHashSet<String>>();
     }
 
     public void clear() {
@@ -48,6 +53,7 @@ public class MaterialFactorsStore {
         this.treatmentInfo.clear();
         this.characteristics.clear();
         this.ontologyReplacements.clear();
+        this.multipleCharacteristics.clear();
     }
 
     public String getMaterialName() {
@@ -86,16 +92,16 @@ public class MaterialFactorsStore {
         this.materialType = materialType;
     }
 
-    public LinkedHashSet<String> getCharacteristics() {
+    public HashMap<String, String> getCharacteristics() {
         return characteristics;
     }
 
-    public void setCharacteristics( LinkedHashSet<String> characteristics ) {
+    public void setCharacteristics( HashMap<String, String> characteristics ) {
         this.characteristics = characteristics;
     }
 
-    public void addCharacteristic( String singleCharacteristics ) {
-        this.characteristics.add( singleCharacteristics );
+    public void addCharacteristic(String ontologySourceEndurant, String ontologyTermEndurant) {
+        this.characteristics.put(ontologySourceEndurant, ontologyTermEndurant);
     }
 
     public Map<String, String> getOntologyReplacements() {
@@ -108,5 +114,17 @@ public class MaterialFactorsStore {
 
     public void putOntologyReplacementsPair( String key, String value ) {
         this.ontologyReplacements.put( key, value );
+    }
+
+    public HashMap<String, LinkedHashSet<String>> getMultipleCharacteristics() {
+        return multipleCharacteristics;
+    }
+
+    public void setMultipleCharacteristics(HashMap<String, LinkedHashSet<String>> multipleCharacteristics) {
+        this.multipleCharacteristics = multipleCharacteristics;
+    }
+
+    public void addMultipleCharacteristics(String ontologySourceEndurant, LinkedHashSet<String> ontologyTermEndurants) {
+        this.multipleCharacteristics.put(ontologySourceEndurant, ontologyTermEndurants);
     }
 }

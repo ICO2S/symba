@@ -14,9 +14,7 @@ package net.sourceforge.symba.webapp.util;
  *
  */
 
-import fugeOM.Common.Audit.Person;
-import net.sourceforge.symba.ServiceLocator;
-import fugeOM.service.RealizableEntityService;
+import net.sourceforge.fuge.common.audit.Person;
 
 import java.io.Serializable;
 
@@ -29,8 +27,6 @@ public class EmployeeBean implements Serializable {
     private String emailAddr;
     private String password;
     private String userName;
-    private ServiceLocator sl;
-    private RealizableEntityService reService;
     private String lsid;
     private Person person;
 
@@ -48,7 +44,7 @@ public class EmployeeBean implements Serializable {
     }*/
 
     /**
-     * Returns the emailAddr property value.
+     * @return emailAddr property value
      */
     public String getEmailAddr() {
         return emailAddr;
@@ -56,13 +52,14 @@ public class EmployeeBean implements Serializable {
 
     /**
      * Sets the emailAddr property value.
+     * @param emailAddr the new value of emailAddr
      */
     public void setEmailAddr( String emailAddr ) {
         this.emailAddr = emailAddr;
     }
 
     /**
-     * Returns the password property value.
+     * @return the password property value
      */
     public String getPassword() {
         return password;
@@ -70,13 +67,14 @@ public class EmployeeBean implements Serializable {
 
     /**
      * Sets the password property value.
+     * @param password the new password value
      */
     public void setPassword( String password ) {
         this.password = password;
     }
 
     /**
-     * Returns the userName property value.
+     * @return the userName property value
      */
     public String getUserName() {
         return userName;
@@ -84,23 +82,10 @@ public class EmployeeBean implements Serializable {
 
     /**
      * Sets the userName property value.
+     * @param userName the new userName value
      */
     public void setUserName( String userName ) {
         this.userName = userName;
-    }
-
-    public void startRe() {
-        ServiceLocator sl = ServiceLocator.instance();
-        setReService( sl.getRealizableEntityService() );
-    }
-
-
-    public RealizableEntityService getReService() {
-        return reService;
-    }
-
-    public void setReService( RealizableEntityService reService ) {
-        this.reService = reService;
     }
 
     public String getLsid() {
@@ -117,14 +102,6 @@ public class EmployeeBean implements Serializable {
 
     public void setPerson( Person person ) {
         this.person = person;
-    }
-
-    public ServiceLocator getSl() {
-        return sl;
-    }
-
-    public void setSl( ServiceLocator sl ) {
-        this.sl = sl;
     }
 
     public String getAddress() {

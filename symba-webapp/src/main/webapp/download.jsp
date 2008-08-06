@@ -10,8 +10,6 @@ in this distribution, please see LICENSE.txt
 <!-- $Author$-->
 <!-- $HeadURL$-->
 
-<%@ page import="net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore" %>
-
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
 
@@ -25,7 +23,7 @@ in this distribution, please see LICENSE.txt
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
     <p>

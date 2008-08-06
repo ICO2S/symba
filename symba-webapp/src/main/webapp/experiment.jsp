@@ -17,7 +17,7 @@ in this distribution, please see LICENSE.txt
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@ page import="java.util.List" %>
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+
 
 <jsp:useBean id="validUser" class="net.sourceforge.symba.webapp.util.PersonBean" scope="session"/>
 
@@ -34,7 +34,7 @@ in this distribution, please see LICENSE.txt
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
     <p>
@@ -54,26 +54,19 @@ in this distribution, please see LICENSE.txt
                     <label for="fugeIdentifier">Existing experiments: </label>
                     <select id="fugeIdentifier" name="fugeIdentifier">
                         <%
-                            try {
-                                for ( Object obj : validUser.getReService()
-                                        .getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() ) ) {
-                                    // unchecked cast warning provided by javac when using generics in Lists/Sets and
-                                    // casting from Object, even though runtime can handle this.
-                                    // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
-                                    @SuppressWarnings( "unchecked" )
-                                    List<String> summary = ( List<String> ) obj;
-                                    String optionValueStart = "<option value=\"" + summary.get( 0 ) + "\"";
-                                    if ( symbaFormSessionBean.getFugeIdentifier() != null &&
-                                            symbaFormSessionBean.getFugeIdentifier().equals( summary.get( 0 ) ) ) {
-                                        optionValueStart += " selected=\"selected\"";
-                                    }
-                                    out.println( optionValueStart + ">" + summary.get( 1 ) + "</option>" );
+                            for ( Object obj : validUser.getSymbaEntityService()
+                                    .getSummariesWithContact( validUser.getEndurantLsid() ) ) {
+                                // unchecked cast warning provided by javac when using generics in Lists/Sets and
+                                // casting from Object, even though runtime can handle this.
+                                // see http://forum.java.sun.com/thread.jspa?threadID=707244&messageID=4118661
+                                @SuppressWarnings( "unchecked" )
+                                List<String> summary = ( List<String> ) obj;
+                                String optionValueStart = "<option value=\"" + summary.get( 0 ) + "\"";
+                                if ( symbaFormSessionBean.getFugeIdentifier() != null &&
+                                     symbaFormSessionBean.getFugeIdentifier().equals( summary.get( 0 ) ) ) {
+                                    optionValueStart += " selected=\"selected\"";
                                 }
-                            } catch ( RealizableEntityServiceException e ) {
-                                out.println( "</select><br>There has been a problem retrieving your experiments. Please " );
-                                out.println( "</select><br>contact the " + application.getAttribute( "helpEmail" ) + "<br/>" );
-                                System.out.println( e.getMessage() );
-                                e.printStackTrace();
+                                out.println( optionValueStart + ">" + summary.get( 1 ) + "</option>" );
                             }
                         %>
                     </select><br>

@@ -12,7 +12,7 @@ in this distribution, please see LICENSE.txt
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%@ page import="fugeOM.service.RealizableEntityServiceException" %>
+
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
 
@@ -29,36 +29,29 @@ in this distribution, please see LICENSE.txt
 </head>
 <body>
 
-<jsp:include page="visibleHeader.html"/>
+<jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
 
     <%
         // this variable is used so that we can make use of the SuppressWarnings java annotation
-        List plainList = null;
-        try {
+        List plainList;
             // Each inner list contains 3 objects: the first two are Strings, the third is a java.sql.Timestamp
             if ( request.getParameter( "experimentName" ) != null &&
                     request.getParameter( "experimentName" ).length() > 0 ) {
                 out.println( "<h3>Search Term: " + request.getParameter( "experimentName" ) + "</h3>" );
-                plainList = validUser.getReService()
-                        .getAllLatestExperimentSummariesWithName( request.getParameter( "experimentName" ) );
+                plainList = validUser.getSymbaEntityService()
+                        .getSummariesWithPartialName( request.getParameter( "experimentName" ) );
             } else if ( request.getParameter( "ontologyTerm" ) != null &&
                     request.getParameter( "ontologyTerm" ).length() > 0 ) {
                 out.println( "<!-- Search Term: " + request.getParameter( "ontologyTerm" ) + " -->" );
-                plainList = validUser.getReService()
-                        .getAllLatestExperimentSummariesWithOntologyTerm( request.getParameter( "ontologyTerm" ) );
+                plainList = validUser.getSymbaEntityService()
+                        .getSummariesWithOntologyTerm( request.getParameter( "ontologyTerm" ) );
             } else if ( request.getParameter( "showAll" ) != null && request.getParameter( "showAll" ).length() > 0 ) {
-                plainList = validUser.getReService().getAllLatestExperimentSummaries();
+                plainList = validUser.getSymbaEntityService().getSummaries();
             } else {
-                plainList = validUser.getReService().getAllLatestExpSummariesWithContact( validUser.getEndurantLsid() );
+                plainList = validUser.getSymbaEntityService().getSummariesWithContact( validUser.getEndurantLsid() );
             }
-        } catch ( RealizableEntityServiceException e ) {
-            out.println( "There was an error talking to the database. For help, please send this message to " );
-            out.println( application.getAttribute( "helpEmail" ) );
-            System.out.println( e.getMessage() );
-            e.printStackTrace();
-        }
 
         // unchecked cast warning provided by javac when using generics in Lists/Sets and
         // casting from Object, even though runtime can handle this.

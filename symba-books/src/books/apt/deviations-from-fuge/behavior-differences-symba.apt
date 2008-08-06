@@ -1,0 +1,31 @@
+ ---
+ Changes in behavior compared to previous releases of SyMBA
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+Introduction
+
+  Some aspects of the way SyMBA behaves have been modified for this new release. These general behavior changes
+  are described here.
+
+Endurant classes
+
+* Endurant is now concrete rather than abstract
+
+  In the FuGE Milestone 3 (FM3) implementation of SyMBA, the Endurant class was abstract, and concrete sub-classes
+  were made that mirrored the FuGE-OM structure of concrete implementations of Identifiable. However, it quickly
+  became clear that this multitude of SyMBA Endurant implementations were unnecessary. Therefore, the opportunity
+  of upgrading to FuGE Version 1 (FV1) meant a good chance to solve this situation.
+
+  Therefore, with the FV1 version of SyMBA, there is now only one Endurant class. It is still Describable, but it
+  is concrete and all Identifiable classes contain a reference to this concrete class. It is a much simpler, cleaner
+  system.
+
+* Implications for LSIDs
+
+  This means that all new LSIDs generated within SyMBA for the Endurant.identifier attribute will have a namespace
+  of "Endurant" rather than the name of the concrete implementation of Endurant that was present in FM3. Nothing in the
+  core will break if you still use the old LSIDs in the new SyMBA, however you may have to modify how the LSID resolver
+  works to cope with the old-style LSID namespaces.

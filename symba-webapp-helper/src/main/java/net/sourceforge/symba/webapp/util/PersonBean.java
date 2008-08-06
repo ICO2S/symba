@@ -1,7 +1,8 @@
 package net.sourceforge.symba.webapp.util;
 
-import net.sourceforge.symba.ServiceLocator;
-import fugeOM.service.RealizableEntityService;
+import net.sourceforge.fuge.ServiceLocator;
+import net.sourceforge.fuge.service.EntityService;
+import net.sourceforge.symba.service.SymbaEntityService;
 
 import java.io.Serializable;
 
@@ -23,7 +24,7 @@ public class PersonBean implements Serializable {
     // The bean follows standard coding practice, eg empty constructor
     //then private fields with public getters and setters based on Field names
     //The only exception is the startREService method. This is a slight tweak to
-    // ensure that the reService is started.
+    // ensure that the entityService is started.
 
     private String firstName;
     private String lastName;
@@ -32,11 +33,9 @@ public class PersonBean implements Serializable {
     private String endurantLsid;
     private String name;
 
-    //from the EmployeeBean (the old version) 
-    private String password;
     private String userName;
-    private ServiceLocator sl;
-    private RealizableEntityService reService;
+    private EntityService entityService;
+    private SymbaEntityService SymbaEntityService;
 
     /**
      * Creates a new instance of PersonBean
@@ -76,10 +75,6 @@ public class PersonBean implements Serializable {
         this.name = name;
     }
 
-    public void setPassword( String password ) {
-        this.password = password;
-    }
-
     public String getUserName() {
         return userName;
     }
@@ -88,20 +83,12 @@ public class PersonBean implements Serializable {
         this.userName = userName;
     }
 
-    public ServiceLocator getSl() {
-        return sl;
+    public EntityService getEntityService() {
+        return entityService;
     }
 
-    public void setSl( ServiceLocator sl ) {
-        this.sl = sl;
-    }
-
-    public RealizableEntityService getReService() {
-        return reService;
-    }
-
-    public void setReService( RealizableEntityService reService ) {
-        this.reService = reService;
+    public void setEntityService( EntityService entityService ) {
+        this.entityService = entityService;
     }
 
     public String getLsid() {
@@ -112,13 +99,6 @@ public class PersonBean implements Serializable {
         this.lsid = lsid;
     }
 
-    //The only non conforming method, starts up the reService.
-    // The re service is then used throughtout and is available throughout the
-    //session
-    public void startRe() {
-        ServiceLocator sl = ServiceLocator.instance();
-        setReService( sl.getRealizableEntityService() );
-    }
 
     public String getEndurantLsid() {
         return endurantLsid;
@@ -128,5 +108,20 @@ public class PersonBean implements Serializable {
         this.endurantLsid = endurantLsid;
     }
 
+    public SymbaEntityService getSymbaEntityService() {
+        return SymbaEntityService;
+    }
 
+    public void setSymbaEntityService( SymbaEntityService symbaEntityService ) {
+        SymbaEntityService = symbaEntityService;
+    }
+
+    //The only non conforming method, starts up the entityService.
+    // The re service is then used throughtout and is available throughout the
+    //session
+    public void startServices() {
+        ServiceLocator sl = ServiceLocator.instance();
+        setEntityService( sl.getEntityService() );
+        setSymbaEntityService( sl.getSymbaEntityService() );
+    }
 }

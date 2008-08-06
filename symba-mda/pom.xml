@@ -4,17 +4,22 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>net.sourceforge.symba</groupId>
-        <artifactId>SyMBA</artifactId>
-        <version>8.05-SNAPSHOT</version>
+        <artifactId>symba</artifactId>
+        <version>8.08-alpha</version>
     </parent>
     <artifactId>symba-mda</artifactId>
     <packaging>pom</packaging>
-    <name>SyMBA MDA</name>
+    <name>SyMBA Model-Driven Architecture Generation</name>
     <dependencies>
         <dependency>
-            <groupId>org.andromda.profiles.uml14</groupId>
-            <artifactId>andromda-profile</artifactId>
-            <type>xml.zip</type>
+            <groupId>org.andromda.profiles.emf.uml2</groupId>
+            <artifactId>andromda-profile-common</artifactId>
+            <type>uml2</type>
+        </dependency>
+        <dependency>
+            <groupId>org.andromda.cartridges</groupId>
+            <artifactId>andromda-xmlschema-cartridge</artifactId>
+            <version>${andromda.version}</version>
         </dependency>
         <dependency>
             <groupId>org.andromda.cartridges</groupId>
@@ -57,7 +62,10 @@
         </plugins>
     </build>
     <properties>
-        <model.uri>file:${project.build.sourceDirectory}/symba.xmi</model.uri>
+        <andromda.version>3.2</andromda.version>
+        <maven.andromda.config>${pom.basedir}/src/main/config</maven.andromda.config>
+        <model.uri>file:${project.build.sourceDirectory}/SyMBA-FuGEv1.uml2</model.uri>
+        <!-- If you remove the empty filter element below, the auto-generated files will not be made-->
         <filter></filter>
         <validation>true</validation>
         <conf.dir>${pom.basedir}/src/main/config</conf.dir>

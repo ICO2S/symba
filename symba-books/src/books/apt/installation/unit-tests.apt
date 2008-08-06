@@ -1,0 +1,32 @@
+ ---
+ Unit Tests with Maven
+ ---
+ Allyson Lister
+ ---
+ July 2008
+
+ There are a number of unit tests already available with this STK, and more are planned. These tests are currently
+ limited to the fuge-hibernate-mapping sub-project, and can be found within that directory. Tests are disabled
+ by default within the default (local) profile and within the production profile so that production databases
+ are not accidentally modified with test data.
+
+ You should run the tests <after> re-running the Maven install command with the correct profile, thus ensuring that
+ the database connection details are the right ones for the test setup.
+
+ To run the tests, simply run these commands from the top-level trunk directory (the maven install command
+ just shows you the appropriate install command for the test commands below it: you do not need to run it before
+ each test, unless you have modified code outside of the module whose tests you are calling):
+
++---+
+  mvn install -Denv=val -DskipTests
+  
+  mvn -f symba-mapping/pom.xml test -Denv=val
+  mvn -f symba-querying/pom.xml test -Denv=val
++---+
+
+ All should pass except two (testSoftware2EquipmentLink and testSoftware2EquipmentLinkWithFlush), which are
+ demonstrating a bug discovered within the auto-generated Hibernate and Spring code. Full details of this bug
+ are available in the
+ {{{http://galaxy.andromda.org/forum/viewtopic.php?t=5837}Andromda forums}}, and
+ as soon as I have a fix, the unit tests should all pass.
+ 

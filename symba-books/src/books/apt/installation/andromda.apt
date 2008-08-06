@@ -3,7 +3,7 @@
  ---
  Allyson Lister
  ---
- May 2008
+ July 2008
 
 Introduction
 
@@ -32,9 +32,9 @@ $M2_REPO/org/andromda/maven/plugins/andromda-maven-plugin>>>
 * Test Installation
 
   * Create a temporary directory, e.g. <<<C:\andromda-temp>>> or <<<$HOME/andromda-temp>>>.
-  
+
   * Create a file called <<<pom.xml>>> in this directory with the following content:
-  
+
 +---+
                             <project>
                             <modelVersion>4.0.0</modelVersion>
@@ -72,5 +72,6 @@ $M2_REPO/org/andromda/maven/plugins/andromda-maven-plugin>>>
   * Open a Command Prompt in the directory where you created this pom.xml
     and run the command mvn without any arguments. Make sure the command
     completes successfully by displaying the <<<BUILD SUCCESSFUL>>> message.
-    
+
   * You can now delete the temporary directory you just created.
+

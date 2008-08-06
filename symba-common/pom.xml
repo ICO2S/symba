@@ -1,15 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>net.sourceforge.symba</groupId>
-        <artifactId>SyMBA</artifactId>
-        <version>8.05-SNAPSHOT</version>
+        <artifactId>symba</artifactId>
+        <version>8.08-alpha</version>
     </parent>
     <artifactId>symba-common</artifactId>
     <packaging>jar</packaging>
-    <name>SyMBA MDA Common</name>
+    <name>SyMBA Common</name>
     <dependencies>
         <dependency>
             <groupId>${pom.groupId}</groupId>

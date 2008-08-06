@@ -38,7 +38,7 @@ import java.util.Date;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 
 public class UnmarshalXML {

@@ -49,7 +49,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class InvestigationCollectionMappingHelper implements MappingHelper<InvestigationCollection, FuGECollectionInvestigationCollectionType> {
     private final IdentifiableMappingHelper ci;

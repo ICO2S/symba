@@ -50,7 +50,7 @@ import java.net.URISyntaxException;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 
 public class PeopleUnmarshaler {

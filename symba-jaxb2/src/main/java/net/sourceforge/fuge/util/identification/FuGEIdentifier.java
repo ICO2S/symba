@@ -36,7 +36,7 @@ package net.sourceforge.fuge.util.identification;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://fuge.svn.sourceforge.net/svnroot/fuge/xsd-stk/trunk/fuge-jaxb2/src/main/java/net/sourceforge/fuge/util/identification/FuGEIdentifier.java $
+ * $HeadURL$
  */
 abstract public class FuGEIdentifier {
     private String domainName;

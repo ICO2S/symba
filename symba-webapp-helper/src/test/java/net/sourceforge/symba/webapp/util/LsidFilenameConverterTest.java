@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/LoadPerson.java $
+ * $HeadURL$
  */
 public class LsidFilenameConverterTest {
 

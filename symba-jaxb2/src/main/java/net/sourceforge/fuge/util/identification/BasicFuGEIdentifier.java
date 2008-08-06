@@ -40,7 +40,7 @@ import java.util.UUID;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://fuge.svn.sourceforge.net/svnroot/fuge/xsd-stk/trunk/fuge-jaxb2/src/main/java/net/sourceforge/fuge/util/identification/BasicFuGEIdentifier.java $
+ * $HeadURL$
  */
 public class BasicFuGEIdentifier extends FuGEIdentifier {
     /**

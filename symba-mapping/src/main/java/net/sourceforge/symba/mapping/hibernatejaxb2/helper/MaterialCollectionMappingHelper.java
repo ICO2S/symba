@@ -46,7 +46,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class MaterialCollectionMappingHelper implements MappingHelper<MaterialCollection, FuGECollectionMaterialCollectionType> {
     private final DescribableMappingHelper cd;

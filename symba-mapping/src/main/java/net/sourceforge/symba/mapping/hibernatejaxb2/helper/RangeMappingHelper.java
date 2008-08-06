@@ -42,7 +42,7 @@ import java.util.HashSet;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class RangeMappingHelper implements MappingHelper<Range, FuGECommonMeasurementRangeType> {
 

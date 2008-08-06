@@ -57,7 +57,7 @@ import java.util.Map;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 
 public class XMLMarshaler {

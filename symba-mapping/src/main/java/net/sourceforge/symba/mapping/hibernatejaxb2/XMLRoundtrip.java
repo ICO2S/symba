@@ -36,7 +36,7 @@ import net.sourceforge.symba.mapping.hibernatejaxb2.xml.XMLMarshaler;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 
 // please note that there will always be auditing differences between the input and output xml files,

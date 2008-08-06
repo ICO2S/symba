@@ -48,7 +48,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ProtocolCollectionMappingHelper implements MappingHelper<ProtocolCollection, FuGECollectionProtocolCollectionType> {
     private final DescribableMappingHelper cd;

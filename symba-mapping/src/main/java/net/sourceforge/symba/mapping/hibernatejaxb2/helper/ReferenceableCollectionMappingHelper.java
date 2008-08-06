@@ -46,7 +46,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ReferenceableCollectionMappingHelper implements MappingHelper<ReferenceableCollection, FuGECollectionReferenceableCollectionType> {
     private final DescribableMappingHelper cd;

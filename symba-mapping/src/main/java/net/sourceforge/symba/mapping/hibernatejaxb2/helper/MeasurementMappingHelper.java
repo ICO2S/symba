@@ -40,7 +40,7 @@ import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class MeasurementMappingHelper implements MappingHelper<Measurement, FuGECommonMeasurementMeasurementType> {
     private final DescribableMappingHelper cd;

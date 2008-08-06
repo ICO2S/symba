@@ -41,7 +41,7 @@ import java.util.GregorianCalendar;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://fuge.svn.sourceforge.net/svnroot/fuge/xsd-stk/trunk/fuge-jaxb2/src/main/java/net/sourceforge/fuge/util/DateAdapter.java $
+ * $HeadURL$
  */
 public class DateAdapter {
     public static Date parseDate( String s ) {

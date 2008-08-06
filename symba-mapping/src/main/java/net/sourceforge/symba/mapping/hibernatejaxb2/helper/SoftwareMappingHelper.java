@@ -41,7 +41,7 @@ import net.sourceforge.fuge.util.generatedJAXB2.FuGECommonProtocolSoftwareType;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class SoftwareMappingHelper implements MappingHelper<Software, FuGECommonProtocolSoftwareType> {
     private final ParameterizableMappingHelper cparam;

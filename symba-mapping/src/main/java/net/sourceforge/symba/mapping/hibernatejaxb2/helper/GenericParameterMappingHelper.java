@@ -39,7 +39,7 @@ import net.sourceforge.fuge.util.generatedJAXB2.FuGECommonProtocolGenericParamet
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class GenericParameterMappingHelper implements MappingHelper<GenericParameter, FuGECommonProtocolGenericParameterType> {
 

@@ -40,7 +40,7 @@ import net.sourceforge.fuge.util.generatedJAXB2.*;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ParameterMappingHelper implements MappingHelper<Parameter, FuGECommonProtocolParameterType> {
     private final IdentifiableMappingHelper ci;

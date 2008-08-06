@@ -10,7 +10,7 @@ package net.sourceforge.symba.webapp.util.security;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-backend/src/main/java/net/sourceforge/symba/util/security/UserPassword.java $
+ * $HeadURL$
  *
  */
 

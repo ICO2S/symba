@@ -13,6 +13,12 @@ import net.sourceforge.fuge.common.audit.Person;
  * Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
+ *
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
+ */
  */
 public class OntologyLoader {
 

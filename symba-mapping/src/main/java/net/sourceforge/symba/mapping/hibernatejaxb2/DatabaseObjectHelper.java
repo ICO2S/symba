@@ -47,7 +47,7 @@ import net.sourceforge.symba.service.SymbaEntityServiceException;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 
 public class DatabaseObjectHelper {

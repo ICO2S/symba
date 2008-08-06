@@ -40,7 +40,7 @@ import net.sourceforge.fuge.util.generatedJAXB2.FuGECommonAuditContactRoleType;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ContactRoleMappingHelper implements MappingHelper<ContactRole, FuGECommonAuditContactRoleType> {
 

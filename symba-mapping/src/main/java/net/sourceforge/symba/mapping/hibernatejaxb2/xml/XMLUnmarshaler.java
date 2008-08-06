@@ -54,7 +54,7 @@ import java.net.URISyntaxException;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 
 // NOTE: this class only works with a single FuGE element in an xml file: not multiple entries in the same file

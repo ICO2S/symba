@@ -14,7 +14,7 @@ import net.sourceforge.symba.mapping.hibernatejaxb2.xml.OntologyUnmarshaler;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-backend/src/main/java/net/sourceforge/symba/util/UnmarshalOntologyCollection.java $
+ * $HeadURL$
  *
  */
 public class UnmarshalOntologyCollection {

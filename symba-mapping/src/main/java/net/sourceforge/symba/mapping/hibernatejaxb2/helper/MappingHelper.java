@@ -45,7 +45,7 @@ import net.sourceforge.fuge.common.audit.Person;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 
 public interface MappingHelper<P, J> {

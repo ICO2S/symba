@@ -48,7 +48,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class MaterialMappingHelper implements MappingHelper<Material, FuGEBioMaterialMaterialType> {
     private final IdentifiableMappingHelper ci;

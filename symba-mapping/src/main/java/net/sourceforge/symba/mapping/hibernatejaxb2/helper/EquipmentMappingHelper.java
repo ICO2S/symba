@@ -41,7 +41,7 @@ import net.sourceforge.fuge.util.generatedJAXB2.*;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class EquipmentMappingHelper implements MappingHelper<Equipment, FuGECommonProtocolEquipmentType> {
     private final IdentifiableMappingHelper ci;

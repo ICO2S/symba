@@ -47,7 +47,7 @@ import java.util.*;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class DescribableMappingHelper implements MappingHelper<Describable, FuGECommonDescribableType> {
 

@@ -41,7 +41,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class GenericMaterialMappingHelper implements MappingHelper<GenericMaterial, FuGEBioMaterialGenericMaterialType> {
 

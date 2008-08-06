@@ -44,7 +44,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class GenericEquipmentMappingHelper implements MappingHelper<GenericEquipment, FuGECommonProtocolGenericEquipmentType> {
     private final ParameterMappingHelper cp;

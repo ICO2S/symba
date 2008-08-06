@@ -48,7 +48,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class GenericActionMappingHelper implements MappingHelper<GenericAction, FuGECommonProtocolGenericActionType> {
     private final ParameterMappingHelper cp;

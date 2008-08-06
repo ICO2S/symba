@@ -52,7 +52,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCollection, FuGECollectionOntologyCollectionType> {
     private final DescribableMappingHelper cd;

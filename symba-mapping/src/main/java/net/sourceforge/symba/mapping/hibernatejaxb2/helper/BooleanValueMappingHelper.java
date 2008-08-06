@@ -38,7 +38,7 @@ import net.sourceforge.fuge.service.EntityServiceException;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class BooleanValueMappingHelper implements MappingHelper<BooleanValue,FuGECommonMeasurementBooleanValueType> {
 

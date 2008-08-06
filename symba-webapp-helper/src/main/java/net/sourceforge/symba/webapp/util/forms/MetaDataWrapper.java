@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/webapp-helper/src/main/java/uk/ac/cisban/symba/webapp/util/LoadFuge.java $
+ * $HeadURL$
  */
 public class MetaDataWrapper {
 

@@ -22,9 +22,9 @@
             <p>The Integrative Bioinformatics Group, headed by
                 <a href="http://www.cs.ncl.ac.uk/people/home.php?id=91">Neil Wipat</a> and part of The Centre for
                 Integrated Systems Biology of Ageing and Nutrition (CISBAN), has developed a data archive and
-                integrator (SyMBA) based on Milestone 3 of the
+                integrator (SyMBA) based on <b>Version 1 of the
                 <a href="http://fuge.sourceforge.net">Functional Genomics Experiment (FuGE)</a>
-                Object Model (FuGE-OM), and which archives, stores, and retrieves raw high-throughput data. Until now,
+                Object Model (FuGE-OM)</b>, and which archives, stores, and retrieves raw high-throughput data. Until now,
                 few published systems have successfully integrated multiple omics data types and information about
                 experiments in a single database. SyMBA is the first published implementation of FuGE that includes a
                 database back-end, expert and standard interfaces, and a Life Science Identifier (LSID) Resolution and
@@ -42,6 +42,10 @@
 
             <p>SyMBA has been presented at or mentioned in:</p>
             <ul>
+                <li>
+                    September 1-4, 2008 <a href="http://www.mgedmeeting.org/">MGED Society Meeting</a>. SyMBA
+                    will be represented with a poster during this meeting.
+                </li>
                 <li>
                     Summer 2008 <a href="http://www.obi-ontology.org">OBI</a> Workshop. At this workshop a short
                     presentation was given showing how pieces of OBI could be automatically retrieved from the OWL file

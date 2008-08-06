@@ -37,7 +37,7 @@ import net.sourceforge.fuge.util.generatedJAXB2.FuGECommonMeasurementAtomicValue
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 
 public class AtomicValueMappingHelper implements MappingHelper<AtomicValue,FuGECommonMeasurementAtomicValueType> {

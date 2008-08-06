@@ -45,7 +45,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ParameterizableMappingHelper implements MappingHelper<Parameterizable, FuGECommonProtocolParameterizableType> {
     private final ContactRoleMappingHelper ccr;

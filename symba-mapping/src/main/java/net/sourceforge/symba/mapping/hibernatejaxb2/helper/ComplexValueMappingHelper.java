@@ -40,7 +40,7 @@ import net.sourceforge.fuge.util.generatedJAXB2.FuGECommonMeasurementComplexValu
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ComplexValueMappingHelper implements MappingHelper<ComplexValue, FuGECommonMeasurementComplexValueType> {
 

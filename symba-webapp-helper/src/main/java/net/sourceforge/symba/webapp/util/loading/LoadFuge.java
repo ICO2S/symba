@@ -41,7 +41,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/webapp-helper/src/main/java/uk/ac/cisban/symba/webapp/util/LoadFuge.java $
+ * $HeadURL$
  */
 public class LoadFuge {
     private final EntityService entityService;
@@ -59,7 +59,7 @@ public class LoadFuge {
      * @param formSessionBean the bean that holds all information about the current upload
      * @param personBean      the bean that holds all information about the current user
      * @param scpBean         the bean that holds all information about where and how to secure copy the data files
-     * @param softwareMeta
+     * @param softwareMeta    the bean that holds all software information about SyMBA itself
      */
     public LoadFuge( SymbaFormSessionBean formSessionBean,
                      PersonBean personBean,
@@ -1146,7 +1146,7 @@ public class LoadFuge {
         ProtocolCollection protocolCollection = prepareProtocolCollection( fuge );
         // the pre-existing information has been copied. Now add to it in any way you need to
         Set<Software> softwares = ( Set<Software> ) protocolCollection.getAllSoftwares();
-        GenericSoftware producingSoftware = ( GenericSoftware ) symbaEntityService
+        GenericSoftware producingSoftware = symbaEntityService
                 .getGenericSoftwareByNameAndVersion( softwareMeta.getName(), softwareMeta.getVersion() );
 
         if ( producingSoftware == null ) {

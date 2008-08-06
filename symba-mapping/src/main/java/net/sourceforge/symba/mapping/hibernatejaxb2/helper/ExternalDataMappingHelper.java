@@ -42,7 +42,7 @@ import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ExternalDataMappingHelper implements MappingHelper<ExternalData, FuGEBioDataExternalDataType> {
     private final DescribableMappingHelper cd;

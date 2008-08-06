@@ -19,7 +19,7 @@ import java.util.GregorianCalendar;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-core/src/main/java/fugeOM/Common/IdentifiableDaoImpl.java $
+ * $HeadURL$
  */
 public class AuditTest {
 

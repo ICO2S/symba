@@ -43,7 +43,7 @@ import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ProviderMappingHelper implements MappingHelper<Provider, FuGECollectionProviderType> {
     private final IdentifiableMappingHelper ci;

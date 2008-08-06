@@ -45,7 +45,7 @@ import java.util.Collection;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class FuGEMappingHelper implements MappingHelper<FuGE, FuGECollectionFuGEType> {
     private final IdentifiableMappingHelper ci;

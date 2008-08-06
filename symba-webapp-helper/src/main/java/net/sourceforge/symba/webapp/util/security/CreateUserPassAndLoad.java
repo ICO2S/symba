@@ -15,7 +15,7 @@ import java.util.List;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-backend/src/main/java/net/sourceforge/symba/util/security/CreateUserPassAndLoad.java $
+ * $HeadURL$
  *
  */
 

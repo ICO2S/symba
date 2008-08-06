@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-core/src/main/java/fugeOM/Common/IdentifiableDaoImpl.java $
+ * $HeadURL$
  */
 
 public class IdentifiableDaoTest {

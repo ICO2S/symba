@@ -12,7 +12,7 @@ import net.sourceforge.symba.mapping.hibernatejaxb2.xml.WorkflowUnmarshaler;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-backend/src/main/java/net/sourceforge/symba/util/UnmarshalWorkflow.java $
+ * $HeadURL$
  */
 public class UnmarshalWorkflow {
 

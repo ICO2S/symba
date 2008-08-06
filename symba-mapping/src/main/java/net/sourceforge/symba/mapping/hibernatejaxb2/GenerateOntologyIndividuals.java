@@ -58,7 +58,7 @@ import java.io.*;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 
 public class GenerateOntologyIndividuals {

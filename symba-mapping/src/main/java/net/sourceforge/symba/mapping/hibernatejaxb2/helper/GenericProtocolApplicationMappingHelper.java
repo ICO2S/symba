@@ -44,7 +44,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class GenericProtocolApplicationMappingHelper implements MappingHelper<GenericProtocolApplication, FuGECommonProtocolGenericProtocolApplicationType> {
 

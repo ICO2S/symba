@@ -42,7 +42,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ParameterizableApplicationMappingHelper implements MappingHelper<ParameterizableApplication, FuGECommonProtocolParameterizableApplicationType> {
     private final DescribableMappingHelper cd;

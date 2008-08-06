@@ -35,7 +35,7 @@ import net.sourceforge.symba.mapping.hibernatejaxb2.xml.XMLMarshaler;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 
 public class MarshalXML {

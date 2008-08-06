@@ -23,7 +23,7 @@ import java.util.*;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-backend/src/main/java/net/sourceforge/symba/util/conversion/xml/SecurityPeopleLoader.java $
+ * $HeadURL$
  *
  */
 public class SecurityPeopleLoader {

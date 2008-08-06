@@ -48,7 +48,7 @@ import java.util.Set;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class IdentifiableMappingHelper implements MappingHelper<Identifiable, FuGECommonIdentifiableType> {
     private final DescribableMappingHelper cd;

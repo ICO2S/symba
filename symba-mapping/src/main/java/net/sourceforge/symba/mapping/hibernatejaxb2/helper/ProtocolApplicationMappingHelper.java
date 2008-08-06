@@ -51,7 +51,7 @@ import java.util.GregorianCalendar;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ProtocolApplicationMappingHelper implements
         MappingHelper<ProtocolApplication, FuGECommonProtocolProtocolApplicationType> {

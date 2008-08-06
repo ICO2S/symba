@@ -45,7 +45,7 @@ import java.util.*;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ProtocolMappingHelper implements MappingHelper<Protocol, FuGECommonProtocolProtocolType> {
     private final IdentifiableMappingHelper ci;

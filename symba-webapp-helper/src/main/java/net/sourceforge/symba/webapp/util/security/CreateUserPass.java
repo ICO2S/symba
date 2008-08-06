@@ -16,7 +16,7 @@ import org.jdom.JDOMException;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-backend/src/main/java/net/sourceforge/symba/util/security/CreateUserPass.java $
+ * $HeadURL$
  *
  */
 public class CreateUserPass {

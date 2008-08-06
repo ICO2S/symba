@@ -41,7 +41,7 @@ import net.sourceforge.fuge.common.audit.Person;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class DataMappingHelper implements MappingHelper<Data, FuGEBioDataDataType> {
     private final IdentifiableMappingHelper ci;

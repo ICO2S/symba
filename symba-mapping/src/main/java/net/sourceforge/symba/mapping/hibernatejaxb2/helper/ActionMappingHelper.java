@@ -42,7 +42,7 @@ import java.io.PrintStream;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: $
+ * $HeadURL$
  */
 public class ActionMappingHelper implements MappingHelper<Action, FuGECommonProtocolActionType> {
     private final IdentifiableMappingHelper ci;

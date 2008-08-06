@@ -1,5 +1,17 @@
 Installation Instructions for the SyMBA
 --------------------------------------------
 
-Please contact Allyson Lister for access to the installation instructions via google docs,
-as they have not yet been finalized.
+There is a reasonable amount of setup of your environment to get it ready to create your own installation of SyMBA.
+These instructions are available on the SyMBA website, where you may view the HTML or download the PDF versions, at:
+
+http://symba.sourceforge.net/symba-books/installation/index.html
+
+You may also generate the documentation locally. Go into the symba-books directory, and run
+
+mvn doxia:render-books
+mvn site:site
+
+Then you will be able to view the HTML generated from these commands. Point your browser to the symba-books/target/site
+directory, and open index.html to get you started.
+
+Please direct any questions, comments, or suggestions to symba-devel@lists.sourceforge.net.

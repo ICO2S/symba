@@ -13,6 +13,11 @@
     <dependencies>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>symba-lsid-ws-api</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>symba-core</artifactId>
             <version>${pom.version}</version>
         </dependency>

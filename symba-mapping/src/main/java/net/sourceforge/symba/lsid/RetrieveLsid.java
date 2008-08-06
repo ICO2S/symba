@@ -1,7 +1,7 @@
 package net.sourceforge.symba.lsid;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-//import net.sourceforge.symba.lsid.webservices.service.LsidAssigner;
+import net.sourceforge.symba.lsid.webservices.service.LsidAssigner;
 
 /*
  * This file is part of SyMBA.
@@ -28,12 +28,11 @@ public class RetrieveLsid {
     private static final ClassPathXmlApplicationContext context
             = new ClassPathXmlApplicationContext( "/client-beans.xml" );
     // get the assigner
-//    private static final LsidAssigner assigner = ( LsidAssigner ) context.getBean( "clientAssigner" );
+    private static final LsidAssigner assigner = ( LsidAssigner ) context.getBean( "clientAssigner" );
 
     public static String getLSID( String namespace ) {
         // create the new LSID
-        return namespace;
-//        return assigner.assignLSID( namespace );
+        return assigner.assignLSID( namespace );
     }
 
     public static void main( String[] args ) {

@@ -19,7 +19,6 @@ import net.sourceforge.fuge.common.audit.Person;
  * $Author$
  * $HeadURL$
  */
- */
 public class OntologyLoader {
 
     /**

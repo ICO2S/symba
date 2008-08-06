@@ -5,7 +5,7 @@
  ---
  May 2008
 
-Purpose of SyMBA, and its
+Purpose of SyMBA
 
   Systems and other integrative approaches to biology generate a wide variety of genome-scale and high-throughput data
   that must be annotated and reliably stored. Novel data repositories are required that not only allow the storage of
@@ -84,7 +84,7 @@ Relation to the FuGE Toolkit Projects
    specifically holding these jars is available, can be accessed by adding the following repository to your own pom (if you
    wish to use SyMBA jars, but not SyMBA itself).
 
-  +---+
++---+
        <repository>
          <id>carmen-snapshot</id>
          <name>Carmen snapshot repository</name>
@@ -95,7 +95,7 @@ Relation to the FuGE Toolkit Projects
          <name>Carmen release repository</name>
          <url>http://carmen.ncl.ac.uk/maven/repo</url>
        </repository>
-  +---+
++---+
 
    Please note that these jars will not have any real database connection details, so cannot be used to connect to an
    in-house database, but are useful if you just want to make use of, or view, some of the helper classes.

@@ -7,6 +7,9 @@
 # Add official staff members to the SyMBA database
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalPeople" -Dexec.args="xml/samples/SamplePeople.xml"
 
+# Add a set of ontology terms to the SyMBA database
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalOntologyCollection" -Dexec.args="xml/referenceTemplates/MiMage-Terms.xml"
+
 # Add workflow(s) to the SyMBA database
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="out.html xml/samples/SampleMicroarray.xml"
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="out.html xml/samples/SampleMicroscopy.xml"

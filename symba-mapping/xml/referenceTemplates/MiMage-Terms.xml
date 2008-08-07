@@ -1,4 +1,4 @@
-<OntologyCollection>
+<OntologyCollection xmlns="http://fuge.sourceforge.net/fuge/1.0">
     <OntologyIndividual name="OntologyIndividual Dummy" termAccession="not applicable" term="none"
                         OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:3235c7ac-a452-4593-9849-0a17511a37dc"
                         Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:28619283-9046-4b21-b029-162d752b50be"

@@ -87,8 +87,8 @@ public class GenerateOntologyIndividuals {
             br = new BufferedReader( new InputStreamReader( new FileInputStream( inputListFilename ) ) );
 
             // create a JAXBContext capable of handling classes generated into
-            // the fugeOM.util.generatedJAXB2 package
-            JAXBContext jc = JAXBContext.newInstance( "fugeOM.util.generatedJAXB2" );
+            // the net.sourceforge.fuge.util.generatedJAXB2 package
+            JAXBContext jc = JAXBContext.newInstance( "net.sourceforge.fuge.util.generatedJAXB2" );
 
             // create a Marshaller
             Marshaller m = jc.createMarshaller();

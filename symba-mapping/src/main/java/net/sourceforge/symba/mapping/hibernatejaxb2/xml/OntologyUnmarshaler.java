@@ -44,8 +44,8 @@ public class OntologyUnmarshaler {
     public void Jaxb2ToFuGE() throws JAXBException, FileNotFoundException, URISyntaxException {
 
         // create a JAXBContext capable of handling classes generated into
-        // the fugeOM.util.generatedJAXB2 package
-        JAXBContext jc = JAXBContext.newInstance( "fugeOM.util.generatedJAXB2" );
+        // the net.sourceforge.fuge.util.generatedJAXB2 package
+        JAXBContext jc = JAXBContext.newInstance( "net.sourceforge.fuge.util.generatedJAXB2" );
 
         // create an Unmarshaller
         Unmarshaller u = jc.createUnmarshaller();
@@ -62,7 +62,7 @@ public class OntologyUnmarshaler {
 
         // unmarshall the jaxb object without loading the collection into the database
         OntologyCollection ontologyCollection = ( OntologyCollection ) entityService
-                .createDescribable( "fugeOM.Collection.OntologyCollection" );
+                .createDescribable( "net.sourceforge.fuge.collection.OntologyCollection" );
         helper.unmarshalCollectionContents( collectionType, ontologyCollection, null );
     }
 

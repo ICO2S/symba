@@ -24,68 +24,68 @@ public class ReorganizeCollections {
 
         if ( fuge.getAuditCollection() != null ) {
             AuditCollection collection = ( AuditCollection ) entityService
-                    .createDescribable( "fugeOM.Collection.AuditCollection" );
+                    .createDescribable( "net.sourceforge.fuge.Collection.AuditCollection" );
             collection.setAllContacts( fuge.getAuditCollection().getAllContacts() );
             collection.setSecurityCollection( fuge.getAuditCollection().getSecurityCollection() );
             collection.setSecurityGroups( fuge.getAuditCollection().getSecurityGroups() );
-            DatabaseObjectHelper.save( "fugeOM.Collection.AuditCollection", collection, performer );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.AuditCollection", collection, performer );
             fuge.setAuditCollection( collection );
         }
 
         if ( fuge.getOntologyCollection() != null ) {
             OntologyCollection collection = ( OntologyCollection ) entityService
-                    .createDescribable( "fugeOM.Collection.OntologyCollection" );
+                    .createDescribable( "net.sourceforge.fuge.Collection.OntologyCollection" );
             collection.setSources( fuge.getOntologyCollection().getSources() );
             collection.setOntologyTerms( fuge.getOntologyCollection().getOntologyTerms() );
-            DatabaseObjectHelper.save( "fugeOM.Collection.OntologyCollection", collection, performer );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.OntologyCollection", collection, performer );
             fuge.setOntologyCollection( collection );
         }
 
         if ( fuge.getReferenceableCollection() != null ) {
             ReferenceableCollection collection = ( ReferenceableCollection ) entityService.createDescribable(
-                    "fugeOM.Collection.ReferenceableCollection" );
+                    "net.sourceforge.fuge.Collection.ReferenceableCollection" );
             collection.setAllDatabases( fuge.getReferenceableCollection().getAllDatabases() );
             collection.setAllBibliographicReferences( fuge.getReferenceableCollection().getAllBibliographicReferences() );
-            DatabaseObjectHelper.save( "fugeOM.Collection.ReferenceableCollection", collection, performer );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.ReferenceableCollection", collection, performer );
             fuge.setReferenceableCollection( collection );
         }
 
         if ( fuge.getMaterialCollection() != null ) {
             MaterialCollection collection = ( MaterialCollection ) entityService.createDescribable(
-                    "fugeOM.Collection.MaterialCollection" );
+                    "net.sourceforge.fuge.Collection.MaterialCollection" );
             collection.setMaterials( fuge.getMaterialCollection().getMaterials() );
-            DatabaseObjectHelper.save( "fugeOM.Collection.MaterialCollection", collection, performer );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.MaterialCollection", collection, performer );
             fuge.setMaterialCollection( collection );
         }
 
         if ( fuge.getDataCollection() != null ) {
             DataCollection collection = ( DataCollection ) entityService.createDescribable(
-                    "fugeOM.Collection.DataCollection" );
+                    "net.sourceforge.fuge.Collection.DataCollection" );
             collection.setAllData( fuge.getDataCollection().getAllData() );
             collection.setAllDataPartitions( fuge.getDataCollection().getAllDataPartitions() );
             collection.setAllDimensions( fuge.getDataCollection().getAllDimensions() );
             collection.setHigherLevelAnalyses( fuge.getDataCollection().getHigherLevelAnalyses() );
-            DatabaseObjectHelper.save( "fugeOM.Collection.DataCollection", collection, performer );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.DataCollection", collection, performer );
             fuge.setDataCollection( collection );
         }
 
         if ( fuge.getProtocolCollection() != null ) {
             ProtocolCollection collection = ( ProtocolCollection ) entityService.createDescribable(
-                    "fugeOM.Collection.ProtocolCollection" );
+                    "net.sourceforge.fuge.Collection.ProtocolCollection" );
             collection.setAllEquipment( fuge.getProtocolCollection().getAllEquipment() );
             collection.setProtocolApplications( fuge.getProtocolCollection().getProtocolApplications() );
             collection.setAllSoftwares( fuge.getProtocolCollection().getAllSoftwares() );
             collection.setProtocols( fuge.getProtocolCollection().getProtocols() );
-            DatabaseObjectHelper.save( "fugeOM.Collection.ProtocolCollection", collection, performer );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.ProtocolCollection", collection, performer );
             fuge.setProtocolCollection( collection );
         }
 
         if ( fuge.getInvestigationCollection() != null ) {
             InvestigationCollection collection = ( InvestigationCollection ) entityService.createDescribable(
-                    "fugeOM.Collection.InvestigationCollection" );
+                    "net.sourceforge.fuge.Collection.InvestigationCollection" );
             collection.setInvestigations( fuge.getInvestigationCollection().getInvestigations() );
             collection.setFactorCollection( fuge.getInvestigationCollection().getFactorCollection() );
-            DatabaseObjectHelper.save( "fugeOM.Collection.InvestigationCollection", collection, performer );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.InvestigationCollection", collection, performer );
             fuge.setInvestigationCollection( collection );
         }
         return fuge;

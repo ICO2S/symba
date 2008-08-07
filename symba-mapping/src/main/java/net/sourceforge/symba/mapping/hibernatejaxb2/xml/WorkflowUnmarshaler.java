@@ -51,7 +51,7 @@ public class WorkflowUnmarshaler {
             System.err.println( "file number: " + iii );
 
             // create a JAXBContext capable of handling classes generated into
-            // the fugeOM.util.generatedJAXB2 package
+            // the net.sourceforge.fuge.util.generatedJAXB2 package
             JAXBContext jc = JAXBContext.newInstance( "net.sourceforge.fuge.util.generatedJAXB2" );
 
             // create an Unmarshaller

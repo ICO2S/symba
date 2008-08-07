@@ -81,7 +81,7 @@ public class XMLUnmarshaler {
     public String Jaxb2ToFuGE( Person performer ) throws JAXBException, SAXException, EntityServiceException, URISyntaxException, FileNotFoundException {
 
         // create a JAXBContext capable of handling classes generated into
-        // the fugeOM.util.generatedJAXB2 package
+        // the net.sourceforge.fuge.util.generatedJAXB2 package
         JAXBContext jc = JAXBContext.newInstance( "net.sourceforge.fuge.util.generatedJAXB2" );
 
         // create an Unmarshaller
@@ -95,8 +95,8 @@ public class XMLUnmarshaler {
             u.setSchema( schema );
         }
 
-        // unmarshal a fugeOM.util.generatedJAXB2 instance document into a tree of Java content
-        // objects composed of classes from the fugeOM.util.generatedJAXB2 package.
+        // unmarshal a net.sourceforge.fuge.util.generatedJAXB2 instance document into a tree of Java content
+        // objects composed of classes from the net.sourceforge.fuge.util.generatedJAXB2 package.
         JAXBElement<?> genericTopLevelElement = ( JAXBElement<?> ) u.unmarshal( new FileInputStream( XMLFilename ) );
 
         // Get the jaxb root object

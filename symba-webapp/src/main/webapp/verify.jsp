@@ -70,8 +70,7 @@ must go back to the login page--%>
 </c:if>
 
 <%--
-  Create an EmployeeBean and save it in
-  the session scope and redirect to the appropriate page.
+  Retrieve the information from the security database.
 --%>
 <c:set var="dbValues" value="${empInfo.rows[0]}"/>
 <jsp:useBean id="validUser" scope="session"
@@ -98,11 +97,10 @@ must go back to the login page--%>
     softwareMeta.setVersion( bundle.getString( "net.sourceforge.symba.webapp.softwareVersion" ));
 
     validUser.startServices();
-    validUser.setLsid( validUser.getLsid().trim() );
-    Person p = ( Person ) validUser.getSymbaEntityService().getLatestByEndurant( validUser.getLsid() );
-    validUser.setEndurantLsid( p.getEndurant().getIdentifier() );
-    validUser.setEmail( p.getEmail() );
+    validUser.setEndurantLsid( validUser.getLsid().trim() );
+    Person p = ( Person ) validUser.getSymbaEntityService().getLatestByEndurant( validUser.getEndurantLsid() );
     validUser.setLsid( p.getIdentifier() );
+    validUser.setEmail( p.getEmail() );
     validUser.setFirstName( p.getFirstName() );
     validUser.setLastName( p.getLastName() );
 

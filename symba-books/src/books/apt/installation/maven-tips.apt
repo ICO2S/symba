@@ -18,8 +18,8 @@ Using the Maven 2 exec:java Command
     from the {{http://mojo.codehaus.org/exec-maven-plugin/java-mojo.html}Developer's website}}.
 
     Let's take the example of loading the Sample People into the SyMBA Database. The command should be run from within
-    the symba-backend/ subdirectory. It is as found in the
-    <<<symba-backend/README.txt>>> file is:
+    the symba-mapping/ subdirectory. It is as found in the
+    <<<symba-mapping/README.txt>>> file is:
 
 +---+
   mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalPeople" -Dexec.args="xml/samples/SamplePeople.xml"

@@ -44,7 +44,7 @@ import java.util.TreeSet;
 
 public class XmlDbRoundtripTest {
 
-    @Test( groups = { "hibernate" } )
+    @Test( groups = { "roundtrip", "hibernate" } )
     public void testRoundtripWithDatabase() throws URISyntaxException, JAXBException, SAXException, IOException {
 
         // todo this file should be put in a suitable user-specified directory

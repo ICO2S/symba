@@ -87,7 +87,10 @@ public class RandomXmlGenerator {
      * @throws SAXException          if there is an error adding the schema to use for validating
      * @throws FileNotFoundException @param xmlFilename the name of the file to write to
      */
-    public static void generate( String xmlFilename, int depth ) throws JAXBException, SAXException, FileNotFoundException {
+    public static void generate( String xmlFilename, int depth ) throws
+            JAXBException,
+            SAXException,
+            FileNotFoundException {
 
         ELEMENT_DEPTH = depth;
         generate( null, xmlFilename );
@@ -104,7 +107,10 @@ public class RandomXmlGenerator {
      * @throws SAXException          if there is an error adding the schema to use for validating
      * @throws FileNotFoundException @param xmlFilename the name of the file to write to
      */
-    public static void generate( String schemaFilename, String xmlFilename, int depth ) throws JAXBException, SAXException, FileNotFoundException {
+    public static void generate( String schemaFilename, String xmlFilename, int depth ) throws
+            JAXBException,
+            SAXException,
+            FileNotFoundException {
 
         ELEMENT_DEPTH = depth;
         generate( schemaFilename, xmlFilename );
@@ -121,7 +127,10 @@ public class RandomXmlGenerator {
      * @throws SAXException          if there is an error adding the schema to use for validating
      * @throws FileNotFoundException @param xmlFilename the name of the file to write to
      */
-    public static void generate( String schemaFilename, String xmlFilename ) throws JAXBException, SAXException, FileNotFoundException {
+    public static void generate( String schemaFilename, String xmlFilename ) throws
+            JAXBException,
+            SAXException,
+            FileNotFoundException {
 
         FuGECollectionFuGEType rootXML;
 
@@ -239,14 +248,16 @@ public class RandomXmlGenerator {
      */
     private static FuGECollectionFuGEType generateRandomInvestigationCollectionXML( FuGECollectionFuGEType fugeXML ) {
 
-        FuGECollectionInvestigationCollectionType investigationCollectionXML = new FuGECollectionInvestigationCollectionType();
+        FuGECollectionInvestigationCollectionType investigationCollectionXML =
+                new FuGECollectionInvestigationCollectionType();
         investigationCollectionXML = ( FuGECollectionInvestigationCollectionType ) generateRandomDescribableXML(
                 investigationCollectionXML );
 
         for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
             FuGEBioInvestigationInvestigationType investigationXML = new FuGEBioInvestigationInvestigationType();
 
-            investigationXML = ( FuGEBioInvestigationInvestigationType ) generateRandomIdentifiableXML( investigationXML );
+            investigationXML =
+                    ( FuGEBioInvestigationInvestigationType ) generateRandomIdentifiableXML( investigationXML );
             investigationCollectionXML.getInvestigation().add( investigationXML );
             FuGEBioInvestigationFactorType factorXML = new FuGEBioInvestigationFactorType();
 
@@ -255,7 +266,8 @@ public class RandomXmlGenerator {
             // set the non-identifiable traits
 
             if ( fugeXML.getOntologyCollection() != null ) {
-                FuGEBioInvestigationFactorType.FactorType categoryValueXML = new FuGEBioInvestigationFactorType.FactorType();
+                FuGEBioInvestigationFactorType.FactorType categoryValueXML =
+                        new FuGEBioInvestigationFactorType.FactorType();
                 categoryValueXML.setOntologyTermRef(
                         fugeXML.getOntologyCollection().getOntologyTerm().get( i ).getValue().getIdentifier() );
                 factorXML.setFactorType( categoryValueXML );
@@ -356,10 +368,11 @@ public class RandomXmlGenerator {
         if ( protocolCollectionXML.getProtocolApplication().isEmpty() ) {
             // protocol application
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                JAXBElement<? extends FuGECommonProtocolGenericProtocolApplicationType> element = ( new ObjectFactory() )
-                        .createGenericProtocolApplication(
-                                ( FuGECommonProtocolGenericProtocolApplicationType ) generateRandomProtocolApplicationXML(
-                                        i, protocolCollectionXML, fugeXML ) );
+                JAXBElement<? extends FuGECommonProtocolGenericProtocolApplicationType> element =
+                        ( new ObjectFactory() )
+                                .createGenericProtocolApplication(
+                                        ( FuGECommonProtocolGenericProtocolApplicationType ) generateRandomProtocolApplicationXML(
+                                                i, protocolCollectionXML, fugeXML ) );
                 protocolCollectionXML.getProtocolApplication().add( element );
             }
         }
@@ -379,10 +392,12 @@ public class RandomXmlGenerator {
     private static FuGECommonProtocolProtocolType generateRandomProtocolXML( FuGECommonProtocolProtocolType protocolXML,
                                                                              FuGECollectionProtocolCollectionType protocolCollectionXML,
                                                                              FuGECollectionFuGEType fugeXML ) {
-        FuGECommonProtocolGenericProtocolType genericProtocolXML = ( FuGECommonProtocolGenericProtocolType ) protocolXML;
+        FuGECommonProtocolGenericProtocolType genericProtocolXML =
+                ( FuGECommonProtocolGenericProtocolType ) protocolXML;
 
         // get protocol attributes
-        genericProtocolXML = ( FuGECommonProtocolGenericProtocolType ) generateRandomIdentifiableXML( genericProtocolXML );
+        genericProtocolXML =
+                ( FuGECommonProtocolGenericProtocolType ) generateRandomIdentifiableXML( genericProtocolXML );
 
         genericProtocolXML = ( FuGECommonProtocolGenericProtocolType ) generateRandomParameterizableXML(
                 genericProtocolXML, fugeXML );
@@ -390,7 +405,8 @@ public class RandomXmlGenerator {
         if ( fugeXML.getOntologyCollection() != null ) {
             // input types
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                FuGECommonProtocolProtocolType.InputTypes inputTypesXML = new FuGECommonProtocolProtocolType.InputTypes();
+                FuGECommonProtocolProtocolType.InputTypes inputTypesXML =
+                        new FuGECommonProtocolProtocolType.InputTypes();
                 inputTypesXML.setOntologyTermRef(
                         fugeXML.getOntologyCollection().getOntologyTerm().get( i ).getValue().getIdentifier() );
                 genericProtocolXML.getInputTypes().add( inputTypesXML );
@@ -398,7 +414,8 @@ public class RandomXmlGenerator {
 
             // output types
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                FuGECommonProtocolProtocolType.OutputTypes outputTypesXML = new FuGECommonProtocolProtocolType.OutputTypes();
+                FuGECommonProtocolProtocolType.OutputTypes outputTypesXML =
+                        new FuGECommonProtocolProtocolType.OutputTypes();
                 outputTypesXML.setOntologyTermRef(
                         fugeXML.getOntologyCollection().getOntologyTerm().get( i ).getValue().getIdentifier() );
                 genericProtocolXML.getOutputTypes().add( outputTypesXML );
@@ -437,14 +454,16 @@ public class RandomXmlGenerator {
         if ( protocolCollectionXML != null ) {
             // protocol to equipment
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                FuGECommonProtocolGenericProtocolType.Equipment equip = new FuGECommonProtocolGenericProtocolType.Equipment();
+                FuGECommonProtocolGenericProtocolType.Equipment equip =
+                        new FuGECommonProtocolGenericProtocolType.Equipment();
                 equip.setGenericEquipmentRef(
                         protocolCollectionXML.getEquipment().get( i ).getValue().getIdentifier() );
                 genericProtocolXML.getEquipment().add( equip );
             }
             // software
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                FuGECommonProtocolGenericProtocolType.Software genSoftware = new FuGECommonProtocolGenericProtocolType.Software();
+                FuGECommonProtocolGenericProtocolType.Software genSoftware =
+                        new FuGECommonProtocolGenericProtocolType.Software();
                 genSoftware.setGenericSoftwareRef(
                         protocolCollectionXML.getSoftware().get( i ).getValue().getIdentifier() );
                 genericProtocolXML.getSoftware().add( genSoftware );
@@ -462,7 +481,8 @@ public class RandomXmlGenerator {
      */
     private static FuGECommonProtocolGenericActionType generateRandomActionXML( FuGECommonProtocolActionType actionXML,
                                                                                 int ordinal,
-                                                                                FuGECollectionProtocolCollectionType protocolCollectionXML, FuGECollectionFuGEType fugeXML ) {
+                                                                                FuGECollectionProtocolCollectionType protocolCollectionXML,
+                                                                                FuGECollectionFuGEType fugeXML ) {
 
         FuGECommonProtocolGenericActionType genericActionXML = ( FuGECommonProtocolGenericActionType ) actionXML;
 
@@ -485,8 +505,10 @@ public class RandomXmlGenerator {
      * @param fugeXML               the object to get some information from
      * @return a random JAXB2 GenericAction
      */
-    private static FuGECommonProtocolGenericActionType generateRandomGenericActionXML( FuGECommonProtocolGenericActionType genericActionXML,
-                                                                                       FuGECollectionProtocolCollectionType protocolCollectionXML, FuGECollectionFuGEType fugeXML ) {
+    private static FuGECommonProtocolGenericActionType generateRandomGenericActionXML(
+            FuGECommonProtocolGenericActionType genericActionXML,
+            FuGECollectionProtocolCollectionType protocolCollectionXML,
+            FuGECollectionFuGEType fugeXML ) {
 
         genericActionXML.setActionText( String.valueOf( Math.random() ) );
 
@@ -506,7 +528,8 @@ public class RandomXmlGenerator {
         // you can only have a GenericParameter here
         for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
             genericActionXML.getGenericParameter().add(
-                    ( FuGECommonProtocolGenericParameterType ) generateRandomParameterXML( new FuGECommonProtocolGenericParameterType(), fugeXML ) );
+                    ( FuGECommonProtocolGenericParameterType ) generateRandomParameterXML(
+                            new FuGECommonProtocolGenericParameterType(), fugeXML ) );
         }
 
         return genericActionXML;
@@ -521,15 +544,22 @@ public class RandomXmlGenerator {
      * @return a random JAXB2 ProtocolApplication
      */
     private static FuGECommonProtocolProtocolApplicationType generateRandomProtocolApplicationXML( int ordinal,
-                                                                                                   FuGECollectionProtocolCollectionType protocolCollectionXML, FuGECollectionFuGEType fugeXML ) {
-        FuGECommonProtocolGenericProtocolApplicationType genericProtocolApplicationXML = new FuGECommonProtocolGenericProtocolApplicationType();
+                                                                                                   FuGECollectionProtocolCollectionType protocolCollectionXML,
+                                                                                                   FuGECollectionFuGEType fugeXML ) {
+        FuGECommonProtocolGenericProtocolApplicationType genericProtocolApplicationXML =
+                new FuGECommonProtocolGenericProtocolApplicationType();
 
         // get protocol application attributes
-        genericProtocolApplicationXML = ( FuGECommonProtocolGenericProtocolApplicationType ) generateRandomIdentifiableXML( genericProtocolApplicationXML );
-        genericProtocolApplicationXML = ( FuGECommonProtocolGenericProtocolApplicationType ) generateRandomParameterizableApplicationXML( genericProtocolApplicationXML, protocolCollectionXML, fugeXML );
+        genericProtocolApplicationXML =
+                ( FuGECommonProtocolGenericProtocolApplicationType ) generateRandomIdentifiableXML(
+                        genericProtocolApplicationXML );
+        genericProtocolApplicationXML =
+                ( FuGECommonProtocolGenericProtocolApplicationType ) generateRandomParameterizableApplicationXML(
+                        genericProtocolApplicationXML, protocolCollectionXML, fugeXML );
 
         try {
-            genericProtocolApplicationXML.setActivityDate( DatatypeFactory.newInstance().newXMLGregorianCalendar( new GregorianCalendar() ) );
+            genericProtocolApplicationXML.setActivityDate(
+                    DatatypeFactory.newInstance().newXMLGregorianCalendar( new GregorianCalendar() ) );
         } catch ( DatatypeConfigurationException e ) {
             throw new RuntimeException( "Error creating XMLGregorianCalendar from current date", e );
         }
@@ -549,13 +579,15 @@ public class RandomXmlGenerator {
             FuGECommonProtocolActionApplicationType type = new FuGECommonProtocolActionApplicationType();
             type = ( FuGECommonProtocolActionApplicationType ) generateRandomIdentifiableXML( type );
 
-            FuGECommonProtocolGenericProtocolType gpType = ( FuGECommonProtocolGenericProtocolType ) protocolCollectionXML
-                    .getProtocol().get( ordinal ).getValue();
+            FuGECommonProtocolGenericProtocolType gpType =
+                    ( FuGECommonProtocolGenericProtocolType ) protocolCollectionXML
+                            .getProtocol().get( ordinal ).getValue();
             type.setActionRef( gpType.getAction().get( ordinal ).getValue().getIdentifier() );
             FuGECommonDescriptionDescriptionType descXML = new FuGECommonDescriptionDescriptionType();
             descXML = ( FuGECommonDescriptionDescriptionType ) generateRandomDescribableXML( descXML );
             descXML.setText( String.valueOf( Math.random() ) );
-            FuGECommonProtocolActionApplicationType.ActionDeviation deviation = new FuGECommonProtocolActionApplicationType.ActionDeviation();
+            FuGECommonProtocolActionApplicationType.ActionDeviation deviation =
+                    new FuGECommonProtocolActionApplicationType.ActionDeviation();
             deviation.setDescription( descXML );
 
             type.setActionDeviation( deviation );
@@ -570,14 +602,16 @@ public class RandomXmlGenerator {
             }
         }
 
-        FuGECommonProtocolProtocolApplicationType.ProtocolDeviation pdXML = new FuGECommonProtocolProtocolApplicationType.ProtocolDeviation();
+        FuGECommonProtocolProtocolApplicationType.ProtocolDeviation pdXML =
+                new FuGECommonProtocolProtocolApplicationType.ProtocolDeviation();
         FuGECommonDescriptionDescriptionType descXML = new FuGECommonDescriptionDescriptionType();
         descXML = ( FuGECommonDescriptionDescriptionType ) generateRandomDescribableXML( descXML );
         descXML.setText( String.valueOf( Math.random() ) );
         pdXML.setDescription( descXML );
         genericProtocolApplicationXML.setProtocolDeviation( pdXML );
 
-        genericProtocolApplicationXML = generateRandomGenericProtocolApplicationXML( genericProtocolApplicationXML, ordinal, protocolCollectionXML, fugeXML );
+        genericProtocolApplicationXML = generateRandomGenericProtocolApplicationXML( genericProtocolApplicationXML,
+                ordinal, protocolCollectionXML, fugeXML );
         return genericProtocolApplicationXML;
     }
 
@@ -604,21 +638,41 @@ public class RandomXmlGenerator {
 
         if ( fugeXML.getDataCollection() != null ) {
             // input data
-            FuGECommonProtocolGenericProtocolApplicationType.InputData gidXML = new FuGECommonProtocolGenericProtocolApplicationType.InputData();
+            FuGECommonProtocolGenericProtocolApplicationType.InputData gidXML =
+                    new FuGECommonProtocolGenericProtocolApplicationType.InputData();
             gidXML.setDataRef( fugeXML.getDataCollection().getData().get( ordinal ).getValue().getIdentifier() );
             genericProtocolApplicationXML.getInputData().add( gidXML );
 
             // output data
-            FuGECommonProtocolGenericProtocolApplicationType.OutputData godXML = new FuGECommonProtocolGenericProtocolApplicationType.OutputData();
+            FuGECommonProtocolGenericProtocolApplicationType.OutputData godXML =
+                    new FuGECommonProtocolGenericProtocolApplicationType.OutputData();
             godXML.setDataRef( fugeXML.getDataCollection().getData().get( output ).getValue().getIdentifier() );
             genericProtocolApplicationXML.getOutputData().add( godXML );
         }
 
         if ( fugeXML.getMaterialCollection() != null ) {
-            // output material
-            FuGECommonProtocolGenericProtocolApplicationType.OutputMaterials gomXML = new FuGECommonProtocolGenericProtocolApplicationType.OutputMaterials();
-            gomXML.setMaterialRef(
+            // input complete material
+            FuGECommonProtocolGenericProtocolApplicationType.InputCompleteMaterials icmXML =
+                    new FuGECommonProtocolGenericProtocolApplicationType.InputCompleteMaterials();
+            icmXML.setMaterialRef(
                     fugeXML.getMaterialCollection().getMaterial().get( ordinal ).getValue().getIdentifier() );
+            genericProtocolApplicationXML.getInputCompleteMaterials().add( icmXML );
+
+            // input material
+            FuGEBioMaterialGenericMaterialMeasurementType gmmXML = new FuGEBioMaterialGenericMaterialMeasurementType();
+            gmmXML.setMaterialRef(
+                    fugeXML.getMaterialCollection().getMaterial().get( ordinal ).getValue().getIdentifier() );
+            ObjectFactory factory = new ObjectFactory();
+            FuGECommonMeasurementRangeType valueXML = ( FuGECommonMeasurementRangeType )
+                    generateRandomMeasurementXML( new FuGECommonMeasurementRangeType(), fugeXML );
+            gmmXML.setMeasurement( factory.createRange( valueXML ) );
+            genericProtocolApplicationXML.getGenericMaterialMeasurement().add( gmmXML );
+
+            // output material
+            FuGECommonProtocolGenericProtocolApplicationType.OutputMaterials gomXML =
+                    new FuGECommonProtocolGenericProtocolApplicationType.OutputMaterials();
+            gomXML.setMaterialRef(
+                    fugeXML.getMaterialCollection().getMaterial().get( output ).getValue().getIdentifier() );
             genericProtocolApplicationXML.getOutputMaterials().add( gomXML );
         }
 
@@ -635,19 +689,23 @@ public class RandomXmlGenerator {
             FuGECommonProtocolParameterizableApplicationType parameterizableApplicationXML,
             FuGECollectionProtocolCollectionType protocolCollectionXML, FuGECollectionFuGEType fugeXML ) {
 
-        parameterizableApplicationXML = ( FuGECommonProtocolParameterizableApplicationType ) generateRandomIdentifiableXML( parameterizableApplicationXML );
+        parameterizableApplicationXML =
+                ( FuGECommonProtocolParameterizableApplicationType ) generateRandomIdentifiableXML(
+                        parameterizableApplicationXML );
 
         if ( !protocolCollectionXML.getEquipment().isEmpty() ) {
-            FuGECommonProtocolGenericEquipmentType eqXML = ( FuGECommonProtocolGenericEquipmentType ) protocolCollectionXML
-                    .getEquipment()
-                    .get( 0 )
-                    .getValue();
+            FuGECommonProtocolGenericEquipmentType eqXML =
+                    ( FuGECommonProtocolGenericEquipmentType ) protocolCollectionXML
+                            .getEquipment()
+                            .get( 0 )
+                            .getValue();
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
                 FuGECommonProtocolParameterValueType pvalueXML = new FuGECommonProtocolParameterValueType();
                 pvalueXML = ( FuGECommonProtocolParameterValueType ) generateRandomDescribableXML( pvalueXML );
                 pvalueXML.setParameterRef( eqXML.getGenericParameter().get( 0 ).getIdentifier() );
                 pvalueXML.setMeasurement( ( new ObjectFactory() ).createAtomicValue(
-                        ( FuGECommonMeasurementAtomicValueType ) generateRandomMeasurementXML( new FuGECommonMeasurementAtomicValueType(), fugeXML ) ) );
+                        ( FuGECommonMeasurementAtomicValueType ) generateRandomMeasurementXML(
+                                new FuGECommonMeasurementAtomicValueType(), fugeXML ) ) );
                 parameterizableApplicationXML.getParameterValue().add( pvalueXML );
             }
         }
@@ -670,7 +728,8 @@ public class RandomXmlGenerator {
         for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
             FuGECommonProtocolGenericEquipmentType genEquipmentXML = new FuGECommonProtocolGenericEquipmentType();
 
-            genEquipmentXML = ( FuGECommonProtocolGenericEquipmentType ) generateRandomIdentifiableXML( genEquipmentXML );
+            genEquipmentXML =
+                    ( FuGECommonProtocolGenericEquipmentType ) generateRandomIdentifiableXML( genEquipmentXML );
 
 
             genEquipmentXML = ( FuGECommonProtocolGenericEquipmentType ) generateRandomParameterizableXML(
@@ -691,10 +750,13 @@ public class RandomXmlGenerator {
             // software required for generic equipment attributes
             if ( protocolCollectionXML.getSoftware() == null ) {
                 for ( int ii = 0; ii < ELEMENT_DEPTH; ii++ ) {
-                    FuGECommonProtocolGenericSoftwareType genericSoftwareXML = new FuGECommonProtocolGenericSoftwareType();
-                    genericSoftwareXML = ( FuGECommonProtocolGenericSoftwareType ) generateRandomSoftwareXML( genericSoftwareXML, protocolCollectionXML, fugeXML );
-                    JAXBElement<? extends FuGECommonProtocolGenericSoftwareType> element = ( new ObjectFactory() ).createGenericSoftware(
-                            genericSoftwareXML );
+                    FuGECommonProtocolGenericSoftwareType genericSoftwareXML =
+                            new FuGECommonProtocolGenericSoftwareType();
+                    genericSoftwareXML = ( FuGECommonProtocolGenericSoftwareType ) generateRandomSoftwareXML(
+                            genericSoftwareXML, protocolCollectionXML, fugeXML );
+                    JAXBElement<? extends FuGECommonProtocolGenericSoftwareType> element =
+                            ( new ObjectFactory() ).createGenericSoftware(
+                                    genericSoftwareXML );
                     protocolCollectionXML.getSoftware().add( element );
                 }
             }
@@ -710,8 +772,9 @@ public class RandomXmlGenerator {
                 genEquipmentXML = generateRandomGenericEquipmentXML( genEquipmentXML, null, fugeXML );
             }
 
-            JAXBElement<? extends FuGECommonProtocolGenericEquipmentType> element = ( new ObjectFactory() ).createGenericEquipment(
-                    genEquipmentXML );
+            JAXBElement<? extends FuGECommonProtocolGenericEquipmentType> element =
+                    ( new ObjectFactory() ).createGenericEquipment(
+                            genEquipmentXML );
             protocolCollectionXML.getEquipment().add( element );
         }
         return protocolCollectionXML;
@@ -731,19 +794,22 @@ public class RandomXmlGenerator {
         for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
             FuGECommonProtocolGenericParameterType parameterXML = new FuGECommonProtocolGenericParameterType();
             genericEquipmentXML.getGenericParameter()
-                    .add( ( FuGECommonProtocolGenericParameterType ) generateRandomParameterXML( parameterXML, fugeXML ) );
+                    .add( ( FuGECommonProtocolGenericParameterType ) generateRandomParameterXML( parameterXML,
+                            fugeXML ) );
         }
 
         if ( partXML != null ) {
             // parts list of one
-            FuGECommonProtocolGenericEquipmentType.EquipmentParts parts = new FuGECommonProtocolGenericEquipmentType.EquipmentParts();
+            FuGECommonProtocolGenericEquipmentType.EquipmentParts parts =
+                    new FuGECommonProtocolGenericEquipmentType.EquipmentParts();
             parts.setGenericEquipmentRef( partXML.getIdentifier() );
             genericEquipmentXML.getEquipmentParts().add( parts );
         }
 
         if ( fugeXML.getProtocolCollection() != null ) {
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                FuGECommonProtocolGenericEquipmentType.Software softwareXML = new FuGECommonProtocolGenericEquipmentType.Software();
+                FuGECommonProtocolGenericEquipmentType.Software softwareXML =
+                        new FuGECommonProtocolGenericEquipmentType.Software();
                 softwareXML.setGenericSoftwareRef(
                         fugeXML.getProtocolCollection().getSoftware().get( i ).getValue().getIdentifier() );
                 genericEquipmentXML.getSoftware().add( softwareXML );
@@ -762,11 +828,13 @@ public class RandomXmlGenerator {
      * @return a random JAXB2 Software Object
      */
     private static FuGECommonProtocolSoftwareType generateRandomSoftwareXML( FuGECommonProtocolSoftwareType softwareXML,
-                                                                             FuGECollectionProtocolCollectionType protocolCollectionXML, FuGECollectionFuGEType fugeXML ) {
+                                                                             FuGECollectionProtocolCollectionType protocolCollectionXML,
+                                                                             FuGECollectionFuGEType fugeXML ) {
         // make software attributes
 
         if ( softwareXML instanceof FuGECommonProtocolGenericSoftwareType ) {
-            FuGECommonProtocolGenericSoftwareType genericSoftwareXML = ( FuGECommonProtocolGenericSoftwareType ) softwareXML;
+            FuGECommonProtocolGenericSoftwareType genericSoftwareXML =
+                    ( FuGECommonProtocolGenericSoftwareType ) softwareXML;
             genericSoftwareXML = ( FuGECommonProtocolGenericSoftwareType ) generateRandomIdentifiableXML(
                     genericSoftwareXML );
             genericSoftwareXML = ( FuGECommonProtocolGenericSoftwareType ) generateRandomParameterizableXML(
@@ -802,7 +870,8 @@ public class RandomXmlGenerator {
         }
 
         for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-            FuGECommonProtocolGenericSoftwareType.Equipment parts = new FuGECommonProtocolGenericSoftwareType.Equipment();
+            FuGECommonProtocolGenericSoftwareType.Equipment parts =
+                    new FuGECommonProtocolGenericSoftwareType.Equipment();
             if ( !protocolCollectionXML.getEquipment().isEmpty() && protocolCollectionXML.getEquipment().size() > i ) {
                 parts.setGenericEquipmentRef(
                         protocolCollectionXML.getEquipment().get( i ).getValue().getIdentifier() );
@@ -818,7 +887,8 @@ public class RandomXmlGenerator {
      * @param fugeXML      the object to get some information from for populating the parameter
      * @return a random JAXB2 Parameter
      */
-    private static FuGECommonProtocolParameterType generateRandomParameterXML( FuGECommonProtocolParameterType parameterXML, FuGECollectionFuGEType fugeXML ) {
+    private static FuGECommonProtocolParameterType generateRandomParameterXML( FuGECommonProtocolParameterType parameterXML,
+                                                                               FuGECollectionFuGEType fugeXML ) {
 
         // get parameter attributes
         parameterXML = ( FuGECommonProtocolParameterType ) generateRandomIdentifiableXML( parameterXML );
@@ -826,11 +896,14 @@ public class RandomXmlGenerator {
         parameterXML.setIsInputParam( true );
 
         // measurement
-        FuGECommonMeasurementComplexValueType measurementXML = ( FuGECommonMeasurementComplexValueType ) generateRandomMeasurementXML( new FuGECommonMeasurementComplexValueType(), fugeXML );
+        FuGECommonMeasurementComplexValueType measurementXML =
+                ( FuGECommonMeasurementComplexValueType ) generateRandomMeasurementXML(
+                        new FuGECommonMeasurementComplexValueType(), fugeXML );
         parameterXML.setMeasurement( ( new ObjectFactory() ).createComplexValue( measurementXML ) );
 
         // get generic parameter attributes
-        parameterXML = generateRandomGenericParameterXML( ( FuGECommonProtocolGenericParameterType ) parameterXML, fugeXML );
+        parameterXML =
+                generateRandomGenericParameterXML( ( FuGECommonProtocolGenericParameterType ) parameterXML, fugeXML );
         return parameterXML;
 
     }
@@ -844,7 +917,8 @@ public class RandomXmlGenerator {
             FuGECommonProtocolGenericParameterType genericParameterXML, FuGECollectionFuGEType fugeXML ) {
 
         if ( fugeXML.getOntologyCollection() != null ) {
-            FuGECommonProtocolGenericParameterType.ParameterType ptXML = new FuGECommonProtocolGenericParameterType.ParameterType();
+            FuGECommonProtocolGenericParameterType.ParameterType ptXML =
+                    new FuGECommonProtocolGenericParameterType.ParameterType();
             ptXML.setOntologyTermRef(
                     fugeXML.getOntologyCollection().getOntologyTerm().get( 0 ).getValue().getIdentifier() );
             genericParameterXML.setParameterType( ptXML );
@@ -857,18 +931,23 @@ public class RandomXmlGenerator {
      * @param fugeXML    the object to get some information from for populating the measurement
      * @return a Measurement wrapped in a JAXB2 element
      */
-    private static FuGECommonMeasurementMeasurementType generateRandomMeasurementXML( FuGECommonMeasurementMeasurementType defaultXML, FuGECollectionFuGEType fugeXML ) {
+    private static FuGECommonMeasurementMeasurementType generateRandomMeasurementXML(
+            FuGECommonMeasurementMeasurementType defaultXML,
+            FuGECollectionFuGEType fugeXML ) {
 
         defaultXML = ( FuGECommonMeasurementMeasurementType ) generateRandomDescribableXML( defaultXML );
 
         // add a unit and a data type
         if ( fugeXML.getOntologyCollection().getOntologyTerm().size() >= 2 ) {
             FuGECommonMeasurementMeasurementType.Unit unitXML = new FuGECommonMeasurementMeasurementType.Unit();
-            unitXML.setOntologyTermRef( fugeXML.getOntologyCollection().getOntologyTerm().get( 0 ).getValue().getIdentifier() );
+            unitXML.setOntologyTermRef(
+                    fugeXML.getOntologyCollection().getOntologyTerm().get( 0 ).getValue().getIdentifier() );
             defaultXML.setUnit( unitXML );
 
-            FuGECommonMeasurementMeasurementType.DataType dataTypeXML = new FuGECommonMeasurementMeasurementType.DataType();
-            dataTypeXML.setOntologyTermRef( fugeXML.getOntologyCollection().getOntologyTerm().get( 1 ).getValue().getIdentifier() );
+            FuGECommonMeasurementMeasurementType.DataType dataTypeXML =
+                    new FuGECommonMeasurementMeasurementType.DataType();
+            dataTypeXML.setOntologyTermRef(
+                    fugeXML.getOntologyCollection().getOntologyTerm().get( 1 ).getValue().getIdentifier() );
             defaultXML.setDataType( dataTypeXML );
         }
 
@@ -902,9 +981,12 @@ public class RandomXmlGenerator {
         return valueXML;
     }
 
-    private static FuGECommonMeasurementComplexValueType generateRandomComplexValueXML( FuGECommonMeasurementComplexValueType valueXML, FuGECollectionFuGEType fugeXML ) {
+    private static FuGECommonMeasurementComplexValueType generateRandomComplexValueXML(
+            FuGECommonMeasurementComplexValueType valueXML,
+            FuGECollectionFuGEType fugeXML ) {
         if ( fugeXML.getOntologyCollection() != null ) {
-            FuGECommonMeasurementComplexValueType.Value defaultValueXML = new FuGECommonMeasurementComplexValueType.Value();
+            FuGECommonMeasurementComplexValueType.Value defaultValueXML =
+                    new FuGECommonMeasurementComplexValueType.Value();
             defaultValueXML.setOntologyTermRef(
                     fugeXML.getOntologyCollection().getOntologyTerm().get( 0 ).getValue().getIdentifier() );
             valueXML.setValue( defaultValueXML );
@@ -912,12 +994,14 @@ public class RandomXmlGenerator {
         return valueXML;
     }
 
-    private static FuGECommonMeasurementBooleanValueType generateRandomBooleanValueXML( FuGECommonMeasurementBooleanValueType valueXML ) {
+    private static FuGECommonMeasurementBooleanValueType generateRandomBooleanValueXML(
+            FuGECommonMeasurementBooleanValueType valueXML ) {
         valueXML.setValue( true );
         return valueXML;
     }
 
-    private static FuGECommonMeasurementAtomicValueType generateRandomAtomicValueXML( FuGECommonMeasurementAtomicValueType valueXML ) {
+    private static FuGECommonMeasurementAtomicValueType generateRandomAtomicValueXML(
+            FuGECommonMeasurementAtomicValueType valueXML ) {
         valueXML.setValue( "5" );
         return valueXML;
     }
@@ -936,7 +1020,8 @@ public class RandomXmlGenerator {
 
         if ( fugeXML.getOntologyCollection() != null ) {
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                FuGECommonProtocolParameterizableType.Types parameterizableTypesXML = new FuGECommonProtocolParameterizableType.Types();
+                FuGECommonProtocolParameterizableType.Types parameterizableTypesXML =
+                        new FuGECommonProtocolParameterizableType.Types();
                 parameterizableTypesXML.setOntologyTermRef(
                         fugeXML.getOntologyCollection().getOntologyTerm().get( i ).getValue().getIdentifier() );
                 parameterizableXML.getTypes().add( parameterizableTypesXML );
@@ -981,7 +1066,8 @@ public class RandomXmlGenerator {
      * @param fugeXML the object to get some information from for populating the data
      * @return a random JAXB2 Data object
      */
-    private static FuGEBioDataDataType generateRandomDataXML( FuGEBioDataDataType dataXML, FuGECollectionFuGEType fugeXML ) {
+    private static FuGEBioDataDataType generateRandomDataXML( FuGEBioDataDataType dataXML,
+                                                              FuGECollectionFuGEType fugeXML ) {
 
         FuGEBioDataExternalDataType externalDataXML = ( FuGEBioDataExternalDataType ) dataXML;
 
@@ -1002,13 +1088,15 @@ public class RandomXmlGenerator {
      * @param fugeXML         the object to get some information from for populating the external data
      * @return a random JAXB2 ExternalData object
      */
-    private static FuGEBioDataExternalDataType generateRandomExternalDataXML( FuGEBioDataExternalDataType externalDataXML, FuGECollectionFuGEType fugeXML ) {
+    private static FuGEBioDataExternalDataType generateRandomExternalDataXML( FuGEBioDataExternalDataType externalDataXML,
+                                                                              FuGECollectionFuGEType fugeXML ) {
 
         // Location
         externalDataXML.setLocation( "http://some.random.url/" + String.valueOf( Math.random() ) );
 
         // external format documentation
-        FuGEBioDataExternalDataType.ExternalFormatDocumentation efdXML = new FuGEBioDataExternalDataType.ExternalFormatDocumentation();
+        FuGEBioDataExternalDataType.ExternalFormatDocumentation efdXML =
+                new FuGEBioDataExternalDataType.ExternalFormatDocumentation();
         FuGECommonDescriptionUriType uriXML = new FuGECommonDescriptionUriType();
 
         // set jaxb object
@@ -1075,7 +1163,8 @@ public class RandomXmlGenerator {
      * @param genXML  the JAXB2 object that is returned with attributes filled @return a random JAXB2 Material
      * @return the randomly-generated material type
      */
-    private static FuGEBioMaterialMaterialType generateRandomMaterialXML( FuGECollectionFuGEType fugeXML, FuGEBioMaterialGenericMaterialType genXML ) {
+    private static FuGEBioMaterialMaterialType generateRandomMaterialXML( FuGECollectionFuGEType fugeXML,
+                                                                          FuGEBioMaterialGenericMaterialType genXML ) {
         // create fuge object
         FuGEBioMaterialGenericMaterialType genericMaterialXML = new FuGEBioMaterialGenericMaterialType();
 
@@ -1096,11 +1185,13 @@ public class RandomXmlGenerator {
      * @param componentXML       the Material component that is a component of genericMaterialXML
      * @return a random JAXB2 GenericMaterial
      */
-    private static FuGEBioMaterialGenericMaterialType generateRandomGenericMaterialXML( FuGEBioMaterialGenericMaterialType genericMaterialXML,
-                                                                                        FuGEBioMaterialGenericMaterialType componentXML ) {
+    private static FuGEBioMaterialGenericMaterialType generateRandomGenericMaterialXML(
+            FuGEBioMaterialGenericMaterialType genericMaterialXML,
+            FuGEBioMaterialGenericMaterialType componentXML ) {
         // Components. These elements are references to GenericMaterial. Only generate one reference.
         if ( componentXML != null ) {
-            FuGEBioMaterialGenericMaterialType.Components componentsXML = new FuGEBioMaterialGenericMaterialType.Components();
+            FuGEBioMaterialGenericMaterialType.Components componentsXML =
+                    new FuGEBioMaterialGenericMaterialType.Components();
             componentsXML.setGenericMaterialRef( componentXML.getIdentifier() );
             genericMaterialXML.getComponents().add( componentsXML );
         }
@@ -1115,7 +1206,8 @@ public class RandomXmlGenerator {
      * @param fugeXML     the object to get some information from for populating the material
      * @return the passed Material JAXB2 object with the attributes filled that are specific to the abstract Material class
      */
-    private static FuGEBioMaterialMaterialType generateRandomSpecificXML( FuGEBioMaterialMaterialType materialXML, FuGECollectionFuGEType fugeXML ) {
+    private static FuGEBioMaterialMaterialType generateRandomSpecificXML( FuGEBioMaterialMaterialType materialXML,
+                                                                          FuGECollectionFuGEType fugeXML ) {
         materialXML = ( FuGEBioMaterialMaterialType ) generateRandomIdentifiableXML( materialXML );
 
         for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
@@ -1129,14 +1221,16 @@ public class RandomXmlGenerator {
             materialXML.setMaterialType( materialTypeXML );
 
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                FuGEBioMaterialMaterialType.Characteristics characteristicXML = new FuGEBioMaterialMaterialType.Characteristics();
+                FuGEBioMaterialMaterialType.Characteristics characteristicXML =
+                        new FuGEBioMaterialMaterialType.Characteristics();
                 characteristicXML.setOntologyTermRef(
                         fugeXML.getOntologyCollection().getOntologyTerm().get( i ).getValue().getIdentifier() );
                 materialXML.getCharacteristics().add( characteristicXML );
             }
 
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                FuGEBioMaterialMaterialType.QualityControlStatistics qcsXML = new FuGEBioMaterialMaterialType.QualityControlStatistics();
+                FuGEBioMaterialMaterialType.QualityControlStatistics qcsXML =
+                        new FuGEBioMaterialMaterialType.QualityControlStatistics();
                 qcsXML.setOntologyTermRef(
                         fugeXML.getOntologyCollection().getOntologyTerm().get( i ).getValue().getIdentifier() );
                 materialXML.getQualityControlStatistics().add( qcsXML );
@@ -1163,7 +1257,8 @@ public class RandomXmlGenerator {
         if ( identifiableXML instanceof FuGECollectionFuGEType ) {
             FuGECollectionFuGEType fugeXML = ( FuGECollectionFuGEType ) identifiableXML;
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                FuGECommonReferencesDatabaseReferenceType DatabaseReferenceXML = new FuGECommonReferencesDatabaseReferenceType();
+                FuGECommonReferencesDatabaseReferenceType DatabaseReferenceXML =
+                        new FuGECommonReferencesDatabaseReferenceType();
                 DatabaseReferenceXML = ( FuGECommonReferencesDatabaseReferenceType )
                         generateRandomDescribableXML( DatabaseReferenceXML );
                 DatabaseReferenceXML.setAccession( String.valueOf( Math.random() ) );
@@ -1180,7 +1275,8 @@ public class RandomXmlGenerator {
             }
 
             for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-                FuGECommonIdentifiableType.BibliographicReferences brRefXML = new FuGECommonIdentifiableType.BibliographicReferences();
+                FuGECommonIdentifiableType.BibliographicReferences brRefXML =
+                        new FuGECommonIdentifiableType.BibliographicReferences();
                 // This is a reference to another object, so create that object before setting the reference
                 if ( fugeXML.getReferenceableCollection() == null ) {
                     fugeXML = generateRandomReferenceableCollectionXML( fugeXML );
@@ -1210,7 +1306,8 @@ public class RandomXmlGenerator {
         refCollXML = ( FuGECollectionReferenceableCollectionType ) generateRandomDescribableXML( refCollXML );
 
         for ( int i = 0; i < ELEMENT_DEPTH; i++ ) {
-            FuGECommonReferencesBibliographicReferenceType bibRefXML = new FuGECommonReferencesBibliographicReferenceType();
+            FuGECommonReferencesBibliographicReferenceType bibRefXML =
+                    new FuGECommonReferencesBibliographicReferenceType();
             bibRefXML = ( FuGECommonReferencesBibliographicReferenceType ) generateRandomIdentifiableXML( bibRefXML );
 
             bibRefXML.setAuthors( String.valueOf( Math.random() ) );
@@ -1223,7 +1320,7 @@ public class RandomXmlGenerator {
             bibRefXML.setVolume( String.valueOf( Math.random() ) );
             bibRefXML.setYear(
                     ( int ) ( Math.random() *
-                            1000 ) ); // int will not be null
+                              1000 ) ); // int will not be null
 
             refCollXML.getBibliographicReference().add( bibRefXML );
         }
@@ -1337,7 +1434,8 @@ public class RandomXmlGenerator {
 
             // set jaxb object
             if ( describableXML instanceof FuGECollectionFuGEType )
-                descriptionXML = ( FuGECommonDescriptionDescriptionType ) generateRandomDescribableXML( descriptionXML );
+                descriptionXML =
+                        ( FuGECommonDescriptionDescriptionType ) generateRandomDescribableXML( descriptionXML );
             descriptionXML.setText( String.valueOf( Math.random() ) );
 
             // add to collection of objects
@@ -1384,7 +1482,8 @@ public class RandomXmlGenerator {
 
             // set jaxb object
             if ( describableXML instanceof FuGECollectionFuGEType )
-                nameValueTypeXML = ( FuGECommonDescriptionNameValueTypeType ) generateRandomDescribableXML( nameValueTypeXML );
+                nameValueTypeXML =
+                        ( FuGECommonDescriptionNameValueTypeType ) generateRandomDescribableXML( nameValueTypeXML );
             nameValueTypeXML.setName( String.valueOf( Math.random() ) );
             nameValueTypeXML.setType( String.valueOf( Math.random() ) );
             nameValueTypeXML.setValue( String.valueOf( Math.random() ) );
@@ -1437,7 +1536,8 @@ public class RandomXmlGenerator {
             // set organization traits - only set a parent if i > 0.
 
             if ( i > 0 ) {
-                FuGECommonAuditOrganizationType.Parent parentOrganizationXML = new FuGECommonAuditOrganizationType.Parent();
+                FuGECommonAuditOrganizationType.Parent parentOrganizationXML =
+                        new FuGECommonAuditOrganizationType.Parent();
                 parentOrganizationXML.setOrganizationRef( firstOrg );
                 organizationXML.setParent( parentOrganizationXML );
             } else {
@@ -1487,7 +1587,8 @@ public class RandomXmlGenerator {
                 FuGECommonAuditSecurityAccessType accessXML = new FuGECommonAuditSecurityAccessType();
                 accessXML = ( FuGECommonAuditSecurityAccessType ) generateRandomDescribableXML( accessXML );
 
-                FuGECommonAuditSecurityAccessType.AccessRight accessRightXML = new FuGECommonAuditSecurityAccessType.AccessRight();
+                FuGECommonAuditSecurityAccessType.AccessRight accessRightXML =
+                        new FuGECommonAuditSecurityAccessType.AccessRight();
                 if ( fugeXML.getOntologyCollection() == null ) {
                     fugeXML = generateRandomOntologyCollectionXML( fugeXML );
                 }
@@ -1578,7 +1679,8 @@ public class RandomXmlGenerator {
                 ontologyIndividualXML.getOntologyProperty().add( factory.createObjectProperty( objectPropertyXML ) );
 
                 FuGECommonOntologyDataPropertyType dataPropertyXML = new FuGECommonOntologyDataPropertyType();
-                dataPropertyXML = ( FuGECommonOntologyDataPropertyType ) generateRandomIdentifiableXML( dataPropertyXML );
+                dataPropertyXML =
+                        ( FuGECommonOntologyDataPropertyType ) generateRandomIdentifiableXML( dataPropertyXML );
                 dataPropertyXML = ( FuGECommonOntologyDataPropertyType ) generateRandomOntologyTermXML(
                         dataPropertyXML, ontoSourceXML );
                 dataPropertyXML.setDataType( String.valueOf( Math.random() ) );

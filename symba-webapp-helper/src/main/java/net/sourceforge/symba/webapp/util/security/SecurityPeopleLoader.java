@@ -76,7 +76,7 @@ public class SecurityPeopleLoader {
         ResourceBundle rb = ResourceBundle.getBundle( "symba" );
 
         try {
-            Class.forName( rb.getString("security.driver") );
+            Class.forName( rb.getString("net.sourceforge.symba.webapp.security.driver") );
         }
         catch ( ClassNotFoundException cnfe ) {
             System.out.println( "Couldn't find the driver! Exiting." );
@@ -90,7 +90,7 @@ public class SecurityPeopleLoader {
         // get the connection details from the properties file.
 
         c = DriverManager.getConnection(
-                rb.getString("security.url"), rb.getString("security.username"), rb.getString("security.password") );
+                rb.getString("net.sourceforge.symba.webapp.security.url"), rb.getString("net.sourceforge.symba.webapp.security.username"), rb.getString("net.sourceforge.symba.webapp.security.password") );
         s = c.createStatement();
         for ( UserPassword up : upList ) {
             String username = up.getUsername();

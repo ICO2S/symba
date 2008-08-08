@@ -58,7 +58,7 @@ public class SecurityPeopleLoader {
 
                 String password =
                         el.getAttributeValue( "lastName" ) + String.valueOf( Math.random() ).substring( 2, 5 );
-                String endurant = el.getAttributeValue( "endurant" );
+                String endurant = el.getAttributeValue( "Endurant_ref" );
 
                 //System.out.println(userName  +"\t" + password);
                 UserPassword up = new UserPassword( userName, password, endurant );

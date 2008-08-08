@@ -21,7 +21,7 @@ concrete protocols have been made.
     <ProtocolCollection>
         <GenericProtocol
                 name="Recording Protocol (Component of Carmen Electrophysiology Investigation)"
-                Endurant_ref="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:fdb27c11-50f3-40e6-93b3-a1a27384c0a8"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:fdb27c11-50f3-40e6-93b3-a1a27384c0a8"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3">
             <_equipment
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
@@ -38,7 +38,7 @@ concrete protocols have been made.
 
         <GenericProtocol
                 name="Task Protocol (Component of Carmen Electrophysiology Investigation)"
-                Endurant_ref="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3bd0bac3-7fcf-496c-be2a-0ba93a30b2b8"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:3bd0bac3-7fcf-496c-be2a-0ba93a30b2b8"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e">
             <_equipment
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:607a6089-bd32-4085-95ce-d92f7830a88b"/>
@@ -47,7 +47,7 @@ concrete protocols have been made.
 
         <GenericProtocol
                 name="Stimulus Protocol (Component of Carmen Electrophysiology Investigation)"
-                Endurant_ref="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:b9b420fd-1893-4e04-80d4-1e8fa6025ab5"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:b9b420fd-1893-4e04-80d4-1e8fa6025ab5"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:aaef5e92-76af-4cb6-aeff-03f7aa77dbe9">
             <_equipment
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8"/>
@@ -57,8 +57,8 @@ concrete protocols have been made.
         </GenericProtocol>
 
         <GenericProtocol
-                name="Behavioural event Protocol (Component of Carmen Electrophysiology Investigation)"
-                Endurant_ref="urn:lsid:cisban.cisbs.org:GenPro tocolEndurant:3789951a-3c94-47b4-8203-941814a722c0"
+                name="Behavioural Event Protocol (Component of Carmen Electrophysiology Investigation)"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:3789951a-3c94-47b4-8203-941814a722c0"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa">
             <_equipment
                     GenericEquipment_ref="urn:lsid:cisban.cisbs.org:GenericEquipment:607a6089-bd32-4085-95ce-d92f7830a88b"/>
@@ -67,10 +67,10 @@ concrete protocols have been made.
 
 
         <GenericProtocol name="Carmen Electrophysiology Investigation"
-                         Endurant_ref="urn:lsid:cisban.cisbs.org:GenProtocolEndurant:3bbbbbfd-9d00-4703-9b8e-833f6aa6671e"
+                         Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:3bbbbbfd-9d00-4703-9b8e-833f6aa6671e"
                          identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:7ca81fef-e300-4868-9c71-aa971d5d3a01">
             <GenericAction
-                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericActionEndurant:1cf2dc7a-3838-4feb-890c-9d4328251fc4"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:1cf2dc7a-3838-4feb-890c-9d4328251fc4"
                     identifier="urn:lsid:cisban.cisbs.org:GenericAction:47cc40ae-9d37-46a6-9e7b-c66df2f114e0"
                     name="Step Containing the Recording Protocol"
                     actionOrdinal="4"
@@ -78,7 +78,7 @@ concrete protocols have been made.
 
                 <!--isInputParam="true"-->
                 <GenericParameter name="Sampling Rate"
-                                  Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:339ec38d-4d67-43dc-91ed-177c79c4be25"
+                                  Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:339ec38d-4d67-43dc-91ed-177c79c4be25"
                                   identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7">
                     <AtomicValue value="0">
                         <_unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:77fb941a-e1cf-473a-92a3-e190f77df5a3"/>
@@ -87,7 +87,7 @@ concrete protocols have been made.
             </GenericAction>
 
             <GenericAction
-                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericActionEndurant:1ceb560e-2951-4246-abfb-4dcd0b389056"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:1ceb560e-2951-4246-abfb-4dcd0b389056"
                     identifier="urn:lsid:cisban.cisbs.org:GenericAction:5d5ce126-ceef-495a-9e44-0fe4a934b4d0"
                     name="Step Containing the Stimulus Protocol"
                     actionOrdinal="2"
@@ -95,28 +95,28 @@ concrete protocols have been made.
             </GenericAction>
 
             <GenericAction
-                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericActionEndurant:5c13cd95-11b8-40d3-b7c6-7ad16dcecd95"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:5c13cd95-11b8-40d3-b7c6-7ad16dcecd95"
                     identifier="urn:lsid:cisban.cisbs.org:GenericAction:1f58054a-5d8a-4e5f-93bb-a81921bfb98a"
                     name="Step Containing the Task Protocol"
                     actionOrdinal="1"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e">
                 <GenericParameter name="Sensory conditions"
-                                  Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:8e9f7111-e3d8-4ada-91c4-7c16fbb00457"
+                                  Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:8e9f7111-e3d8-4ada-91c4-7c16fbb00457"
                                   identifier="urn:lsid:cisban.cisbs.org:GenericParameter:0b55113b-b724-4889-8a72-1c3ed08f6a5f">
                     <AtomicValue value="0"/>
                 </GenericParameter>
 
                 <GenericParameter name="Solutions"
-                                  Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:7e48ab07-7b89-4188-b4b8-9e4cbb734566"
+                                  Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:7e48ab07-7b89-4188-b4b8-9e4cbb734566"
                                   identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e86715a2-8c95-4cf5-88aa-1ceac974a0b7">
                     <AtomicValue value="0"/>
                 </GenericParameter>
             </GenericAction>
 
             <GenericAction
-                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericActionEndurant:6ea76645-73bf-4030-a765-f862cc199785"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:6ea76645-73bf-4030-a765-f862cc199785"
                     identifier="urn:lsid:cisban.cisbs.org:GenericAction:4aaa934a-a224-4ffb-a16d-0771f0519b73"
-                    name="Step Containing the Behavioural event Protocol"
+                    name="Step Containing the Behavioural Event Protocol"
                     actionOrdinal="3"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa">
             </GenericAction>
@@ -130,12 +130,12 @@ concrete protocols have been made.
         *not* be modified.
         -->
         <GenericEquipment name="Electrode"
-                          Endurant_ref="urn:lsid:cisban.cisbs.org:GenEquipEndurant:6b6e7a48-3cd5-4bad-873c-687e2fe9023c"
+                          Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:6b6e7a48-3cd5-4bad-873c-687e2fe9023c"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:addd3db8-17fc-412e-90d8-4c825006faa8">
-            <annotations
+            <_annotations
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:7d568bc8-23cd-4622-bfde-26358544c086"/>
             <GenericParameter name="Manufacturer"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e00c31ac-d167-4b83-b59d-b16a900f44e7">
                 <ComplexValue>
                     <_value
@@ -143,29 +143,29 @@ concrete protocols have been made.
                 </ComplexValue>
             </GenericParameter>
             <GenericParameter name="Model Name"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:67d166d3-6719-4a57-b5a1-1e2be7dca6f4"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:67d166d3-6719-4a57-b5a1-1e2be7dca6f4"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:3dab677e-693b-4c0e-940a-6bcef2ff6e0f">
-                <AtomicValue value="0"/>                            
+                <AtomicValue value="0"/>
             </GenericParameter>
             <GenericParameter name="Model Number"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:af9ec72d-7560-4485-af6c-8f198ed56237"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:af9ec72d-7560-4485-af6c-8f198ed56237"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:a44b4979-dfaa-46a4-b8b5-a53b8ce882d9">
                 <AtomicValue value="0"/>
             </GenericParameter>
             <GenericParameter name="Electrode configuration"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:89f23cbe-84b1-4ec2-bbf8-897946598b71"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:89f23cbe-84b1-4ec2-bbf8-897946598b71"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:454c4b97-21f7-4778-a2e4-cf9915c67f57">
                 <AtomicValue value="0"/>
             </GenericParameter>
             <GenericParameter name="Distance between electrodes"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:d401bac9-5165-4ebf-b620-740d8301ed12"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:d401bac9-5165-4ebf-b620-740d8301ed12"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:128d231b-f98d-4bbe-b33e-c2b762c02319">
                 <AtomicValue value="0">
                     <_unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:0807df05-d326-4733-afb9-510b8fab3431"/>
                 </AtomicValue>
             </GenericParameter>
             <GenericParameter name="Electrode impedance"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:85f4b183-bbbc-42b6-b931-f8818f2c98a8"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:85f4b183-bbbc-42b6-b931-f8818f2c98a8"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:b7d24203-3540-4b52-912d-a385a7a732a2">
                 <AtomicValue value="0"/>
             </GenericParameter>
@@ -173,10 +173,10 @@ concrete protocols have been made.
 
 
         <GenericEquipment name="Amplifier"
-                          Endurant_ref="urn:lsid:cisban.cisbs.org:GenEquipEndurant:c6759d86-cd3f-48e6-b36e-3d2fcbf88c51"
+                          Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:c6759d86-cd3f-48e6-b36e-3d2fcbf88c51"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:95d5f3a2-b493-4f26-b1ce-7943496e8965">
             <GenericParameter name="Manufacturer"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e00c31ac-d167-4b83-b59d-b16a900f44e7">
                 <ComplexValue>
                     <_value
@@ -184,12 +184,12 @@ concrete protocols have been made.
                 </ComplexValue>
             </GenericParameter>
             <GenericParameter name="Model Name"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:dd4bdc5a-d355-4a01-91a9-7ddeb54451b1"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:dd4bdc5a-d355-4a01-91a9-7ddeb54451b1"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f8357d3d-2f14-4a40-b9fd-2a716007b0c9">
                 <AtomicValue value="0"/>
             </GenericParameter>
             <GenericParameter name="Model Number"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:9705b45a-00d7-4e47-a7f3-eb544f0380ae"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:9705b45a-00d7-4e47-a7f3-eb544f0380ae"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:be9d0812-173a-4073-8827-950c4c1d5e80">
                 <AtomicValue value="0"/>
             </GenericParameter>
@@ -197,10 +197,10 @@ concrete protocols have been made.
 
 
         <GenericEquipment name="Containing device"
-                          Endurant_ref="urn:lsid:cisban.cisbs.org:GenEquipEndurant:15149009-77e1-49ba-8e30-f26abe9338ed"
+                          Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:15149009-77e1-49ba-8e30-f26abe9338ed"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:954f6489-2b79-42a3-8a13-17b3f148ed2b">
             <GenericParameter name="Manufacturer"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e00c31ac-d167-4b83-b59d-b16a900f44e7">
                 <ComplexValue>
                     <_value
@@ -208,12 +208,12 @@ concrete protocols have been made.
                 </ComplexValue>
             </GenericParameter>
             <GenericParameter name="Model Name"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:dd4bdc5a-d355-4a01-91a9-7ddeb54451b1"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:dd4bdc5a-d355-4a01-91a9-7ddeb54451b1"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f8357d3d-2f14-4a40-b9fd-2a716007b0c9">
                 <AtomicValue value="0"/>
             </GenericParameter>
             <GenericParameter name="Model Number"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:9705b45a-00d7-4e47-a7f3-eb544f0380ae"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:9705b45a-00d7-4e47-a7f3-eb544f0380ae"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:be9d0812-173a-4073-8827-950c4c1d5e80">
                 <AtomicValue value="0"/>
             </GenericParameter>
@@ -221,10 +221,10 @@ concrete protocols have been made.
 
 
         <GenericEquipment name="Equipment"
-                          Endurant_ref="urn:lsid:cisban.cisbs.org:GenEquipEndurant:4a0c8b39-ff59-4527-8c5a-f4ec5de2f3e5"
+                          Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:4a0c8b39-ff59-4527-8c5a-f4ec5de2f3e5"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:607a6089-bd32-4085-95ce-d92f7830a88b">
             <GenericParameter name="Manufacturer"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e00c31ac-d167-4b83-b59d-b16a900f44e7">
                 <ComplexValue>
                     <_value
@@ -232,12 +232,12 @@ concrete protocols have been made.
                 </ComplexValue>
             </GenericParameter>
             <GenericParameter name="Model Name"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:dd4bdc5a-d355-4a01-91a9-7ddeb54451b1"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:dd4bdc5a-d355-4a01-91a9-7ddeb54451b1"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f8357d3d-2f14-4a40-b9fd-2a716007b0c9">
                 <AtomicValue value="0"/>
             </GenericParameter>
             <GenericParameter name="Model Number"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:9705b45a-00d7-4e47-a7f3-eb544f0380ae"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:9705b45a-00d7-4e47-a7f3-eb544f0380ae"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:be9d0812-173a-4073-8827-950c4c1d5e80">
                 <AtomicValue value="0"/>
             </GenericParameter>
@@ -245,10 +245,10 @@ concrete protocols have been made.
 
 
         <GenericEquipment name="Filter"
-                          Endurant_ref="urn:lsid:cisban.cisbs.org:GenEquipEndurant:a50eae46-3316-438c-9a62-2df9e59661e2"
+                          Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:a50eae46-3316-438c-9a62-2df9e59661e2"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:4a240006-7619-48d5-bf8b-161764758cc5">
             <GenericParameter name="Manufacturer"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:440ec38d-4d67-43dc-91ed-177c79c4be25"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:e00c31ac-d167-4b83-b59d-b16a900f44e7">
                 <ComplexValue>
                     <_value
@@ -256,18 +256,18 @@ concrete protocols have been made.
                 </ComplexValue>
             </GenericParameter>
             <GenericParameter name="Model Name"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:9323106a-cb05-4b22-8795-96f4a667aa79"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:9323106a-cb05-4b22-8795-96f4a667aa79"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:75dff18a-7b6d-434f-b178-a7725e9b2c36">
                 <AtomicValue value="0"/>
             </GenericParameter>
             <GenericParameter name="Model Number"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:4282349e-60ab-4548-8838-4142bb9e5464"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:4282349e-60ab-4548-8838-4142bb9e5464"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:3bf469c6-0b22-485c-927c-a102fa6c2f4d">
                 <AtomicValue value="0"/>
             </GenericParameter>
 
             <GenericParameter name="Filter Settings"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:963ac5fe-4a35-4e60-b680-4c5cd38669d2"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:963ac5fe-4a35-4e60-b680-4c5cd38669d2"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:f6a2debc-84ee-4127-b3e0-3a0fd6d786cc">
                 <AtomicValue value="0"/>
             </GenericParameter>
@@ -276,10 +276,10 @@ concrete protocols have been made.
 
 
         <GenericEquipment name="Recorder"
-                          Endurant_ref="urn:lsid:cisban.cisbs.org:GenEquipEndurant:2e049199-6b53-45d1-befa-ec99666412e7"
+                          Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:2e049199-6b53-45d1-befa-ec99666412e7"
                           identifier="urn:lsid:cisban.cisbs.org:GenericEquipment:c0dbb4a6-2666-4883-8173-5f13b48f8624">
             <GenericParameter name="Manufacturer"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:ca638a4b-43ff-4ebb-8875-b13523fb6e77"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:ca638a4b-43ff-4ebb-8875-b13523fb6e77"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:398b853d-75ab-4d5e-834f-2ca60905d192">
                 <ComplexValue>
                     <_value
@@ -287,12 +287,12 @@ concrete protocols have been made.
                 </ComplexValue>
             </GenericParameter>
             <GenericParameter name="Model Name"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:18350e67-2ff2-4c06-9704-786cf1a8be2c"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:18350e67-2ff2-4c06-9704-786cf1a8be2c"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:1651228d-eb76-4d10-8c4a-c98511575c8f">
                 <AtomicValue value="0"/>
             </GenericParameter>
             <GenericParameter name="Model Number"
-                              Endurant_ref="urn:lsid:cisban.cisbs.org:GenParamEndurant:57605df8-c6de-4ac3-a5b5-7c06856b5049"
+                              Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:57605df8-c6de-4ac3-a5b5-7c06856b5049"
                               identifier="urn:lsid:cisban.cisbs.org:GenericParameter:5cf4d455-b58d-4c1f-80b1-d44e42804922">
                 <AtomicValue value="0"/>
             </GenericParameter>
@@ -302,37 +302,40 @@ concrete protocols have been made.
         <GenericProtocolApplication
                 Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3"
                 name="Parameters Associated with Creating the Data File Dummy for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
-                Endurant_ref="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:e3388dc8-371c-4f2f-bdb9-24f52a96983e"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:e3388dc8-371c-4f2f-bdb9-24f52a96983e"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:bb550d13-b25b-42d6-8b37-1260df6a770f">
             <_descriptions>
                 <Description
                         text="TextBox::ProtocolDescription::Please describe the specifics of your Recording protocol"/>
             </_descriptions>
-            <AtomicParameterValue
-                    Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7"
-                    value="1"/>
+            <ParameterValue
+                    Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:f99c31ac-d167-4b83-b59d-b16a900f44e7">
+                <AtomicValue value="1"/>
+            </ParameterValue>
         </GenericProtocolApplication>
 
         <GenericProtocolApplication
                 Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e"
                 name="Parameters Associated with Creating the Data File Dummy for Task Protocol (Component of Carmen Electrophysiology Investigation)"
-                Endurant_ref="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:14548d13-8ebd-4d48-979c-1895f1c3f121"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:14548d13-8ebd-4d48-979c-1895f1c3f121"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:aae41937-70d1-488e-9375-ef7e12f3ec25">
             <_descriptions>
                 <Description text="TextBox::ProtocolDescription::Please describe the specifics of your Task protocol"/>
             </_descriptions>
-            <AtomicParameterValue
-                    Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:0b55113b-b724-4889-8a72-1c3ed08f6a5f"
-                    value="1"/>
-            <AtomicParameterValue
-                    Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:e86715a2-8c95-4cf5-88aa-1ceac974a0b7"
-                    value="1"/>
+            <ParameterValue
+                    Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:0b55113b-b724-4889-8a72-1c3ed08f6a5f">
+                <AtomicValue value="1"/>
+            </ParameterValue>
+            <ParameterValue
+                    Parameter_ref="urn:lsid:cisban.cisbs.org:GenericParameter:e86715a2-8c95-4cf5-88aa-1ceac974a0b7">
+                <AtomicValue value="1"/>
+            </ParameterValue>
         </GenericProtocolApplication>
 
         <GenericProtocolApplication
                 Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:aaef5e92-76af-4cb6-aeff-03f7aa77dbe9"
                 name="Parameters Associated with Creating the Data File Dummy for Stimulus Protocol (Component of Carmen Electrophysiology Investigation)"
-                Endurant_ref="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:fd9de954-6666-4ad9-9837-06be7e370010"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:fd9de954-6666-4ad9-9837-06be7e370010"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:cf69a9ba-3a54-4dd2-af23-a345164f4858">
             <_descriptions>
                 <Description
@@ -342,8 +345,8 @@ concrete protocols have been made.
 
         <GenericProtocolApplication
                 Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa"
-                name="Parameters Associated with Creating the Data File Dummy for Behavioural event Protocol (Component of Carmen Electrophysiology Investigation)"
-                Endurant_ref="urn:lsid:cisban.cisbs.org:GenPrtclAppEndurant:b5b32c28-086d-4b69-bd30-b56d3aa07a17"
+                name="Parameters Associated with Creating the Data File Dummy for Behavioural Event Protocol (Component of Carmen Electrophysiology Investigation)"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:b5b32c28-086d-4b69-bd30-b56d3aa07a17"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:e8a49b90-c1e0-432d-b743-ca2446f44cf6">
             <_descriptions>
                 <Description
@@ -357,16 +360,12 @@ concrete protocols have been made.
         <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
         <GenericMaterial
                 name="Material Characteristics Dummy Noname Notreatment for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
-                Endurant_ref="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:4a34375a-0c7c-4563-ab1d-a2509a5466bb"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:4a34375a-0c7c-4563-ab1d-a2509a5466bb"
                 identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d46bed62-21f6-4d27-b7c0-942abb124032">
             <!--Genus -->
             <_materialType
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:943066e5-bbd4-45ed-b0c3-d71e7ec8640d"/>
             <_descriptions>
-                <Description text="OntologyReplacement::Species::Help::this means nothing"/>
-                <Description text="OntologyReplacement::Strain::Help::this means everything"/>
-                <Description text="OntologyReplacement::Cell line::Help::I need help"/>
-                <Description text="OntologyReplacement::Genetic characteristics"/>
                 <Description text="OntologyReplacement::Genetic variation"/>
                 <Description text="OntologyReplacement::Disease state"/>
                 <Description text="OntologyReplacement::Clinical information"/>
@@ -386,23 +385,27 @@ concrete protocols have been made.
                 <Description text="OntologyReplacement::Target cell type"/>
                 <Description text="OntologyReplacement::Confirmed cell type"/>
             </_descriptions>
-            <!--Species
+            <!-- Genetic Characteristics -->
             <_characteristics
-                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:f1b24b4b-1aa5-4d18-a104-831b681d3b2a"/>
-            -->
-            <!--Sex -->
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:de9fdcfd-293b-4965-b0bc-78cb2cd74a49"/>
+            <!-- Sex -->
             <_characteristics
                     OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a76ba6fc-0018-4817-bb2c-8cf3b7a1904e"/>
-            <!--
+            <!-- Species -->
             <_characteristics
-                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:0b645454-8506-4f0e-b824-d6648c1f0126"/>
-              -->
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:f1b24b4b-1aa5-4d18-a104-831b681d3b2a"/>
+            <!-- Strain -->
+            <_characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:a04dbc82-0fa2-4618-b977-39f8598ff3cc"/>
+            <!-- Cell Line -->
+            <_characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:674e3621-e5c5-463d-b668-7cb2519996a6"/>
         </GenericMaterial>
     </MaterialCollection>
     <DataCollection>
         <ExternalData
                 name="Time series data Dummy (Component of Carmen Electrophysiology Investigation)"
-                Endurant_ref="urn:lsid:cisban.cisbs.org:ExternalDataEndurant:b37404ef-45ee-42a9-ac99-8dd8c42eb951"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:b37404ef-45ee-42a9-ac99-8dd8c42eb951"
                 identifier="urn:lsid:cisban.cisbs.org:ExternalData:d0954cc4-e497-4dae-8009-6162e94cfeae"
                 location="file:///dummy">
             <_fileFormat
@@ -410,134 +413,4 @@ concrete protocols have been made.
 
         </ExternalData>
     </DataCollection>
-
-
-    <OntologyCollection>
-        <OntologyIndividual termAccession="accession to come" term="mcd"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:bad1f12f-2f6a-4b65-974d-e4b989684816"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:ce8c1824-f39c-47ab-b21d-6f788b3da5e1"/>
-        <OntologyIndividual termAccession="accession to come" term="matlab"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:7e34b7e3-ea4a-431c-b2e6-7e60636ef961"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:8a4050ce-4e91-4499-bdea-1f9624616075"/>
-        <OntologyIndividual termAccession="accession to come" term="neuroexplorer"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:6e2bc825-2d3a-4252-8a12-57ebb0538bf0"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:de096a98-fb1f-4570-888d-f83948c56f06"/>
-        <OntologyIndividual termAccession="accession to come" term="tiff stack"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:1b078b75-9b8e-4cef-ba07-06092102404d"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:02e0a293-0ff3-49be-96cd-83da0edb5cd7"/>
-
-        <OntologyIndividual termAccession="accession to come" term="neurolynx"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:a6125c2a-31f9-456d-8c61-3dedbb9590ff"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:ffcb7958-24be-4462-88a8-98b0fd4f8a9c"/>
-
-        <OntologyIndividual termAccession="Taxonomy ID: 9605" term="Homo"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:22885ca0-63c5-42d0-a865-307a697cb948"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:943066e5-bbd4-45ed-b0c3-d71e7ec8640d"/>
-
-        <OntologyIndividual termAccession="Taxonomy ID: 10088" term="Mus"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:a092b965-f398-4fe2-97b1-f91bfbdac843"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:42985ebf-e2ab-4c9a-a0c0-c08302e305de"/>
-
-        <OntologyIndividual termAccession="Taxonomy ID: 10114" term="Rattus"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:865b8e0f-9386-487d-bba2-5ee16220654b"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:50ad7270-67f0-4ba9-87a4-c4ab28c8c5ed"/>
-
-        <OntologyIndividual termAccession="Taxonomy ID: 9539" term="Macaca"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:164768de-84db-4d6b-9170-4c6f3bad3850"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:73667ad3-9a4b-491b-b33e-eae0156d4592"/>
-
-        <!--NEED micrometer unit -->
-
-        <OntologyIndividual termAccession="accession to come" term="Hz"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:e012ca0f-8238-45da-96fd-1139707f157b"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:77fb941a-e1cf-473a-92a3-e190f77df5a3"/>
-
-        <OntologyIndividual termAccession="accession to come" term="micrometer"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:a45d00f8-7360-4862-b95b-66eb85af59a9"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:0807df05-d326-4733-afb9-510b8fab3431"/>
-
-
-        <OntologyIndividual termAccession="accession to come" term="Multi Channel Systems"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:80441996-dd20-49ab-9409-7689b5836e43"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:880ee8f7-aedc-4941-8257-45c052884b1f"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:a22b3c14-5ab8-497e-a0f0-f10bd24fbd8c"/>
-
-        <OntologyIndividual termAccession="accession to come" term="Two dimensional array"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:468ab0fe-54e4-4c9b-9410-2bb276f2a6e6"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:20aff400-c40a-4189-8fe8-aea3d8d062e8"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:7d568bc8-23cd-4622-bfde-26358544c086"/>
-
-        <OntologyIndividual termAccession="Taxonomy ID: 9544" term="Macaca mulatta"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:1d234420-b6fe-4669-b04b-464fa0bdcdd6"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:5f7c80b8-5885-4c47-b3db-b596f8cf349e"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:f1b24b4b-1aa5-4d18-a104-831b681d3b2a"/>
-
-        <OntologyIndividual termAccession="accession to come" term="male"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:68c65d87-8b81-4067-b2e2-dda455490305"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:c5822354-d20e-4797-99e2-623d89d3e731"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:a76ba6fc-0018-4817-bb2c-8cf3b7a1904e"/>
-
-        <OntologyIndividual termAccession="accession to come" term="female"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:68c65d87-8b81-4067-b2e2-dda455490305"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoIndvEndurant:83130b35-ab18-4395-9382-cdc677086347"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:9a75eb6d-367b-4f7e-89d7-6acb16d6cd3f"/>
-
-        <OntologyIndividual termAccession="accession to come" term="hermaphrodite"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:68c65d87-8b81-4067-b2e2-dda455490305"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntoyIndvEndurant:566e6082-4aff-4e04-b294-c6e5f27d06d9"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:183a856a-a026-4cef-875f-663505b21906"/>
-
-
-        <OntologyIndividual termAccession="accession to come" term="a brain cell"
-                            OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:40f5cde6-6468-4f0a-8c37-1d85261e91fa"
-                            Endurant_ref="urn:lsid:cisban.cisbs.org:OntologyIndvEndurant:17519283-9046-4b21-b029-162d752b50be"
-                            identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:0b645454-8506-4f0e-b824-d6648c1f0126"/>
-
-
-        <OntologySource ontologyURI="http://www.carmen.org.uk"
-                        name="Times series data format"
-                        Endurant_ref="urn:lsid:cisban.cisbs.org:OntoSourceEndurant:6b58dac0-ed16-4ee0-877f-1b9184a2f054"
-                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:2125c7ac-a452-4593-9849-0a17511a37dc"/>
-
-        <OntologySource ontologyURI="http://www.carmen.org.uk"
-                        name="Electrode configuration"
-                        Endurant_ref="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:42f83e52-880d-42bd-b754-937590be435f"
-                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:468ab0fe-54e4-4c9b-9410-2bb276f2a6e6"/>
-
-        <OntologySource ontologyURI="http://www.carmen.org.uk"
-                        name="Manufacturer"
-                        Endurant_ref="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:c0a3f035-4280-49d4-ba33-03dd3b36af5f"
-                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:80441996-dd20-49ab-9409-7689b5836e43"/>
-
-        <OntologySource ontologyURI="http://www.carmen.org.uk"
-                        name="Genus"
-                        Endurant_ref="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:52199178-0d02-4eb1-9d95-4108cdec9c41"
-                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:ab63e827-184e-43a7-bce0-b8667caa1a7e"/>
-
-        <OntologySource ontologyURI="http://www.carmen.org.uk"
-                        name="Species"
-                        Endurant_ref="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:08875e3d-96c9-4b5d-8439-5556d7fb9d45"
-                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:1d234420-b6fe-4669-b04b-464fa0bdcdd6"/>
-
-        <OntologySource ontologyURI="http://www.carmen.org.uk"
-                        name="Sex"
-                        Endurant_ref="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:095051d9-03dc-48fa-ad78-8a518129656d"
-                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:68c65d87-8b81-4067-b2e2-dda455490305"/>
-
-        <OntologySource ontologyURI="http://www.carmen.org.uk"
-                        name="Cell type"
-                        Endurant_ref="urn:lsid:cisban.cisbs.org:OntologySourceEndurant:1d4e1d95-872a-4833-8e9a-ea93610ca44c"
-                        identifier="urn:lsid:cisban.cisbs.org:OntologySource:40f5cde6-6468-4f0a-8c37-1d85261e91fa"/>
-
-
-    </OntologyCollection>
 </FuGE>

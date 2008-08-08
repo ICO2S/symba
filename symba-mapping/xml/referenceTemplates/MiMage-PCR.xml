@@ -14,8 +14,15 @@
             <GenericAction
                     Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:0bbd97ec-d5ac-4fe7-9474-6b3209344402"
                     identifier="urn:lsid:cisban.cisbs.org:GenericAction:480cf320-7c21-4c72-95d3-2927d2b545ce"
-                    name="Step Containing the Real-Time PCR Protocol"
+                    name="Step Containing the Specimen Measurement Protocol"
                     actionOrdinal="1"
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:89feec0d-db1f-407c-a243-0f866167af21">
+            </GenericAction>
+            <GenericAction
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:0bbd97ec-d5ac-4fe7-9474-6b3209344402"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:480cf320-7c21-4c72-95d3-2927d2b545ce"
+                    name="Step Containing the Real-Time PCR Protocol"
+                    actionOrdinal="2"
                     Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:89feec0d-db1f-407c-a243-0f866167af21">
             </GenericAction>
         </GenericProtocol>
@@ -52,7 +59,7 @@
         If this material is meant to be loaded as a GenericMaterialMeasurement, then you should have a dummy GMM inside the
         dummy GPA. Otherwise, link this dummy material to the dummy gpa via an _inputCompleteMaterials element -->
         <GenericMaterial
-                name="Material Characteristics Dummy for Real-Time PCR Protocol (Component of MiMage Real-Time PCR Investigation)"
+                name="Specimen Dummy for Real-Time PCR Protocol (Component of MiMage Real-Time PCR Investigation)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:2020f87a-e130-4abe-a091-fde5deaac670"
                 identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d2c32106-60f4-40ff-91fc-a8bef5f90392">
             <_characteristics

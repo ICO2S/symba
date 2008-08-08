@@ -59,8 +59,13 @@ public class FileRetrieve {
 
         if ( !isAuthenticated )
             throw new IOException( "Authentication failed." );
-
-        String directoryForFile = scp.getDirectory() + "/data";
+        String directoryForFile;
+        //js following two lines prevent error on dos (there doesnt need to be an added dir to the scp-dirs path on dos):
+        if(scp.getRemoteDataStoreOs().equals("dos")){
+            directoryForFile = scp.getDirectory() + "/";
+        }else{
+            directoryForFile = scp.getDirectory() + "/data";
+        }
 
         SCPClient scpClient = new SCPClient( conn );
 

@@ -3,6 +3,12 @@
     <ProtocolCollection>
 
         <GenericProtocol
+                name="Specimen Measurement Protocol (Component of MiMage Real-Time PCR Investigation)"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:6aac9062-eda5-4d57-9499-42e308faaee0"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:27ffec63-e3d0-423d-90ba-484e7ea49223">
+        </GenericProtocol>
+
+        <GenericProtocol
                 name="Real-Time PCR Protocol (Component of MiMage Real-Time PCR Investigation)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:7c722b60-6e6a-4f4e-a473-36f7925bb0d2"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:89feec0d-db1f-407c-a243-0f866167af21">
@@ -12,11 +18,11 @@
                          Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:38fbd24b-57ee-43db-bea9-1b69de097713"
                          identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:0d12e43d-2984-4792-8362-c2869941a50e">
             <GenericAction
-                    Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:0bbd97ec-d5ac-4fe7-9474-6b3209344402"
-                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:480cf320-7c21-4c72-95d3-2927d2b545ce"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:42cd57db-1894-4e4f-b703-f40544f8cdca"
+                    identifier="urn:lsid:cisban.cisbs.org:GenericAction:d1ab489f-b8fc-499e-87c4-6d5d6f624d65"
                     name="Step Containing the Specimen Measurement Protocol"
                     actionOrdinal="1"
-                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:89feec0d-db1f-407c-a243-0f866167af21">
+                    Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:27ffec63-e3d0-423d-90ba-484e7ea49223">
             </GenericAction>
             <GenericAction
                     Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:0bbd97ec-d5ac-4fe7-9474-6b3209344402"
@@ -28,20 +34,31 @@
         </GenericProtocol>
 
         <GenericProtocolApplication
+                Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:27ffec63-e3d0-423d-90ba-484e7ea49223"
+                name="Specimen Measurement Assay net.sourceforge.symba.keywords.dummy net.sourceforge.symba.keywords.materialTransformation for Specimen Measurement Protocol (Component of MiMage Real-Time PCR Investigation)"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:a3e7e690-751e-4088-bfdd-f104a6e6e3f9"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:650edefc-076c-42c2-abf0-abcf1a8f34ea">
+            <ActionApplication
+                    identifier="urn:lsid:cisban.cisbs.org:ActionApplication:b4c95671-d50b-4dd6-9562-260e895e0db6"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:2942d239-6a82-46f6-834a-1a81d4674c16"
+                    Action_ref="urn:lsid:cisban.cisbs.org:GenericAction:d1ab489f-b8fc-499e-87c4-6d5d6f624d65"/>
+            <GenericMaterialMeasurement
+                    Material_ref="urn:lsid:cisban.cisbs.org:GenericMaterial:d2c32106-60f4-40ff-91fc-a8bef5f90392"/>
+            <_outputMaterials
+                    Material_ref="urn:lsid:cisban.cisbs.org:GenericMaterial:47261720-35ac-48f7-ad7c-a154cc3a2fc3"/>
+        </GenericProtocolApplication>
+
+        <GenericProtocolApplication
                 Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:89feec0d-db1f-407c-a243-0f866167af21"
-                name="Parameters Associated with Creating the Data File Dummy for Real-Time PCR Protocol (Component of MiMage Real-Time PCR Investigation)"
+                name="Parameters Associated with Creating the Data File net.sourceforge.symba.keywords.dummy for Real-Time PCR Protocol (Component of MiMage Real-Time PCR Investigation)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:8db0a1bd-2c91-4a61-87e0-83ddbdbc5582"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:eb3ce55e-9703-4c7d-8d17-38e1b24f153a">
             <_descriptions>
                 <Description
                         text="TextBox::ProtocolDescription::Please describe the specifics of your Real-Time PCR protocol"/>
             </_descriptions>
-            <!--<GenericMaterialMeasurement Material_ref="urn:lsid:cisban.cisbs.org:GenericMaterial:d2c32106-60f4-40ff-91fc-a8bef5f90392">-->
-                <!--<Range upperLimit="default upper limit" lowerLimit="default lower limit">-->
-                    <!--<_unit OntologyTerm_ref="1f7bc1b8-96f3-478a-a40e-da51ec99c92d"/>-->
-                    <!--<_dataType OntologyTerm_ref="5c107c2b-6687-4e0c-8ae7-9cf265c37096"/>-->
-                <!--</Range>-->
-            <!--</GenericMaterialMeasurement>-->
+            <GenericMaterialMeasurement
+                    Material_ref="urn:lsid:cisban.cisbs.org:GenericMaterial:47261720-35ac-48f7-ad7c-a154cc3a2fc3"/>
 
             <!--
                  * REQUIRED: percentage senescence (Integer, percent = unit). FuGE = AtomicParameter
@@ -55,19 +72,31 @@
     </ProtocolCollection>
 
     <MaterialCollection>
-        <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application
-        If this material is meant to be loaded as a GenericMaterialMeasurement, then you should have a dummy GMM inside the
-        dummy GPA. Otherwise, link this dummy material to the dummy gpa via an _inputCompleteMaterials element -->
+        <!-- A real version of these materials - with the correct attributes - will be made afresh for each new protocol
+         application. If these materials are meant to be loaded as GenericMaterialMeasurements, then you should have
+         dummy GMMs inside the dummy GPA. Otherwise, link these dummy materials to the dummy gpa via an
+         _inputCompleteMaterials or _outputMaterials element -->
         <GenericMaterial
-                name="Specimen Dummy for Real-Time PCR Protocol (Component of MiMage Real-Time PCR Investigation)"
+                name="Specimen net.sourceforge.symba.keywords.dummy Notreatment (Component of MiMage Real-Time PCR Investigation)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:2020f87a-e130-4abe-a091-fde5deaac670"
                 identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d2c32106-60f4-40ff-91fc-a8bef5f90392">
+            <!-- Identifying descriptor set to show this and the Experimental Conditions Dummy are actually the same -->
             <_characteristics
-                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:b87ca6fc-0018-4817-bb2c-8cf3b7a1904e"/>
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:df9dd712-8eb8-47e6-aeaa-54ebc3248fae"/>
+        </GenericMaterial>
+        <GenericMaterial
+                name="Experimental Conditions net.sourceforge.symba.keywords.dummy (Component of MiMage Real-Time PCR Investigation)"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:8bc8b1c8-30b2-4e90-8d5d-24e0fc7ac353"
+                identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:47261720-35ac-48f7-ad7c-a154cc3a2fc3">
+            <!-- Identifying descriptor set to show this and the Specimen Dummy are actually the same -->
             <_characteristics
-                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:5d783f2d-38db-4fe8-a716-7974b394f0be"/>
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:df9dd712-8eb8-47e6-aeaa-54ebc3248fae"/>
+            <!-- temperature (additional characteristic of the output of the Specimen Measurement) -->
             <_characteristics
-                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:e211f236-1cb8-44f3-b751-58beb68456dc"/>
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:65df0609-9521-486a-a1ce-0734a8d8f667"/>
+            <!-- Ageing status (additional characteristic of the output of the Specimen Measurement) -->
+            <_characteristics
+                    OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:df5a0bff-1ad7-4102-8216-5c83b47904ad"/>
         </GenericMaterial>
     </MaterialCollection>
     <!-- Ontology Terms and Sources are located within MiMage-Terms.xml -->

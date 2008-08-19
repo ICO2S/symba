@@ -301,7 +301,7 @@ concrete protocols have been made.
 
         <GenericProtocolApplication
                 Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:75b3458b-06c0-4b8c-90c4-c9303f9e57d3"
-                name="Parameters Associated with Creating the Data File Dummy for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
+                name="Parameters Associated with Creating the Data File net.sourceforge.symba.keywords.dummy for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:e3388dc8-371c-4f2f-bdb9-24f52a96983e"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:bb550d13-b25b-42d6-8b37-1260df6a770f">
             <_descriptions>
@@ -316,7 +316,7 @@ concrete protocols have been made.
 
         <GenericProtocolApplication
                 Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:14453edd-afa6-4fa1-857a-82e3b8fb9b2e"
-                name="Parameters Associated with Creating the Data File Dummy for Task Protocol (Component of Carmen Electrophysiology Investigation)"
+                name="Parameters Associated with Creating the Data File net.sourceforge.symba.keywords.dummy for Task Protocol (Component of Carmen Electrophysiology Investigation)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:14548d13-8ebd-4d48-979c-1895f1c3f121"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:aae41937-70d1-488e-9375-ef7e12f3ec25">
             <_descriptions>
@@ -334,7 +334,7 @@ concrete protocols have been made.
 
         <GenericProtocolApplication
                 Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:aaef5e92-76af-4cb6-aeff-03f7aa77dbe9"
-                name="Parameters Associated with Creating the Data File Dummy for Stimulus Protocol (Component of Carmen Electrophysiology Investigation)"
+                name="Parameters Associated with Creating the Data File net.sourceforge.symba.keywords.dummy for Stimulus Protocol (Component of Carmen Electrophysiology Investigation)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:fd9de954-6666-4ad9-9837-06be7e370010"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:cf69a9ba-3a54-4dd2-af23-a345164f4858">
             <_descriptions>
@@ -345,7 +345,7 @@ concrete protocols have been made.
 
         <GenericProtocolApplication
                 Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:e7e5353e-d7b3-4fd4-be61-7f5410f94eaa"
-                name="Parameters Associated with Creating the Data File Dummy for Behavioural Event Protocol (Component of Carmen Electrophysiology Investigation)"
+                name="Parameters Associated with Creating the Data File net.sourceforge.symba.keywords.dummy for Behavioural Event Protocol (Component of Carmen Electrophysiology Investigation)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:b5b32c28-086d-4b69-bd30-b56d3aa07a17"
                 identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:e8a49b90-c1e0-432d-b743-ca2446f44cf6">
             <_descriptions>
@@ -359,7 +359,7 @@ concrete protocols have been made.
     <MaterialCollection>
         <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
         <GenericMaterial
-                name="Material Characteristics Dummy Noname Notreatment for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
+                name="Material Characteristics net.sourceforge.symba.keywords.dummy Noname Notreatment for Recording Protocol (Component of Carmen Electrophysiology Investigation)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:4a34375a-0c7c-4563-ab1d-a2509a5466bb"
                 identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d46bed62-21f6-4d27-b7c0-942abb124032">
             <!--Genus -->
@@ -404,7 +404,7 @@ concrete protocols have been made.
     </MaterialCollection>
     <DataCollection>
         <ExternalData
-                name="Time series data Dummy (Component of Carmen Electrophysiology Investigation)"
+                name="Time series data net.sourceforge.symba.keywords.dummy (Component of Carmen Electrophysiology Investigation)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:b37404ef-45ee-42a9-ac99-8dd8c42eb951"
                 identifier="urn:lsid:cisban.cisbs.org:ExternalData:d0954cc4-e497-4dae-8009-6162e94cfeae"
                 location="file:///dummy">

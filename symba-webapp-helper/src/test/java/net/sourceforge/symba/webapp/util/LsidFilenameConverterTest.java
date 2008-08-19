@@ -26,7 +26,7 @@ public class LsidFilenameConverterTest {
         String result = LsidFilenameConverter.convert( lsid, colonReplacement );
 
         assert ( result.equals( "urn__lsid__cisban.cisbs.org__RawData__06ce5766-bb24-46e9-934a-ea68a56f4171" ) ) :
-        "The LSID has not been converted properly, and is instead set to " + result;
+        "The LSID has not been converted properly, and is instead parse to " + result;
     }
 
 }

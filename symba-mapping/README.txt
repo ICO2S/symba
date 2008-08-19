@@ -11,21 +11,29 @@ mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.Unm
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalOntologyCollection" -Dexec.args="xml/referenceTemplates/MiMage-Terms.xml"
 
 # Add workflow(s) to the SyMBA database
-mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="out.html xml/samples/SampleMicroarray.xml"
-mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="out.html xml/samples/SampleMicroscopy.xml"
-mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="out.html xml/referenceTemplates/CarmenElectrophysiology.xml"
-mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="out.html xml/samples/SampleMicroarray.xml xml/samples/SampleMicroscopy.xml xml/referenceTemplates/CarmenElectrophysiology.xml"
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroarray.xml"
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroscopy.xml"
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/referenceTemplates/CarmenElectrophysiology.xml"
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroarray.xml xml/samples/SampleMicroscopy.xml xml/referenceTemplates/CarmenElectrophysiology.xml"
 
 # Unload a FuGE experiment into FuGE XML
-mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.MarshalXML" -Dexec.args="../symba-webapp/src/main/webapp/schemaFiles/FuGE_M3_test_13_07_2006.xsd your-identifier output-xml-file"
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.MarshalXML" -Dexec.args="../symba-jaxb2/src/main/resources/xmlSchema.xsd your-identifier output-xml-file"
 
 # Write out 5 LSIDs based on the namespace of your choice
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.lsid.RetrieveLsid" -Dexec.args="GenericProtocol"
 
 # Create usernames and passwords for the security database based on information found in an XML file formatted
-# as in xml/samples/SamplePeople.xml
-mvn exec:java -Dexec.mainClass="net.sourceforge.symba.webapp.util.security.CreateUserPassAndLoad" -Dexec.args="xml/samples/SamplePeople.xml"
+# as in symba-mapping/xml/samples/SamplePeople.xml. Run from symba-webapp-helper
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.webapp.util.security.CreateUserPassAndLoad" -Dexec.args="../symba-mapping/xml/samples/SamplePeople.xml"
 
+# Create an OntologyCollection in FuGE-ML, without modifying the database, using an input file that's much simpler in
+# structure to the XML. Run from the symba-mapping subdirectory
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.GenerateOntologyIndividuals" -Dexec.args="../symba-jaxb2/src/main/resources/xmlSchema.xsd input-list outputOntologyCollection.xml OntologySourceName"
+
+# Create an OntologyCollection in FuGE-ML, without modifying the database, using an input file that's much simpler in
+# structure to the XML. Run from the symba-mapping subdirectory. This version allows the creation of LSIDs as well as
+# provides the ability to pass both term label and name.
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.GenerateLsidOntologyIndividuals" -Dexec.args="../symba-jaxb2/src/main/resources/xmlSchema.xsd input-list outputOntologyCollection.xml OntologySourceName"
 
 # To add svn properties to a bunch of files (you may wish to change the extension)
 find . \( -name '.svn' -prune \) -o -name '*.java' -exec svn propset svn:keywords "Date Rev Author HeadURL" {} \;

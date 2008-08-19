@@ -30,9 +30,9 @@
  */
 package net.sourceforge.symba.mapping.hibernatejaxb2.xml;
 
+import net.sourceforge.fuge.util.RandomXmlGenerator;
 import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
-import net.sourceforge.fuge.util.RandomXmlGenerator;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
@@ -61,18 +61,25 @@ public class XmlDbRoundtripTest {
         marshalTest.FuGEToJaxb2( fugeIdentifier, outputTestFile );
 
         // Read in the outputted file, removing known bugs
+        // You must sort it, otherwise slight changes in ordering will be perceived as differences in the file
         SortedSet<String> output = parseOutKnownExceptions( outputTestFile );
 
-        // Read in the inputted file
+        // Read in the inputted file, removing known bugs
         // You must sort it, otherwise slight changes in ordering will be perceived as differences in the file
         SortedSet<String> input = parseOutKnownExceptions( inputTestFile );
 
         // print out the modified versions of the files
         PrintWriter outputCompared = new PrintWriter( new BufferedWriter( new FileWriter( outputComparedFile ) ) );
-        outputCompared.print( output );
+        // default behaviour of SortedSet when printed is with commas, which only make the resulting file less
+        // clear, so loop through instead.
+        for ( String line : output ) {
+            outputCompared.print( line );
+        }
         outputCompared.close();
         PrintWriter inputCompared = new PrintWriter( new BufferedWriter( new FileWriter( inputComparedFile ) ) );
-        inputCompared.print( input );
+        for ( String line : input ) {
+            inputCompared.print( line );            
+        }
         inputCompared.close();
 
         // compare the two files
@@ -95,6 +102,10 @@ public class XmlDbRoundtripTest {
             String current = scanner.nextLine();
             // If any of the following are found, remove them from the comparison:
             //   + The FuGE element often has its attributes rearranged in the version extracted from the database
+            //   + the problem with _accessRight comes from the fact that this is a standalone test. You cannot load
+            //     the OntologyCollection first, as it may have audit info, but you cannot load _accessRight from
+            //     within the AuditCollection, as it may have ontology info only in the OntologyCollection
+            //   + There is a problem with the many2many relationship between Software and Equipment
             if ( !current.startsWith( "<FuGE" ) &&
                     !current.contains( "<_accessRight" ) &&
                     !current.contains( "<_equipment GenericEquipment_ref" ) ) {

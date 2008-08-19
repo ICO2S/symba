@@ -1,16 +1,16 @@
 package net.sourceforge.symba.mapping.hibernatejaxb2;
 
-import net.sourceforge.fuge.common.audit.Person;
-import net.sourceforge.fuge.common.Identifiable;
+import net.sourceforge.fuge.ServiceLocator;
 import net.sourceforge.fuge.common.Describable;
+import net.sourceforge.fuge.common.Identifiable;
+import net.sourceforge.fuge.common.audit.Person;
 import net.sourceforge.fuge.service.EntityService;
 import net.sourceforge.fuge.service.EntityServiceException;
 import net.sourceforge.fuge.util.identification.FuGEIdentifier;
 import net.sourceforge.fuge.util.identification.FuGEIdentifierFactory;
-import net.sourceforge.fuge.ServiceLocator;
-import net.sourceforge.symba.versioning.Endurant;
 import net.sourceforge.symba.service.SymbaEntityService;
 import net.sourceforge.symba.service.SymbaEntityServiceException;
+import net.sourceforge.symba.versioning.Endurant;
 
 /**
  * contains some convienience methods to help access to the database services.
@@ -51,7 +51,7 @@ import net.sourceforge.symba.service.SymbaEntityServiceException;
  */
 
 public class DatabaseObjectHelper {
-    private static final String DEFAULT_DOMAIN_NAME = "net.sourceforge.fuge";
+    private static final String DEFAULT_DOMAIN_NAME = "net.sourceforge.symba";
 
     // the fully-qualified class name for Endurants
     private static final String ENDURANT_CLASS_NAME = "net.sourceforge.symba.versioning.Endurant";
@@ -62,7 +62,10 @@ public class DatabaseObjectHelper {
     private static final SymbaEntityService SE_SERVICE = ServiceLocator.instance().getSymbaEntityService();
 
     // we are happy to use the same instance of FuGEIdentifier across all DatabaseObjectHelpers.
-    private static FuGEIdentifier ID_MAKER = FuGEIdentifierFactory.createFuGEIdentifier( DEFAULT_DOMAIN_NAME, null );
+
+    // use the one below if using within the web interface / tomcat
+    
+    private static FuGEIdentifier ID_MAKER = FuGEIdentifierFactory.createFuGEIdentifier( DEFAULT_DOMAIN_NAME, "/client-beans.xml" );
 
 
     public static void setDomainName( String domainName ) {
@@ -257,15 +260,11 @@ public class DatabaseObjectHelper {
          * @return the newly-loaded object
          * @throws EntityServiceException if there is a problme loading the object into the database
          */
-        public static Identifiable assignAndSave
-        ( String
-        fullyQualifiedClassName, Identifiable
-        identifiable,
-                Person
-        person
-        ){
+        public static Identifiable assignAndSave( String fullyQualifiedClassName,
+                                                  Identifiable identifiable,
+                                                  Person person ) {
 
-        // set the new identifier
+            // set the new identifier
         identifiable.setIdentifier( ID_MAKER.create( fullyQualifiedClassName ) );
 
         // make sure to remove the old database ID

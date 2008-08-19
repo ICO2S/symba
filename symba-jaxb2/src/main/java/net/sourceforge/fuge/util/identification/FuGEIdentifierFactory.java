@@ -1,5 +1,7 @@
 package net.sourceforge.fuge.util.identification;
 
+import net.sourceforge.symba.lsid.LSIDFuGEIdentifier;
+
 /**
  * Copyright Notice
  * <p/>
@@ -61,9 +63,11 @@ public class FuGEIdentifierFactory {
         if ( domainName == null || domainName.trim().length() == 0 ) {
             return new BasicFuGEIdentifier( null );
         }
-//        if ( location != null && location.length() > 0 ) {
-//            return new LSIDFuGEIdentifier( domainName, location );
-//        }
+        if ( location != null && location.length() > 0 ) {
+            LSIDFuGEIdentifier lsidIdentifier = new LSIDFuGEIdentifier( domainName );
+            lsidIdentifier.setLocation( location );
+            return lsidIdentifier;
+        }
         return new BasicUrnFuGEIdentifier( domainName );
     }
 

@@ -76,3 +76,25 @@ New Queries
 * Queries over ExternalData
 
   * countRealData()
+
+* Queries over GenericProtocolApplication
+
+  * getLatest()
+
+  * getLatestDummies()
+
+  * getLatestMaterialTransformations()
+
+* Queries over OntologyTerm
+
+  * getLatestUnsourced()
+
+  * getLatestWithSource()
+
+  * getDistinctTermInfo()
+
+* Queries over GenericMaterial
+
+  * getLatest()
+
+  * getLatestDummies()

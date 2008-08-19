@@ -1,3 +1,4 @@
+
 <!-- This file is part of SyMBA.-->
 <!-- SyMBA is covered under the GNU Lesser General Public License (LGPL).-->
 <!-- Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.-->
@@ -69,8 +70,8 @@
 
             //contains info rg the to be made field and the path to the respective form and selectfield
             var userEntry = prompt("Please enter the new term");
-            if ( ! confirm("Would you really like the term " + userEntry +
-                           " to be available for this selection? (Take care, it will get stored on Database!)") ) {
+            if ( ! confirm("Would you really like the term \"" + userEntry +
+                           "\" to be available for you to use? This will save your term in the database.") ) {
                 alert("Action cancelled");
 
                 document.selectMetadata.hiddennewterminfofield.value = ""; //just to be sure
@@ -80,7 +81,7 @@
                 // MetadataValidate.jsp)
                 splitableInfo = ontologyTextfieldLabel + ":::" + userEntry + ":::" + selectionName;
                 document.selectMetadata.hiddennewterminfofield.value = splitableInfo;
-                alert("Your request might take a few seconds, please ok and wait until the new page is loaded completely. You will then find your new term in the list.")
+                alert("Your request might take a few seconds. Please press OK and wait until the new page, with your term, is loaded completely.")
                 document.selectMetadata.submit();
             }
         }

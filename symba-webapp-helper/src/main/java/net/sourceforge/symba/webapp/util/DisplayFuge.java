@@ -1,19 +1,19 @@
 package net.sourceforge.symba.webapp.util;
 
+import net.sourceforge.fuge.bio.data.ExternalData;
+import net.sourceforge.fuge.bio.investigation.Investigation;
+import net.sourceforge.fuge.bio.material.GenericMaterial;
+import net.sourceforge.fuge.bio.material.Material;
 import net.sourceforge.fuge.collection.FuGE;
 import net.sourceforge.fuge.collection.ProtocolCollection;
-import net.sourceforge.fuge.bio.investigation.Investigation;
-import net.sourceforge.fuge.bio.data.ExternalData;
-import net.sourceforge.fuge.bio.material.Material;
-import net.sourceforge.fuge.bio.material.GenericMaterial;
 import net.sourceforge.fuge.common.description.Description;
-import net.sourceforge.fuge.common.protocol.GenericProtocolApplication;
-import net.sourceforge.fuge.common.protocol.ActionApplication;
-import net.sourceforge.fuge.common.protocol.EquipmentApplication;
-import net.sourceforge.fuge.common.protocol.ParameterValue;
 import net.sourceforge.fuge.common.measurement.AtomicValue;
 import net.sourceforge.fuge.common.measurement.ComplexValue;
 import net.sourceforge.fuge.common.ontology.OntologyTerm;
+import net.sourceforge.fuge.common.protocol.ActionApplication;
+import net.sourceforge.fuge.common.protocol.EquipmentApplication;
+import net.sourceforge.fuge.common.protocol.GenericProtocolApplication;
+import net.sourceforge.fuge.common.protocol.ParameterValue;
 
 import java.io.PrintWriter;
 import java.util.*;
@@ -180,7 +180,7 @@ public class DisplayFuge {
                 // Make a new session bean for this particular data file
                 SymbaFormSessionBean currentSessionBean = new SymbaFormSessionBean();
 
-                // set the values to match those already present in the session bean from the calling method.
+                // parse the values to match those already present in the session bean from the calling method.
                 // these values have already been printed out to the out.
                 // if it isn't the user's experiment, allow them to copy metadata but they must assign it to a new
                 // experiment
@@ -400,7 +400,7 @@ public class DisplayFuge {
 
                             // print and save the descriptions
                             for ( Description description : ( Set<Description> ) dataFilledGPA.getDescriptions() ) {
-                                // parse along the " = "
+                                // createMaterialForDataFormContents along the " = "
                                 String[] parsedStrings = description.getText().split( " = " );
                                 protocolApplicationSummary.putDescription( parsedStrings[0], parsedStrings[1] );
                                 out.println( "<li>" + description.getText() + "</li>" );
@@ -416,7 +416,7 @@ public class DisplayFuge {
                         // Currently the *input* only allows for a single dummy material. However,
                         // we will write the display with it all ready for multiple dummy materials, except for the way
                         // the MaterialFactorsStore is overwritten with each loop.
-                        // setCreatedMaterial() doesn't need to be run, as that is something used only within
+                        // setCreatedMaterialEndurant() doesn't need to be run, as that is something used only within
                         // LoadFuge
                         if ( !dataFilledGPA.getInputCompleteMaterials().isEmpty() ) {
                             out.println(
@@ -464,7 +464,8 @@ public class DisplayFuge {
                             }
                             out.println( "</ul>" );
                             out.println( "</li>" );
-                            store.setMaterialFactorsStore( materialFactorsStore );
+                            //todo mfs
+//                            store.setInputMaterialInfo( materialFactorsStore );
                         }
 
                         datafileSpecificMetadataStores.add( store );

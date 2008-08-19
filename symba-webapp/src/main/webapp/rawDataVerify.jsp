@@ -10,14 +10,37 @@ in this distribution, please see LICENSE.txt
 <!-- $Author$-->
 <!-- $HeadURL$-->
 
+<%@ page import="net.sourceforge.fuge.collection.FuGE" %>
+<%@ page import="net.sourceforge.fuge.common.audit.Person" %>
+<%@ page import="net.sourceforge.fuge.common.ontology.OntologySource" %>
+<%@ page import="net.sourceforge.fuge.common.ontology.OntologyTerm" %>
+<%@ page import="net.sourceforge.fuge.common.protocol.GenericProtocol" %>
+<%@ page import="net.sourceforge.fuge.common.protocol.GenericProtocolApplication" %>
+<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.helper.FuGEMappingHelper" %>
+<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.xml.XMLMarshaler" %>
+<%@ page import="net.sourceforge.symba.webapp.util.*" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.ActionTemplateParser" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.MaterialFormValidator" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.MaterialTemplateParser" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.MetaDataWrapper" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionHierarchyScheme" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.AssayLoader" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.LoadPerson" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.MaterialTransformationLoader" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.OntologyLoader" %>
 <%@ page import="org.apache.commons.fileupload.FileItem" %>
 <%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
 <%@ page import="org.apache.commons.fileupload.FileUploadException" %>
 <%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
 <%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
-<%@ page import="net.sourceforge.symba.webapp.util.*" %>
-<%@ page import="java.util.*" %>
+<%@ page import="org.xml.sax.SAXException" %>
+<%@ page import="javax.xml.bind.JAXBException" %>
 <%@ page import="java.io.File" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.io.StringWriter" %>
+<%@ page import="java.net.URISyntaxException" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.*" %>
 
 <%--
  Authors: Oliver Shaw, Allyson Lister
@@ -78,7 +101,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
     // has been locked, the only way to get here is if the user has copied metadata from a pre-existing experiment
     // AND they haven't uploaded data yet. In the first case, we should (as already mentioned) delete all files
     // and associated file-specific metadata, in case the user keeps going back and forth, reloading data files.
-    // In the second case, we should delete the existing datafiles, but retain the first set of file-specific
+    // In the second case, we should delete the existing datafiles, but retain the first parse of file-specific
     // metadata as a template for the rest, then only allow changes to the data file portion of it.
     if ( session.getAttribute( "templateStore" ) == null ) {
         if ( symbaFormSessionBean.isProtocolLocked() && symbaFormSessionBean.isMetadataFromAnotherExperiment() ) {
@@ -96,7 +119,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             FileItem item = ( FileItem ) itr.next();
             if ( item.isFormField() && item.getFieldName().equals( "investigationType" ) ) {
                 // currently only one non-file field
-                // set the experimental investigation type
+                // parse the experimental investigation type
                 investigationEndurant = item.getString().substring( 0, item.getString().indexOf( "::Identifier::" ) );
 //            System.err.println( "Investigation Name:" + investigationName + "END");
                 investigationName = item.getString()

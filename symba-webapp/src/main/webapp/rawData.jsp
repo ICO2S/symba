@@ -10,7 +10,36 @@ in this distribution, please see LICENSE.txt
 <!-- $Author$-->
 <!-- $HeadURL$-->
 
-<%@ page import="net.sourceforge.fuge.common.protocol.*" %>
+<%@ page import="net.sourceforge.fuge.collection.FuGE" %>
+<%@ page import="net.sourceforge.fuge.common.audit.Person" %>
+<%@ page import="net.sourceforge.fuge.common.ontology.OntologySource" %>
+<%@ page import="net.sourceforge.fuge.common.ontology.OntologyTerm" %>
+<%@ page import="net.sourceforge.fuge.common.protocol.GenericProtocol" %>
+<%@ page import="net.sourceforge.fuge.common.protocol.GenericProtocolApplication" %>
+<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.helper.FuGEMappingHelper" %>
+<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.xml.XMLMarshaler" %>
+<%@ page import="net.sourceforge.symba.webapp.util.*" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.ActionTemplateParser" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.MaterialFormValidator" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.MaterialTemplateParser" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.MetaDataWrapper" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionHierarchyScheme" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.AssayLoader" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.LoadPerson" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.MaterialTransformationLoader" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.OntologyLoader" %>
+<%@ page import="org.apache.commons.fileupload.FileItem" %>
+<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.FileUploadException" %>
+<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
+<%@ page import="org.xml.sax.SAXException" %>
+<%@ page import="javax.xml.bind.JAXBException" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.io.StringWriter" %>
+<%@ page import="java.net.URISyntaxException" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
 
 
@@ -60,128 +89,89 @@ in this distribution, please see LICENSE.txt
 
 <fieldset>
 
-<%
-    // If the user is trying to re-enter data at this stage when they have already set assay protocols, we know
-    // that they are not allowed to change anything in rawData.jsp. Therefore we can skip all of this, and just
-    // print a summary.
-    // However, if they are trying to re-enter data and they haven't yet submitted ChooseAction.jsp, we can allow
-    // them to choose different filenames.
-    if ( symbaFormSessionBean.isProtocolLocked() ) {
-
-        if ( symbaFormSessionBean.getTopLevelProtocolName() != null ) {
-
-            // they have submitted at least as far as ChooseAction.jsp already. Do not change anything in the
-            // session, and carry on to the next requested page.
-            out.println( "<legend>Please Review Your Choices</legend>" );
-            out.println( "<ol><li>" );
-            out.println( "You have already chosen to add your data file to the " );
-            out.println( "<strong>" );
-            out.println( symbaFormSessionBean.getTopLevelProtocolName() + ". " );
-            out.println( "</strong>" );
-            out.println( "</li>" );
-        } else {
-            out.println( "There has been an error processing your form. Please contact " );
-            out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
-        }
-
-
-        if ( symbaFormSessionBean.isDataPresent() ) {
-            // only print out this section if there are some filenames already. The only instance where there
-            // shouldn't be filenames is if they are coming direct from view.jsp with all other metadata filled in.
-            boolean alreadyPrintedHeader = false;
-
-            for ( int iii = 0;
-                  iii < symbaFormSessionBean.getDatafileSpecificMetadataStores().size(); iii++ ) {
-                if ( symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() != null &&
-                     symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename().length() >
-                     0 ) {
-                    if ( !alreadyPrintedHeader ) {
-                        out.println( "<li>" );
-                        out.println( "You have also chosen the following data to associate with this investigation:" );
-                        out.println( "<ul>" );
-                        alreadyPrintedHeader = true;
-                    }
-                    out.println( "<li>" );
-                    out.println( "<strong>" );
-                    out.println( symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() );
-                    out.println( "</strong>" );
-                    out.println( "</li>" );
-                } else {
-                    break;
-                }
-            }
-            if ( alreadyPrintedHeader ) {
-                out.println( "</ul>" );
-                out.println( "</li>" );
-            }
-
-            out.println( "<li>" );
-            out.println( "You can no longer change any of the values above. If you have made a mistake," );
-            out.println( "and wish to start over again, please " );
-            out.println( "<a href=\"beginNewSession.jsp\">start again from the beginning</a>.<br/>" );
-            out.println( "</li>" );
-            out.println( "</ol>" );
-        }
-    } else {
-
-        // Protocol isn't locked yet, therefore we can let them choose an investigation type
-        out.println( "<legend>Please Choose Your Investigation and Upload Your Data" );
-        out.println( "<a href=\"help.jsp#rawData\" onClick=\"return popup(this, 'notes')\"> [ Why? ]</a></legend>" );
-%>
-<ol>
-    <li>
-        <label for="investigationType">Investigation Type: </label>
-        <select id="investigationType" name="investigationType">
-            <%
-                // There will never be Protocol Dummies.
-                Map<String, String> topLevelNames = new HashMap<String, String>();
-                for ( Object obj : validUser.getSymbaEntityService().getLatestGenericProtocols() ) {
-                    GenericProtocol gp = ( GenericProtocol ) obj;
-                    if ( !gp.getName().contains( "Component" ) ) {
-                        topLevelNames.put( gp.getEndurant().getIdentifier(), gp.getName() );
-                    }
-                }
-                // Now add the option element to the HTML
-                for ( String key : topLevelNames.keySet() ) {
-                    String inputStartValue =
-                            "<option value=\"" + key + "::Identifier::" + topLevelNames.get( key ) + "\"";
-                    if ( symbaFormSessionBean.getTopLevelProtocolEndurant() != null &&
-                         key.equals( symbaFormSessionBean.getTopLevelProtocolEndurant() ) ) {
-                        out.println(
-                                inputStartValue + " selected=\"selected\">" + topLevelNames.get( key ) + "</option>" );
-                    } else {
-                        out.println( inputStartValue + ">" + topLevelNames.get( key ) + "</option>" );
-                    }
-                }
-            %>
-        </select><br>
-    </li>
     <%
+        // If the user is trying to re-enter data at this stage when they have already parse assay protocols, we know
+        // that they are not allowed to add / change any more files. Therefore we can skip all of this, and just
+        // print a summary.
+        // However, if they are trying to re-enter data and they haven't yet submitted ChooseAction.jsp, we can allow
+        // them to choose different filenames.
+        if ( symbaFormSessionBean.isProtocolLocked() ) {
+
+            if ( symbaFormSessionBean.getTopLevelProtocolName() != null ) {
+
+                // they have submitted at least as far as ChooseAction.jsp already. Do not change anything in the
+                // session, and carry on to the next requested page.
+                out.println( "<legend>Please Review Your Data for " + symbaFormSessionBean.getTopLevelProtocolName() +
+                             "</legend>" );
+            } else {
+                out.println( "There has been an error processing your form. Please contact " );
+                out.println( application.getAttribute( "helpEmail" ) + "<br/>" );
+            }
+
+            if ( symbaFormSessionBean.isDataPresent() ) {
+                // only print out this section if there are some filenames already. The only instance where there
+                // shouldn't be filenames is if they are coming direct from view.jsp with all other metadata filled in.
+                boolean alreadyPrintedHeader = false;
+
+                for ( int iii = 0;
+                      iii < symbaFormSessionBean.getDatafileSpecificMetadataStores().size(); iii++ ) {
+                    if ( symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() != null &&
+                         symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename().length() >
+                         0 ) {
+                        if ( !alreadyPrintedHeader ) {
+                            out.println( "<p>" );
+                            out.println( "You have chosen the following data to associate with this investigation:" );
+                            out.println( "</p>" );
+                            out.println( "<ol>" );
+                            alreadyPrintedHeader = true;
+                        }
+                        out.println( "<li>" );
+                        out.println( "<strong>" );
+                        out.println(
+                                symbaFormSessionBean.getDatafileSpecificMetadataStores().get( iii ).getOldFilename() );
+                        out.println( "</strong>" );
+                        out.println( "</li>" );
+                    } else {
+                        break;
+                    }
+                }
+                if ( alreadyPrintedHeader ) {
+                    out.println( "</ol>" );
+                }
+
+                out.println( "<p>" );
+                out.println( "You can no longer change any of the values above. If you have made a mistake," );
+                out.println( "and wish to start over again, please " );
+                out.println( "<a href=\"beginNewSession.jsp\">start again from the beginning</a>.<br/>" );
+                out.println( "</p>" );
+            }
         }
 
-        // Additionally, if either the protocol isn't locked OR the protocol is locked but the data hasn't been
+        // Protocol isn't locked yet. If either the protocol isn't locked OR the protocol is locked but the data hasn't been
         // inputted yet, then the user can upload a file.
         if ( !symbaFormSessionBean.isProtocolLocked() ||
              ( symbaFormSessionBean.isProtocolLocked() && !symbaFormSessionBean.isDataPresent() ) ) {
     %>
-    <li>
-        <label for="attachment0">Your File: </label>
-        <input type="file" name="attachment0" id="attachment0"
-               onchange="document.getElementById('moreUploadsLink').style.display = 'block';"/>
-        <br>
+    <legend>Please add your data files</legend>
+    <ol>
+        <li>
+            <label for="attachment0">Your File: </label>
+            <input type="file" name="attachment0" id="attachment0"
+                   onchange="document.getElementById('moreUploadsLink').style.display = 'block';"/>
+            <br>
 
-        <div id="moreUploads"/>
-        <br>
+            <div id="moreUploads"/>
+            <br>
 
-        <div id="moreUploadsLink" style="display:none;">
-            <a href="javascript:addFileInput();">Attach Another File</a>
-        </div>
-        <br>
-    </li>
-</ol>
-<%
-    }
-%>
+            <div id="moreUploadsLink" style="display:none;">
+                <a href="javascript:addFileInput();">Attach Another File</a>
+            </div>
+            <br>
+        </li>
+    </ol>
+    <%
+        }
+    %>
 
 </fieldset>
 
@@ -226,8 +216,6 @@ in this distribution, please see LICENSE.txt
     <% out.println( "</form>" ); %>
 </fieldset>
 <br>
-
-<p>If your protocol is not here please <a href="mailto:helpdesk@cisban.ac.uk">contact us</a></p>
 
 <jsp:include page="helpAndComments.jsp"/>
 

@@ -1,6 +1,8 @@
 package net.sourceforge.symba.webapp.util;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 
 /**
  * This file is part of SyMBA.
@@ -20,13 +22,16 @@ public class MaterialFactorsStore {
 
     private String materialName;
 
-    // Filled ONLY during loadFuge, to allow discussion between loadMaterial and loadProtocols
-    private String createdMaterial;
+    // If it is an experiment with no material transformations, this value is filled ONLY during loadFuge, to allow
+    // discussion between loadMaterial and loadProtocols. However, if this experiment type contains material
+    // transformations, then the material is already chosen from a list of pre-existing ones, and this value
+    // is filled prior to entering the LoadFuge class.
+    private String createdMaterialEndurant;
 
     private String materialType;
 
     // free text for treatment type, dose and length of treatment. One String per treatment type
-    // having a linked hash set preserves the order while at the same time preventing treatment duplicates
+    // having a linked hash parse preserves the order while at the same time preventing treatment duplicates
     private LinkedHashSet<String> treatmentInfo;
 
     // key = ontology source endurant lsid, value = ontology term endurant lsid. Stores singleton characteristics
@@ -36,24 +41,42 @@ public class MaterialFactorsStore {
     // are allowed to have multiple selects.
     private HashMap<String,LinkedHashSet<String>> multipleCharacteristics;
 
+    // place to store the top-level OI for a descriptor set (newly-created OIs each time)
+    private String descriptorOiEndurant;
+    // place to store the ontology information for those things for a descriptor set (newly-created OIs each time)
+    // Contains information for a single descriptor set - all that is allowed in SyMBA at the moment
+    // key = ontology source endurant lsid, value = ontology term endurant lsid. Stores singleton characteristics
+    private HashMap<String,String> novelCharacteristics;
+
+    // place to store the ontology information for those things for a descriptor set (newly-created OIs each time)
+    // Contains information for a single descriptor set - all that is allowed in SyMBA at the moment
+    // key = ontology source endurant lsid, value = ontology term endurant lsids. Stores those characteristics that
+    // are allowed to have multiple selects.
+    private HashMap<String,LinkedHashSet<String>> novelMultipleCharacteristics;
+
     // the OntologyReplacement details
     private Map<String,String> ontologyReplacements;
 
     public MaterialFactorsStore() {
         this.treatmentInfo = new LinkedHashSet<String>();
-        this.characteristics = new HashMap<String, String>();
         this.ontologyReplacements = new HashMap<String,String>();
+        this.characteristics = new HashMap<String, String>();
+        this.novelCharacteristics = new HashMap<String, String>();
         this.multipleCharacteristics = new HashMap<String, LinkedHashSet<String>>();
+        this.novelMultipleCharacteristics = new HashMap<String, LinkedHashSet<String>>();
     }
 
     public void clear() {
         this.materialName = "";
-        this.createdMaterial = "";
+        this.createdMaterialEndurant = "";
         this.materialType = "";
+        this.descriptorOiEndurant = "";
         this.treatmentInfo.clear();
-        this.characteristics.clear();
         this.ontologyReplacements.clear();
+        this.characteristics.clear();
+        this.novelCharacteristics.clear();
         this.multipleCharacteristics.clear();
+        this.novelMultipleCharacteristics.clear();
     }
 
     public String getMaterialName() {
@@ -64,12 +87,12 @@ public class MaterialFactorsStore {
         this.materialName = materialName;
     }
 
-    public String getCreatedMaterial() {
-        return createdMaterial;
+    public String getCreatedMaterialEndurant() {
+        return createdMaterialEndurant;
     }
 
-    public void setCreatedMaterial( String createdMaterial ) {
-        this.createdMaterial = createdMaterial;
+    public void setCreatedMaterialEndurant( String createdMaterialEndurant ) {
+        this.createdMaterialEndurant = createdMaterialEndurant;
     }
 
     public LinkedHashSet<String> getTreatmentInfo() {
@@ -104,6 +127,26 @@ public class MaterialFactorsStore {
         this.characteristics.put(ontologySourceEndurant, ontologyTermEndurant);
     }
 
+    public String getDescriptorOiEndurant() {
+        return descriptorOiEndurant;
+    }
+
+    public void setDescriptorOiEndurant( String descriptorOiEndurant ) {
+        this.descriptorOiEndurant = descriptorOiEndurant;
+    }
+
+    public HashMap<String, String> getNovelCharacteristics() {
+        return novelCharacteristics;
+    }
+
+    public void setNovelCharacteristics( HashMap<String, String> novelCharacteristics ) {
+        this.novelCharacteristics = novelCharacteristics;
+    }
+
+    public void addNovelCharacteristic(String ontologySourceEndurant, String ontologyTermEndurant) {
+        this.novelCharacteristics.put(ontologySourceEndurant, ontologyTermEndurant);
+    }
+
     public Map<String, String> getOntologyReplacements() {
         return ontologyReplacements;
     }
@@ -127,4 +170,17 @@ public class MaterialFactorsStore {
     public void addMultipleCharacteristics(String ontologySourceEndurant, LinkedHashSet<String> ontologyTermEndurants) {
         this.multipleCharacteristics.put(ontologySourceEndurant, ontologyTermEndurants);
     }
+
+    public HashMap<String, LinkedHashSet<String>> getNovelMultipleCharacteristics() {
+        return novelMultipleCharacteristics;
+    }
+
+    public void setNovelMultipleCharacteristics( HashMap<String, LinkedHashSet<String>> novelMultipleCharacteristics ) {
+        this.novelMultipleCharacteristics = novelMultipleCharacteristics;
+    }
+
+    public void addNovelMultipleCharacteristics(String ontologySourceEndurant, LinkedHashSet<String> ontologyTermEndurants) {
+        this.novelMultipleCharacteristics.put(ontologySourceEndurant, ontologyTermEndurants);
+    }
+
 }

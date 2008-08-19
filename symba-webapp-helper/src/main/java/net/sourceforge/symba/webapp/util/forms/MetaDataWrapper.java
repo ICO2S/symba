@@ -1,8 +1,8 @@
 package net.sourceforge.symba.webapp.util.forms;
 
 import net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore;
-import net.sourceforge.symba.webapp.util.SymbaFormSessionBean;
 import net.sourceforge.symba.webapp.util.PersonBean;
+import net.sourceforge.symba.webapp.util.SymbaFormSessionBean;
 
 import javax.servlet.http.HttpSession;
 
@@ -50,17 +50,13 @@ public class MetaDataWrapper {
             // Print headers
             buffer.append( printDataFileHeaders( info ) );
 
-            // Print material portion of the form
-            buffer.append(
-                    MaterialTemplateParser.parse( info, currentDataFile, symbaFormSessionBean, personBean, session ) );
-
             // Print data portion of the form
             buffer.append(
                     DataTemplateParser.parse( info, currentDataFile, symbaFormSessionBean, personBean ) );
 
             // Print GPA portion of the form
             buffer.append(
-                    GenericProtocolApplicationTemplateParser.parse( info, currentDataFile, personBean ) );
+                    GenericProtocolApplicationTemplateParser.parse( session, symbaFormSessionBean, info, currentDataFile, personBean ) );
 
             // Print equipment portion of the form
             buffer.append(

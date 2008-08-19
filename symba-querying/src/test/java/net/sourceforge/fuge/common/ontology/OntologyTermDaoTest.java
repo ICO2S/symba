@@ -1,16 +1,15 @@
 package net.sourceforge.fuge.common.ontology;
 
-import org.testng.annotations.Test;
-
-import java.util.*;
-
-import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
-import net.sourceforge.symba.versioning.Endurant;
-import net.sourceforge.symba.service.SymbaEntityService;
-import net.sourceforge.fuge.service.EntityService;
 import net.sourceforge.fuge.ServiceLocator;
 import net.sourceforge.fuge.common.audit.Audit;
 import net.sourceforge.fuge.common.audit.AuditAction;
+import net.sourceforge.fuge.service.EntityService;
+import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
+import net.sourceforge.symba.service.SymbaEntityService;
+import net.sourceforge.symba.versioning.Endurant;
+import org.testng.annotations.Test;
+
+import java.util.*;
 
 /**
  * This file is part of SyMBA.
@@ -142,7 +141,7 @@ public class OntologyTermDaoTest {
         OntologyIndividual seven =
                 writeOntologyIndividual( "getLatestUnsourcedTermsComplexTest7", gc.getTime(), osOne );
         gc.set( 2004, Calendar.MARCH, 4 );
-        OntologyTerm eight = writeOntologyIndividual( "getLatestUnsourcedTermsComplexTest8", gc.getTime(), osOne,
+        OntologyTerm eight = writeOntologyIndividual( "getLatestUnsourcedTermsComplexTest8", gc.getTime(), null, osOne,
                 seven.getEndurant() );
 
         @SuppressWarnings( "unchecked" )
@@ -201,6 +200,77 @@ public class OntologyTermDaoTest {
 
     }
 
+    @Test( groups = { "ontology", "hibernate" } )
+    public void getDistinctTermInfoSimpleTest() {
+
+        // load some sourced terms, and see if their term info is returned properly.
+
+        SymbaEntityService ses = ServiceLocator.instance().getSymbaEntityService();
+
+        // We're not testing the Audit Trail here, so just put in all with the same date.
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.set( 2000, Calendar.MARCH, 4 );
+
+        // create and load 3 OntologyIndividuals with a single OntologySource
+        OntologySource osOne = writeOntologySource( "getLatestTermsWithSourceSimpleTest5", gc.getTime() );
+        OntologyIndividual six = writeOntologyIndividual( "getLatestTermsWithSourceSimpleTest6", gc.getTime(), osOne );
+        writeOntologyIndividual( "getLatestTermsWithSourceSimpleTest7", gc.getTime(), osOne );
+        // The one below has the same term/termaccession pair as number six
+        writeOntologyIndividual( "getLatestTermsWithSourceSimpleTest8", gc.getTime(), six, osOne );
+
+        @SuppressWarnings( "unchecked" )
+        List<List<String>> results =
+                ( List<List<String>> ) ses.getDistinctTermInfo( osOne.getEndurant().getIdentifier() );
+
+        assert ( results.size() == 2 ) :
+                "3 OntologyIndividuals that share the same OntologySource were loaded. Two of these shared the " +
+                "same term and term accession, and should have been counted as one item. However, the result size " +
+                "was " + results.size() + " rather than 2";
+
+    }
+
+    @Test( groups = { "ontology", "hibernate" } )
+    public void getDistinctTermInfoComplexTest() {
+
+        // load some sourced terms, and see if their term info is returned properly.
+
+        SymbaEntityService ses = ServiceLocator.instance().getSymbaEntityService();
+
+        // We're not testing the Audit Trail here, so just put in all with the same date.
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.set( 2000, Calendar.MARCH, 4 );
+
+        // create and load 4 OntologyIndividuals with a single OntologySource. one of them will be too old,
+        // and therefore shouldn't count in the distinct select of term and term accession.
+        OntologySource osOne = writeOntologySource( "getLatestTermsWithSourceSimpleTest5", gc.getTime() );
+        OntologyIndividual six = writeOntologyIndividual( "getLatestTermsWithSourceSimpleTest6", gc.getTime(), osOne );
+        OntologyIndividual seven =
+                writeOntologyIndividual( "getLatestTermsWithSourceSimpleTest7", gc.getTime(), osOne );
+        // number 8 has the same term/termaccession pair as number six
+        writeOntologyIndividual( "getLatestTermsWithSourceSimpleTest8", gc.getTime(), six, osOne );
+        // number 7 shares an endurant with 9
+        gc.set( 2005, Calendar.MARCH, 4 );        
+        writeOntologyIndividual( "getLatestTermsWithSourceSimpleTest9", gc.getTime(), null, osOne,
+                        seven.getEndurant() );
+
+        @SuppressWarnings( "unchecked" )
+        List<List<String>> results =
+                ( List<List<String>> ) ses.getDistinctTermInfo( osOne.getEndurant().getIdentifier() );
+
+        assert ( results.size() == 2 ) :
+                "4 OntologyIndividuals that share the same OntologySource were loaded. Two of these shared the " +
+                "same term and term accession but had different endurants, and should have been counted as one item. " +
+                "The remaining 2 shared the same endurant, and so only one should have been returned." +
+                "However, the result size " +
+                "was " + results.size() + " rather than 2";
+
+        for ( List<String> singleList : results ) {
+            assert ( !singleList.contains( seven.getTerm() ) ) :
+                    "The results of the search contained a term from an older version of an existing term: " +
+                    seven.getTerm();
+        }
+    }
+
     private OntologyIndividual writeOntologyIndividual( String name, Date time ) {
 
         // cast the null value to ensure it goes to the correct method.
@@ -210,17 +280,26 @@ public class OntologyTermDaoTest {
 
     private OntologyIndividual writeOntologyIndividual( String name, Date time, Endurant endurant ) {
 
-        return writeOntologyIndividual( name, time, null, endurant );
+        return writeOntologyIndividual( name, time, null, null, endurant );
     }
 
     private OntologyIndividual writeOntologyIndividual( String name, Date time, OntologySource referencedSource ) {
 
-        return writeOntologyIndividual( name, time, referencedSource,
+        return writeOntologyIndividual( name, time, null, referencedSource,
                 DatabaseObjectHelper.getOrLoadEndurant( null, null ) );
     }
 
     private OntologyIndividual writeOntologyIndividual( String name,
                                                         Date time,
+                                                        OntologyIndividual oi,
+                                                        OntologySource referencedSource ) {
+        return writeOntologyIndividual( name, time, oi, referencedSource,
+                DatabaseObjectHelper.getOrLoadEndurant( null, null ) );
+    }
+
+    private OntologyIndividual writeOntologyIndividual( String name,
+                                                        Date time,
+                                                        OntologyIndividual oi,
                                                         OntologySource referencedSource,
                                                         Endurant endurant ) {
 
@@ -233,9 +312,14 @@ public class OntologyTermDaoTest {
         // add an Endurant value (required) after saving the endurant to the database
         individual.setEndurant( endurant );
 
-        // OntologyIndividuals must have a term
-        individual.setTerm( "some term " + String.valueOf( Math.random() * 100 ) );
-        individual.setTermAccession( "some term AC" + String.valueOf( Math.random() * 100 ) );
+        // OntologyIndividuals must have a term and accession
+        if ( oi != null ) {
+            individual.setTerm( oi.getTerm() );
+            individual.setTermAccession( oi.getTermAccession() );
+        } else {
+            individual.setTerm( "some term " + String.valueOf( Math.random() * 100 ) );
+            individual.setTermAccession( "some term AC" + String.valueOf( Math.random() * 100 ) );
+        }
 
         if ( referencedSource != null ) {
             // Now link to the OntologySource, if requested

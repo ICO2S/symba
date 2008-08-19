@@ -5,6 +5,21 @@
  ---
  July 2008
 
+Reserve Words in SyMBA Templates
+
+  In SyMBA templates, there are many reserved words to allow the web interface to interpret your intentions
+  correctly. To ensure that they do not conflict with any real words you might wish to use, they are all prefixed
+  with <<<net.sourceforge.symba.keywords.>>>. Below is a list of reserve words that may be used in the template, and
+  a short definition of their meaning. In the following sections, which of these reserved words are allowed in the
+  different sections are defined.
+
+  * net.sourceforge.symba.keywords.noDatafile : used to let the web interface know that this application of a protocol
+    has inputs and/or outputs that do not contain data files (only materials).
+
+  * net.sourceforge.symba.keywords.dummy : used to show that the XML element in the template isn't itself the one to
+    copy into the users's experiment, but is instead a dummy object that is meant to be copied into a real object
+    before saving.
+
 Create Your Input XML
 
 * Describe Your Material
@@ -24,15 +39,15 @@ Create Your Input XML
   was built follows.
 
 +---+
- Material Characteristics Dummy Noname Notreatment for Recording Protocol (Component of Carmen Electrophysiology Investigation)
+ Material Characteristics net.sourceforge.symba.keywords.dummy Noname Notreatment for Recording Protocol (Component of Carmen Electrophysiology Investigation)
 +---+
 
    * "Material Characteristics" : Anything before the "Dummy" Keyword will be used to title the fieldset that the
      material metadata is grouped into in the web interface.
 
-   * "Dummy" : This keyword MUST be used in the Material name, as it tells SyMBA that this is not a real Material. It
-     is also a keyword that is used in the Search methods within SyMBA so that Dummy Materials won't be shown in
-     search results.
+   * "net.sourceforge.symba.keywords.dummy" : This keyword MUST be used in the Material name, as it tells SyMBA that
+     this is not a real Material. It is also a keyword that is used in the Search methods within SyMBA so that Dummy
+     Materials won't be shown in search results.
 
    * "Noname" : This keyword ensures that the user isn't asked for a general name for their Material. This value
      would otherwise go into the "name" attribute of the user's GenericMaterial element. If you want to control the

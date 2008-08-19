@@ -1,14 +1,16 @@
 package net.sourceforge.symba.webapp.util;
 
+import net.sourceforge.fuge.collection.FuGE;
+import net.sourceforge.fuge.common.ontology.OntologyTerm;
+import net.sourceforge.symba.service.SymbaEntityService;
+
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-
-import net.sourceforge.fuge.collection.FuGE;
-import net.sourceforge.fuge.common.ontology.OntologyTerm;
-import net.sourceforge.symba.service.SymbaEntityService;
 
 /**
  * This file is part of SyMBA.
@@ -29,26 +31,38 @@ import net.sourceforge.symba.service.SymbaEntityService;
 public class SymbaFormSessionBean implements Serializable {
 
     // the four booleans below are checkpoint markers.
-    // Will be set to true after the first time the user makes it to the confirmation page.
+    // Will be parse to true after the first time the user makes it to the confirmation page.
     // (technically, once the validation is complete on the page immediately prior to the confirmation
-    // page, so please make sure this is always set in that position, which is currently inside metaDataValidate.jsp)
+    // page, so please make sure this is always parse in that position, which is currently inside metaDataValidate.jsp)
     private boolean confirmationReached;
 
-    // will be set to true after all metadata-defining protocols have been chosen, and the first metadata form has
+    // will be parse to true after all metadata-defining protocols have been chosen, and the first metadata form has
     // been submitted. This is currently also metaDataValidate.jsp, but it won't always be, so we need two variables
     // for the two semantically different meanings.
     private boolean protocolLocked;
 
-    // will be set to true after at least one datafile has been successfully loaded
+    // will be parse to true after at least one datafile has been successfully loaded
     private boolean dataPresent;
 
-    // set to true if the metadata was copied from a pre-existing experiment. Important to know as, if true, the
+    // will be parse to true if ever information about material characteristics is tried to be loaded from a form
+    // without having all of the characteristics parse with *some* value.
+    private boolean materialCharacteristicsIncomplete;
+
+    // parse to true if the metadata was copied from a pre-existing experiment. Important to know as, if true, the
     // first time the data files are filled, all the metadata stored in the first data file's metadata needs to be
     // copied to all of the others.
     private boolean metadataFromAnotherExperiment;
 
     // information that is specific to each uploaded data file, including the data file itself
     private List<DatafileSpecificMetadataStore> datafileSpecificMetadataStores;
+
+    // only used when adding specimens - not used in the part of the form where rawData is processed.
+    private MaterialFactorsStore specimenToBeUploaded;
+    // only used when adding specimens - not used in the part of the form where rawData is processed.
+    // it is the identifier of the gpa plus the entire hierachy chosen by the user to attach the specimen to.
+    // Later, when loading the specimen into the database, we need to
+    // use this to build up the new GPA in the right position in the hierarchy of the exp.
+    private String specimenActionHierarchy;
 
     // information that is generally applicable across all data files
     private String topLevelProtocolName;
@@ -65,10 +79,12 @@ public class SymbaFormSessionBean implements Serializable {
 
     public SymbaFormSessionBean() {
         datafileSpecificMetadataStores = new ArrayList<DatafileSpecificMetadataStore>();
+        specimenToBeUploaded = new MaterialFactorsStore();
         confirmationReached = false;
         protocolLocked = false;
         dataPresent = false;
         metadataFromAnotherExperiment = false;
+        materialCharacteristicsIncomplete = false;
     }
 
     public boolean isConfirmationReached() {
@@ -95,6 +111,14 @@ public class SymbaFormSessionBean implements Serializable {
         this.dataPresent = dataPresent;
     }
 
+    public boolean isMaterialCharacteristicsIncomplete() {
+        return materialCharacteristicsIncomplete;
+    }
+
+    public void setMaterialCharacteristicsIncomplete( boolean materialCharacteristicsIncomplete ) {
+        this.materialCharacteristicsIncomplete = materialCharacteristicsIncomplete;
+    }
+
     public boolean isMetadataFromAnotherExperiment() {
         return metadataFromAnotherExperiment;
     }
@@ -111,20 +135,36 @@ public class SymbaFormSessionBean implements Serializable {
         this.datafileSpecificMetadataStores = datafileSpecificMetadataStores;
     }
 
-    public String getTopLevelProtocolName() {
-        return topLevelProtocolName;
-    }
-
-    public void setTopLevelProtocolName( String topLevelProtocolName ) {
-        this.topLevelProtocolName = topLevelProtocolName;
-    }
-
     public void addDatafileSpecificMetadataStore( DatafileSpecificMetadataStore info ) {
         this.datafileSpecificMetadataStores.add( info );
     }
 
     public void setDatafileSpecificMetadataStore( DatafileSpecificMetadataStore info, int value ) {
         this.datafileSpecificMetadataStores.set( value, info );
+    }
+
+    public MaterialFactorsStore getSpecimenToBeUploaded() {
+        return specimenToBeUploaded;
+    }
+
+    public void setSpecimenToBeUploaded( MaterialFactorsStore specimenToBeUploaded ) {
+        this.specimenToBeUploaded = specimenToBeUploaded;
+    }
+
+    public String getSpecimenActionHierarchy() {
+        return specimenActionHierarchy;
+    }
+
+    public void setSpecimenActionHierarchy( String specimenActionHierarchy ) {
+        this.specimenActionHierarchy = specimenActionHierarchy;
+    }
+
+    public String getTopLevelProtocolName() {
+        return topLevelProtocolName;
+    }
+
+    public void setTopLevelProtocolName( String topLevelProtocolName ) {
+        this.topLevelProtocolName = topLevelProtocolName;
     }
 
     public String getTopLevelProtocolEndurant() {
@@ -184,6 +224,7 @@ public class SymbaFormSessionBean implements Serializable {
     }
 
     public void displayHtml( JspWriter out, SymbaEntityService symbaEntityService ) throws IOException {
+
         if ( fuGE == null ) {
             // the user has created a new experiment
             out.println( "<p class=\"bigger\">" );
@@ -211,233 +252,296 @@ public class SymbaFormSessionBean implements Serializable {
             out.println( "</p>" );
         }
 
-        // information specific to each uploaded data file
-        out.println( "<p class=\"bigger\">" );
-        out.println( "This experiment has the following data file(s) for your" );
-        out.println( " <a class=\"bigger\" href=\"rawData.jsp\">" );
-        out.println( topLevelProtocolName );
-        out.println( "</a>:" );
-        out.println( "</p>" );
-
-        for ( DatafileSpecificMetadataStore info : datafileSpecificMetadataStores ) {
-            out.println( "<hr/>" );
-            out.println( "<p class=\"bigger\">Information for " );
+        if ( datafileSpecificMetadataStores != null && !datafileSpecificMetadataStores.isEmpty() ) {
+            // information specific to each uploaded data file
+            out.println( "<p class=\"bigger\">" );
+            out.println( "This experiment has the following data file(s) for your" );
             out.println( " <a class=\"bigger\" href=\"rawData.jsp\">" );
-            out.println( info.getFriendlyId() );
-            out.println( "</a>" );
+            out.println( topLevelProtocolName );
+            out.println( "</a>:" );
             out.println( "</p>" );
-            out.println( "<ul>" );
-            if ( info.getDataFileDescription() != null && info.getDataFileDescription().length() > 0 ) {
-                out.println( "<li>" );
-                out.println( "You have described this file as follows: " );
-                out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                out.println( info.getDataFileDescription() );
-                out.println( "</a>" );
-                out.println( "</li>" );
-            }
-            if ( info.getAssayActionSummary() != null ) {
-                out.println( "<li>" );
-                out.println( "You have also assigned the data file to a particular step in your " );
-                out.println( " workflow. The step you have assigned the file to is " );
-                out.println( "<a class=\"bigger\" href=\"ChooseAction.jsp\">" );
-                String modified = info.getAssayActionSummary().getChosenActionName();
-                if ( modified.startsWith( "Step Containing the" ) ) {
-                    modified = modified.substring( 20 );
-                }
-                out.println( modified );
-                if ( info.getOneLevelUpActionSummary() != null &&
-                                    info.getOneLevelUpActionSummary().getChosenActionName() != null) {
-                    out.println( ", which belongs to the " + info.getOneLevelUpActionSummary().getChosenActionName() );
-                }
-                out.println( "</a>" );
-                out.println( "</li>" );
-            }
-            if ( info.getFileFormat() != null ) {
-                out.println( "<li>You have specified a file format for the data file: " );
-                out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( info.getFileFormat() );
-                out.println( ot.getTerm() );
-                out.println( "</a>" );
-                out.println( "</li>" );
-            }
-            if ( info.getGenericProtocolApplicationInfo() != null &&
-                    !info.getGenericProtocolApplicationInfo().isEmpty() ) {
-                for ( GenericProtocolApplicationSummary value : info.getGenericProtocolApplicationInfo().values() ) {
-                    for ( String parameterEndurant : value.getParameterAndAtomics().keySet() ) {
 
-                        out.println( "<li>" );
-                        out.println(
-                                ( symbaEntityService.getLatestByEndurant( parameterEndurant ) ).getName() +
-                                        ": " );
-                        out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                        out.println( value.getParameterAndAtomics().get( parameterEndurant ) );
-                        out.println( "</a>" );
-                        out.println( "</li>" );
-                    }
-                    for ( String descriptionKey : value.getDescriptions().keySet() ) {
-                        out.println( "<li>" );
-                        out.println( "Description of this stage in the investigation: " );
-                        out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                        out.println( descriptionKey + " = " + value.getDescriptions().get( descriptionKey ) );
-                        out.println( "</a>" );
-                        out.println( "</li>" );
-                    }
-                }
-                out.println( "</li>" );
-            }
-            if ( info.getGenericEquipmentInfo() != null && !info.getGenericEquipmentInfo().isEmpty() ) {
-                // print out information on each of the associated equipment items
-                out.println( "<li>" );
-                out.println( "You have provided information about the equipment used with this data file. " );
-                out.println( "The equipment has the following properties: " );
+            for ( DatafileSpecificMetadataStore info : datafileSpecificMetadataStores ) {
+                out.println( "<hr/>" );
+                out.println( "<p class=\"bigger\">Information for " );
+                out.println( " <a class=\"bigger\" href=\"rawData.jsp\">" );
+                out.println( info.getFriendlyId() );
+                out.println( "</a>" );
+                out.println( "</p>" );
                 out.println( "<ul>" );
-
-                for ( GenericEquipmentSummary value : info.getGenericEquipmentInfo().values() ) {
-                    out.println( "<li>Information for the " + value.getEquipmentName() + ": " );
-
-                    out.println( "<ul>" );
-
-                    out.println( "<li>Free-Text Description: " );
+                if ( info.getDataFileDescription() != null && info.getDataFileDescription().length() > 0 ) {
+                    out.println( "<li>" );
+                    out.println( "You have described this file as follows: " );
                     out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                    out.println( value.getFreeTextDescription() );
+                    out.println( info.getDataFileDescription() );
                     out.println( "</a>" );
                     out.println( "</li>" );
-
-                    if ( !value.getParameterAndTerms().isEmpty() ) {
-                        out.println( "<li>Ontology Terms further describing this " + value.getEquipmentName() + ":" );
-                        out.println( "<ul>" );
-                        for ( String paramValue : value.getParameterAndTerms().values() ) {
-                            out.println( "<li><a class=\"bigger\" href=\"metaData.jsp\">" );
-                            out.println(
-                                    ( ( OntologyTerm ) symbaEntityService.getLatestByEndurant( paramValue ) ).getTerm() );
-                            out.println( "</a>" );
-                            out.println( "</li>" );
-                        }
-                        out.println( "</ul>" );
-                        out.println( "</li>" );
+                }
+                if ( info.getAssayActionSummary() != null ) {
+                    out.println( "<li>" );
+                    out.println( "You have also assigned the data file to a particular step in your " );
+                    out.println( " workflow. The step you have assigned the file to is " );
+                    out.println( "<a class=\"bigger\" href=\"ChooseAction.jsp\">" );
+                    String modified = info.getAssayActionSummary().getChosenActionName();
+                    if ( modified.startsWith( "Step Containing the" ) ) {
+                        modified = modified.substring( 20 );
                     }
-                    if ( !value.getParameterAndAtomics().isEmpty() ) {
-                        out.println( "<li>Parameters further describing this " + value.getEquipmentName() + ":" );
-                        out.println( "<ul>" );
+                    out.println( modified );
+                    if ( info.getOneLevelUpActionSummary() != null &&
+                         info.getOneLevelUpActionSummary().getChosenActionName() != null ) {
+                        out.println(
+                                ", which belongs to the " + info.getOneLevelUpActionSummary().getChosenActionName() );
+                    }
+                    out.println( "</a>" );
+                    out.println( "</li>" );
+                }
+                if ( info.getFileFormat() != null ) {
+                    out.println( "<li>You have specified a file format for the data file: " );
+                    out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+                    OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( info.getFileFormat() );
+                    out.println( ot.getTerm() );
+                    out.println( "</a>" );
+                    out.println( "</li>" );
+                }
+                if ( info.getGenericProtocolApplicationInfo() != null &&
+                     !info.getGenericProtocolApplicationInfo().isEmpty() ) {
+                    for ( GenericProtocolApplicationSummary value : info.getGenericProtocolApplicationInfo()
+                            .values() ) {
                         for ( String parameterEndurant : value.getParameterAndAtomics().keySet() ) {
 
                             out.println( "<li>" );
                             out.println(
                                     ( symbaEntityService.getLatestByEndurant( parameterEndurant ) ).getName() +
-                                            ": " );
+                                    ": " );
                             out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
                             out.println( value.getParameterAndAtomics().get( parameterEndurant ) );
                             out.println( "</a>" );
                             out.println( "</li>" );
                         }
-                        out.println( "</ul>" );
-                        out.println( "</li>" );
-                    }
-
-                    out.println( "</ul>" );
-
-                    out.println( "</li>" );
-                }
-                out.println( "</ul>" );
-                out.println( "</li>" );
-            }
-            if ( info.getMaterialFactorsStore() != null ) {
-                out.println( "<li>" );
-                out.println(
-                        "You have provided information about the material used in this step of the workflow with this data file. " );
-                out.println( "This material has the following properties " );
-                out.println( "<ul>" );
-
-                if ( info.getMaterialFactorsStore().getMaterialName() != null &&
-                        info.getMaterialFactorsStore().getMaterialName().length() > 0 ) {
-                    out.println( "<li>Name/Identifying Number: " );
-                    out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                    out.println( info.getMaterialFactorsStore().getMaterialName() );
-                    out.println( "</a>" );
-                    out.println( "</li>" );
-                }
-
-                if ( info.getMaterialFactorsStore().getOntologyReplacements() != null &&
-                        !info.getMaterialFactorsStore().getOntologyReplacements().isEmpty() ) {
-                    out.println( "<li>Free-text descriptions:" );
-                    for ( String key : info.getMaterialFactorsStore().getOntologyReplacements().keySet() ) {
-                        out.println( "<ul>" );
-                        out.println( "<li>" );
-                        out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                        out.println(
-                                key + " = " + info.getMaterialFactorsStore().getOntologyReplacements().get( key ) );
-                        out.println( "</a>" );
-                        out.println( "</li>" );
-                        out.println( "</ul>" );
-                    }
-                    out.println( "</li>" );
-                }
-
-                if ( info.getMaterialFactorsStore().getMaterialType() != null ) {
-                    out.println( "<li>Material Type: " );
-                    out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                    OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( info.getMaterialFactorsStore().getMaterialType() );
-                    out.println( ot.getTerm() );
-                    out.println( "</a>" );
-                    out.println( "</li>" );
-                }
-
-                if ( info.getMaterialFactorsStore().getTreatmentInfo() != null &&
-                        !info.getMaterialFactorsStore().getTreatmentInfo().isEmpty() ) {
-                    out.println( "<li>Treatments: " );
-                    out.println( "<ol>" );
-                    for ( String treatment : info.getMaterialFactorsStore().getTreatmentInfo() ) {
-                        out.println( "<li>" );
-                        out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
-                        out.println( treatment );
-                        out.println( "</a>" );
-                        out.println( "</li>" );
-                    }
-                    out.println( "</ol>" );
-                    out.println( "</li>" );
-                }
-                if ((info.getMaterialFactorsStore().getCharacteristics() != null &&
-                        !info.getMaterialFactorsStore().getCharacteristics().isEmpty()) ||
-                        info.getMaterialFactorsStore().getMultipleCharacteristics() != null &&
-                                !info.getMaterialFactorsStore().getMultipleCharacteristics().isEmpty()) {
-                    out.println("<li>UsedSpecimen: ");
-                    out.println("<ol>");
-                }
-                if (info.getMaterialFactorsStore().getCharacteristics() != null &&
-                        !info.getMaterialFactorsStore().getCharacteristics().isEmpty()) {
-                    for (String mfbKey : info.getMaterialFactorsStore().getCharacteristics().keySet()) {
-                        out.println("<li>");
-                        out.println("<a class=\"bigger\" href=\"metaData.jsp\">");
-                        OntologyTerm ot = (OntologyTerm) symbaEntityService.getLatestByEndurant(info.getMaterialFactorsStore().getCharacteristics().get(mfbKey));
-                        out.println(ot.getTerm());
-                        out.println("</a>");
-                        out.println("</li>");
-                    }
-                }
-                if (info.getMaterialFactorsStore().getMultipleCharacteristics() != null &&
-                        !info.getMaterialFactorsStore().getMultipleCharacteristics().isEmpty()) {
-                    for (String mfbKey : info.getMaterialFactorsStore().getMultipleCharacteristics().keySet()) {
-                        for (String currentValue : info.getMaterialFactorsStore().getMultipleCharacteristics().get(mfbKey)) {
-                            out.println("<li>");
-                            out.println("<a class=\"bigger\" href=\"metaData.jsp\">");
-                            OntologyTerm ot = (OntologyTerm) symbaEntityService.getLatestByEndurant(currentValue);
-                            out.println(ot.getTerm());
-                            out.println("</a>");
-                            out.println("</li>");
+                        for ( String descriptionKey : value.getDescriptions().keySet() ) {
+                            out.println( "<li>" );
+                            out.println( "Description of this stage in the investigation: " );
+                            out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+                            out.println( descriptionKey + " = " + value.getDescriptions().get( descriptionKey ) );
+                            out.println( "</a>" );
+                            out.println( "</li>" );
                         }
                     }
+                    out.println( "</li>" );
                 }
-                if ((info.getMaterialFactorsStore().getCharacteristics() != null &&
-                        !info.getMaterialFactorsStore().getCharacteristics().isEmpty()) ||
-                        info.getMaterialFactorsStore().getMultipleCharacteristics() != null &&
-                                !info.getMaterialFactorsStore().getMultipleCharacteristics().isEmpty()) {
-                    out.println("</ol>");
-                    out.println("</li>");
+                if ( info.getGenericEquipmentInfo() != null && !info.getGenericEquipmentInfo().isEmpty() ) {
+                    // print out information on each of the associated equipment items
+                    out.println( "<li>" );
+                    out.println( "You have provided information about the equipment used with this data file. " );
+                    out.println( "The equipment has the following properties: " );
+                    out.println( "<ul>" );
+
+                    for ( GenericEquipmentSummary value : info.getGenericEquipmentInfo().values() ) {
+                        out.println( "<li>Information for the " + value.getEquipmentName() + ": " );
+
+                        out.println( "<ul>" );
+
+                        out.println( "<li>Free-Text Description: " );
+                        out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+                        out.println( value.getFreeTextDescription() );
+                        out.println( "</a>" );
+                        out.println( "</li>" );
+
+                        if ( !value.getParameterAndTerms().isEmpty() ) {
+                            out.println(
+                                    "<li>Ontology Terms further describing this " + value.getEquipmentName() + ":" );
+                            out.println( "<ul>" );
+                            for ( String paramValue : value.getParameterAndTerms().values() ) {
+                                out.println( "<li><a class=\"bigger\" href=\"metaData.jsp\">" );
+                                out.println(
+                                        ( ( OntologyTerm ) symbaEntityService
+                                                .getLatestByEndurant( paramValue ) ).getTerm() );
+                                out.println( "</a>" );
+                                out.println( "</li>" );
+                            }
+                            out.println( "</ul>" );
+                            out.println( "</li>" );
+                        }
+                        if ( !value.getParameterAndAtomics().isEmpty() ) {
+                            out.println( "<li>Parameters further describing this " + value.getEquipmentName() + ":" );
+                            out.println( "<ul>" );
+                            for ( String parameterEndurant : value.getParameterAndAtomics().keySet() ) {
+
+                                out.println( "<li>" );
+                                out.println(
+                                        ( symbaEntityService.getLatestByEndurant( parameterEndurant ) ).getName() +
+                                        ": " );
+                                out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+                                out.println( value.getParameterAndAtomics().get( parameterEndurant ) );
+                                out.println( "</a>" );
+                                out.println( "</li>" );
+                            }
+                            out.println( "</ul>" );
+                            out.println( "</li>" );
+                        }
+
+                        out.println( "</ul>" );
+
+                        out.println( "</li>" );
+                    }
+                    out.println( "</ul>" );
+                    out.println( "</li>" );
                 }
+                for ( String currentKey : info.getGenericProtocolApplicationInfo().keySet() ) {
+                    displayInputMaterials( symbaEntityService,
+                            info.getGenericProtocolApplicationInfo()
+                                    .get( currentKey ).getInputCompleteMaterialFactors(), out );
+                }
+            }
+        }
+        if ( specimenToBeUploaded != null ) {
+            displayMaterialFactorsStore( symbaEntityService, out, specimenToBeUploaded, true );
+        }
+    }
+
+    private void displayMaterialFactorsStore( SymbaEntityService symbaEntityService,
+                                              JspWriter out,
+                                              MaterialFactorsStore mfs, boolean isMaterialTransformation ) throws
+            IOException {
+
+        String changeJsp = "metaData.jsp";
+        if ( isMaterialTransformation ) {
+            changeJsp = "enterSpecimen.jsp";
+        }
+
+        out.println( "<li>" );
+        out.println(
+                "You have provided information about the material used in this step of the workflow. " );
+        out.println( "This material has the following properties " );
+        out.println( "<ul>" );
+
+        if ( mfs.getMaterialName() != null &&
+             mfs.getMaterialName().length() > 0 ) {
+            out.println( "<li>Name/Identifying Number: " );
+            out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+            out.println( mfs.getMaterialName() );
+            out.println( "</a>" );
+            out.println( "</li>" );
+        }
+
+        if ( mfs.getOntologyReplacements() != null &&
+             !mfs.getOntologyReplacements().isEmpty() ) {
+            out.println( "<li>Free-text descriptions:" );
+            for ( String key : mfs.getOntologyReplacements().keySet() ) {
+                out.println( "<ul>" );
+                out.println( "<li>" );
+                out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+                out.println(
+                        key + " = " + mfs.getOntologyReplacements().get( key ) );
+                out.println( "</a>" );
+                out.println( "</li>" );
                 out.println( "</ul>" );
             }
             out.println( "</li>" );
-            out.println( "</ul>" );
         }
+
+        if ( mfs.getMaterialType() != null ) {
+            out.println( "<li>Material Type: " );
+            out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+            OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( mfs.getMaterialType() );
+            out.println( ot.getTerm() );
+            out.println( "</a>" );
+            out.println( "</li>" );
+        }
+
+        if ( mfs.getTreatmentInfo() != null &&
+             !mfs.getTreatmentInfo().isEmpty() ) {
+            out.println( "<li>Treatments: " );
+            out.println( "<ol>" );
+            for ( String treatment : mfs.getTreatmentInfo() ) {
+                out.println( "<li>" );
+                out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+                out.println( treatment );
+                out.println( "</a>" );
+                out.println( "</li>" );
+            }
+            out.println( "</ol>" );
+            out.println( "</li>" );
+        }
+        if ( atLeastOnePresent( mfs.getCharacteristics(), mfs.getMultipleCharacteristics(),
+                mfs.getNovelCharacteristics(), mfs.getNovelMultipleCharacteristics() ) ) {
+            out.println( "<li>Characteristics: " );
+            out.println( "<ol>" );
+        }
+
+        displayCharacteristics( symbaEntityService, out, mfs.getCharacteristics(), mfs.getMultipleCharacteristics(),
+                changeJsp, false );
+        displayCharacteristics( symbaEntityService, out, mfs.getNovelCharacteristics(),
+                mfs.getNovelMultipleCharacteristics(), changeJsp, true );
+
+        if ( atLeastOnePresent( mfs.getCharacteristics(), mfs.getMultipleCharacteristics(),
+                mfs.getNovelCharacteristics(), mfs.getNovelMultipleCharacteristics() ) ) {
+            out.println( "</ol>" );
+            out.println( "</li>" );
+        }
+        out.println( "</ul>" );
+
+    }
+
+    private boolean atLeastOnePresent( HashMap<String, String> characteristics,
+                                       HashMap<String, LinkedHashSet<String>> multipleCharacteristics,
+                                       HashMap<String, String> novelCharacteristics,
+                                       HashMap<String, LinkedHashSet<String>> novelMultipleCharacteristics ) {
+        return ( characteristics != null && !characteristics.isEmpty() ) ||
+               ( multipleCharacteristics != null && !multipleCharacteristics.isEmpty() ) ||
+               ( novelCharacteristics != null && !novelCharacteristics.isEmpty() ) ||
+               ( novelMultipleCharacteristics != null && !novelMultipleCharacteristics.isEmpty() );
+    }
+
+    private void displayCharacteristics( SymbaEntityService symbaEntityService,
+                                         JspWriter out,
+                                         HashMap<String, String> characteristics,
+                                         HashMap<String, LinkedHashSet<String>> multipleCharacteristics,
+                                         String changeJsp, boolean isNovel ) throws
+            IOException {
+
+        if ( characteristics != null && !characteristics.isEmpty() ) {
+            for ( String mfbKey : characteristics.keySet() ) {
+                out.println( "<li>" );
+                out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+                if ( isNovel ) {
+                    String[] parsed = characteristics.get( mfbKey ).split( "::" );
+                    out.println( parsed[0] );
+                } else {
+                    OntologyTerm ot = ( OntologyTerm ) symbaEntityService
+                            .getLatestByEndurant( characteristics.get( mfbKey ) );
+                    out.println( ot.getTerm() );
+                }
+                out.println( "</a>" );
+                out.println( "</li>" );
+            }
+        }
+        if ( multipleCharacteristics != null && !multipleCharacteristics.isEmpty() ) {
+            for ( String mfbKey : multipleCharacteristics.keySet() ) {
+                for ( String currentValue : multipleCharacteristics.get( mfbKey ) ) {
+                    out.println( "<li>" );
+                    out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+                    if ( isNovel ) {
+                        String[] parsed = currentValue.split( "::" );
+                        out.println( parsed[0] );
+                    } else {
+                        OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( currentValue );
+                        out.println( ot.getTerm() );
+                    }
+                    out.println( "</a>" );
+                    out.println( "</li>" );
+                }
+            }
+        }
+    }
+
+    private void displayInputMaterials( SymbaEntityService symbaEntityService,
+                                        List<MaterialFactorsStore> inputMaterialInfo,
+                                        JspWriter out ) throws IOException {
+
+        for ( MaterialFactorsStore mfs : inputMaterialInfo ) {
+            displayMaterialFactorsStore( symbaEntityService, out, mfs, false );
+        }
+
     }
 }

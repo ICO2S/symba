@@ -44,18 +44,14 @@ public class DatafileSpecificMetadataStore {
     private ActionSummary oneLevelUpActionSummary; // information regarding the selected action one level up from the assay, IF PRESENT.
 
     private Map<String, GenericEquipmentSummary> genericEquipmentInfo; // the key is the equipment endurant id
-    private Map<String, GenericProtocolApplicationSummary> genericProtocolApplicationInfo;  // the key is the GPA's Parent GenericProtocol endurant id
-
-    private MaterialFactorsStore materialFactorsStore;
+    private Map<String, GenericProtocolApplicationSummary> genericProtocolApplicationInfo;  // the key is the GPA's Parent GenericProtocol endurant id. Input material information is also stored here
 
     public DatafileSpecificMetadataStore() {
-        genericEquipmentInfo = new HashMap<String, GenericEquipmentSummary>();
-        genericProtocolApplicationInfo = new HashMap<String, GenericProtocolApplicationSummary>();
+        this.genericEquipmentInfo = new HashMap<String, GenericEquipmentSummary>();
+        this.genericProtocolApplicationInfo = new HashMap<String, GenericProtocolApplicationSummary>();
 
-        assayActionSummary = new ActionSummary();
-        oneLevelUpActionSummary = new ActionSummary();
-
-        materialFactorsStore = new MaterialFactorsStore();
+        this.assayActionSummary = new ActionSummary();
+        this.oneLevelUpActionSummary = new ActionSummary();
     }
 
     public File getDataFile() {
@@ -108,7 +104,6 @@ public class DatafileSpecificMetadataStore {
 
         this.genericEquipmentInfo.clear();
         this.genericProtocolApplicationInfo.clear();
-        this.materialFactorsStore.clear();
     }
 
     public String getDataFileDescription() {
@@ -117,14 +112,6 @@ public class DatafileSpecificMetadataStore {
 
     public void setDataFileDescription( String dataFileDescription ) {
         this.dataFileDescription = dataFileDescription;
-    }
-
-    public MaterialFactorsStore getMaterialFactorsStore() {
-        return materialFactorsStore;
-    }
-
-    public void setMaterialFactorsStore( MaterialFactorsStore materialFactorsStore ) {
-        this.materialFactorsStore = materialFactorsStore;
     }
 
     public String getFileFormat() {

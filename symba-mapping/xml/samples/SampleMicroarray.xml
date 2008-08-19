@@ -217,7 +217,7 @@ ProtocolCollection inside the OntologyCollection.
     <MaterialCollection>
         <!-- A real version of this material - with the correct attributes - will be made afresh for each new protocol application -->
         <GenericMaterial
-                name="Material Characteristics Dummy for mutant/WT Microarray Assay (Component of mutant/WT Microarray Time Series)"
+                name="Material Characteristics net.sourceforge.symba.keywords.dummy for mutant/WT Microarray Assay (Component of mutant/WT Microarray Time Series)"
                 Endurant_ref="urn:lsid:cisban.cisbs.org:GenericMaterialEndurant:1e940e53-7218-413f-9b01-483d9a2ea23e"
                 identifier="urn:lsid:cisban.cisbs.org:GenericMaterial:d9f088d8-7fc4-4246-8386-2d098903f248">
             <_materialType

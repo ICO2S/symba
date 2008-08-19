@@ -1,17 +1,78 @@
 <OntologyCollection xmlns="http://fuge.sourceforge.net/fuge/1.0">
-    <OntologyIndividual name="OntologyIndividual Dummy" termAccession="not applicable" term="none"
-                        OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:3235c7ac-a452-4593-9849-0a17511a37dc"
-                        Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:28619283-9046-4b21-b029-162d752b50be"
-                        identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:b87ca6fc-0018-4817-bb2c-8cf3b7a1904e"/>
-    <OntologyIndividual name="OntologyIndividual Dummy" termAccession="not applicable" term="none"
-                        OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:0d14956d-d91d-41d5-b967-cd50efd91fab"
-                        Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:fa6f001f-05eb-4a93-b910-07ec9a6ceb86"
-                        identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:5d783f2d-38db-4fe8-a716-7974b394f0be"/>
-    <OntologyIndividual name="OntologyIndividual Dummy" termAccession="not applicable" term="none"
-                        OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:c470c4f8-656d-4077-a4f2-1f1addb3fd13"
-                        Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:9d80037b-796d-467f-9a03-6574527b01bb"
-                        identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:e211f236-1cb8-44f3-b751-58beb68456dc"/>
+    <!-- To set the descriptor set for a given specimen so that input and output specimen pairs can be identified as the
+     same in the Specimen Measurement Protocol -->
+    <OntologyIndividual identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:df9dd712-8eb8-47e6-aeaa-54ebc3248fae"
+                        Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:521cf034-eec4-4678-9be9-cb08e9a16807"
+                        term="specimenDescriptor" termAccession="not applicable"
+                        OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:4852220a-70b6-4c38-9d3f-b77f025f85e9"
+                        name="OntologyIndividual net.sourceforge.symba.keywords.dummy">
+        <ObjectProperty identifier="urn:lsid:cisban.cisbs.org:ObjectProperty:c3337139-8bb4-49f4-8560-55f4c5b7b9a3"
+                        Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:3e780f6f-b934-4250-a56c-73abc0fdeb06"
+                        name="ObjectProperty net.sourceforge.symba.keywords.dummy" term="has_organism"
+                        termAccession="not applicable">
+            <!-- Organism OI Dummy -->
+            <!-- If you want the user to add terms to this area, then you must put the dummy keyword into the
+            name, term and term accession. This way everywhere that is examined will have the dummy value -->
+            <OntologyIndividual name="OntologyIndividual net.sourceforge.symba.keywords.dummy"
+                                termAccession="net.sourceforge.symba.keywords.dummy"
+                                term="net.sourceforge.symba.keywords.dummy"
+                                OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:3235c7ac-a452-4593-9849-0a17511a37dc"
+                                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:28619283-9046-4b21-b029-162d752b50be"
+                                identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:b87ca6fc-0018-4817-bb2c-8cf3b7a1904e"/>
+        </ObjectProperty>
+        <ObjectProperty identifier="urn:lsid:cisban.cisbs.org:ObjectProperty:b42d461a-a64d-430d-b30f-1554413f315f"
+                        Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:1b8a284c-dbf5-41b1-91c8-7bc3f2fe13ee"
+                        name="ObjectProperty net.sourceforge.symba.keywords.dummy" term="has_tissue"
+                        termAccession="not applicable">
+            <!-- Tissue OI Dummy -->
+            <OntologyIndividual name="OntologyIndividual net.sourceforge.symba.keywords.dummy"
+                                termAccession="net.sourceforge.symba.keywords.dummy"
+                                term="net.sourceforge.symba.keywords.dummy"
+                                OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:0d14956d-d91d-41d5-b967-cd50efd91fab"
+                                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:fa6f001f-05eb-4a93-b910-07ec9a6ceb86"
+                                identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:5d783f2d-38db-4fe8-a716-7974b394f0be"/>
+        </ObjectProperty>
+        <ObjectProperty identifier="urn:lsid:cisban.cisbs.org:ObjectProperty:02b3096d-146f-48f7-b6fc-756542383066"
+                        Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:803307fc-accb-4e27-8b51-70cfab93bcf2"
+                        name="ObjectProperty net.sourceforge.symba.keywords.dummy" term="has_genetic_background"
+                        termAccession="not applicable">
+            <!-- Genetic Background OI Dummy -->
+            <OntologyIndividual name="OntologyIndividual net.sourceforge.symba.keywords.dummy"
+                                termAccession="net.sourceforge.symba.keywords.dummy"
+                                term="net.sourceforge.symba.keywords.dummy"
+                                OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:c470c4f8-656d-4077-a4f2-1f1addb3fd13"
+                                Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:9d80037b-796d-467f-9a03-6574527b01bb"
+                                identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:e211f236-1cb8-44f3-b751-58beb68456dc"/>
+        </ObjectProperty>
+    </OntologyIndividual>
+    <!-- To provide a method of storing the temperature - beware that you cannot share the these DP values with
+    other terms! -->
+    <OntologyIndividual identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:65df0609-9521-486a-a1ce-0734a8d8f667"
+                        Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:296ac7ab-6b0a-44be-bdd3-ffc4c3f603f2"
+                        term="temperature" termAccession="not applicable"
+                        name="OntologyIndividual net.sourceforge.symba.keywords.dummy">
+        <DataProperty identifier="urn:lsid:cisban.cisbs.org:DataProperty:5043e87d-862a-4e0b-965d-c0622b626936"
+                      Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:b59d34cd-d7e6-4bce-91b0-6398a9213779"
+                      name="DataProperty net.sourceforge.symba.keywords.dummy" term="has_temperature"
+                      termAccession="not applicable" value="0"/>
+        <DataProperty identifier="urn:lsid:cisban.cisbs.org:DataProperty:f390d446-1b46-4e71-95d3-68ece659a86e"
+                      Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:55fdc1f6-d023-4064-af52-9ba2be666a92"
+                      name="DataProperty net.sourceforge.symba.keywords.dummy" term="has_temperature_unit"
+                      termAccession="not applicable" value="0"/>
+    </OntologyIndividual>
+    <!-- Ageing Status-->
+    <OntologyIndividual identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:df5a0bff-1ad7-4102-8216-5c83b47904ad"
+                        Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:f1abc037-d6d1-469b-87ed-ace7ff243d33"
+                        OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:5d4aadb8-d751-4030-87c1-8b773838bb8c"
+                        term="ageing status" termAccession="not applicable"
+                        name="OntologyIndividual net.sourceforge.symba.keywords.dummy"/>
 
+
+    <OntologySource ontologyURI="http://www.mimage.org/specimen_descriptors"
+                    name="specimen descriptors"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:2bdad677-3c0d-4d54-b1bf-22fe29cb4af3"
+                    identifier="urn:lsid:cisban.cisbs.org:OntologySource:4852220a-70b6-4c38-9d3f-b77f025f85e9">
+    </OntologySource>
     <OntologySource ontologyURI="http://www.mimage.org/organism"
                     name="organism"
                     Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:7c68dac0-ed16-4ee0-877f-1b9184a2f054"
@@ -29,5 +90,10 @@
         <_descriptions>
             <Description text="Instructions: If there are multiple genetic backgrounds, please choose all that apply."/>
         </_descriptions>
+    </OntologySource>
+    <OntologySource ontologyURI="http://www.mimage.org/ageing_status"
+                    name="ageing status"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:f6feb8e7-422b-4de0-93dc-16d632d0fec2"
+                    identifier="urn:lsid:cisban.cisbs.org:OntologySource:5d4aadb8-d751-4030-87c1-8b773838bb8c">
     </OntologySource>
 </OntologyCollection>

@@ -35,6 +35,7 @@
 package net.sourceforge.symba.service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @see net.sourceforge.symba.service.SymbaEntityService
@@ -166,7 +167,7 @@ public class SymbaEntityServiceImpl
             throws java.lang.Exception {
 
         if ( dummiesOnly ) {
-            return getGenericMaterialDao().getLatestDummies( "% Dummy%" );
+            return getGenericMaterialDao().getLatestDummies( "%net.sourceforge.symba.keywords.dummy%" );
         } else {
             return getGenericMaterialDao().getLatest();
         }
@@ -179,7 +180,7 @@ public class SymbaEntityServiceImpl
             throws java.lang.Exception {
 
         if ( dummiesOnly ) {
-            return getExternalDataDao().getLatestDummies( "% Dummy%" );
+            return getExternalDataDao().getLatestDummies( "%net.sourceforge.symba.keywords.dummy%" );
         } else {
             return getExternalDataDao().getLatest();
         }
@@ -192,7 +193,7 @@ public class SymbaEntityServiceImpl
             throws java.lang.Exception {
 
         if ( dummiesOnly ) {
-            return getGenericProtocolApplicationDao().getLatestDummies( "% Dummy%" );
+            return getGenericProtocolApplicationDao().getLatestDummies( "%net.sourceforge.symba.keywords.dummy%" );
         } else {
             return getGenericProtocolApplicationDao().getLatest();
         }
@@ -255,9 +256,28 @@ public class SymbaEntityServiceImpl
     /**
      * @see net.sourceforge.symba.service.SymbaEntityService#getGenericSoftwareByNameAndVersion(java.lang.String, java.lang.String)
      */
-    protected net.sourceforge.fuge.common.protocol.GenericSoftware handleGetGenericSoftwareByNameAndVersion( java.lang.String name, java.lang.String version )
+    protected net.sourceforge.fuge.common.protocol.GenericSoftware handleGetGenericSoftwareByNameAndVersion( java.lang.String name,
+                                                                                                             java.lang.String version )
             throws java.lang.Exception {
 
         return getGenericSoftwareDao().getByNameAndVersion( name, version );
+    }
+
+    /**
+     * @see net.sourceforge.symba.service.SymbaEntityService#getLatestMaterialTransformations()
+     */
+    protected List handleGetLatestMaterialTransformations() throws Exception {
+        // passing the dummy value ensures that we deliberately exclude dummies in this method
+        return getGenericProtocolApplicationDao()
+                .getLatestMaterialTransformations( "%net.sourceforge.symba.keywords.dummy%" );
+    }
+
+    /**
+     * @see net.sourceforge.symba.service.SymbaEntityService#getDistinctTermInfo(java.lang.String)
+     */
+    protected List handleGetDistinctTermInfo(java.lang.String sourceEndurantIdentifier) throws Exception {
+        // passing the dummy value ensures that we deliberately exclude dummies in this method
+        return getOntologyTermDao()
+                .getDistinctTermInfo( sourceEndurantIdentifier );
     }
 }

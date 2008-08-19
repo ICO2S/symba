@@ -2,7 +2,7 @@
 
     <!-- Dummies -->
 
-    <OntologyIndividual name="OntologyIndividual Dummy" termAccession="not applicable" term="none"
+    <OntologyIndividual name="OntologyIndividual net.sourceforge.symba.keywords.dummy" termAccession="not applicable" term="none"
                         OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:1d234420-b6fe-4669-b04b-464fa0bdcdd6"
                         Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:f403a080-ddbf-4bd1-a848-b482fadc8f72"
                         identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:ba5bb1db-7014-4bfa-86a4-39f66e7a2452"/>
@@ -10,19 +10,19 @@
             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:d8055f36-e2a5-4561-9996-45fcb1ff1211"
             termAccession="not applicable" term="none"
             Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:8894c643-2801-4861-8d8c-a9b815b4d1fb"
-            name="OntologyIndividual Dummy"
+            name="OntologyIndividual net.sourceforge.symba.keywords.dummy"
             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:a04dbc82-0fa2-4618-b977-39f8598ff3cc"/>
     <OntologyIndividual
             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:88c42bdf-8238-4f71-9760-f6e487843489"
             termAccession="not applicable" term="none"
             Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:417478dd-1980-469b-ba45-7bf1cb8916c8"
-            name="OntologyIndividual Dummy"
+            name="OntologyIndividual net.sourceforge.symba.keywords.dummy"
             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:674e3621-e5c5-463d-b668-7cb2519996a6"/>
     <OntologyIndividual
             OntologySource_ref="urn:lsid:cisban.cisbs.org:OntologySource:9a0af592-3ee7-43d7-b2db-10e13308ec0f"
             termAccession="not applicable" term="none"
             Endurant_ref="urn:lsid:cisban.cisbs.org:Endurant:7a07af74-a11a-4584-988b-7bc7e10e4659"
-            name="OntologyIndividual Dummy"
+            name="OntologyIndividual net.sourceforge.symba.keywords.dummy"
             identifier="urn:lsid:cisban.cisbs.org:OntologyIndividual:de9fdcfd-293b-4965-b0bc-78cb2cd74a49"/>
 
     <!-- End Dummies -->

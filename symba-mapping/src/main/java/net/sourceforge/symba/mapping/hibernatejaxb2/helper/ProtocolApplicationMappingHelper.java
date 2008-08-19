@@ -1,22 +1,22 @@
 package net.sourceforge.symba.mapping.hibernatejaxb2.helper;
 
 
-import net.sourceforge.fuge.bio.data.ExternalData;
 import net.sourceforge.fuge.bio.data.Data;
+import net.sourceforge.fuge.bio.data.ExternalData;
 import net.sourceforge.fuge.bio.material.Material;
-import net.sourceforge.fuge.common.protocol.*;
-import net.sourceforge.fuge.common.description.Description;
 import net.sourceforge.fuge.common.audit.Person;
+import net.sourceforge.fuge.common.description.Description;
+import net.sourceforge.fuge.common.protocol.*;
 import net.sourceforge.fuge.service.EntityServiceException;
 import net.sourceforge.fuge.util.generatedJAXB2.*;
 import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
 
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import java.io.PrintWriter;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.GregorianCalendar;
 
 /**
  * Copyright Notice
@@ -143,15 +143,16 @@ public class ProtocolApplicationMappingHelper implements
                                     .getIdentifiable( typeXML.getProtocolApplicationRef() ) );
                 }
 
-                Description description = ( Description ) entityService
-                        .createDescribable( "net.sourceforge.fuge.common.description.Description" );
-                description = ( Description ) cd
-                        .unmarshal( typeXML.getActionDeviation().getDescription(), description, performer );
-                description.setText( typeXML.getActionDeviation().getDescription().getText() );
-                DatabaseObjectHelper
-                        .save( "net.sourceforge.fuge.common.description.Description", description, performer );
-                application.setActionDeviation( description );
-
+                if ( typeXML.getActionDeviation() != null ) {
+                    Description description = ( Description ) entityService
+                            .createDescribable( "net.sourceforge.fuge.common.description.Description" );
+                    description = ( Description ) cd
+                            .unmarshal( typeXML.getActionDeviation().getDescription(), description, performer );
+                    description.setText( typeXML.getActionDeviation().getDescription().getText() );
+                    DatabaseObjectHelper
+                            .save( "net.sourceforge.fuge.common.description.Description", description, performer );
+                    application.setActionDeviation( description );
+                }
                 DatabaseObjectHelper
                         .save( "net.sourceforge.fuge.common.protocol.ActionApplication", application, performer );
                 set3.add( application );

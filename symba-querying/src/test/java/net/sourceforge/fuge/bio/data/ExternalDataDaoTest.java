@@ -1,13 +1,13 @@
 package net.sourceforge.fuge.bio.data;
 
-import org.testng.annotations.Test;
-import net.sourceforge.symba.service.SymbaEntityService;
-import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
-import net.sourceforge.symba.versioning.Endurant;
 import net.sourceforge.fuge.ServiceLocator;
 import net.sourceforge.fuge.common.audit.Audit;
 import net.sourceforge.fuge.common.audit.AuditAction;
 import net.sourceforge.fuge.service.EntityService;
+import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
+import net.sourceforge.symba.service.SymbaEntityService;
+import net.sourceforge.symba.versioning.Endurant;
+import org.testng.annotations.Test;
 
 import java.util.*;
 
@@ -48,7 +48,7 @@ public class ExternalDataDaoTest {
         long endNumber = ses.countData();
 
         assert ( endNumber - startNumber == 3 ) :
-                "3 ExternalData objects, none with the Dummy keyword, have been loaded. However, " +
+                "3 ExternalData objects, none with the net.sourceforge.symba.keywords.dummy keyword, have been loaded. However, " +
                 "the starting number of ExternalData objects was " + startNumber + " and the " +
                 "ending number of ExternalData objects was " + endNumber + ". The difference in these values " +
                 "should have been 3";
@@ -78,7 +78,7 @@ public class ExternalDataDaoTest {
         long endNumber = ses.countData();
 
         assert ( endNumber - startNumber == 2 ) :
-                "3 ExternalData objects, two without the Dummy keyword and one with, have been loaded. However, " +
+                "3 ExternalData objects, two without the net.sourceforge.symba.keywords.dummy keyword and one with, have been loaded. However, " +
                 "the starting number of ExternalData objects was " + startNumber + " and the " +
                 "ending number of ExternalData objects was " + endNumber + ". The difference in these values should " +
                 "have been 2";
@@ -218,7 +218,7 @@ public class ExternalDataDaoTest {
                 "net.sourceforge.fuge.bio.data.ExternalData" );
 
         if ( setupDummies ) {
-            externalData.setName( externalData.getName() + " Dummy" );
+            externalData.setName( externalData.getName() + " net.sourceforge.symba.keywords.dummy" );
         }
 
         // add an Endurant value (required) after saving the endurant to the database

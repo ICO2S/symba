@@ -56,7 +56,7 @@
                 <configuration>
                     <!-- All tests are in the hibernate group. Further restrictions on test can be placed
                     by using the other groups instead of the hibernate group. -->
-                    <groups>hibernate</groups>
+                    <groups>ontology</groups>
                     <!--<groups>audit, counters, data, fuge, material, ontology, protocol, software</groups>-->
                 </configuration>
             </plugin>

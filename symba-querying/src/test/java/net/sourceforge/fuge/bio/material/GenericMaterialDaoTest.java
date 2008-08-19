@@ -1,13 +1,13 @@
 package net.sourceforge.fuge.bio.material;
 
-import org.testng.annotations.Test;
 import net.sourceforge.fuge.ServiceLocator;
 import net.sourceforge.fuge.common.audit.Audit;
 import net.sourceforge.fuge.common.audit.AuditAction;
 import net.sourceforge.fuge.service.EntityService;
-import net.sourceforge.symba.versioning.Endurant;
-import net.sourceforge.symba.service.SymbaEntityService;
 import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
+import net.sourceforge.symba.service.SymbaEntityService;
+import net.sourceforge.symba.versioning.Endurant;
+import org.testng.annotations.Test;
 
 import java.util.*;
 
@@ -159,7 +159,7 @@ public class GenericMaterialDaoTest {
                 name, "net.sourceforge.fuge.bio.material.GenericMaterial" );
 
         if ( setupDummies ) {
-            genericMaterial.setName( genericMaterial.getName() + " Dummy" );
+            genericMaterial.setName( genericMaterial.getName() + " net.sourceforge.symba.keywords.dummy" );
         }
 
         // add an Endurant value (required) after saving the endurant to the database

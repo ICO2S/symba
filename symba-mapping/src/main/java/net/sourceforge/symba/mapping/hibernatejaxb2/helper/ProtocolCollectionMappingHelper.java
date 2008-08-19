@@ -1,10 +1,9 @@
 package net.sourceforge.symba.mapping.hibernatejaxb2.helper;
 
 
-import net.sourceforge.fuge.collection.FuGE;
 import net.sourceforge.fuge.collection.ProtocolCollection;
-import net.sourceforge.fuge.common.protocol.*;
 import net.sourceforge.fuge.common.audit.Person;
+import net.sourceforge.fuge.common.protocol.*;
 import net.sourceforge.fuge.service.EntityServiceException;
 import net.sourceforge.fuge.util.generatedJAXB2.*;
 import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
@@ -221,66 +220,76 @@ public class ProtocolCollectionMappingHelper implements MappingHelper<ProtocolCo
 
     // We go through all equipment referenced in the protocols in protocolSet, retrieving all present.
     // These will get added to the experiment. ALWAYS ignore Dummy Equipment, if present.
-    public Set<Equipment> addRelevantEquipment( FuGE fuge,
+    // checks the set for the presence of the equipment before adding to it
+    public Set<Equipment> addRelevantEquipment( Set<Equipment> equipments,
                                                 Set<Protocol> protocolSet ) throws EntityServiceException {
-
-        Set<Equipment> equipmentSet;
-
-        if ( fuge.getProtocolCollection() != null && fuge.getProtocolCollection().getAllEquipment() != null ) {
-            equipmentSet = ( Set<Equipment> ) fuge.getProtocolCollection().getAllEquipment();
-        } else {
-            equipmentSet = new HashSet<Equipment>();
-        }
-
 
         for ( Protocol obj : protocolSet ) {
             if ( obj instanceof GenericProtocol ) {
                 GenericProtocol gp = ( GenericProtocol ) obj;
 //                gp = ( GenericProtocol ) entityService.greedyGet( gp );
                 for ( GenericEquipment genericEquipment : gp.getEquipment() ) {
-                    if ( !genericEquipment.getName().contains( " Dummy" ) ) {
-                        if ( !equipmentSet.contains( genericEquipment ) ) {
+                    if ( !genericEquipment.getName().contains( "net.sourceforge.symba.keywords.dummy" ) ) {
+                        if ( !equipments.contains( genericEquipment ) ) {
                             // the current equipment is not yet in the experiment. Add it.
-                            equipmentSet.add( genericEquipment );
+                            equipments.add( genericEquipment );
                         }
                     }
                 }
             }
         }
 
-        return equipmentSet;
+        return equipments;
+    }
+
+    // We go through all equipment referenced in the protocols in protocolSet, retrieving all present.
+    // These will get added to the experiment. ALWAYS ignore Dummy Equipment, if present.
+    // checks the set for the presence of the equipment before adding to it
+    public Set<Software> addRelevantSoftware( Set<Software> softwares,
+                                                Set<Protocol> protocolSet ) throws EntityServiceException {
+
+        for ( Protocol obj : protocolSet ) {
+            if ( obj instanceof GenericProtocol ) {
+                GenericProtocol gp = ( GenericProtocol ) obj;
+//                gp = ( GenericProtocol ) entityService.greedyGet( gp );
+                for ( GenericSoftware genericSoftware : gp.getSoftware() ) {
+                    if ( !genericSoftware.getName().contains( "net.sourceforge.symba.keywords.dummy" ) ) {
+                        if ( !softwares.contains( genericSoftware ) ) {
+                            // the current software is not yet in the experiment. Add it.
+                            softwares.add( genericSoftware );
+                        }
+                    }
+                }
+            }
+        }
+
+        return softwares;
     }
 
     // We go through all protocols in the database, retrieving all that are directly associated (via GenericAction)
     // with the top-level investigation id'ed in protocolIdentifier. These will get added to the experiment.
     // only works for generic protocols
-    public Set<Protocol> addRelevantProtocols( FuGE fuge,
+    // checks the set for the presence of the equipment before adding to it
+    public Set<Protocol> addRelevantProtocols( Set<Protocol> protocols,
                                                String protocolIdentifier ) throws EntityServiceException {
 
         Protocol abstractProtocol = ( Protocol ) entityService.getIdentifiable( protocolIdentifier );
 
-        Set<Protocol> protocolSet;
-        if ( fuge.getProtocolCollection() != null ) {
-            protocolSet = ( Set<Protocol> ) fuge.getProtocolCollection().getProtocols();
-        } else {
-            protocolSet = new HashSet<Protocol>();
-        }
-
         if ( !( abstractProtocol instanceof GenericProtocol ) ) {
-            return protocolSet;
+            return protocols;
         }
 
         GenericProtocol topLevelProtocol = ( GenericProtocol ) abstractProtocol;
 
         // Assume that, if there is already something in the protocol collection, it must at a minimum
         // already contain the top-level protocol
-        if ( protocolSet.isEmpty() ) {
-            protocolSet.add( topLevelProtocol );
+        if ( protocols.isEmpty() ) {
+            protocols.add( topLevelProtocol );
         }
 
-        protocolSet.addAll( getChildProtocols( topLevelProtocol, protocolSet ) );
+        protocols.addAll( getChildProtocols( topLevelProtocol, protocols ) );
 
-        return protocolSet;
+        return protocols;
     }
 
     // Works similarly to addRelevantProtocols, but does not initialize the Set<Protocol> with values from the

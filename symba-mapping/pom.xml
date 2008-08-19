@@ -2,7 +2,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
+    <parent>                         
         <groupId>net.sourceforge.symba</groupId>
         <artifactId>symba</artifactId>
         <version>8.08-alpha</version>
@@ -59,7 +59,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <groups>hibernate, pojos, unmarshal</groups>
+                    <groups>hibernate, pojos, roundtrip, unmarshal</groups>
+                    <!--<groups>roundtrip</groups>-->
                 </configuration>
             </plugin>
         </plugins>

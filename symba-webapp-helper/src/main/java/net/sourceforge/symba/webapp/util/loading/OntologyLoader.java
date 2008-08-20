@@ -7,6 +7,7 @@ import net.sourceforge.fuge.common.description.Description;
 import net.sourceforge.fuge.common.ontology.OntologyIndividual;
 import net.sourceforge.fuge.common.ontology.OntologySource;
 import net.sourceforge.fuge.common.ontology.OntologyTerm;
+import net.sourceforge.fuge.common.ontology.ObjectProperty;
 import net.sourceforge.fuge.service.EntityService;
 import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
 import net.sourceforge.symba.webapp.util.MaterialFactorsStore;
@@ -42,9 +43,9 @@ public class OntologyLoader {
      * @return String The ontologytermEndurants ID of the created DB-entry
      */
 
-    public static String loadOnlyNewOntologytermToDB( PersonBean personBean,
-                                                      String userEntry,
-                                                      String ontologySourceEndurantLSID ) {
+    public static OntologyIndividual loadOnlyNewOntologytermToDB( PersonBean personBean,
+                                                                  String userEntry,
+                                                                  String ontologySourceEndurantLSID ) {
 
         Person performer = ( Person ) personBean.getEntityService().getIdentifiable( personBean.getLsid() );
         OntologyIndividual ontologyIndividual =
@@ -68,8 +69,8 @@ public class OntologyLoader {
         DatabaseObjectHelper
                 .save( "net.sourceforge.fuge.common.ontology.OntologyIndividual", ontologyIndividual, performer );
 
-        return ontologyIndividual.getEndurant().getIdentifier();
-    } //end loadOnlyNewOntologytermToDB()
+        return ontologyIndividual;
+    }
 
     public static SymbaFormSessionBean validateLoadRequest( HttpServletRequest request,
                                                             PersonBean validUser,
@@ -82,18 +83,19 @@ public class OntologyLoader {
                     .split( ":::" );//splits userentry and selection(=parametername) from second String, which then is to be split further by "::"
             String mixedTermInfo = tmpArr[0];
             String userEntry = tmpArr[1];
-            String selectionName =
-                    tmpArr[2]; //this equals the corresponding parametername in actual request (which has to be be ignored, only this one time)
+            // this equals the corresponding parametername in actual request (which has to be be ignored, only this one time)
+//            String selectionName = tmpArr[2];
+
             if ( mixedTermInfo.startsWith( "ontologyTextfield::" ) ) {
                 // after ontologyTextfield::characteristicScheme::ontologySourceEndurant::ontoCount
                 CharacteristicScheme chs = new CharacteristicScheme();
                 chs.parse( mixedTermInfo.substring( 19 ) );
-                String[] parsed = mixedTermInfo.split("::");
+                String[] parsed = mixedTermInfo.split( "::" );
                 // second-to-last section
-                String otseLSID = parsed[parsed.length-2];
+                String otseLSID = parsed[parsed.length - 2];
 
                 //Now we have to insert the single new Term into the DB (method now returns some info rg created oterm):
-                String ontologyTermEndurantID =
+                OntologyIndividual addedOI =
                         OntologyLoader.loadOnlyNewOntologytermToDB( validUser, userEntry, otseLSID );
                 //symbaFormSessionBean, validUser , scp).loadOnlyNewOntologytermToDB(userEntry, otseLSID);
 
@@ -124,30 +126,34 @@ public class OntologyLoader {
                     LinkedHashSet<String> multipleCharacteristics;
                     if ( mf.getMultipleCharacteristics().get( otseLSID ) != null ) {
                         multipleCharacteristics = mf.getMultipleCharacteristics().get( otseLSID );
+                    } else if ( mf.getNovelMultipleCharacteristics().get( otseLSID ) != null ) {
+                        multipleCharacteristics = mf.getNovelMultipleCharacteristics().get( otseLSID );
                     } else {
                         multipleCharacteristics = new LinkedHashSet<String>();
                     }
                     // if it is a material transformation, only the term and termaccession are stored, so in
                     // this value, store the term rather than the ontologytermendurant.
-                    if ( isDuringAssayProcessing ) {
-                        multipleCharacteristics.add( ontologyTermEndurantID );
+                    if ( !chs.isNovel() ) {
+                        multipleCharacteristics.add( addedOI.getEndurant().getIdentifier() );
+                        mf.addMultipleCharacteristics( otseLSID, multipleCharacteristics );
                     } else {
-                        multipleCharacteristics.add( userEntry );
+                        multipleCharacteristics.add( addedOI.getTerm() + "::" + addedOI.getTermAccession() );
+                        mf.addNovelMultipleCharacteristics( otseLSID, multipleCharacteristics );
                     }
-                    mf.addMultipleCharacteristics( otseLSID, multipleCharacteristics );
                 } else { // if single selection field:
                     // if it is a material transformation, only the term and termaccession are stored, so in
                     // this value, store the term rather than the ontologytermendurant.
-                    if ( isDuringAssayProcessing ) {
-                        mf.addCharacteristic( otseLSID, ontologyTermEndurantID );
+                    if ( !chs.isNovel() ) {
+                        mf.addCharacteristic( otseLSID, addedOI.getEndurant().getIdentifier() );
                     } else {
-                        mf.addCharacteristic( otseLSID, userEntry );
+                        mf.addNovelCharacteristic( otseLSID, addedOI.getTerm() + "::" + addedOI.getTermAccession() );
                     }
                 }
 
                 if ( isDuringAssayProcessing ) {
                     symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                            .get( chs.getDatafileNumber() ).getGenericProtocolApplicationInfo().get( chs.getParentOfGpaEndurant() )
+                            .get( chs.getDatafileNumber() ).getGenericProtocolApplicationInfo()
+                            .get( chs.getParentOfGpaEndurant() )
                             .setInputCompleteMaterialFactor( mf, chs.getMaterialCount() );
                 } else {
                     symbaFormSessionBean.setSpecimenToBeUploaded( mf );
@@ -181,4 +187,48 @@ public class OntologyLoader {
         return ontologyCollection;
     }
 
+    /**
+     * Checks using source, term and accession to see if the specified object property has the individual described.
+     * All three must be found in order for it to be a real match
+     *
+     * @param objectProperty the thing to search inside
+     * @param sourceEndurant the source endurant identifier to search for
+     * @param term           the term to search for
+     * @param accession      the term accession to search for
+     * @return true if the individual is present within the ObjectProperty, false otherwise
+     */
+    public static boolean objectPropertyhasIndividual( ObjectProperty objectProperty,
+                                                       String sourceEndurant,
+                                                       String term,
+                                                       String accession ) {
+
+        for ( OntologyIndividual ontologyIndividual : objectProperty.getContent() ) {
+            if ( ontologyIndividual.getTerm().equals( term ) &&
+                 ontologyIndividual.getTermAccession().equals( accession ) &&
+                 ontologyIndividual.getOntologySource().getEndurant().getIdentifier().equals( sourceEndurant ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks using term and accession to see if the specified object property has the individual described.
+     * Both must be found in order for it to be a real match. If you know the source, you should use the other
+     * version of this method that also checks the source.
+     *
+     * @param objectProperty the thing to search inside
+     * @param term           the term to search for
+     * @param accession      the term accession to search for
+     * @return true if the individual is present within the ObjectProperty, false otherwise
+     */
+    public static boolean objectPropertyhasIndividual( ObjectProperty objectProperty, String term, String accession ) {
+        for ( OntologyIndividual ontologyIndividual : objectProperty.getContent() ) {
+            if ( ontologyIndividual.getTerm().equals( term ) &&
+                 ontologyIndividual.getTermAccession().equals( accession ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

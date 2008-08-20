@@ -53,7 +53,7 @@ public class MaterialFormValidator {
         while ( enumeration.hasMoreElements() ) {
 
             String parameterName = ( String ) enumeration.nextElement();
-
+            System.err.println( "Reading " + parameterName );
             if ( parameterName.equals( ahs.getElementTitle() ) || parameterName.equals( dummyAhs.getElementTitle() ) ) {
                 // this parameter is only used within material transformation forms and not assay forms
                 // As it is such a simple parameter, we don't use getMfs.
@@ -103,10 +103,8 @@ public class MaterialFormValidator {
                 symbaFormSessionBean = setMfs( symbaFormSessionBean, isPartOfDataFileForm, materialTypeScheme, mfs );
 
             } else if ( ( parameterName.startsWith( characteristicScheme.getElementTitle() ) ||
-                          parameterName.startsWith( novelCharacteristicScheme.getElementTitle() ) ) &&
-                                                                                                    !parameterName
-                                                                                                            .equals(
-                                                                                                                    toBeIgnoredParameterName ) ) {
+                          parameterName.startsWith( novelCharacteristicScheme.getElementTitle() ) )
+                        && !parameterName.equals( toBeIgnoredParameterName ) ) {
                 // each characteristic cannot be empty (except a new one was created and it will redirect directly to metaData.jsp),
                 // and might be multiple selections, which will be separated by commas
                 if ( request.getParameter( parameterName ) == null ||
@@ -116,7 +114,8 @@ public class MaterialFormValidator {
 
                     // once inside this section, no need to use the two versions of the scheme: the characteristicScheme
                     // "novel" value will get set appropriately.
-
+                    System.err.println(
+                            "Parsing " + parameterName + " with " + request.getParameterValues( parameterName ) );
                     characteristicScheme.parse( parameterName );
 
                     boolean multipleAllowed = false;
@@ -131,7 +130,8 @@ public class MaterialFormValidator {
                         mfs.setDescriptorOiEndurant( characteristicScheme.getDescriptorOiEndurant() );
                     }
 
-                    mfs = parseFormCharacteristics( request.getParameterValues( parameterName ), mfs, multipleAllowed,
+                    mfs = parseFormCharacteristics( request.getParameterValues( parameterName ),
+                            characteristicScheme.getSourceEndurant(), mfs, multipleAllowed,
                             characteristicScheme.isNovel() );
 
                     symbaFormSessionBean =
@@ -147,15 +147,16 @@ public class MaterialFormValidator {
     }
 
     private static MaterialFactorsStore parseFormCharacteristics( String[] parameterValues,
+                                                                  String ontologySourceEndurantID,
                                                                   MaterialFactorsStore mfs,
-                                                                  boolean multipleAllowed, boolean isNovel ) {
+                                                                  boolean multipleAllowed,
+                                                                  boolean isNovel ) {
         for ( String singleParameter : parameterValues ) {
             String[] parsedStrings = singleParameter.split( "::" );
-            String ontologySourceEndurantID = parsedStrings[0];
 
-            String toSearch = parsedStrings[1];
+            String toSearch = parsedStrings[0];
             if ( isNovel ) {
-                toSearch = parsedStrings[1] + "::" + parsedStrings[2];
+                toSearch = parsedStrings[0] + "::" + parsedStrings[1];
             }
             if ( multipleAllowed ) {
                 LinkedHashSet<String> tmp = mfs.getMultipleCharacteristics().get( ontologySourceEndurantID );

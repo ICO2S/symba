@@ -45,13 +45,13 @@ public class MaterialFactorsStore {
     private String descriptorOiEndurant;
     // place to store the ontology information for those things for a descriptor set (newly-created OIs each time)
     // Contains information for a single descriptor set - all that is allowed in SyMBA at the moment
-    // key = ontology source endurant lsid, value = ontology term endurant lsid. Stores singleton characteristics
+    // key = ontology source endurant lsid, value = term::termAccession. Stores singleton characteristics
     private HashMap<String,String> novelCharacteristics;
 
     // place to store the ontology information for those things for a descriptor set (newly-created OIs each time)
     // Contains information for a single descriptor set - all that is allowed in SyMBA at the moment
-    // key = ontology source endurant lsid, value = ontology term endurant lsids. Stores those characteristics that
-    // are allowed to have multiple selects.
+    // key = ontology source endurant lsid, value = multiple term::termAccession pairs. Stores those characteristics
+    // that are allowed to have multiple selects.
     private HashMap<String,LinkedHashSet<String>> novelMultipleCharacteristics;
 
     // the OntologyReplacement details

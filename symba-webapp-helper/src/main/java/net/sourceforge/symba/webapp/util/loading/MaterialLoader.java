@@ -191,7 +191,7 @@ public class MaterialLoader {
         return new Object[]{ fuge, symbaFormSessionBean };
     }
 
-    // input materials only have novel charactreristics within a single descriptor set currently.
+    // input materials only have novel characteristics within a single descriptor set currently.
     private static Material getMatchingInputMaterial( List<GenericProtocolApplication> materialTransformations,
                                                       HashMap<String, String> novelCharacteristics,
                                                       HashMap<String, LinkedHashSet<String>> novelMultipleCharacteristics,

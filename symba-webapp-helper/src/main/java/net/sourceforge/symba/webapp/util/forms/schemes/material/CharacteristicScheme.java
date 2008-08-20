@@ -16,10 +16,11 @@ import net.sourceforge.symba.webapp.util.forms.schemes.BasicScheme;
  */
 public class CharacteristicScheme extends BasicScheme {
     private String multipleElementTitle;
+    private String sourceEndurant;
+    private boolean isNovel;
 
     // only used if storing novel characteristics
     private String descriptorOiEndurant;
-    private boolean isNovel;
 
     public CharacteristicScheme() {
         elementTitle = "characteristic";
@@ -37,8 +38,9 @@ public class CharacteristicScheme extends BasicScheme {
         materialCount = Integer.valueOf( parsedStrings[1] );
         parentOfGpaEndurant = parsedStrings[2];
         datafileNumber = Integer.valueOf( parsedStrings[3] );
-        if ( parsedStrings.length >= 5 ) {
-            descriptorOiEndurant = parsedStrings[4];
+        sourceEndurant = parsedStrings[4];
+        if ( parsedStrings.length >= 6 ) {
+            descriptorOiEndurant = parsedStrings[5];
             setNovel( true );
         } else {
             setNovel( false );
@@ -65,7 +67,7 @@ public class CharacteristicScheme extends BasicScheme {
             title = multipleElementTitle;
         }
         String standardResponse = title + separator + materialCount + separator +
-                                  parentOfGpaEndurant + separator + datafileNumber;
+                                  parentOfGpaEndurant + separator + datafileNumber + separator + sourceEndurant;
         if ( isNovel ) {
             return standardResponse + separator + descriptorOiEndurant;
         }
@@ -84,6 +86,14 @@ public class CharacteristicScheme extends BasicScheme {
 
     public String getMultipleElementTitle() {
         return multipleElementTitle;
+    }
+
+    public String getSourceEndurant() {
+        return sourceEndurant;
+    }
+
+    public void setSourceEndurant( String sourceEndurant ) {
+        this.sourceEndurant = sourceEndurant;
     }
 
     public String getDescriptorOiEndurant() {

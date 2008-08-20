@@ -10,6 +10,7 @@ import net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore;
 import net.sourceforge.symba.webapp.util.MaterialFactorsStore;
 import net.sourceforge.symba.webapp.util.PersonBean;
 import net.sourceforge.symba.webapp.util.SymbaFormSessionBean;
+import net.sourceforge.symba.webapp.util.loading.OntologyLoader;
 import net.sourceforge.symba.webapp.util.forms.schemes.material.*;
 import net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionHierarchyScheme;
 
@@ -381,16 +382,18 @@ public class MaterialTemplateParser {
             ontologySource = ( OntologySource ) symbaEntityService
                     .getLatestByEndurant( ontologySource.getEndurant().getIdentifier() );
 
+            chs.setSourceEndurant( ontologySource.getEndurant().getIdentifier() );
+
             List<OntologyTerm> ontologyTerms = new ArrayList<OntologyTerm>();
             List<List<String>> termAndAccessionPairs = new ArrayList<List<String>>();
             int listSize;
             if ( !chs.isNovel() ) {
                 ontologyTerms = symbaEntityService
-                        .getLatestTermsWithSource( ontologySource.getEndurant().getIdentifier() );
+                        .getLatestTermsWithSource( chs.getSourceEndurant() );
                 listSize = ontologyTerms.size();
             } else {
                 termAndAccessionPairs =
-                        symbaEntityService.getDistinctTermInfo( ontologySource.getEndurant().getIdentifier() );
+                        symbaEntityService.getDistinctTermInfo( chs.getSourceEndurant() );
                 listSize = termAndAccessionPairs.size();
             }
 
@@ -457,16 +460,16 @@ public class MaterialTemplateParser {
                 if ( !chs.isNovel() ) {
                     for ( OntologyTerm ot : ontologyTerms ) {
                         if ( !ot.getName().contains( "net.sourceforge.symba.keywords.dummy" ) ) {
-                            buffer.append( printSingleOption( mfs, useAsMfs, multipleAllowed,
-                                    ontologySource.getEndurant().getIdentifier(),
+                            buffer.append( printSingleOption( mfs, useAsMfs,
+                                    chs.getSourceEndurant(),
                                     ot.getEndurant().getIdentifier(), ot.getTerm() ) );
                         }
                     }
                 } else {
                     for ( List<String> pair : termAndAccessionPairs ) {
                         if ( !pair.get( 0 ).contains( "net.sourceforge.symba.keywords.dummy" ) ) {
-                            buffer.append( printSingleOption( mfs, useAsMfs, multipleAllowed,
-                                    ontologySource.getEndurant().getIdentifier(),
+                            buffer.append( printSingleOption( mfs, useAsMfs,
+                                    chs.getSourceEndurant(),
                                     pair.get( 0 ) + "::" + pair.get( 1 ), pair.get( 0 ) ) );
                         }
                     }
@@ -489,7 +492,7 @@ public class MaterialTemplateParser {
                 }
                 buffer.append( "<td>" );
                 String v1 = "ontologyTextfield::" + chs.write() + "::" +
-                            ontologySource.getEndurant().getIdentifier() + "::" + ontoCount;
+                            chs.getSourceEndurant() + "::" + ontoCount;
                 buffer.append( "<input type=\"button\" name=\"addNewCharacteristic\" value=\"New Term" )
                         .append( "\" onclick=\"doNewTermEntered('" )
                         .append( v1 ).append( "','" )
@@ -506,51 +509,88 @@ public class MaterialTemplateParser {
 
     private static StringBuffer printSingleOption( MaterialFactorsStore mfs,
                                                    GenericMaterial useAsMfs,
-                                                   boolean multipleAllowed,
                                                    String sourceEndurant,
-                                                   String endurant,
+                                                   String endurantOrTermPair,
                                                    String term ) {
+
+        // The provided endurantOrTermPair may be present in any one of the characteristics sets.
+        // Go through all until the first match is found. If found, select it. Then finish printing the option.
+
+        boolean matchFound = false;
 
         StringBuffer buffer = new StringBuffer();
 
         String inputStartValue = "<option value=\"" +
-                                 sourceEndurant + "::" +
-                                 endurant + "\"";
-        // putting the check for characteristics in the same if-statement as the mfs != null makes
-        // it possible to use both mfs and useAsMfs, if each has only partial information
-        if ( mfs != null && multipleAllowed &&
-             mfs.getMultipleCharacteristics() != null ) {
-            for ( String mfbKey : mfs.getMultipleCharacteristics().keySet() ) {
-                LinkedHashSet<String> allOTs =
-                        mfs.getMultipleCharacteristics().get( mfbKey );
-                // there could be more than one match, if allowing multiple selects
-                if ( allOTs.contains( endurant ) || allOTs.contains( term ) ) { // todo this one not setting properly
+                                 endurantOrTermPair + "\"";
+
+        if ( mfs != null ) {
+
+            // determine if there is a multiple characteristics set for this ontology source
+            LinkedHashSet<String> values = mfs.getMultipleCharacteristics().get( sourceEndurant );
+            if ( values != null && values.contains( endurantOrTermPair ) ) {
+                inputStartValue += " selected=\"selected\"";
+                matchFound = true;
+            }
+
+            if ( !matchFound ) {
+                // check for presence within the characteristics set
+                String value = mfs.getCharacteristics().get( sourceEndurant );
+                if ( value != null && value.equals( endurantOrTermPair ) ) {
                     inputStartValue += " selected=\"selected\"";
+                    matchFound = true;
                 }
             }
-        } else if ( mfs != null && !multipleAllowed && mfs.getCharacteristics() != null ) { // if single selection
-            for ( String mfbKey : mfs.getCharacteristics().keySet() ) {
-                if ( mfs.getCharacteristics().get( mfbKey )
-                        .equals( endurant ) || mfs.getCharacteristics().get( mfbKey )
-                        .equals( term ) ) {
+            if ( !matchFound ) {
+                // determine if there is a multiple characteristics set for this ontology source
+                values = mfs.getNovelMultipleCharacteristics().get( sourceEndurant );
+                if ( values != null && values.contains( endurantOrTermPair ) ) {
                     inputStartValue += " selected=\"selected\"";
-                    break;
+                    matchFound = true;
                 }
             }
-        } else if ( useAsMfs != null && useAsMfs.getCharacteristics() != null ) {
-            for ( OntologyTerm useAsMfsOT : useAsMfs.getCharacteristics() ) {
-                if ( useAsMfsOT.getEndurant().getIdentifier()
-                        .equals( endurant ) ) {
+
+            if ( !matchFound ) {
+                // check for presence within the characteristics set
+                String value = mfs.getNovelCharacteristics().get( sourceEndurant );
+                if ( value != null && value.equals( endurantOrTermPair ) ) {
                     inputStartValue += " selected=\"selected\"";
-                    if ( !multipleAllowed ) {
-                        break;
-                    }
-                } else if ( useAsMfsOT.getTerm().equals( term ) ) {
-                    // in the case where we're building from another material when not using the MFS, then
-                    // we should also look for a match in the term.
-                    inputStartValue += " selected=\"selected\"";
-                    if ( !multipleAllowed ) {
-                        break;
+                    matchFound = true;
+                }
+            }
+        }
+
+        if ( !matchFound ) {
+            if ( useAsMfs != null && useAsMfs.getCharacteristics() != null &&
+                 !useAsMfs.getCharacteristics().isEmpty() ) {
+
+                for ( OntologyTerm useAsMfsOT : useAsMfs.getCharacteristics() ) {
+                    if ( useAsMfsOT instanceof OntologyIndividual ) {
+                        OntologyIndividual oi = ( OntologyIndividual ) useAsMfsOT;
+                        if ( oi.getProperties().isEmpty() ) {
+                            if ( useAsMfsOT.getEndurant().getIdentifier()
+                                    .equals( endurantOrTermPair ) ) {
+                                inputStartValue += " selected=\"selected\"";
+                                // the value from this matchFound will currently not be used, as there are no more
+                                // checks after this. However, in future there may be so this remains.
+                                matchFound = true;
+                                break;
+                            }
+                        } else {
+                            // look within the OIs that live inside each ObjectProperty
+                            String[] parsed = endurantOrTermPair.split( "::" );
+                            for ( OntologyProperty ontologyProperty : oi.getProperties() ) {
+                                if ( ontologyProperty instanceof ObjectProperty &&
+                                     OntologyLoader.objectPropertyhasIndividual( ( ObjectProperty ) ontologyProperty,
+                                             parsed[0], parsed[1] ) ) {
+                                    inputStartValue += " selected=\"selected\"";
+                                    matchFound = true;
+                                    break;
+                                }
+                            }
+                            if (matchFound) {
+                                break;
+                            }
+                        }
                     }
                 }
             }

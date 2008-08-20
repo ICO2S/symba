@@ -1,4 +1,4 @@
-<%@ page import="net.sourceforge.symba.webapp.util.*" %>
+<%@ page import="net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore" %>
 <%--
 This file is part of SyMBA.
 SyMBA is covered under the GNU Lesser General Public License (LGPL).

@@ -21,7 +21,7 @@ import java.util.*;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/SymbaFormSessionBean.java $
+ * $HeadURL$
  */
 public class ActionTemplateParser {
 

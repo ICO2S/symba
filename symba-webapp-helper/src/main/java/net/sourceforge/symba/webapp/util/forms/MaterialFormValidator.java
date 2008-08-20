@@ -22,7 +22,7 @@ import java.util.LinkedHashSet;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/forms/MaterialTemplateParser.java $
+ * $HeadURL$
  */
 public class MaterialFormValidator {
 
@@ -118,8 +118,6 @@ public class MaterialFormValidator {
                     // "novel" value will get set appropriately.
 
                     characteristicScheme.parse( parameterName );
-                    System.err.println(
-                            "parameterName " + parameterName + " is novel? = " + characteristicScheme.isNovel() );
 
                     boolean multipleAllowed = false;
                     if ( parameterName.startsWith( characteristicScheme.getMultipleElementTitle() ) ) {
@@ -152,7 +150,6 @@ public class MaterialFormValidator {
                                                                   MaterialFactorsStore mfs,
                                                                   boolean multipleAllowed, boolean isNovel ) {
         for ( String singleParameter : parameterValues ) {
-            System.err.println( "singleParameter: " + singleParameter);
             String[] parsedStrings = singleParameter.split( "::" );
             String ontologySourceEndurantID = parsedStrings[0];
 
@@ -181,8 +178,6 @@ public class MaterialFormValidator {
                     mfs.addNovelCharacteristic( ontologySourceEndurantID, toSearch );
                 } else {
                     mfs.addCharacteristic( ontologySourceEndurantID, toSearch );
-                    System.err.println( "adding source " + ontologySourceEndurantID );
-                    System.err.println( "adding termendurant " + toSearch );
                 }
             }
         }

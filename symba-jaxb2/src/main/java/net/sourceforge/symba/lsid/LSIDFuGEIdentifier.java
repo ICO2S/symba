@@ -16,7 +16,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-mapping/src/main/java/net/sourceforge/symba/lsid/RetrieveLsid.java $
+ * $HeadURL$
  */
 public class LSIDFuGEIdentifier extends FuGEIdentifier {
 

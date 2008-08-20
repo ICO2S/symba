@@ -15,7 +15,7 @@ import net.sourceforge.symba.webapp.util.SecurityEngineInterrogator;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/loading/LoadFuge.java $
+ * $HeadURL$
  */
 public class FugeLoader {
 

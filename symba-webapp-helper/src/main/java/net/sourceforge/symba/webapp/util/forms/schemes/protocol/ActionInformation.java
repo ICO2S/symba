@@ -12,7 +12,7 @@ package net.sourceforge.symba.webapp.util.forms.schemes.protocol;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/forms/MaterialTemplateParser.java $
+ * $HeadURL$
  */
 public class ActionInformation {
     private final String separator = "---";

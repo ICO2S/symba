@@ -29,7 +29,7 @@ import java.util.*;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/loading/LoadFuge.java $
+ * $HeadURL$
  */
 public class MaterialLoader {
 
@@ -186,7 +186,6 @@ public class MaterialLoader {
             DatabaseObjectHelper
                     .save( "net.sourceforge.fuge.collection.MaterialCollection", materialCollection, auditor );
             fuge.setMaterialCollection( materialCollection );
-            System.out.println( "Materials and Material Collection loaded in the database" );
         }
 
         return new Object[]{ fuge, symbaFormSessionBean };
@@ -367,7 +366,6 @@ public class MaterialLoader {
                     OntologyTerm termToAdd =
                             ( OntologyTerm ) symbaEntityService
                                     .getLatestByEndurant( ontologyTermEndurant );
-                    System.err.println( "Adding new characteristic term: " + termToAdd.getName() );
                     characteristics.add( termToAdd );
                     // todo this won't catch cases where the ontology source was added at a later date
 

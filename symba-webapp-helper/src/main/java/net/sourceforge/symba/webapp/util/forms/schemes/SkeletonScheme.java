@@ -10,7 +10,7 @@ package net.sourceforge.symba.webapp.util.forms.schemes;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/forms/MaterialTemplateParser.java $
+ * $HeadURL$
  */
 abstract public class SkeletonScheme {
     protected final String separator = "::";

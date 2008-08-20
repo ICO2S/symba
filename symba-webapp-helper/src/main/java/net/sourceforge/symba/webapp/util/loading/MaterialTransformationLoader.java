@@ -20,7 +20,7 @@ import net.sourceforge.symba.webapp.util.SymbaFormSessionBean;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/loading/LoadFuge.java $
+ * $HeadURL$
  */
 public class MaterialTransformationLoader {
     private final EntityService entityService;

@@ -17,7 +17,7 @@ import java.util.List;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/forms/MaterialTemplateParser.java $
+ * $HeadURL$
  */
 public class ActionHierarchyScheme extends SkeletonScheme {
 

@@ -38,7 +38,7 @@ import java.util.*;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/loading/LoadFuge.java $
+ * $HeadURL$
  */
 public class ProtocolLoader {
 
@@ -705,13 +705,6 @@ public class ProtocolLoader {
         DatabaseObjectHelper.save(
                 "net.sourceforge.fuge.common.protocol.GenericProtocolApplication", assayGPA, auditor );
 
-        if ( assayGPA.getOutputMaterials() != null &&
-             !assayGPA.getOutputMaterials().isEmpty() ) {
-            System.out.println( "Found Output Materials directly after loading (assay)" );
-        } else {
-            System.out.println( "Found No Output Materials directly after loading (assay)" );
-
-        }
         return assayGPA;
     }
 

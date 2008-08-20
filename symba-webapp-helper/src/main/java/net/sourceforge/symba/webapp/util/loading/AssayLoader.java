@@ -36,9 +36,9 @@ public class AssayLoader {
     private final EntityService entityService;
     private final SymbaEntityService symbaEntityService;
 
-    private final SymbaFormSessionBean symbaFormSessionBean;
     private final ScpBean scpBean;
     private final PersonBean personBean;
+    private SymbaFormSessionBean symbaFormSessionBean;
     private Person auditor;
     private SoftwareMetaInformationBean softwareMeta;
 
@@ -79,8 +79,10 @@ public class AssayLoader {
 
         FuGE fuge = symbaFormSessionBean.getFuGE();
         fuge = AuditLoader.addPersonToExperiment( fuge, entityService, auditor );
-        fuge = MaterialLoader
+        Object[] results = MaterialLoader
                 .addMaterialToExperiment( fuge, entityService, auditor, symbaFormSessionBean, symbaEntityService );
+        fuge = ( FuGE ) results[0];
+        symbaFormSessionBean = ( SymbaFormSessionBean ) results[1];
         fuge = loadData( fuge );
         fuge = ProtocolLoader.loadAssayProtocols( fuge, entityService, auditor, symbaFormSessionBean, symbaEntityService );
         FugeLoader.loadFugeIntoDatabase( fuge, auditor );
@@ -94,8 +96,10 @@ public class AssayLoader {
 
         fuge = AuditLoader.addPersonToExperiment( fuge, entityService, auditor );
         fuge = InvestigationLoader.addInvestigationToExperiment( fuge, entityService, auditor, symbaFormSessionBean );
-        fuge = MaterialLoader
+        Object[] results = MaterialLoader
                 .addMaterialToExperiment( fuge, entityService, auditor, symbaFormSessionBean, symbaEntityService );
+        fuge = ( FuGE ) results[0];
+        symbaFormSessionBean = ( SymbaFormSessionBean ) results[1];
         fuge = loadData( fuge );
         fuge = ProtocolLoader.loadAssayProtocols( fuge, entityService, auditor, symbaFormSessionBean, symbaEntityService );
         fuge = ProviderLoader

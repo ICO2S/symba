@@ -1,6 +1,7 @@
-<%@ page import="java.util.*" %>
 <%@ page import="net.sourceforge.fuge.common.ontology.OntologySource" %>
 <%@ page import="net.sourceforge.fuge.common.ontology.OntologyTerm" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
 <%-- 
 This file is part of SyMBA.
 SyMBA is covered under the GNU Lesser General Public License (LGPL).

@@ -140,14 +140,11 @@ public class MaterialTemplateParser {
         buffer.append( gpaInformation );
         buffer.append( "\">" );
 
-        // there is a prefix to this gpaInformation which makes it not exactly the same as the
-        // standard ActionHierarchyScheme. the value up until the first "::" is the identifier for
-        // the gpa that will be cloned to make the new gpa.
-        String gpaIdentifier = gpaInformation.substring(0, gpaInformation.indexOf( "::" ));
+        ahs.parse( gpaInformation );
 
         // as it's the form, we can assume that we've got the most up-to-date identifier.
         GenericProtocolApplication gpa =
-                ( GenericProtocolApplication ) personBean.getEntityService().getIdentifiable( gpaIdentifier );
+                ( GenericProtocolApplication ) personBean.getEntityService().getIdentifiable( ahs.getGpaIdentifier() );
 
         buffer.append( "<ol>" );
 

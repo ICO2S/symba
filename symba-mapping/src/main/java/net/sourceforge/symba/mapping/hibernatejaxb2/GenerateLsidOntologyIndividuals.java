@@ -40,7 +40,7 @@ import java.io.*;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-backend/src/main/java/net/sourceforge/symba/util/GenerateOntologyIndividuals.java $
+ * $HeadURL$
  *
  */
 

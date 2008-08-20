@@ -5,43 +5,15 @@ Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employer
 To view the full licensing information for this software and ALL other files contained
 in this distribution, please see LICENSE.txt
 --%>
-<!-- $LastChangedDate: 2008-08-06 09:48:48 +0100 (Wed, 06 Aug 2008) $-->
-<!-- $LastChangedRevision: 193 $-->
-<!-- $Author: allysonlister $-->
-<!-- $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp/src/main/webapp/rawData.jsp $-->
+<!-- $LastChangedDate$-->
+<!-- $LastChangedRevision$-->
+<!-- $Author$-->
+<!-- $HeadURL$-->
 
-<%@ page import="net.sourceforge.fuge.collection.FuGE" %>
-<%@ page import="net.sourceforge.fuge.common.audit.Person" %>
-<%@ page import="net.sourceforge.fuge.common.ontology.OntologySource" %>
-<%@ page import="net.sourceforge.fuge.common.ontology.OntologyTerm" %>
-<%@ page import="net.sourceforge.fuge.common.protocol.GenericProtocol" %>
 <%@ page import="net.sourceforge.fuge.common.protocol.GenericProtocolApplication" %>
-<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.helper.FuGEMappingHelper" %>
-<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.xml.XMLMarshaler" %>
-<%@ page import="net.sourceforge.symba.webapp.util.*" %>
 <%@ page import="net.sourceforge.symba.webapp.util.forms.ActionTemplateParser" %>
-<%@ page import="net.sourceforge.symba.webapp.util.forms.MaterialFormValidator" %>
 <%@ page import="net.sourceforge.symba.webapp.util.forms.MaterialTemplateParser" %>
-<%@ page import="net.sourceforge.symba.webapp.util.forms.MetaDataWrapper" %>
-<%@ page import="net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionHierarchyScheme" %>
-<%@ page import="net.sourceforge.symba.webapp.util.loading.AssayLoader" %>
-<%@ page import="net.sourceforge.symba.webapp.util.loading.LoadPerson" %>
-<%@ page import="net.sourceforge.symba.webapp.util.loading.MaterialTransformationLoader" %>
-<%@ page import="net.sourceforge.symba.webapp.util.loading.OntologyLoader" %>
-<%@ page import="org.apache.commons.fileupload.FileItem" %>
-<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.FileUploadException" %>
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
-<%@ page import="org.xml.sax.SAXException" %>
-<%@ page import="javax.xml.bind.JAXBException" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.io.StringWriter" %>
-<%@ page import="java.net.URISyntaxException" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.*" %>
-
+<%@ page import="java.util.List" %>
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -78,15 +50,19 @@ in this distribution, please see LICENSE.txt
         // The users may choose from among the pre-existing starting materials, or make their own.
         // Pre-existing starting materials are those that are not dummies, and which exactly match the
         // pattern described in the dummy materials.
+        // The pre-existing values will be submitted using a separate submit button as the radio buttons
+        // are kept separate.
 
         // Get all currently-existing pairs. Allow the user to choose any of these pairs to copy
         // and modify. These pairs are identified by retrieving all non-dummy material transformation GPAs.
         @SuppressWarnings( "unchecked" )
-        List<GenericProtocolApplication> materialTransformations = (List<GenericProtocolApplication>) validUser.getSymbaEntityService()
-                .getLatestMaterialTransformations();
+        List<GenericProtocolApplication> materialTransformations =
+                ( List<GenericProtocolApplication> ) validUser.getSymbaEntityService()
+                        .getLatestMaterialTransformations();
 
         if ( !materialTransformations.isEmpty() ) {
 
+            out.println( "<form action=\"enterSpecimen.jsp\" method=\"post\">" );
             out.println( "<fieldset>" );
             out.println( "<legend>Create a specimen based on existing specimens</legend>" );
 
@@ -110,9 +86,14 @@ in this distribution, please see LICENSE.txt
                     validUser.getSymbaEntityService(), symbaFormSessionBean,
                     ActionTemplateParser.PROTOCOL_TYPE.MATERIAL_TRANSFORMATION ) );
             out.println( "</fieldset>" );
+            out.println( "    <fieldset class=\"submit\">\n" +
+                         "        <input type=\"submit\" value=\"Submit\" onclick=\"disabled=true\"/>\n" +
+                         "    </fieldset>\n" +
+                         "    </form>" );
         }
         // Get a list of current starting materials, to always provide the option of starting from scratch.
     %>
+
     <form action="enterSpecimen.jsp" method="post">
         <fieldset>
             <legend>Create a new specimen</legend>

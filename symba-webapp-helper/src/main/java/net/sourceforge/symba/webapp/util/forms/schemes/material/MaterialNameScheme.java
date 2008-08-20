@@ -9,10 +9,10 @@ import net.sourceforge.symba.webapp.util.forms.schemes.BasicScheme;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  * <p/>
- * $LastChangedDate: 2008-08-06 10:43:17 +0100 (Wed, 06 Aug 2008) $
- * $LastChangedRevision: 194 $
- * $Author: allysonlister $
- * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/forms/MaterialTemplateParser.java $
+ * $LastChangedDate$
+ * $LastChangedRevision$
+ * $Author$
+ * $HeadURL$
  */
 public class MaterialNameScheme extends BasicScheme {
 

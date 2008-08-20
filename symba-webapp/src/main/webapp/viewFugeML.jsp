@@ -57,17 +57,20 @@ in this distribution, please see LICENSE.txt
         } catch ( JAXBException e ) {
             out.println( "There was an error creating the XML. For help, please send this message to " );
             out.println( application.getAttribute( "helpEmail" ) );
-            System.out.println( e.getMessage() );
+            System.err.println( e.getMessage() );
+            out.println( e.getMessage() );
             e.printStackTrace();
         } catch ( SAXException e ) {
             out.println( "There was an error creating the XML. For help, please send this message to " );
             out.println( application.getAttribute( "helpEmail" ) );
-            System.out.println( e.getMessage() );
+            System.err.println( e.getMessage() );
+            out.println( e.getMessage() );
             e.printStackTrace();
         } catch ( URISyntaxException e ) {
             out.println( "There was an error creating the XML. For help, please send this message to " );
             out.println( application.getAttribute( "helpEmail" ) );
-            System.out.println( e.getMessage() );
+            System.err.println( e.getMessage() );
+            out.println( e.getMessage() );
             e.printStackTrace();
         }
     %>

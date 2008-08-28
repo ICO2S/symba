@@ -415,7 +415,7 @@ Hibernate-only FuGE-OM Modifications
 
 * Changes to the standard PostgreSQL Mapping
 
-  There is a file, PostgreSQLExtension.xml, within fuge-hibernate/src/main/uml/config/mappings, which specifies any
+  There is a file, PostgreSQLExtension.xml, within symba-mda/src/main/uml/config/mappings, which specifies any
   additional mappings between UML data types and Postgres types. Below are a summary of the contents of the file:
 
   * datatype::Date is mapped to TIMESTAMP WITH TIME ZONE\\

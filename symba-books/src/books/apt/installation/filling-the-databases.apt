@@ -12,14 +12,14 @@ Default (Local) Profile
                 below. You will need to create the database before using the STK.
 
 ---
-                mvn -f fuge-hibernate-core/pom.xml andromdapp:schema -Dtasks=create
+                mvn -f symba-core/pom.xml andromdapp:schema -Dtasks=create
 ---
 
  If you need to re-create the database from scratch at any time, you can add the drop task to the task list as
  shown below:
 
 ---
-                mvn -f fuge-hibernate-core/pom.xml andromdapp:schema -Dtasks=drop,create
+                mvn -f symba-core/pom.xml andromdapp:schema -Dtasks=drop,create
 ---
 
 Testing (Validation) Profile
@@ -28,7 +28,7 @@ Testing (Validation) Profile
  having run the {{{compiling.html}Compiling}} step for the Validation profile:
 
 ---
-                mvn -f fuge-hibernate-core/pom.xml -Denv=val andromdapp:schema -Dtasks=create
+                mvn -f symba-core/pom.xml -Denv=val andromdapp:schema -Dtasks=create
 ---
 
 Assigning Identifiers

@@ -64,8 +64,9 @@ public class DatabaseObjectHelper {
     // we are happy to use the same instance of FuGEIdentifier across all DatabaseObjectHelpers.
 
     // use the one below if using within the web interface / tomcat
-    
-    private static FuGEIdentifier ID_MAKER = FuGEIdentifierFactory.createFuGEIdentifier( DEFAULT_DOMAIN_NAME, "/client-beans.xml" );
+
+    private static FuGEIdentifier ID_MAKER =
+            FuGEIdentifierFactory.createFuGEIdentifier( DEFAULT_DOMAIN_NAME, "/client-beans.xml" );
 
 
     public static void setDomainName( String domainName ) {
@@ -217,54 +218,54 @@ public class DatabaseObjectHelper {
             if ( identifiable == null ) {
                 // No identifiable found - create a new one, plus an Endurant, based on the provided identifier.
 
-                    Endurant endurant = getOrLoadEndurant( endurantIdentifier, performer );
-                    identifiable = ENTITY_SERVICE.createIdentifiable( identifier, fullyQualifiedClassName );
-
-                    identifiable.setEndurant( endurant );
-
-                    if ( name != null && name.length() > 0 ) {
-                        identifiable.setName( name );
-                    }
-                }
-
-                return identifiable;
-
-            } else {
-                // if we get here then the identifier is empty - create a new one, plus an Endurant
                 Endurant endurant = getOrLoadEndurant( endurantIdentifier, performer );
-                Identifiable identifiable = ENTITY_SERVICE
-                        .createIdentifiable( ID_MAKER.create( fullyQualifiedClassName ),
-                                fullyQualifiedClassName );
+                identifiable = ENTITY_SERVICE.createIdentifiable( identifier, fullyQualifiedClassName );
 
                 identifiable.setEndurant( endurant );
 
                 if ( name != null && name.length() > 0 ) {
                     identifiable.setName( name );
                 }
-
-                return identifiable;
             }
+
+            return identifiable;
+
+        } else {
+            // if we get here then the identifier is empty - create a new one, plus an Endurant
+            Endurant endurant = getOrLoadEndurant( endurantIdentifier, performer );
+            Identifiable identifiable = ENTITY_SERVICE
+                    .createIdentifiable( ID_MAKER.create( fullyQualifiedClassName ),
+                            fullyQualifiedClassName );
+
+            identifiable.setEndurant( endurant );
+
+            if ( name != null && name.length() > 0 ) {
+                identifiable.setName( name );
+            }
+
+            return identifiable;
         }
+    }
 
-        /**
-         * Should only be used if you want to re-assign an identifier to an already existing Identifiable object
-         * and then load that object into the database, as it does NOT create a new object but assumes a pre-existing one.
-         * <p/>
-         * The person must already be loaded in the database, if used. However, the method will deal properly
-         * with null values in the person argument, therefore if you don't have person information, just pass
-         * a null value for that argument and the audit information will be created without it.
-         *
-         * @param fullyQualifiedClassName its fully-qualified class name
-         * @param identifiable            the object whose identifier is about to be re-assigned
-         * @param person                  the person to attribute the change to. Set to null if you don't want audit information.
-         * @return the newly-loaded object
-         * @throws EntityServiceException if there is a problme loading the object into the database
-         */
-        public static Identifiable assignAndSave( String fullyQualifiedClassName,
-                                                  Identifiable identifiable,
-                                                  Person person ) {
+    /**
+     * Should only be used if you want to re-assign an identifier to an already existing Identifiable object
+     * and then load that object into the database, as it does NOT create a new object but assumes a pre-existing one.
+     * <p/>
+     * The person must already be loaded in the database, if used. However, the method will deal properly
+     * with null values in the person argument, therefore if you don't have person information, just pass
+     * a null value for that argument and the audit information will be created without it.
+     *
+     * @param fullyQualifiedClassName its fully-qualified class name
+     * @param identifiable            the object whose identifier is about to be re-assigned
+     * @param person                  the person to attribute the change to. Set to null if you don't want audit information.
+     * @return the newly-loaded object
+     * @throws EntityServiceException if there is a problme loading the object into the database
+     */
+    public static Identifiable assignAndSave( String fullyQualifiedClassName,
+                                              Identifiable identifiable,
+                                              Person person ) {
 
-            // set the new identifier
+        // set the new identifier
         identifiable.setIdentifier( ID_MAKER.create( fullyQualifiedClassName ) );
 
         // make sure to remove the old database ID
@@ -273,17 +274,17 @@ public class DatabaseObjectHelper {
         return ( Identifiable ) ENTITY_SERVICE.save( fullyQualifiedClassName, identifiable, person );
     }
 
-        /**
-         * Placeholder to allow developers to ensure that some logic is performed before running save from the EntityService.
-         * All Version 1 STK code within this project uses this in favor of the EntityService save method.
-         *
-         * @param fullyQualifiedClassName its fully-qualified class name
-         * @param describable             the object to be saved
-         * @param person                  the person to attribute the change to. Set to null if you don't want audit information. @return the newly-loaded object
-         * @throws EntityServiceException if there is a problme loading the object into the database
-         * @return the newly-loaded (into the database) Describable object
-         */
-        public static Describable save ( String fullyQualifiedClassName, Describable describable, Person person){
+    /**
+     * Placeholder to allow developers to ensure that some logic is performed before running save from the EntityService.
+     * All Version 1 STK code within this project uses this in favor of the EntityService save method.
+     *
+     * @param fullyQualifiedClassName its fully-qualified class name
+     * @param describable             the object to be saved
+     * @param person                  the person to attribute the change to. Set to null if you don't want audit information. @return the newly-loaded object
+     * @return the newly-loaded (into the database) Describable object
+     * @throws EntityServiceException if there is a problme loading the object into the database
+     */
+    public static Describable save( String fullyQualifiedClassName, Describable describable, Person person ) {
 
         // put your core logic here.
 
@@ -296,4 +297,4 @@ public class DatabaseObjectHelper {
 
     }
 
-    }
+}

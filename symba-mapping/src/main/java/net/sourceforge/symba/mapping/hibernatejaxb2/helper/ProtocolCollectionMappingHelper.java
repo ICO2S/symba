@@ -7,6 +7,7 @@ import net.sourceforge.fuge.common.protocol.*;
 import net.sourceforge.fuge.service.EntityServiceException;
 import net.sourceforge.fuge.util.generatedJAXB2.*;
 import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
+import net.sourceforge.symba.service.SymbaEntityService;
 
 import javax.xml.bind.JAXBElement;
 import java.io.PrintStream;
@@ -267,13 +268,14 @@ public class ProtocolCollectionMappingHelper implements MappingHelper<ProtocolCo
     }
 
     // We go through all protocols in the database, retrieving all that are directly associated (via GenericAction)
-    // with the top-level investigation id'ed in protocolIdentifier. These will get added to the experiment.
+    // with the top-level investigation id'ed in protocolEndurant. These will get added to the experiment.
     // only works for generic protocols
     // checks the set for the presence of the equipment before adding to it
     public Set<Protocol> addRelevantProtocols( Set<Protocol> protocols,
-                                               String protocolIdentifier ) throws EntityServiceException {
+                                               String protocolEndurant,
+                                               SymbaEntityService symbaEntityService) throws EntityServiceException {
 
-        Protocol abstractProtocol = ( Protocol ) entityService.getIdentifiable( protocolIdentifier );
+        Protocol abstractProtocol = ( Protocol ) symbaEntityService.getLatestByEndurant( protocolEndurant );
 
         if ( !( abstractProtocol instanceof GenericProtocol ) ) {
             return protocols;

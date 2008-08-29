@@ -37,8 +37,8 @@ public class GenericEquipmentTemplateParser {
         // Any value stored in a GenericParameter is changeable. Any value in other references to ontology terms
         // (e.g. make, model, annotations) is considered constant and unchangeable.
         // Search the GenericEquipment for GenericParameters, and print out their options.
-        GenericProtocol chosenProtocol = ( GenericProtocol ) personBean.getSymbaEntityService()
-                .getLatestByEndurant( info.getAssayActionSummary().getChosenChildProtocolEndurant() );
+        GenericProtocol chosenProtocol = ( GenericProtocol ) personBean.getEntityService()
+                .getIdentifiable( info.getNestedActions().getActionHierarchy().get(info.getNestedActions().getActionHierarchy().size() - 1).getProtocolOfActionIdentifier() );
 
         if ( chosenProtocol.getEquipment() != null ) {
             for ( GenericEquipment genericEquipment : chosenProtocol.getEquipment() ) {

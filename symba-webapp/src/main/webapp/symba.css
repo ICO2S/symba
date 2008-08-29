@@ -215,7 +215,12 @@ ul>#Menu {
     background: #34BE52;
 }
 
-label, input {
+/*
+having the input value in addition to the label value causes weird errors when that input is present
+within a list element. Therefore temporarily removing the ", input" from the line below
+ todo sort out why the input css section below causes problems when inside a list element
+*/
+label {
     display: block;
     width: 150px;
     float: left;
@@ -279,7 +284,7 @@ list-style: none;
 }
 
 fieldset li {
-padding-bottom: 1em;
+padding-bottom: 0.5em;
 }
 
 

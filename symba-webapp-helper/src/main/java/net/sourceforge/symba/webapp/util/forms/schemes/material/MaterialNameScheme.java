@@ -21,7 +21,7 @@ public class MaterialNameScheme extends BasicScheme {
     }
 
     /**
-     * Parses the parameter from a form field, filling the class members for later access
+     * Parses the "name" parameter from a form field, filling the class members for later access
      *
      * @param parameterName the raw name of the parameter from the form.
      */
@@ -36,7 +36,7 @@ public class MaterialNameScheme extends BasicScheme {
      * Assuming the values have been set, the write method allows the creation of the value
      * of the "id" and "name" attributes within a form field element.
      *
-     * @return the value to identify the form field element
+     * @return the string to put inside the id and/or name attributes of a form field element
      */
     public String write() {
         return elementTitle + separator + materialCount + separator +

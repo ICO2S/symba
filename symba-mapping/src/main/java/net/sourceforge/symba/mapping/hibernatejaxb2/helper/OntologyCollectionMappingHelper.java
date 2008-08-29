@@ -21,21 +21,21 @@ import java.util.Set;
 
 /**
  * Copyright Notice
- *
+ * <p/>
  * The MIT License
- *
+ * <p/>
  * Copyright (c) 2008 2007-8 Proteomics Standards Initiative / Microarray and Gene Expression Data Society
- *
+ * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p/>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p/>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -43,18 +43,19 @@ import java.util.Set;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- *
+ * <p/>
  * Acknowledgements
- *  The authors wish to thank the Proteomics Standards Initiative for
- *  the provision of infrastructure and expertise in the form of the PSI
- *  Document Process that has been used to formalise this document.
+ * The authors wish to thank the Proteomics Standards Initiative for
+ * the provision of infrastructure and expertise in the form of the PSI
+ * Document Process that has been used to formalise this document.
  * <p/>
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
  * $HeadURL$
  */
-public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCollection, FuGECollectionOntologyCollectionType> {
+public class OntologyCollectionMappingHelper implements
+        MappingHelper<OntologyCollection, FuGECollectionOntologyCollectionType> {
     private final DescribableMappingHelper cd;
     private final IdentifiableMappingHelper ci;
 
@@ -63,7 +64,9 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
         this.cd = ci.getCisbanDescribableHelper();
     }
 
-    public OntologyCollection unmarshal( FuGECollectionOntologyCollectionType ontoCollXML, OntologyCollection ontoColl, Person performer )
+    public OntologyCollection unmarshal( FuGECollectionOntologyCollectionType ontoCollXML,
+                                         OntologyCollection ontoColl,
+                                         Person performer )
             throws EntityServiceException {
 
         ontoColl = ( OntologyCollection ) cd.unmarshal( ontoCollXML, ontoColl, performer );
@@ -77,7 +80,8 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
     }
 
     public OntologyCollection unmarshalCollectionContents( FuGECollectionOntologyCollectionType ontoCollXML,
-                                                           OntologyCollection ontoColl, Person performer ) throws EntityServiceException {
+                                                           OntologyCollection ontoColl, Person performer ) throws
+            EntityServiceException {
         // Ontology Sources
         Set<OntologySource> ontologySources = new HashSet<OntologySource>();
         for ( FuGECommonOntologyOntologySourceType ontoSourceXML : ontoCollXML.getOntologySource() ) {
@@ -92,17 +96,20 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
 
             ontologySource.setOntologyURI( ontoSourceXML.getOntologyURI() );
 
-            DatabaseObjectHelper.save( "net.sourceforge.fuge.common.ontology.OntologySource", ontologySource, performer );
+            DatabaseObjectHelper
+                    .save( "net.sourceforge.fuge.common.ontology.OntologySource", ontologySource, performer );
             ontologySources.add( ontologySource );
         }
         ontoColl.setSources( ontologySources );
 
         // Ontology Terms
         Set<OntologyTerm> ontologyTerms = new HashSet<OntologyTerm>();
-        for ( JAXBElement<? extends FuGECommonOntologyOntologyTermType> ontologyTermElementXML : ontoCollXML.getOntologyTerm() ) {
+        for ( JAXBElement<? extends FuGECommonOntologyOntologyTermType> ontologyTermElementXML : ontoCollXML
+                .getOntologyTerm() ) {
             FuGECommonOntologyOntologyTermType ontologyTermXML = ontologyTermElementXML.getValue();
             if ( ontologyTermXML instanceof FuGECommonOntologyOntologyIndividualType ) {
-                FuGECommonOntologyOntologyIndividualType ontologyIndividualXML = ( FuGECommonOntologyOntologyIndividualType ) ontologyTermXML;
+                FuGECommonOntologyOntologyIndividualType ontologyIndividualXML =
+                        ( FuGECommonOntologyOntologyIndividualType ) ontologyTermXML;
                 ontologyTerms.add( unmarshalOntologyIndividual( ontologyIndividualXML, performer ) );
             }
         }
@@ -110,7 +117,8 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
         return ontoColl;
     }
 
-    public FuGECollectionOntologyCollectionType marshal( FuGECollectionOntologyCollectionType ontoCollXML, OntologyCollection ontoColl )
+    public FuGECollectionOntologyCollectionType marshal( FuGECollectionOntologyCollectionType ontoCollXML,
+                                                         OntologyCollection ontoColl )
             throws EntityServiceException {
 
         ontoCollXML = ( FuGECollectionOntologyCollectionType ) cd.marshal( ontoCollXML, ontoColl );
@@ -124,11 +132,12 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
             // rather than
             //  net.sourceforge.fuge.common.protocol.OntologyIndividualImpl
             // and the (ontologyTerm instanceof OntologyIndividual) will be false.
-            ontologyTerm = (OntologyTerm) entityService.getIdentifiable( ontologyTerm.getId() );
+            ontologyTerm = ( OntologyTerm ) entityService.getIdentifiable( ontologyTerm.getId() );
 
             if ( ontologyTerm instanceof OntologyIndividual )
                 ontoCollXML.getOntologyTerm()
-                        .add( factory.createOntologyIndividual( marshalOntologyIndividual( ( OntologyIndividual ) ontologyTerm ) ) );
+                        .add( factory.createOntologyIndividual(
+                                marshalOntologyIndividual( ( OntologyIndividual ) ontologyTerm ) ) );
         }
 
         // set ontology source
@@ -155,7 +164,8 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
                 "net.sourceforge.fuge.common.ontology.OntologyIndividual" );
 
         // set the ontology term traits
-        ontologyIndividual = ( OntologyIndividual ) unmarshalOntologyTerm( ontologyIndividualXML, ontologyIndividual, performer );
+        ontologyIndividual =
+                ( OntologyIndividual ) unmarshalOntologyTerm( ontologyIndividualXML, ontologyIndividual, performer );
 
         // set the OntologyIndividual-specific traits
         Set<OntologyProperty> ontologyProperties = new HashSet<OntologyProperty>();
@@ -166,7 +176,8 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
 
             if ( ontologyPropertyXML instanceof FuGECommonOntologyObjectPropertyType ) {
 
-                FuGECommonOntologyObjectPropertyType objectPropertyXML = ( FuGECommonOntologyObjectPropertyType ) ontologyPropertyXML;
+                FuGECommonOntologyObjectPropertyType objectPropertyXML =
+                        ( FuGECommonOntologyObjectPropertyType ) ontologyPropertyXML;
 
                 // set object property
 
@@ -176,7 +187,8 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
                         objectPropertyXML.getEndurantRef(), objectPropertyXML.getName(),
                         "net.sourceforge.fuge.common.ontology.ObjectProperty" );
 
-                objectProperty = ( ObjectProperty ) unmarshalOntologyTerm( objectPropertyXML, objectProperty, performer );
+                objectProperty =
+                        ( ObjectProperty ) unmarshalOntologyTerm( objectPropertyXML, objectProperty, performer );
 
                 Set<OntologyIndividual> smallOis = new HashSet<OntologyIndividual>();
                 for ( FuGECommonOntologyOntologyIndividualType smallOiXML : objectPropertyXML.getOntologyIndividual() )
@@ -184,13 +196,15 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
 
                 objectProperty.setContent( smallOis );
                 objectProperty.setName( objectPropertyXML.getName() );
-                DatabaseObjectHelper.save( "net.sourceforge.fuge.common.ontology.ObjectProperty", objectProperty, performer );
+                DatabaseObjectHelper
+                        .save( "net.sourceforge.fuge.common.ontology.ObjectProperty", objectProperty, performer );
 
                 ontologyProperties.add( objectProperty );
 
             } else if ( ontologyPropertyXML instanceof FuGECommonOntologyDataPropertyType ) {
 
-                FuGECommonOntologyDataPropertyType dataPropertyXML = ( FuGECommonOntologyDataPropertyType ) ontologyPropertyXML;
+                FuGECommonOntologyDataPropertyType dataPropertyXML =
+                        ( FuGECommonOntologyDataPropertyType ) ontologyPropertyXML;
 
                 // set data property
 
@@ -203,13 +217,15 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
                 dataProperty = ( DataProperty ) unmarshalOntologyTerm( dataPropertyXML, dataProperty, performer );
                 dataProperty.setDataType( dataPropertyXML.getDataType() );
                 dataProperty.setName( dataPropertyXML.getName() );
-                DatabaseObjectHelper.save( "net.sourceforge.fuge.common.ontology.DataProperty", dataProperty, performer );
+                DatabaseObjectHelper
+                        .save( "net.sourceforge.fuge.common.ontology.DataProperty", dataProperty, performer );
                 ontologyProperties.add( dataProperty );
             }
         }
         ontologyIndividual.setProperties( ontologyProperties );
         ontologyIndividual.setName( ontologyIndividualXML.getName() );
-        DatabaseObjectHelper.save( "net.sourceforge.fuge.common.ontology.OntologyIndividual", ontologyIndividual, performer );
+        DatabaseObjectHelper
+                .save( "net.sourceforge.fuge.common.ontology.OntologyIndividual", ontologyIndividual, performer );
         return ontologyIndividual;
     }
 
@@ -254,7 +270,8 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
         ontologyTerm.setTerm( ontologyTermXML.getTerm() );
         ontologyTerm.setTermAccession( ontologyTermXML.getTermAccession() );
         if ( ontologyTermXML.getOntologySourceRef() != null ) {
-            ontologyTerm.setOntologySource( ( OntologySource ) entityService.getIdentifiable( ontologyTermXML.getOntologySourceRef() ) );
+            ontologyTerm.setOntologySource(
+                    ( OntologySource ) entityService.getIdentifiable( ontologyTermXML.getOntologySourceRef() ) );
         }
         return ontologyTerm;
     }
@@ -283,11 +300,9 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
         // go through each of the protocols in the experiment. Currently, it is only in the Parameters of the
         // Actions of the protocols, and in the Parameters of the Protocols themselves where we look for ontology terms
         // start by making sure we won't lose any already-included ontology terms from the collection
-        Set<OntologyTerm> ontologyTerms;
+        Set<OntologyTerm> ontologyTerms = new HashSet<OntologyTerm>();
         if ( fuge.getOntologyCollection() != null ) {
             ontologyTerms = ( Set<OntologyTerm> ) fuge.getOntologyCollection().getOntologyTerms();
-        } else {
-            ontologyTerms = new HashSet<OntologyTerm>();
         }
 
         ontologyTerms.addAll( addOntologyTermsFromProtocols( fuge.getProtocolCollection(), ontologyTerms ) );
@@ -296,16 +311,37 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
                         ( Set<Equipment> ) fuge.getProtocolCollection().getAllEquipment(), ontologyTerms ) );
 
         ontologyCollection.setOntologyTerms( ontologyTerms );
-        // don't do any checking with ontology sources - just assume that those already present are correct.
-        // todo check for new ontology sources associated with the new ontology terms#
+
         if ( fuge.getOntologyCollection() != null && fuge.getOntologyCollection().getSources() != null ) {
-            ontologyCollection.setSources( fuge.getOntologyCollection().getSources() );
+            ontologyCollection.getSources().addAll( fuge.getOntologyCollection().getSources() );
         }
+        for ( OntologyTerm ontologyTerm : ontologyTerms ) {
+            if ( ontologyTerm.getOntologySource() != null &&
+                 !sourcePresent( ontologyTerm.getOntologySource(), ontologyCollection.getSources() ) ) {
+                ontologyCollection.getSources().add( ontologyTerm.getOntologySource() );
+            }
+        }
+
         // load the fuge object into the database
-        DatabaseObjectHelper.save( "net.sourceforge.fuge.collection.OntologyCollection", ontologyCollection, performer );
+        DatabaseObjectHelper
+                .save( "net.sourceforge.fuge.collection.OntologyCollection", ontologyCollection, performer );
         fuge.setOntologyCollection( ontologyCollection );
 
         return fuge;
+    }
+
+    private boolean sourcePresent( OntologySource ontologySource,
+                                   Collection<OntologySource> sources ) {
+        if ( sources == null ) {
+            return false;
+        }
+
+        for ( OntologySource source : sources ) {
+            if ( ontologySource.getEndurant().getIdentifier().equals( source.getEndurant().getIdentifier() ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Set<OntologyTerm> addOntologyTermsFromEquipment( Set<Equipment> allEquipment,
@@ -366,39 +402,43 @@ public class OntologyCollectionMappingHelper implements MappingHelper<OntologyCo
     }
 
     private Set<OntologyTerm> addOntologyTermsFromParameter( GenericParameter genericParameter,
-                                                             Set<OntologyTerm> ontologyTerms ) throws EntityServiceException {
+                                                             Set<OntologyTerm> ontologyTerms ) throws
+            EntityServiceException {
         if ( genericParameter.getDefaultValue() != null ) {
             boolean found = false;
             for ( OntologyTerm ot : ontologyTerms ) {
-                if ( ot.getIdentifier().equals( genericParameter.getDefaultValue().getUnit().getIdentifier() ) ) {
+                if ( genericParameter.getDefaultValue().getUnit() != null &&
+                     ot.getIdentifier().equals( genericParameter.getDefaultValue().getUnit().getIdentifier() ) ) {
                     // this is already present - don't add
                     found = true;
                     break;
                 }
             }
-            if ( !found ) {
+            if ( !found  && genericParameter.getDefaultValue().getUnit() != null) {
                 ontologyTerms.add( ( OntologyTerm ) entityService.getIdentifiable(
                         genericParameter.getDefaultValue().getUnit().getIdentifier() ) );
             }
             found = false;
             for ( OntologyTerm ot : ontologyTerms ) {
-                if ( ot.getIdentifier().equals( genericParameter.getDefaultValue().getDataType().getIdentifier() ) ) {
+                if ( genericParameter.getDefaultValue().getDataType() != null &&
+                     ot.getIdentifier().equals( genericParameter.getDefaultValue().getDataType().getIdentifier() ) ) {
                     // this is already present - don't add
                     found = true;
                     break;
                 }
             }
-            if ( !found ) {
+            if ( !found && genericParameter.getDefaultValue().getDataType() != null ) {
                 ontologyTerms.add( ( OntologyTerm ) entityService.getIdentifiable(
                         genericParameter.getDefaultValue().getDataType().getIdentifier() ) );
             }
+
+            if ( genericParameter.getDefaultValue() instanceof ComplexValue ) {
+                // complex values can have ontology terms as their value
+                ComplexValue complexValue = ( ComplexValue ) genericParameter.getDefaultValue();
+                ontologyTerms = addOntologyTermIfFound( ontologyTerms, complexValue.getValue().getIdentifier() );
+            }
         }
 
-        if ( genericParameter.getDefaultValue() instanceof ComplexValue ) {
-            // complex values can have ontology terms as their value
-            ComplexValue complexValue = ( ComplexValue ) genericParameter.getDefaultValue();
-            ontologyTerms = addOntologyTermIfFound( ontologyTerms, complexValue.getValue().getIdentifier() );
-        }
         return ontologyTerms;
     }
 

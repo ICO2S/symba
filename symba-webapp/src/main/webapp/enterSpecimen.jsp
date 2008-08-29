@@ -55,7 +55,7 @@ in this distribution, please see LICENSE.txt
                 } else {
                     ahs.setDummy( true );
                     if ( request.getParameter( ahs.getElementTitle() ) != null ) {
-                        // base the form on the existing specimen
+                        // base the form on the existing dummy specimen
                         out.println( MaterialTemplateParser.createSpecimenFormContents( validUser,
                                 symbaFormSessionBean.getSpecimenToBeUploaded(),
                                 request.getParameter( ahs.getElementTitle() ), true ) );

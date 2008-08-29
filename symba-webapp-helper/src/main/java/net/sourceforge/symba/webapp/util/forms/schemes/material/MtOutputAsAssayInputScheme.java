@@ -12,12 +12,12 @@ import net.sourceforge.symba.webapp.util.forms.schemes.BasicScheme;
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
- * $HeadURL$
+ * $HeadURL: https://symba.svn.sourceforge.net/svnroot/symba/trunk/symba-webapp-helper/src/main/java/net/sourceforge/symba/webapp/util/forms/schemes/material/MaterialNameScheme.java $
  */
-public class MaterialTypeScheme extends BasicScheme {
+public class MtOutputAsAssayInputScheme extends BasicScheme {
 
-    public MaterialTypeScheme() {
-        elementTitle = "materialType";
+    public MtOutputAsAssayInputScheme() {
+        elementTitle = "mtOutputAsAssayInputScheme";        
     }
 
     /**
@@ -27,9 +27,8 @@ public class MaterialTypeScheme extends BasicScheme {
      */
     public void parse( String parameterName ) {
         String[] parsedStrings = parameterName.split( separator );
-        materialCount = Integer.valueOf( parsedStrings[1] );
-        parentOfGpaEndurant = parsedStrings[2];
-        datafileNumber = Integer.valueOf( parsedStrings[3] );
+        parentOfGpaEndurant = parsedStrings[1];
+        datafileNumber = Integer.valueOf( parsedStrings[2] );
     }
 
     /**
@@ -39,7 +38,6 @@ public class MaterialTypeScheme extends BasicScheme {
      * @return the string to put inside the id and/or name attributes of a form field element
      */
     public String write() {
-        return elementTitle + separator + materialCount + separator +
-               parentOfGpaEndurant + separator + datafileNumber;
+        return elementTitle + separator + parentOfGpaEndurant + separator + datafileNumber;
     }
 }

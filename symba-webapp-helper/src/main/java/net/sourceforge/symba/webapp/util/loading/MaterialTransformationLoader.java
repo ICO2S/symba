@@ -58,11 +58,9 @@ public class MaterialTransformationLoader {
         if ( symbaFormSessionBean.getFuGE() == null ) {
             fuge = ( FuGE ) DatabaseObjectHelper
                     .createEndurantAndIdentifiable( "net.sourceforge.fuge.collection.FuGE", auditor );
-            System.err.println( "New FuGE object created" );
             fuge = loadNew( fuge );
         } else {
             fuge = symbaFormSessionBean.getFuGE();
-            System.err.println( "Used FuGE object loaded" );
             fuge = loadExisting( fuge );
         }
 
@@ -98,31 +96,27 @@ public class MaterialTransformationLoader {
         fuge = ProtocolLoader.loadMaterialTransformationProtocols( fuge, entityService, auditor,
                 symbaFormSessionBean, symbaEntityService );
 
+        fuge = ReorganizeCollections.reorganize( fuge, auditor );
+
         return fuge;
     }
 
     private FuGE loadNew( FuGE fuge ) {
 
         fuge.setName( symbaFormSessionBean.getExperimentName() );
-        System.err.println( "Name set" );
         fuge = AuditLoader.addPersonToExperiment( fuge, entityService, auditor );
-        System.err.println( "Person added to Experiment" );
         fuge = InvestigationLoader.addInvestigationToExperiment( fuge, entityService, auditor, symbaFormSessionBean );
-        System.err.println( "Investigation added to Experiment" );
 
         // Returns the fuge object in position 0, and the updated symbaFormSessionBean in position 1.
         Object[] results = MaterialLoader
                 .addMaterialToExperiment( fuge, entityService, auditor, symbaFormSessionBean, symbaEntityService );
         fuge = ( FuGE ) results[0];
         symbaFormSessionBean = ( SymbaFormSessionBean ) results[1];
-        System.err.println( "Material added to Experiment" );
         fuge = ProtocolLoader.loadMaterialTransformationProtocols( fuge, entityService, auditor,
                 symbaFormSessionBean, symbaEntityService );
-        System.err.println( "MaterialTransformation added to Experiment" );
         fuge = ProviderLoader
                 .addProviderToExperiment( fuge, entityService, auditor, symbaFormSessionBean, symbaEntityService,
                         softwareMeta );
-        System.err.println( "Provider added to Experiment" );
 
         return fuge;
     }

@@ -78,7 +78,7 @@ in this distribution, please see LICENSE.txt
     <%
         }
 
-        symbaFormSessionBean.displayHtml( out, validUser.getSymbaEntityService() );
+        symbaFormSessionBean.displayHtml( out, validUser );
     %>
 
     <p class="bigger">

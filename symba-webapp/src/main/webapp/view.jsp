@@ -103,7 +103,7 @@ to a new one.
                 // the metadata from each data file, and presented as an individual form
 //                cfh.prettyHtml( fuge, new PrintWriter( out ) );
                 Map<String, SymbaFormSessionBean> allPossibleMetadata = DisplayFuge.displayHtml(
-                        validUser.getEndurantLsid(), fuge, new PrintWriter( out ) );
+                        validUser, fuge, new PrintWriter( out ) );
                 // Load all of this into the session. It should get removed as soon as possible. This is a little
                 // odd, but cannot currently find a better way to do it.
                 session.setAttribute( "allPossibleMetadata", allPossibleMetadata );

@@ -1,34 +1,4 @@
-<%@ page import="net.sourceforge.fuge.collection.FuGE" %>
-<%@ page import="net.sourceforge.fuge.common.audit.Person" %>
-<%@ page import="net.sourceforge.fuge.common.ontology.OntologySource" %>
-<%@ page import="net.sourceforge.fuge.common.ontology.OntologyTerm" %>
-<%@ page import="net.sourceforge.fuge.common.protocol.GenericProtocol" %>
-<%@ page import="net.sourceforge.fuge.common.protocol.GenericProtocolApplication" %>
-<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.helper.FuGEMappingHelper" %>
-<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.xml.XMLMarshaler" %>
-<%@ page import="net.sourceforge.symba.webapp.util.*" %>
-<%@ page import="net.sourceforge.symba.webapp.util.forms.ActionTemplateParser" %>
-<%@ page import="net.sourceforge.symba.webapp.util.forms.MaterialFormValidator" %>
-<%@ page import="net.sourceforge.symba.webapp.util.forms.MaterialTemplateParser" %>
-<%@ page import="net.sourceforge.symba.webapp.util.forms.MetaDataWrapper" %>
-<%@ page import="net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionHierarchyScheme" %>
-<%@ page import="net.sourceforge.symba.webapp.util.loading.AssayLoader" %>
-<%@ page import="net.sourceforge.symba.webapp.util.loading.LoadPerson" %>
-<%@ page import="net.sourceforge.symba.webapp.util.loading.MaterialTransformationLoader" %>
-<%@ page import="net.sourceforge.symba.webapp.util.loading.OntologyLoader" %>
-<%@ page import="org.apache.commons.fileupload.FileItem" %>
-<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.FileUploadException" %>
-<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
-<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
-<%@ page import="org.xml.sax.SAXException" %>
-<%@ page import="javax.xml.bind.JAXBException" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.io.StringWriter" %>
-<%@ page import="java.net.URISyntaxException" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.ResourceBundle" %>
 <%--
 This file is part of SyMBA.
 SyMBA is covered under the GNU Lesser General Public License (LGPL).
@@ -54,15 +24,16 @@ in this distribution, please see LICENSE.txt
 
 %>
 
-<jsp:useBean id="softwareMeta" class="net.sourceforge.symba.webapp.util.SoftwareMetaInformationBean" scope="application"/>
+<jsp:useBean id="softwareMeta" class="net.sourceforge.symba.webapp.util.SoftwareMetaInformationBean"
+             scope="application"/>
 
 <%
     // parse the application attribute first, since it may be needed
     // if an error occurs during the initial database access.
 
     application.setAttribute( "helpEmail", bundle.getString( "net.sourceforge.symba.webapp.helpEmail" ) );
-    softwareMeta.setName( bundle.getString( "net.sourceforge.symba.webapp.softwareName" ));
-    softwareMeta.setVersion( bundle.getString( "net.sourceforge.symba.webapp.softwareVersion" ));
+    softwareMeta.setName( bundle.getString( "net.sourceforge.symba.webapp.softwareName" ) );
+    softwareMeta.setVersion( bundle.getString( "net.sourceforge.symba.webapp.softwareVersion" ) );
 
 %>
 
@@ -78,7 +49,7 @@ in this distribution, please see LICENSE.txt
 <jsp:include page="visibleHeader.jsp"/>
 
 <div id="Content">
-    <h1>Welcome to SyMBA</h1>
+    <h1>Welcome to <% out.print(softwareMeta.getName()); %> </h1>
 
     <%--<p>--%>
     <%--<font class="blueText">--%>
@@ -86,13 +57,18 @@ in this distribution, please see LICENSE.txt
     <%--</font>--%>
     <%--</p>--%>
 
+    <p class="bigger">
+        <%
+            out.println( bundle.getString( "net.sourceforge.symba.webapp.status" ) );
+        %>
+    </p>
 
     <form action="verify.jsp" method="post">
 
         <fieldset>
             <legend>Please log on to add or view experiments <a
-            href="help.jsp#logon"
-            onClick="return popup(this, 'notes')">[ why? ]</a></legend>
+                    href="help.jsp#logon"
+                    onClick="return popup(this, 'notes')">[ why? ]</a></legend>
 
             <ol>
 
@@ -132,9 +108,9 @@ in this distribution, please see LICENSE.txt
 
 
     <p>If you do not have an account, or if you have any questions or comments, please
-    <%
-        out.println("<a href=\"mailto:" + application.getAttribute( "helpEmail" ) + "\">contact us</a>");
-    %>
+        <%
+            out.println( "<a href=\"mailto:" + application.getAttribute( "helpEmail" ) + "\">contact us</a>" );
+        %>
     </p>
 
 </div>

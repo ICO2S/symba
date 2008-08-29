@@ -12,5 +12,5 @@
  cartridge-generated POJOs.
 
  The code that performs this mapping is present within net.sourceforge.symba.mapping.hibernatejaxb2 package inside
- the fuge-hibernate-mapping sub-project. It is {{{unit-tests.html}tested}} with a round trip from the XML to the
+ the symba-mapping sub-project. It is {{{unit-tests.html}tested}} with a round trip from the XML to the
  database and back again.

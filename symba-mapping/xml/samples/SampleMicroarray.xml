@@ -168,8 +168,8 @@ ProtocolCollection inside the OntologyCollection.
                 <ComplexValue>
                     <_value
                             OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:fcd8b670-a0e2-4963-af05-c4f8bc958397"/>
+                    <_unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:57d8fa66-a180-4a07-9743-ce8026709c28"/>
                 </ComplexValue>
-                <_unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:57d8fa66-a180-4a07-9743-ce8026709c28"/>
             </GenericParameter>
             <GenericAction
                     Endurant_ref="urn:lsid:cisban.cisbs.org:GenericActionEndurant:8f1159cd-4e55-40ae-8dc2-6d25e31f2b27"
@@ -189,8 +189,8 @@ ProtocolCollection inside the OntologyCollection.
                     <ComplexValue>
                         <_value
                                 OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:fa02d8b8-170f-4fd0-8a65-842c02a2ddb3"/>
+                        <_unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:5175e266-e948-4ba3-8d18-c355d826de00"/>
                     </ComplexValue>
-                    <_unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:5175e266-e948-4ba3-8d18-c355d826de00"/>
                 </GenericParameter>
             </GenericAction>
             <GenericAction
@@ -205,8 +205,8 @@ ProtocolCollection inside the OntologyCollection.
                     <ComplexValue>
                         <_value
                                 OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:d2fb3a81-498e-4032-989f-cd43bf340d3e"/>
+                        <_unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:5175e266-e948-4ba3-8d18-c355d826de00"/>
                     </ComplexValue>
-                    <_unit OntologyTerm_ref="urn:lsid:cisban.cisbs.org:OntologyIndividual:5175e266-e948-4ba3-8d18-c355d826de00"/>
                 </GenericParameter>
             </GenericAction>
         </GenericProtocol>

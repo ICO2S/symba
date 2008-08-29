@@ -46,6 +46,16 @@ net.sourceforge.fuge.common.Identifiable
   open the "Endurant" class diagram within the <<<SyMBA-FuGEv1.mdzip>>> file stored in the
   <<<symba-mda/src/main/uml>>> directory.
 
+Additional Lazy Initializations Set to False
+
+ * net.sourceforge.fuge.common.protocol.ParameterValue : set its association to Parameter (parameter) to lazy = false.
+
+ * net.sourceforge.fuge.common.protocol.ParameterValue : set its association to Parameter (parameter) to lazy = false.
+
+ * net.sourceforge.fuge.common.measurement.Measurement : set its association to OntologyTerm (unit) to lazy = false.
+
+ * net.sourceforge.fuge.common.measurement.Measurement : set its association to OntologyTerm (dataType) to lazy = false.
+
 New Queries
 
   This section describes the set of new queries that were added to specific entities within the FuGE-OM. They

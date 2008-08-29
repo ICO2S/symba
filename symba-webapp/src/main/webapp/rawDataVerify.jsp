@@ -5,7 +5,6 @@
 <%@ page import="org.apache.commons.fileupload.FileItem" %>
 <%@ page import="net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.io.File" %>
 <%--
@@ -89,28 +88,6 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
     }
     symbaFormSessionBean.setDatafileSpecificMetadataStores( new ArrayList<DatafileSpecificMetadataStore>() );
 
-    if ( !symbaFormSessionBean.isMetadataFromAnotherExperiment() ) {
-        // first, iterate through looking for the investigation details field
-        Iterator itr = items.iterator();
-        String investigationName = null;
-        String investigationEndurant = null;
-        while ( itr.hasNext() ) {
-            FileItem item = ( FileItem ) itr.next();
-            if ( item.isFormField() && item.getFieldName().equals( "investigationType" ) ) {
-                // currently only one non-file field
-                // parse the experimental investigation type
-                investigationEndurant = item.getString().substring( 0, item.getString().indexOf( "::Identifier::" ) );
-//            System.err.println( "Investigation Name:" + investigationName + "END");
-                investigationName = item.getString()
-                        .substring( item.getString().indexOf( "::Identifier::" ) + 14 );
-//            System.err.println( "Investigation Identifier:" + investigationEndurant  + "END");
-            }
-        }
-
-        symbaFormSessionBean.setTopLevelProtocolName( investigationName );
-        symbaFormSessionBean.setTopLevelProtocolEndurant( investigationEndurant );
-    }
-
     // sort out the 3-letter code for the friendly identifiers
     String threeLetterCode;
     if ( symbaFormSessionBean.getTopLevelProtocolName().contains( "Microarray" ) ) {
@@ -127,7 +104,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         threeLetterCode = "DEF";
     }
 
-    // go through each part of the form - this time we're only interested in the files.
+    // go through each part of the form - we're only interested in the files.
     boolean errorDuringUpload = false;
     for ( Object object : items ) {
         FileItem item = ( FileItem ) object;

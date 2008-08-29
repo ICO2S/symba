@@ -82,7 +82,7 @@ public class ProtocolLoader {
 
 
         ActionHierarchyScheme ahs = new ActionHierarchyScheme();
-        ahs.parse( symbaFormSessionBean.getSpecimenActionHierarchy() );
+        ahs.parseValueAttribute( symbaFormSessionBean.getSpecimenActionHierarchy() );
 
         GenericProtocolApplication clonedGPA =
                 ( GenericProtocolApplication ) symbaEntityService.getLatestByIdentifier( ahs.getGpaIdentifier() );
@@ -92,7 +92,7 @@ public class ProtocolLoader {
                 createMtGPA( symbaFormSessionBean.getSpecimenToBeUploaded(), clonedGPA.getProtocol(), entityService,
                         auditor, symbaEntityService );
 
-        ProtocolCollection protocolCollection = fillProtocolCollection( fuge, entityService, symbaFormSessionBean );
+        ProtocolCollection protocolCollection = fillProtocolCollection( fuge, entityService, symbaEntityService, symbaFormSessionBean );
 
         protocolCollection.getProtocolApplications().add( mtGpa );
 
@@ -102,7 +102,13 @@ public class ProtocolLoader {
                 ahs, symbaEntityService, entityService );
 
 
+        protocolCollection = ( ProtocolCollection ) DatabaseObjectHelper
+                .save( "net.sourceforge.fuge.collection.ProtocolCollection", protocolCollection, auditor );
         fuge.setProtocolCollection( protocolCollection );
+
+        OntologyCollectionMappingHelper och = new OntologyCollectionMappingHelper();
+        fuge = och.addRelevantOntologyTerms( fuge, auditor );
+
         return fuge;
     }
 
@@ -228,8 +234,8 @@ public class ProtocolLoader {
     }
 
     private static boolean foundOIMatch( OntologyIndividual unsharedOI,
-                                         HashMap<String, String> characteristics,
-                                         HashMap<String, LinkedHashSet<String>> multipleCharacteristics ) {
+                                         Map<String, String> characteristics,
+                                         Map<String, LinkedHashSet<String>> multipleCharacteristics ) {
         Set<String> termAndTermACs = new LinkedHashSet<String>();
         String singleTermAndTermAC =
                 characteristics.get( unsharedOI.getOntologySource().getEndurant().getIdentifier() );
@@ -258,218 +264,32 @@ public class ProtocolLoader {
                                            SymbaFormSessionBean symbaFormSessionBean,
                                            SymbaEntityService symbaEntityService ) {
 
-        ProtocolCollection protocolCollection = fillProtocolCollection( fuge, entityService, symbaFormSessionBean );
 
-        String expName;
-        if ( symbaFormSessionBean.getExperimentName() != null ) {
-            expName = symbaFormSessionBean.getExperimentName();
-        } else {
-            expName = fuge.getName();
-        }
+        ProtocolCollection protocolCollection = fillProtocolCollection( fuge, entityService, symbaEntityService, symbaFormSessionBean );
 
-        // Get the top-level protocol, which has no matching GenericAction.
-        GenericProtocol topLevelProtocol =
-                ( GenericProtocol ) symbaEntityService
-                        .getLatestByEndurant( symbaFormSessionBean.getTopLevelProtocolEndurant() );
-        if ( topLevelProtocol == null ) {
-            System.err.println(
-                    "Error finding top-level protocol for the fuge investigation type: " +
-                    symbaFormSessionBean.getTopLevelProtocolEndurant() + " (" +
-                    symbaFormSessionBean.getTopLevelProtocolName() + ")" );
-            return fuge;
-        }
-
-        // get the GPA attached to the top level protocol, if present.
-        GenericProtocolApplication gpaOfTopLevelProtocol = null;
-        // first, find the highest-level GPA: that is, the GPA of the top-level investigation
-        for ( Object gpaObject : protocolCollection.getProtocolApplications() ) {
-            if ( gpaObject instanceof GenericProtocolApplication ) {
-                GenericProtocolApplication gpa = ( GenericProtocolApplication ) gpaObject;
-                if ( gpa.getProtocol()
-                        .getEndurant()
-                        .getIdentifier()
-                        .equals( topLevelProtocol.getEndurant().getIdentifier() ) ) {
-                    gpaOfTopLevelProtocol = gpa;
-                    break;
-                }
-            }
-        }
-
-        // There will either be two levels or three levels of GPAs: two levels (assay/MT and top-level protocol) if
-        // it is a two level investigation, and three levels (assay/MT, one level up from assay/MT, and top-level
-        // protocol) otherwise.
         for ( DatafileSpecificMetadataStore store : symbaFormSessionBean.getDatafileSpecificMetadataStores() ) {
-            boolean threeLevelInvestigation = false;
-            GenericProtocol assayProtocol = ( GenericProtocol ) symbaEntityService
-                    .getLatestByEndurant( store.getAssayActionSummary().getChosenChildProtocolEndurant() );
-            GenericAction assayAction = ( GenericAction ) symbaEntityService
-                    .getLatestByEndurant( store.getAssayActionSummary().getChosenActionEndurant() );
 
-            GenericProtocol oneAboveAssayProtocol = null;
-            GenericAction oneAboveAssayAction = null;
-            if ( store.getOneLevelUpActionSummary() != null &&
-                 store.getOneLevelUpActionSummary().getChosenActionName() != null ) {
-                threeLevelInvestigation = true;
-                oneAboveAssayProtocol = ( GenericProtocol ) symbaEntityService
-                        .getLatestByEndurant( store.getOneLevelUpActionSummary().getChosenChildProtocolEndurant() );
-                oneAboveAssayAction = ( GenericAction ) symbaEntityService
-                        .getLatestByEndurant( store.getOneLevelUpActionSummary().getChosenActionEndurant() );
-            }
+            ActionHierarchyScheme ahs = store.getNestedActions();
 
-            // there is a problem if there isn't a matching protocol for the assay
-            if ( assayProtocol == null ) {
-                System.err.println(
-                        "Error finding parent protocol for assay action endurant " +
-                        store.getAssayActionSummary().getChosenActionEndurant() + " (" +
-                        store.getAssayActionSummary().getChosenActionName() + ")" );
-                return fuge;
-            }
+            GenericProtocol assayProtocol = ( GenericProtocol ) entityService.getIdentifiable( ahs.getActionHierarchy()
+                    .get( ahs.getActionHierarchy().size() - 1 ).getProtocolOfActionIdentifier() );
 
-            // there is a problem if there isn't a matching protocol for one level up from the assay, if this is a
-            // two-level investigation
-            if ( threeLevelInvestigation && oneAboveAssayProtocol == null ) {
-                System.err.println(
-                        "Error finding parent protocol for assay for action endurant " +
-                        store.getOneLevelUpActionSummary().getChosenActionEndurant() + " (" +
-                        store.getOneLevelUpActionSummary().getChosenActionName() + ")" );
-                return fuge;
-            }
-
-            // Next, we need to check and see if a GPA is already present for the top two levels if a 3-level investigation,
-            // or in the top-level only if it is a 2-level investigation. We will ALWAYS want to create a new
-            // assay-level GPA.
-            GenericProtocolApplication gpaOfOneAboveAssayProtocol = null;
-
-            // If it is a three-level investigation, then the gpaOfOneAboveAssayProtocol can be determined by looking at
-            // the ActionApplication objects of the gpaOfTopLevelProtocol. Otherwise, the gpa found will be that of
-            // the assay gpa. As we are going to make a new assayGPA anyway, then we will only run this step if
-            // this investigation is a threeLevelInvestigation
-            if ( threeLevelInvestigation && gpaOfTopLevelProtocol != null ) {
-                for ( Object obj2 : gpaOfTopLevelProtocol.getActionApplications() ) {
-                    ActionApplication actionApplication = ( ActionApplication ) obj2;
-                    // search for the action referenced by the AA, as otherrwise you might catch the right
-                    // protocol but the wrong action
-                    Action referencedAction = actionApplication.getAction();
-                    if ( referencedAction instanceof GenericAction ) {
-                        GenericAction genericAction = ( GenericAction ) referencedAction;
-                        if ( genericAction.getEndurant()
-                                .getIdentifier()
-                                .equals( assayAction.getEndurant().getIdentifier() ) ) {
-                            if ( actionApplication
-                                    .getChildProtocolApplication() instanceof GenericProtocolApplication ) {
-                                gpaOfOneAboveAssayProtocol =
-                                        ( GenericProtocolApplication ) actionApplication.getChildProtocolApplication();
-                            }
-                        }
-                    }
-                }
-            }
-
-            // always create the assay GPA. This will get added, via an ActionApplication, to the higher-level
-            // GPA or GPAs.
-            GenericProtocolApplication assayGPA =
+            // always add the assay GPA.
+            GenericProtocolApplication assayGpa =
                     createAssayGPA( store, assayProtocol, entityService, auditor, symbaEntityService );
 
-            // add the assayGPA to the parse of all GPAs
-            protocolCollection.getProtocolApplications().add( assayGPA );
+            protocolCollection.getProtocolApplications().add( assayGpa );
 
-            // ensure that the GPA of the top level protocol is not null
-            // first, ensure that the GPA is not null, and if it is null, create a new object
-            if ( gpaOfTopLevelProtocol == null ) {
-                gpaOfTopLevelProtocol =
-                        ( GenericProtocolApplication ) DatabaseObjectHelper.createEndurantAndIdentifiable(
-                                "net.sourceforge.fuge.common.protocol.GenericProtocolApplication", auditor );
-                gpaOfTopLevelProtocol.setName( "Actual Application/Performance of " + topLevelProtocol.getName() +
-                                               " for Investigation " + expName );
-                gpaOfTopLevelProtocol.setProtocol( topLevelProtocol );
-                // todo We should really ask them the Activity Date, but for now assume current date.
-                gpaOfTopLevelProtocol.setActivityDate( new java.sql.Timestamp( ( new Date() ).getTime() ) );
-            }
+            // move upwards from the GPA, ensuring at each stage that protocol at each level above the gpa has
+            // its own gpa with an action application pointing downwards towards the one we want.
+            protocolCollection = createAllParentsOfGpa( protocolCollection, assayGpa, auditor,
+                    ahs, symbaEntityService, entityService );
 
-            // now, add a link to the assayGPA to the GPA one level up from here. Which GPA that is,
-            // is determined by the value of threeLevelInvestigation
-            if ( threeLevelInvestigation ) {
-                // first, ensure that the GPA is not null, and if it is null, create a new object
-                if ( gpaOfOneAboveAssayProtocol == null ) {
-                    gpaOfOneAboveAssayProtocol =
-                            ( GenericProtocolApplication ) DatabaseObjectHelper.createEndurantAndIdentifiable(
-                                    "net.sourceforge.fuge.common.protocol.GenericProtocolApplication", auditor );
-
-                    gpaOfOneAboveAssayProtocol
-                            .setName( "Actual Application/Performance of " + oneAboveAssayAction.getName() +
-                                      " for Investigation " + expName );
-
-                    gpaOfOneAboveAssayProtocol.setProtocol( oneAboveAssayProtocol );
-                    // todo We should really ask them the Activity Date, but for now assume current date.
-                    gpaOfOneAboveAssayProtocol.setActivityDate( new java.sql.Timestamp( ( new Date() ).getTime() ) );
-                }
-                // add the ActionApplication to the gpaOfOneAboveAssayProtocol
-                gpaOfOneAboveAssayProtocol =
-                        addActionApplication( assayGPA, assayAction, gpaOfOneAboveAssayProtocol, auditor );
-
-                // If gpaOfOneAboveAssayProtocol is new, add to database. Otherwise, put a new version in.
-                if ( gpaOfOneAboveAssayProtocol.getId() != null ) {
-                    // Each time we load a new version of the one-level up GPA, we need to clean the allGPAs Set.
-                    // We need to remember that any child GPA *must* be removed
-                    // from the parse of allGPAs *if* it, too, is being overwritten.
-                    protocolCollection.getProtocolApplications().remove( gpaOfOneAboveAssayProtocol );
-                }
-                DatabaseObjectHelper.save(
-                        "net.sourceforge.fuge.common.protocol.GenericProtocolApplication",
-                        gpaOfOneAboveAssayProtocol,
-                        auditor );
-                // associate the new assays with the protocol collection.
-                protocolCollection.getProtocolApplications().add( gpaOfOneAboveAssayProtocol );
-
-                // then add the ActionApplication linking the gpaOfTopLevelProtocol to the gpaOfOneAboveAssayProtocol
-                gpaOfTopLevelProtocol = addActionApplication(
-                        gpaOfOneAboveAssayProtocol, oneAboveAssayAction, gpaOfTopLevelProtocol, auditor );
-            } else {
-                // add the ActionApplication to the gpaOfTopLevelProtocol
-                gpaOfTopLevelProtocol = addActionApplication( assayGPA, assayAction, gpaOfTopLevelProtocol, auditor );
-            }
-
-            // the gpaOfTopLevelProtocol is now finished. load in the database.
-            // If gpaOfTopLevelProtocol is new, add to database. Otherwise, put a new version in.
-            // todo move this and associated code out of the for-loop and only do this after all data files are processed: it's currently loading unnecessary intermediaries into the db
-            if ( gpaOfTopLevelProtocol.getId() != null ) {
-                // Each time we load a new version of the top level GPA, we need to clean the allGPAs Set.
-                // The "old" top-level GPA will be replaced with the new version of the top-level GPA with the new
-                // ActionApplication objects.
-                protocolCollection.getProtocolApplications().remove( gpaOfTopLevelProtocol );
-            }
-            DatabaseObjectHelper.save(
-                    "net.sourceforge.fuge.common.protocol.GenericProtocolApplication",
-                    gpaOfTopLevelProtocol,
-                    auditor );
-
-            protocolCollection.getProtocolApplications().add( gpaOfTopLevelProtocol );
-        }
-
-//        System.err.println( "ABOUT TO PRINT OUT PROTOCOL COLLECTION MATERIAL INFO DIRECTLY AFTER SETTING GPAs" );
-//        RetrieveSimple retrieveSimple = new RetrieveSimple();
-//        try {
-//            retrieveSimple.runSimpleRetrieval( entityService, protocolCollection );
-//        } catch ( Exception e ) {
-//            e.printStackTrace();
-//            System.err.println( "Error trying to print out the material contents of the fuge protocol collection." );
-//        }
-
-        if ( fuge.getProtocolCollection() != null ) {
-            protocolCollection.setAllSoftwares( fuge.getProtocolCollection().getAllSoftwares() );
         }
 
         // load the fuge object into the database
         DatabaseObjectHelper.save( "net.sourceforge.fuge.collection.ProtocolCollection", protocolCollection, auditor );
         fuge.setProtocolCollection( protocolCollection );
-
-//        System.err.println( "ABOUT TO PRINT OUT PROTOCOL COLLECTION MATERIAL INFO DIRECTLY AFTER LOADING INTO DB" );
-//        try {
-//            retrieveSimple.runSimpleRetrieval( entityService, fuge.getProtocolCollection() );
-//        } catch ( Exception e ) {
-//            e.printStackTrace();
-//            System.err.println( "Error trying to print out the material contents of the fuge protocol collection." );
-//        }
 
         OntologyCollectionMappingHelper och = new OntologyCollectionMappingHelper();
         fuge = och.addRelevantOntologyTerms( fuge, auditor );
@@ -479,6 +299,7 @@ public class ProtocolLoader {
 
     private static ProtocolCollection fillProtocolCollection( FuGE fuge,
                                                               EntityService entityService,
+                                                              SymbaEntityService symbaEntityService,
                                                               SymbaFormSessionBean symbaFormSessionBean ) {
 
         // create a new protocol collection based on what is already extant (if present at all)
@@ -493,7 +314,7 @@ public class ProtocolLoader {
         // The GenericProtocol whose GenericAction is stored from the form will get the data item added to it.
         protocolCollection.setProtocols( cpc.addRelevantProtocols(
                 ( Set<Protocol> ) protocolCollection.getProtocols(),
-                symbaFormSessionBean.getTopLevelProtocolEndurant().trim() ) );
+                symbaFormSessionBean.getTopLevelProtocolEndurant().trim(), symbaEntityService ) );
 
         // Now retrieve all equipment associated with these protocols
         protocolCollection.setAllEquipment( cpc.addRelevantEquipment(
@@ -691,6 +512,7 @@ public class ProtocolLoader {
         // add the materials: add all as input complete materials
         if ( store.getGenericProtocolApplicationInfo() != null ) {
             Set<Material> set2 = new HashSet<Material>();
+            // add newly-created non-material-transformation materials
             for ( MaterialFactorsStore mfs : store.getGenericProtocolApplicationInfo()
                     .get( assayGPA.getProtocol().getEndurant().getIdentifier() )
                     .getInputCompleteMaterialFactors() ) {
@@ -698,6 +520,13 @@ public class ProtocolLoader {
                     set2.add( ( Material ) symbaEntityService
                             .getLatestByEndurant( mfs.getCreatedMaterialEndurant() ) );
                 }
+            }
+            // now also add the output of material transformations, if present
+            for ( String identifier : store.getGenericProtocolApplicationInfo()
+                    .get( assayGPA.getProtocol().getEndurant().getIdentifier() )
+                    .getInputIdentifiersFromMaterialTransformations() ) {
+                set2.add( ( Material ) entityService
+                        .getIdentifiable( identifier ) );
             }
             assayGPA.setInputCompleteMaterials( set2 );
         }

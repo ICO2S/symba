@@ -11,83 +11,75 @@ import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
  * Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
- *
- * should be removed in future versions, as it is an unhealthy reorganization.
  */
 public class ReorganizeCollections {
 
     // BE CAREFUL with this method! It will create objects in the database, and overwrite ALL the
-    // describable "*Collection"'s in your FuGE object (it will retain all existing components of those
-    // objects though).
-    // todo does not copy any describable information of each collection themselves to the new collection.
-    public static FuGE reorganizeCollections( FuGE fuge, EntityService entityService, Person performer ) {
+    // describable "*Collection"'s that have a database id already in your FuGE object
+    // (it will retain all existing components of those objects though). Should be run if loading a new version
+    // of a fuge object. Setting a database id to null will cause a new line in the database to be made.
+    //
+    // From Andy August 2008: "Looking at the cardinalities within the model, the Collection objects are supposed to
+    // be unique to a FuGE instance, but the objects within each collection can be shared. This means that if you
+    // create a new FuGE object by default you have to create new collection classes."
 
-        if ( fuge.getAuditCollection() != null ) {
-            AuditCollection collection = ( AuditCollection ) entityService
-                    .createDescribable( "net.sourceforge.fuge.Collection.AuditCollection" );
-            collection.setAllContacts( fuge.getAuditCollection().getAllContacts() );
-            collection.setSecurityCollection( fuge.getAuditCollection().getSecurityCollection() );
-            collection.setSecurityGroups( fuge.getAuditCollection().getSecurityGroups() );
-            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.AuditCollection", collection, performer );
+    // deliberately does not copy any describable information of each collection themselves to the new collection.
+    // todo they should all have a database id by this stage, as they will have all been saved in the database. need a better check so don't always overwrite new collections!
+    public static FuGE reorganize( FuGE fuge, Person performer ) {
+
+        if ( fuge.getAuditCollection() != null && fuge.getAuditCollection().getId() != null ) {
+            AuditCollection collection = fuge.getAuditCollection();
+            collection.setId( null );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.collection.AuditCollection", collection, performer );
             fuge.setAuditCollection( collection );
         }
-
-        if ( fuge.getOntologyCollection() != null ) {
-            OntologyCollection collection = ( OntologyCollection ) entityService
-                    .createDescribable( "net.sourceforge.fuge.Collection.OntologyCollection" );
-            collection.setSources( fuge.getOntologyCollection().getSources() );
-            collection.setOntologyTerms( fuge.getOntologyCollection().getOntologyTerms() );
-            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.OntologyCollection", collection, performer );
+        if ( fuge.getConceptualMoleculeCollection() != null &&
+             fuge.getConceptualMoleculeCollection().getId() != null ) {
+            ConceptualMoleculeCollection collection = fuge.getConceptualMoleculeCollection();
+            collection.setId( null );
+            DatabaseObjectHelper
+                    .save( "net.sourceforge.fuge.collection.ConceptualMoleculeCollection", collection, performer );
+            fuge.setConceptualMoleculeCollection( collection );
+        }
+        if ( fuge.getDataCollection() != null && fuge.getDataCollection().getId() != null ) {
+            DataCollection collection = fuge.getDataCollection();
+            collection.setId( null );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.collection.DataCollection", collection, performer );
+            fuge.setDataCollection( collection );
+        }
+        if ( fuge.getInvestigationCollection() != null && fuge.getInvestigationCollection().getId() != null ) {
+            InvestigationCollection collection = fuge.getInvestigationCollection();
+            collection.setId( null );
+            DatabaseObjectHelper
+                    .save( "net.sourceforge.fuge.collection.InvestigationCollection", collection, performer );
+            fuge.setInvestigationCollection( collection );
+        }
+        if ( fuge.getMaterialCollection() != null && fuge.getMaterialCollection().getId() != null ) {
+            MaterialCollection collection = fuge.getMaterialCollection();
+            collection.setId( null );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.collection.MaterialCollection", collection, performer );
+            fuge.setMaterialCollection( collection );
+        }
+        if ( fuge.getOntologyCollection() != null && fuge.getOntologyCollection().getId() != null ) {
+            OntologyCollection collection = fuge.getOntologyCollection();
+            collection.setId( null );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.collection.OntologyCollection", collection, performer );
             fuge.setOntologyCollection( collection );
         }
-
-        if ( fuge.getReferenceableCollection() != null ) {
-            ReferenceableCollection collection = ( ReferenceableCollection ) entityService.createDescribable(
-                    "net.sourceforge.fuge.Collection.ReferenceableCollection" );
-            collection.setAllDatabases( fuge.getReferenceableCollection().getAllDatabases() );
-            collection.setAllBibliographicReferences( fuge.getReferenceableCollection().getAllBibliographicReferences() );
-            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.ReferenceableCollection", collection, performer );
+        if ( fuge.getProtocolCollection() != null && fuge.getProtocolCollection().getId() != null ) {
+            ProtocolCollection collection = fuge.getProtocolCollection();
+            collection.setId( null );
+            DatabaseObjectHelper.save( "net.sourceforge.fuge.collection.ProtocolCollection", collection, performer );
+            fuge.setProtocolCollection( collection );
+        }
+        if ( fuge.getReferenceableCollection() != null && fuge.getReferenceableCollection().getId() != null ) {
+            ReferenceableCollection collection = fuge.getReferenceableCollection();
+            collection.setId( null );
+            DatabaseObjectHelper
+                    .save( "net.sourceforge.fuge.collection.ReferenceableCollection", collection, performer );
             fuge.setReferenceableCollection( collection );
         }
 
-        if ( fuge.getMaterialCollection() != null ) {
-            MaterialCollection collection = ( MaterialCollection ) entityService.createDescribable(
-                    "net.sourceforge.fuge.Collection.MaterialCollection" );
-            collection.setMaterials( fuge.getMaterialCollection().getMaterials() );
-            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.MaterialCollection", collection, performer );
-            fuge.setMaterialCollection( collection );
-        }
-
-        if ( fuge.getDataCollection() != null ) {
-            DataCollection collection = ( DataCollection ) entityService.createDescribable(
-                    "net.sourceforge.fuge.Collection.DataCollection" );
-            collection.setAllData( fuge.getDataCollection().getAllData() );
-            collection.setAllDataPartitions( fuge.getDataCollection().getAllDataPartitions() );
-            collection.setAllDimensions( fuge.getDataCollection().getAllDimensions() );
-            collection.setHigherLevelAnalyses( fuge.getDataCollection().getHigherLevelAnalyses() );
-            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.DataCollection", collection, performer );
-            fuge.setDataCollection( collection );
-        }
-
-        if ( fuge.getProtocolCollection() != null ) {
-            ProtocolCollection collection = ( ProtocolCollection ) entityService.createDescribable(
-                    "net.sourceforge.fuge.Collection.ProtocolCollection" );
-            collection.setAllEquipment( fuge.getProtocolCollection().getAllEquipment() );
-            collection.setProtocolApplications( fuge.getProtocolCollection().getProtocolApplications() );
-            collection.setAllSoftwares( fuge.getProtocolCollection().getAllSoftwares() );
-            collection.setProtocols( fuge.getProtocolCollection().getProtocols() );
-            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.ProtocolCollection", collection, performer );
-            fuge.setProtocolCollection( collection );
-        }
-
-        if ( fuge.getInvestigationCollection() != null ) {
-            InvestigationCollection collection = ( InvestigationCollection ) entityService.createDescribable(
-                    "net.sourceforge.fuge.Collection.InvestigationCollection" );
-            collection.setInvestigations( fuge.getInvestigationCollection().getInvestigations() );
-            collection.setFactorCollection( fuge.getInvestigationCollection().getFactorCollection() );
-            DatabaseObjectHelper.save( "net.sourceforge.fuge.Collection.InvestigationCollection", collection, performer );
-            fuge.setInvestigationCollection( collection );
-        }
         return fuge;
     }
 

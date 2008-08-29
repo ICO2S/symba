@@ -11,6 +11,7 @@ import net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionHierarchyS
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.Arrays;
 
 /**
  * This file is part of SyMBA.
@@ -40,6 +41,7 @@ public class MaterialFormValidator {
 
         // create instances of all of the schemes we'll use
         OntologyReplacementScheme ontologyReplacementScheme = new OntologyReplacementScheme();
+        MtOutputAsAssayInputScheme mtScheme = new MtOutputAsAssayInputScheme();
         MaterialNameScheme materialNameScheme = new MaterialNameScheme();
         TreatmentScheme treatmentScheme = new TreatmentScheme();
         MaterialTypeScheme materialTypeScheme = new MaterialTypeScheme();
@@ -53,12 +55,21 @@ public class MaterialFormValidator {
         while ( enumeration.hasMoreElements() ) {
 
             String parameterName = ( String ) enumeration.nextElement();
-            System.err.println( "Reading " + parameterName );
             if ( parameterName.equals( ahs.getElementTitle() ) || parameterName.equals( dummyAhs.getElementTitle() ) ) {
                 // this parameter is only used within material transformation forms and not assay forms
                 // As it is such a simple parameter, we don't use getMfs.
                 symbaFormSessionBean.setSpecimenActionHierarchy( request.getParameter( parameterName ) );
 
+            } else if ( parameterName.startsWith( mtScheme.getElementTitle() ) &&
+                        !parameterName.equals( toBeIgnoredParameterName ) ) {
+                mtScheme.parse( parameterName );
+                GenericProtocolApplicationSummary gpaSummary =
+                        getGpaSummary( symbaFormSessionBean, isPartOfDataFileForm, mtScheme );
+                gpaSummary.getInputIdentifiersFromMaterialTransformations()
+                        .addAll( Arrays.asList( request.getParameterValues( parameterName ) ) );
+
+                symbaFormSessionBean =
+                        setGpaSummary( symbaFormSessionBean, isPartOfDataFileForm, mtScheme, gpaSummary );
             } else if ( parameterName.startsWith( ontologyReplacementScheme.getElementTitle() ) &&
                         !parameterName.equals( toBeIgnoredParameterName ) ) {
 
@@ -114,8 +125,6 @@ public class MaterialFormValidator {
 
                     // once inside this section, no need to use the two versions of the scheme: the characteristicScheme
                     // "novel" value will get set appropriately.
-                    System.err.println(
-                            "Parsing " + parameterName + " with " + request.getParameterValues( parameterName ) );
                     characteristicScheme.parse( parameterName );
 
                     boolean multipleAllowed = false;
@@ -151,6 +160,10 @@ public class MaterialFormValidator {
                                                                   MaterialFactorsStore mfs,
                                                                   boolean multipleAllowed,
                                                                   boolean isNovel ) {
+
+        // we clear the current values in the list, as we don't want to add to them, but instead replace them
+        LinkedHashSet<String> multiples = new LinkedHashSet<String>();
+
         for ( String singleParameter : parameterValues ) {
             String[] parsedStrings = singleParameter.split( "::" );
 
@@ -159,21 +172,7 @@ public class MaterialFormValidator {
                 toSearch = parsedStrings[0] + "::" + parsedStrings[1];
             }
             if ( multipleAllowed ) {
-                LinkedHashSet<String> tmp = mfs.getMultipleCharacteristics().get( ontologySourceEndurantID );
-                if ( isNovel ) {
-                    tmp = mfs.getNovelMultipleCharacteristics().get( ontologySourceEndurantID );
-                }
-                if ( tmp == null ) {
-                    tmp = new LinkedHashSet<String>();
-                }
-                if ( !tmp.contains( toSearch ) ) {
-                    tmp.add( toSearch );
-                }
-                if ( isNovel ) {
-                    mfs.addNovelMultipleCharacteristics( ontologySourceEndurantID, tmp );
-                } else {
-                    mfs.addMultipleCharacteristics( ontologySourceEndurantID, tmp );
-                }
+                multiples.add( toSearch );
             } else {
                 if ( isNovel ) {
                     mfs.addNovelCharacteristic( ontologySourceEndurantID, toSearch );
@@ -182,6 +181,13 @@ public class MaterialFormValidator {
                 }
             }
         }
+        
+        if ( multipleAllowed && isNovel ) {
+            mfs.addNovelMultipleCharacteristics( ontologySourceEndurantID, multiples );
+        } else if ( multipleAllowed ) {
+            mfs.addMultipleCharacteristics( ontologySourceEndurantID, multiples );
+        }
+
         return mfs;
     }
 
@@ -209,13 +215,43 @@ public class MaterialFormValidator {
 
             DatafileSpecificMetadataStore temp =
                     symbaFormSessionBean.getDatafileSpecificMetadataStores().get( scheme.getDatafileNumber() );
-            return temp.getGenericProtocolApplicationInfo().get( scheme.getParentOfGpaEndurant() )
+            MaterialFactorsStore mfs = temp.getGenericProtocolApplicationInfo().get( scheme.getParentOfGpaEndurant() )
                     .getInputCompleteMaterialFactors().get( scheme.getMaterialCount() );
-
+            if ( mfs == null ) {
+                return new MaterialFactorsStore();
+            }
+            return mfs;
         } else {
             return symbaFormSessionBean.getSpecimenToBeUploaded();
         }
     }
 
+    private static SymbaFormSessionBean setGpaSummary( SymbaFormSessionBean symbaFormSessionBean,
+                                                       boolean isPartOfDataFileForm,
+                                                       BasicScheme scheme,
+                                                       GenericProtocolApplicationSummary gpaSummary ) {
+        if ( isPartOfDataFileForm ) {
+            symbaFormSessionBean.getDatafileSpecificMetadataStores().get( scheme.getDatafileNumber() )
+                    .putGenericProtocolApplicationInfoValue( scheme.getParentOfGpaEndurant(), gpaSummary );
+        }
+        return symbaFormSessionBean;
+    }
 
+    private static GenericProtocolApplicationSummary getGpaSummary( SymbaFormSessionBean symbaFormSessionBean,
+                                                                    boolean isPartOfDataFileForm, BasicScheme scheme ) {
+        // take what is already there, and add only those fields that have not been made yet
+
+        if ( isPartOfDataFileForm ) {
+
+            DatafileSpecificMetadataStore temp =
+                    symbaFormSessionBean.getDatafileSpecificMetadataStores().get( scheme.getDatafileNumber() );
+            GenericProtocolApplicationSummary gpaSummary =
+                    temp.getGenericProtocolApplicationInfo().get( scheme.getParentOfGpaEndurant() );
+            if ( gpaSummary == null ) {
+                gpaSummary = new GenericProtocolApplicationSummary();
+            }
+            return gpaSummary;
+        }
+        return null;
+    }
 }

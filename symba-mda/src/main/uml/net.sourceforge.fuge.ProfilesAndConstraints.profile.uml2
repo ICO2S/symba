@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <uml:Profile xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/1.0.0/UML" xmi:id="_11_5_6250211_1201701365793_569653_238" name="ProfilesAndConstraints" metamodelReference="_m8qbA686EdiEh75YJ_3n8gmetamodelReferenceProfilesAndConstraints">
-  <eAnnotations xmi:id="_DOlEPG3yEd2qypF68x2yig" source="attributes">
-    <details xmi:id="_DOlEPW3yEd2qypF68x2yig" key="version" value="0"/>
+  <eAnnotations xmi:id="_EbUY-HW-Ed2yqqxiHx_ksQ" source="attributes">
+    <details xmi:id="_EbUY-XW-Ed2yqqxiHx_ksQ" key="version" value="0"/>
   </eAnnotations>
-  <eAnnotations xmi:id="_DOlEPm3yEd2qypF68x2yig" source="ePackages">
-    <contents xmi:type="ecore:EPackage" xmi:id="_DOlEP23yEd2qypF68x2yig" name="ProfilesAndConstraints_0" nsURI="http:///ProfilesAndConstraints_0_CxA-MG3yEd2qypF68x2yig.profile.uml2" nsPrefix="ProfilesAndConstraints_0">
-      <eClassifiers xmi:type="ecore:EClass" xmi:id="_DOlEQG3yEd2qypF68x2yig" name="ProfilesAndConstraints__AbstractAssociation">
-        <eAnnotations xmi:id="_DOlEQW3yEd2qypF68x2yig" source="stereotype" references="_11_5_6250211_1201701368659_57460_464"/>
+  <eAnnotations xmi:id="_EbUY-nW-Ed2yqqxiHx_ksQ" source="ePackages">
+    <contents xmi:type="ecore:EPackage" xmi:id="_EbUY-3W-Ed2yqqxiHx_ksQ" name="ProfilesAndConstraints_0" nsURI="http:///ProfilesAndConstraints_0_EO5tgHW-Ed2yqqxiHx_ksQ.profile.uml2" nsPrefix="ProfilesAndConstraints_0">
+      <eClassifiers xmi:type="ecore:EClass" xmi:id="_EbUY_HW-Ed2yqqxiHx_ksQ" name="ProfilesAndConstraints__AbstractAssociation">
+        <eAnnotations xmi:id="_EbUY_XW-Ed2yqqxiHx_ksQ" source="stereotype" references="_11_5_6250211_1201701368659_57460_464"/>
       </eClassifiers>
-      <eClassifiers xmi:type="ecore:EClass" xmi:id="_DOlEQm3yEd2qypF68x2yig" name="ProfilesAndConstraints__MapAssocToElement">
-        <eAnnotations xmi:id="_DOlEQ23yEd2qypF68x2yig" source="stereotype" references="_11_5_6250211_1201701368661_155142_466"/>
+      <eClassifiers xmi:type="ecore:EClass" xmi:id="_EbUY_nW-Ed2yqqxiHx_ksQ" name="ProfilesAndConstraints__MapAssocToElement">
+        <eAnnotations xmi:id="_EbUY_3W-Ed2yqqxiHx_ksQ" source="stereotype" references="_11_5_6250211_1201701368661_155142_466"/>
       </eClassifiers>
     </contents>
   </eAnnotations>

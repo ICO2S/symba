@@ -71,35 +71,34 @@ public class MaterialLoader {
         if ( symbaFormSessionBean.getDatafileSpecificMetadataStores() != null &&
              !symbaFormSessionBean.getDatafileSpecificMetadataStores().isEmpty() ) {
             int dataFileNumber = 0;
-            int materialNumber = 0;
             for ( DatafileSpecificMetadataStore rdib : symbaFormSessionBean.getDatafileSpecificMetadataStores() ) {
                 if ( rdib.getGenericProtocolApplicationInfo() != null ) {
+                    int materialNumber = 0;
                     for ( String currentKey : rdib.getGenericProtocolApplicationInfo().keySet() ) {
                         for ( MaterialFactorsStore mfs : rdib.getGenericProtocolApplicationInfo().get( currentKey )
                                 .getInputCompleteMaterialFactors() ) {
 
                             // only load the material if it hasn't already been created, e.g. via a pre-existing
-                            // material transformation
-                            if ( mfs.getCreatedMaterialEndurant() != null &&
-                                 mfs.getCreatedMaterialEndurant().length() > 0 ) {
-                                hasMaterial = true;
+                            // material transformation. In this case, it won't be in getInputCompleteMaterialFactors()
+                            // but will instead be inside getInputIdentifiersFromMaterialTransformations(), which is
+                            // completely ignored by this section
+                            hasMaterial = true;
 
-                                Object[] objects = loadSingleMaterial( mfs, ontologyTerms, ontologySources,
-                                        auditor, entityService, symbaEntityService, false );
-                                GenericMaterial genericMaterial = ( GenericMaterial ) objects[0];
-                                ontologyTerms = ( Set<OntologyTerm> ) objects[1];
-                                ontologySources = ( Set<OntologySource> ) objects[2];
-                                genericMaterial = ( GenericMaterial ) DatabaseObjectHelper.save(
-                                        "net.sourceforge.fuge.bio.material.GenericMaterial", genericMaterial, auditor );
+                            Object[] objects = loadSingleMaterial( mfs, ontologyTerms, ontologySources,
+                                    auditor, entityService, symbaEntityService, false );
+                            GenericMaterial genericMaterial = ( GenericMaterial ) objects[0];
+                            ontologyTerms = ( Set<OntologyTerm> ) objects[1];
+                            ontologySources = ( Set<OntologySource> ) objects[2];
+                            genericMaterial = ( GenericMaterial ) DatabaseObjectHelper.save(
+                                    "net.sourceforge.fuge.bio.material.GenericMaterial", genericMaterial, auditor );
 
-                                // a final step for this rdib genericMaterial info: add the genericMaterial to the list
-                                // of materials after storing
-                                materials.add( genericMaterial );
-                                mfs.setCreatedMaterialEndurant( genericMaterial.getEndurant().getIdentifier() );
-                                rdib.getGenericProtocolApplicationInfo().get( currentKey )
-                                        .setInputCompleteMaterialFactor( mfs, materialNumber );
-                                symbaFormSessionBean.setDatafileSpecificMetadataStore( rdib, dataFileNumber );
-                            }
+                            // a final step for this rdib genericMaterial info: add the genericMaterial to the list
+                            // of materials after storing
+                            materials.add( genericMaterial );
+                            mfs.setCreatedMaterialEndurant( genericMaterial.getEndurant().getIdentifier() );
+                            rdib.getGenericProtocolApplicationInfo().get( currentKey )
+                                    .setInputCompleteMaterialFactor( mfs, materialNumber );
+                            symbaFormSessionBean.setDatafileSpecificMetadataStore( rdib, dataFileNumber );
                             materialNumber++;
                         }
                     }
@@ -129,12 +128,15 @@ public class MaterialLoader {
                     symbaEntityService );
 
             if ( input != null ) {
-                // re-use the contents of the existing input specimen except for the name, which the user has supplied.
-                // if there is no user-supplied name, provide a basic one.
-                String name = "Specimen Prior to Measuring of Experimental Conditions";
+                // There is a direct match among inputs to material transformations. This means that, irrespective
+                // of where the material was made, its descriptor set is identical. Re-use the descriptor set
+                // without modification *at all*. Assign that exact descriptor set to the input material.
+                String name = "Prior to Measuring of Experimental Conditions";
                 if ( symbaFormSessionBean.getSpecimenToBeUploaded().getMaterialName() != null &&
                      symbaFormSessionBean.getSpecimenToBeUploaded().getMaterialName().length() > 0 ) {
-                    name = symbaFormSessionBean.getSpecimenToBeUploaded().getMaterialName();
+                    name = symbaFormSessionBean.getSpecimenToBeUploaded().getMaterialName() + name;
+                } else {
+                    name = "Specimen " + name;
                 }
                 input.setName( name );
                 // now give it a new endurant
@@ -144,7 +146,8 @@ public class MaterialLoader {
                         .assignAndSave( "net.sourceforge.fuge.bio.material.GenericMaterial", input, auditor );
                 materials.add( input );
             } else {
-                // make new input material
+                // make new input material and new descriptor set. Base the descriptor set on the one
+                // the user based their specimen on.
                 Object[] objects = loadSingleMaterial( symbaFormSessionBean.getSpecimenToBeUploaded(), ontologyTerms,
                         ontologySources, auditor, entityService, symbaEntityService, true );
                 input = ( GenericMaterial ) objects[0];
@@ -193,8 +196,8 @@ public class MaterialLoader {
 
     // input materials only have novel characteristics within a single descriptor set currently.
     private static Material getMatchingInputMaterial( List<GenericProtocolApplication> materialTransformations,
-                                                      HashMap<String, String> novelCharacteristics,
-                                                      HashMap<String, LinkedHashSet<String>> novelMultipleCharacteristics,
+                                                      Map<String, String> novelCharacteristics,
+                                                      Map<String, LinkedHashSet<String>> novelMultipleCharacteristics,
                                                       SymbaEntityService symbaEntityService ) {
 
         // all characteristics must be present in the single descriptor set of the input materials from the database.
@@ -291,8 +294,7 @@ public class MaterialLoader {
 
         // the material needs to be made, and each ontology term needs to be added if it hasn't already been added
         String nameToUse = "";
-        if ( mfs.getMaterialName() != null &&
-             mfs.getMaterialName().length() > 0 ) {
+        if ( mfs.getMaterialName().length() > 0 ) {
             nameToUse = mfs.getMaterialName();
         }
 
@@ -304,8 +306,7 @@ public class MaterialLoader {
         if ( !isInputToMaterialTransformation ) {
 
             // add any OntologyReplacement descriptions.
-            if ( mfs.getOntologyReplacements() != null &&
-                 mfs.getOntologyReplacements().size() > 0 ) {
+            if ( mfs.getOntologyReplacements().size() > 0 ) {
                 Set<Description> descriptions;
                 if ( genericMaterial.getDescriptions() == null ) {
                     descriptions = new HashSet<Description>();
@@ -325,7 +326,7 @@ public class MaterialLoader {
                 genericMaterial.setDescriptions( descriptions );
             }
 
-            if ( mfs.getMaterialType() != null ) {
+            if ( mfs.getMaterialType().length() > 0 ) {
                 // The first ontology term is the materialType
 
                 // todo proper algorithm
@@ -348,7 +349,7 @@ public class MaterialLoader {
                 }
             }
 
-            if ( mfs.getCharacteristics() != null ) {
+            if ( mfs.getCharacteristics().size() > 0 ) {
                 // Now we have the characteristics to load.
                 Set<OntologyTerm> characteristics;
                 if ( genericMaterial.getCharacteristics() == null ) {
@@ -380,7 +381,7 @@ public class MaterialLoader {
                 genericMaterial.setCharacteristics( characteristics );
             }
 
-            if ( mfs.getTreatmentInfo() != null ) {
+            if ( mfs.getTreatmentInfo().size() > 0 ) {
                 // Next are the treatments, which get loaded as individual descriptions on the GenericMaterial.
                 // These are always added, without checks.
                 Set<Description> descriptions;
@@ -404,7 +405,7 @@ public class MaterialLoader {
 
             // we only deal with novel (and novel multiple) characteristics if it is the input to a MT protocol application
             // otherwise, not interested.
-            if ( mfs.getNovelCharacteristics() != null || mfs.getNovelMultipleCharacteristics() != null ) {
+            if ( mfs.getNovelCharacteristics().size() > 0 || mfs.getNovelMultipleCharacteristics().size() > 0 ) {
                 // Now we have the characteristics to load.
                 Set<OntologyTerm> characteristics;
                 if ( genericMaterial.getCharacteristics() == null ) {

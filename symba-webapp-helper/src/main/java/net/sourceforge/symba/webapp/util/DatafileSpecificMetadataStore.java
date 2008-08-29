@@ -1,5 +1,7 @@
 package net.sourceforge.symba.webapp.util;
 
+import net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionHierarchyScheme;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -40,8 +42,9 @@ public class DatafileSpecificMetadataStore {
     private String fileFormat;
     private String oldFilename; // the original filename, to make it easier for users to determine which file they're annotating
 
-    private ActionSummary assayActionSummary; // information regarding the selected action associated with the assay
-    private ActionSummary oneLevelUpActionSummary; // information regarding the selected action one level up from the assay, IF PRESENT.
+    private ActionHierarchyScheme nestedActions; // stores the complete hierarchy of actions associated with the assay
+//    private ActionSummary assayActionSummary; // information regarding the selected action associated with the assay
+//    private ActionSummary oneLevelUpActionSummary; // information regarding the selected action one level up from the assay, IF PRESENT.
 
     private Map<String, GenericEquipmentSummary> genericEquipmentInfo; // the key is the equipment endurant id
     private Map<String, GenericProtocolApplicationSummary> genericProtocolApplicationInfo;  // the key is the GPA's Parent GenericProtocol endurant id. Input material information is also stored here
@@ -50,8 +53,9 @@ public class DatafileSpecificMetadataStore {
         this.genericEquipmentInfo = new HashMap<String, GenericEquipmentSummary>();
         this.genericProtocolApplicationInfo = new HashMap<String, GenericProtocolApplicationSummary>();
 
-        this.assayActionSummary = new ActionSummary();
-        this.oneLevelUpActionSummary = new ActionSummary();
+        this.nestedActions = new ActionHierarchyScheme();
+//        this.assayActionSummary = new ActionSummary();
+//        this.oneLevelUpActionSummary = new ActionSummary();
     }
 
     public File getDataFile() {
@@ -99,8 +103,9 @@ public class DatafileSpecificMetadataStore {
         this.fileFormat = "";
         this.oldFilename = "";
 
-        this.assayActionSummary = new ActionSummary();
-        this.oneLevelUpActionSummary = new ActionSummary();
+        this.nestedActions = new ActionHierarchyScheme();
+//        this.assayActionSummary = new ActionSummary();
+//        this.oneLevelUpActionSummary = new ActionSummary();
 
         this.genericEquipmentInfo.clear();
         this.genericProtocolApplicationInfo.clear();
@@ -154,19 +159,26 @@ public class DatafileSpecificMetadataStore {
         this.genericProtocolApplicationInfo.put( key, summary );
     }
 
-    public ActionSummary getAssayActionSummary() {
-        return assayActionSummary;
+    public ActionHierarchyScheme getNestedActions() {
+        return nestedActions;
     }
 
-    public void setAssayActionSummary( ActionSummary assayActionSummary ) {
-        this.assayActionSummary = assayActionSummary;
+    public void setNestedActions( ActionHierarchyScheme nestedActions ) {
+        this.nestedActions = nestedActions;
     }
-
-    public ActionSummary getOneLevelUpActionSummary() {
-        return oneLevelUpActionSummary;
-    }
-
-    public void setOneLevelUpActionSummary( ActionSummary oneLevelUpActionSummary ) {
-        this.oneLevelUpActionSummary = oneLevelUpActionSummary;
-    }
+//    public ActionSummary getAssayActionSummary() {
+//        return assayActionSummary;
+//    }
+//
+//    public void setAssayActionSummary( ActionSummary assayActionSummary ) {
+//        this.assayActionSummary = assayActionSummary;
+//    }
+//
+//    public ActionSummary getOneLevelUpActionSummary() {
+//        return oneLevelUpActionSummary;
+//    }
+//
+//    public void setOneLevelUpActionSummary( ActionSummary oneLevelUpActionSummary ) {
+//        this.oneLevelUpActionSummary = oneLevelUpActionSummary;
+//    }
 }

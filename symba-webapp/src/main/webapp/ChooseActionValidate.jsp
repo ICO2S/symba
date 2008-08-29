@@ -1,5 +1,6 @@
 <%@ page import="java.util.Enumeration" %>
 <%@ page import="net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionHierarchyScheme" %>
 <%--
 This file is part of SyMBA.
 SyMBA is covered under the GNU Lesser General Public License (LGPL).
@@ -35,46 +36,33 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
 <%
 
-    // if go2confirm is parse to *any* value, then we should not change anything in the session, as ChooseAction.sjp
+    // if go2confirm is parse to *any* value, then we should not change anything in the session, as ChooseAction.jsp
     // is not allowed to be changed after setting. Further, even if go2confirm is null, don't allow any changes
     // if the protocol has already been locked.
     if ( request.getParameter( "go2confirm" ) == null && !symbaFormSessionBean.isProtocolLocked() ) {
 
-        // iterate through looking for the investigation details field
-        // iterate through all parameters
+        // iterate through, retrieving the action hierarchy for each data file.
         Enumeration enumeration = request.getParameterNames();
         while ( enumeration.hasMoreElements() ) {
+            ActionHierarchyScheme dummyAhs = new ActionHierarchyScheme();
+            dummyAhs.setAssay( true );
+            dummyAhs.setDummy( true );
+
             String parameterName = ( String ) enumeration.nextElement();
-            if ( parameterName.startsWith( "actionListOneLevelUp" ) ) {
-                int number = Integer.valueOf( parameterName.substring( 20 ) );
-//                System.out.println( "number = " + number );
+
+            if ( parameterName.startsWith( dummyAhs.getElementTitle() ) ) {
+
+                dummyAhs.parse( parameterName );
+                dummyAhs.parseValueAttribute( request.getParameter( parameterName ) );
+
                 // take what is already there, and add only those fields that have not been made yet
                 DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                        .get( number );
+                        .get( dummyAhs.getDatafileNumber() );
                 if ( temp == null ) {
                     temp = new DatafileSpecificMetadataStore();
                 }
-                String[] parsedStrings = request.getParameter( parameterName ).split( "::" );
-                temp.getOneLevelUpActionSummary().setChosenActionEndurant( parsedStrings[0] );
-                temp.getOneLevelUpActionSummary().setChosenActionName( parsedStrings[1] );
-                temp.getOneLevelUpActionSummary().setChosenChildProtocolEndurant( parsedStrings[2] );
-                temp.getOneLevelUpActionSummary().setChosenChildProtocolName( parsedStrings[3] );
-                symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
-            } else if ( parameterName.startsWith( "actionListAssay" ) ) {
-                int number = Integer.valueOf( parameterName.substring( 15 ) );
-//                System.out.println( "number = " + number );
-                // take what is already there, and add only those fields that have not been made yet
-                DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                        .get( number );
-                if ( temp == null ) {
-                    temp = new DatafileSpecificMetadataStore();
-                }
-                String[] parsedStrings = request.getParameter( parameterName ).split( "::" );
-                temp.getAssayActionSummary().setChosenActionEndurant( parsedStrings[0] );
-                temp.getAssayActionSummary().setChosenActionName( parsedStrings[1] );
-                temp.getAssayActionSummary().setChosenChildProtocolEndurant( parsedStrings[2] );
-                temp.getAssayActionSummary().setChosenChildProtocolName( parsedStrings[3] );
-                symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
+                temp.setNestedActions( dummyAhs );
+                symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, dummyAhs.getDatafileNumber() );
             }
         }
     } else if ( request.getParameter( "go2confirm" ) != null &&

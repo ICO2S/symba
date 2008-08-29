@@ -85,6 +85,7 @@ public class AssayLoader {
         symbaFormSessionBean = ( SymbaFormSessionBean ) results[1];
         fuge = loadData( fuge );
         fuge = ProtocolLoader.loadAssayProtocols( fuge, entityService, auditor, symbaFormSessionBean, symbaEntityService );
+        fuge = ReorganizeCollections.reorganize( fuge, auditor );
         FugeLoader.loadFugeIntoDatabase( fuge, auditor );
     }
 

@@ -32,16 +32,21 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
 <jsp:useBean id="scp" class="net.sourceforge.symba.webapp.util.ScpBean" scope="application"/>
 
-<jsp:useBean id="softwareMeta" class="net.sourceforge.symba.webapp.util.SoftwareMetaInformationBean" scope="application"/>
+<jsp:useBean id="softwareMeta" class="net.sourceforge.symba.webapp.util.SoftwareMetaInformationBean"
+             scope="application"/>
 
 <%
     AssayLoader lf = new AssayLoader( symbaFormSessionBean, validUser, scp, softwareMeta );
     lf.load();
 
     // Update the counts
-        counter.setNumberOfExperiments( validUser.getSymbaEntityService().countExperiments() );
-        counter.setNumberOfDataFiles( validUser.getSymbaEntityService().countData() );
+    counter.setNumberOfExperiments( validUser.getSymbaEntityService().countExperiments() );
+    counter.setNumberOfDataFiles( validUser.getSymbaEntityService().countData() );
 
 %>
 <%-- Remove all user-specific session beans associated with data upload --%>
 <c:remove var="symbaFormSessionBean"/>
+
+<%-- Redirect to the home page--%>
+<c:redirect url="download.jsp"/>
+

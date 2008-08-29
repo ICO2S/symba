@@ -2,15 +2,17 @@ package net.sourceforge.symba.webapp.util;
 
 import net.sourceforge.fuge.collection.FuGE;
 import net.sourceforge.fuge.common.ontology.OntologyTerm;
+import net.sourceforge.fuge.service.EntityService;
+import net.sourceforge.fuge.bio.material.GenericMaterial;
 import net.sourceforge.symba.service.SymbaEntityService;
+import net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionInformation;
+import net.sourceforge.symba.webapp.util.forms.MaterialTemplateParser;
+import net.sourceforge.symba.webapp.util.forms.ActionTemplateParser;
 
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * This file is part of SyMBA.
@@ -53,6 +55,9 @@ public class SymbaFormSessionBean implements Serializable {
     // copied to all of the others.
     private boolean metadataFromAnotherExperiment;
 
+    // sets the type of experiment. Set within materialTransformationOrAssay.jsp
+    private ActionTemplateParser.PROTOCOL_TYPE protocolType;
+
     // information that is specific to each uploaded data file, including the data file itself
     private List<DatafileSpecificMetadataStore> datafileSpecificMetadataStores;
 
@@ -85,6 +90,7 @@ public class SymbaFormSessionBean implements Serializable {
         dataPresent = false;
         metadataFromAnotherExperiment = false;
         materialCharacteristicsIncomplete = false;
+        protocolType = ActionTemplateParser.PROTOCOL_TYPE.NONE;
     }
 
     public boolean isConfirmationReached() {
@@ -125,6 +131,14 @@ public class SymbaFormSessionBean implements Serializable {
 
     public void setMetadataFromAnotherExperiment( boolean metadataFromAnotherExperiment ) {
         this.metadataFromAnotherExperiment = metadataFromAnotherExperiment;
+    }
+
+    public ActionTemplateParser.PROTOCOL_TYPE getProtocolType() {
+        return protocolType;
+    }
+
+    public void setProtocolType( ActionTemplateParser.PROTOCOL_TYPE protocolType ) {
+        this.protocolType = protocolType;
     }
 
     public List<DatafileSpecificMetadataStore> getDatafileSpecificMetadataStores() {
@@ -223,7 +237,9 @@ public class SymbaFormSessionBean implements Serializable {
         this.fugeIdentifier = fugeIdentifier;
     }
 
-    public void displayHtml( JspWriter out, SymbaEntityService symbaEntityService ) throws IOException {
+    public void displayHtml( JspWriter out, PersonBean personBean ) throws IOException {
+
+        SymbaEntityService symbaEntityService = personBean.getSymbaEntityService();
 
         if ( fuGE == null ) {
             // the user has created a new experiment
@@ -277,21 +293,21 @@ public class SymbaFormSessionBean implements Serializable {
                     out.println( "</a>" );
                     out.println( "</li>" );
                 }
-                if ( info.getAssayActionSummary() != null ) {
+                if ( info.getNestedActions() != null ) {
                     out.println( "<li>" );
-                    out.println( "You have also assigned the data file to a particular step in your " );
-                    out.println( " workflow. The step you have assigned the file to is " );
+                    out.println( "You have also assigned the data file to a particular set of steps in your " );
+                    out.println( " workflow. The steps you have assigned the file to are " );
                     out.println( "<a class=\"bigger\" href=\"ChooseAction.jsp\">" );
-                    String modified = info.getAssayActionSummary().getChosenActionName();
-                    if ( modified.startsWith( "Step Containing the" ) ) {
-                        modified = modified.substring( 20 );
+                    String toPrint = "";
+                    for ( ActionInformation actionInformation : info.getNestedActions().getActionHierarchy() ) {
+                        String modified = actionInformation.getActionName();
+                        if ( modified.startsWith( "Step Containing the" ) ) {
+                            modified = modified.substring( 20 );
+                        }
+                        toPrint += modified + " -> ";
                     }
-                    out.println( modified );
-                    if ( info.getOneLevelUpActionSummary() != null &&
-                         info.getOneLevelUpActionSummary().getChosenActionName() != null ) {
-                        out.println(
-                                ", which belongs to the " + info.getOneLevelUpActionSummary().getChosenActionName() );
-                    }
+                    toPrint = toPrint.substring( 0, toPrint.length() - 4 );
+                    out.println( toPrint );
                     out.println( "</a>" );
                     out.println( "</li>" );
                 }
@@ -388,14 +404,16 @@ public class SymbaFormSessionBean implements Serializable {
                     out.println( "</li>" );
                 }
                 for ( String currentKey : info.getGenericProtocolApplicationInfo().keySet() ) {
-                    displayInputMaterials( symbaEntityService,
-                            info.getGenericProtocolApplicationInfo()
-                                    .get( currentKey ).getInputCompleteMaterialFactors(), out );
+                    displayInputMaterials( personBean,
+                            info.getGenericProtocolApplicationInfo().get( currentKey ), out );
                 }
             }
+            out.println( "</ul>" );
         }
         if ( specimenToBeUploaded != null ) {
+            out.println( "</ul>" );
             displayMaterialFactorsStore( symbaEntityService, out, specimenToBeUploaded, true );
+            out.println( "</ul>" );
         }
     }
 
@@ -404,19 +422,17 @@ public class SymbaFormSessionBean implements Serializable {
                                               MaterialFactorsStore mfs, boolean isMaterialTransformation ) throws
             IOException {
 
+        if ( mfs == null ) {
+            return;
+        }
+
         String changeJsp = "metaData.jsp";
         if ( isMaterialTransformation ) {
             changeJsp = "enterSpecimen.jsp";
         }
 
-        out.println( "<li>" );
-        out.println(
-                "You have provided information about the material used in this step of the workflow. " );
-        out.println( "This material has the following properties " );
-        out.println( "<ul>" );
+        if ( mfs.getMaterialName().length() > 0 ) {
 
-        if ( mfs.getMaterialName() != null &&
-             mfs.getMaterialName().length() > 0 ) {
             out.println( "<li>Name/Identifying Number: " );
             out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
             out.println( mfs.getMaterialName() );
@@ -424,8 +440,7 @@ public class SymbaFormSessionBean implements Serializable {
             out.println( "</li>" );
         }
 
-        if ( mfs.getOntologyReplacements() != null &&
-             !mfs.getOntologyReplacements().isEmpty() ) {
+        if ( !mfs.getOntologyReplacements().isEmpty() ) {
             out.println( "<li>Free-text descriptions:" );
             for ( String key : mfs.getOntologyReplacements().keySet() ) {
                 out.println( "<ul>" );
@@ -440,7 +455,7 @@ public class SymbaFormSessionBean implements Serializable {
             out.println( "</li>" );
         }
 
-        if ( mfs.getMaterialType() != null ) {
+        if ( mfs.getMaterialType().length() > 0 ) {
             out.println( "<li>Material Type: " );
             out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
             OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( mfs.getMaterialType() );
@@ -449,8 +464,7 @@ public class SymbaFormSessionBean implements Serializable {
             out.println( "</li>" );
         }
 
-        if ( mfs.getTreatmentInfo() != null &&
-             !mfs.getTreatmentInfo().isEmpty() ) {
+        if ( !mfs.getTreatmentInfo().isEmpty() ) {
             out.println( "<li>Treatments: " );
             out.println( "<ol>" );
             for ( String treatment : mfs.getTreatmentInfo() ) {
@@ -479,14 +493,12 @@ public class SymbaFormSessionBean implements Serializable {
             out.println( "</ol>" );
             out.println( "</li>" );
         }
-        out.println( "</ul>" );
-
     }
 
-    private boolean atLeastOnePresent( HashMap<String, String> characteristics,
-                                       HashMap<String, LinkedHashSet<String>> multipleCharacteristics,
-                                       HashMap<String, String> novelCharacteristics,
-                                       HashMap<String, LinkedHashSet<String>> novelMultipleCharacteristics ) {
+    private boolean atLeastOnePresent( Map<String, String> characteristics,
+                                       Map<String, LinkedHashSet<String>> multipleCharacteristics,
+                                       Map<String, String> novelCharacteristics,
+                                       Map<String, LinkedHashSet<String>> novelMultipleCharacteristics ) {
         return ( characteristics != null && !characteristics.isEmpty() ) ||
                ( multipleCharacteristics != null && !multipleCharacteristics.isEmpty() ) ||
                ( novelCharacteristics != null && !novelCharacteristics.isEmpty() ) ||
@@ -495,8 +507,8 @@ public class SymbaFormSessionBean implements Serializable {
 
     private void displayCharacteristics( SymbaEntityService symbaEntityService,
                                          JspWriter out,
-                                         HashMap<String, String> characteristics,
-                                         HashMap<String, LinkedHashSet<String>> multipleCharacteristics,
+                                         Map<String, String> characteristics,
+                                         Map<String, LinkedHashSet<String>> multipleCharacteristics,
                                          String changeJsp, boolean isNovel ) throws
             IOException {
 
@@ -535,13 +547,43 @@ public class SymbaFormSessionBean implements Serializable {
         }
     }
 
-    private void displayInputMaterials( SymbaEntityService symbaEntityService,
-                                        List<MaterialFactorsStore> inputMaterialInfo,
+    private void displayInputMaterials( PersonBean personBean,
+                                        GenericProtocolApplicationSummary gpaSummary,
                                         JspWriter out ) throws IOException {
 
-        for ( MaterialFactorsStore mfs : inputMaterialInfo ) {
-            displayMaterialFactorsStore( symbaEntityService, out, mfs, false );
-        }
+        if ( gpaSummary.getInputCompleteMaterialFactors().size() > 0 ||
+             gpaSummary.getInputIdentifiersFromMaterialTransformations().size() > 0 ) {
+            out.println( "<li>" );
+            out.println(
+                    "You have provided information about the materials used in this step of the workflow. " );
+            out.println( "This material has the following properties " );
+            out.println( "<ul>" );
 
+            for ( MaterialFactorsStore mfs : gpaSummary.getInputCompleteMaterialFactors() ) {
+                displayMaterialFactorsStore( personBean.getSymbaEntityService(), out, mfs, false );
+            }
+            // alternatively, there may be material information inside the InputIdentifiersFromMaterialTransformations
+            displayInputsFromMts( personBean.getEntityService(), out,
+                    gpaSummary.getInputIdentifiersFromMaterialTransformations() );
+
+            out.println( "</ul>" );
+        }
+    }
+
+    private void displayInputsFromMts( EntityService entityService,
+                                       JspWriter out,
+                                       Set<String> inputIdentifiersFromMaterialTransformations ) throws IOException {
+
+        if ( inputIdentifiersFromMaterialTransformations == null ) {
+            return;
+        }
+        for ( String identifier : inputIdentifiersFromMaterialTransformations ) {
+            out.println( "<li>" );
+            out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
+            out.println( MaterialTemplateParser
+                    .printMaterialPairSummary( ( GenericMaterial ) entityService.getIdentifiable( identifier ) ) );
+            out.println( "</a>" );
+            out.println( "</li>" );
+        }
     }
 }

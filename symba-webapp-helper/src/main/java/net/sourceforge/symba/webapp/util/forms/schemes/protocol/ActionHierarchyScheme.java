@@ -1,6 +1,6 @@
 package net.sourceforge.symba.webapp.util.forms.schemes.protocol;
 
-import net.sourceforge.symba.webapp.util.forms.schemes.SkeletonScheme;
+import net.sourceforge.symba.webapp.util.forms.schemes.BasicScheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,25 +12,56 @@ import java.util.List;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  * <p/>
- * too different from the others to extend from the BasicScheme
+ * provides write and parse methods for both the name/id attribute and the value attribute
  * <p/>
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$
  * $HeadURL$
  */
-public class ActionHierarchyScheme extends SkeletonScheme {
+public class ActionHierarchyScheme extends BasicScheme {
 
     // gpaIdentifier is not always filled as soon as an actionHierarchy is created.
     private String gpaIdentifier;
     private List<ActionInformation> actionHierarchy;
     private boolean isDummy;
+    private boolean isAssay;
 
     public ActionHierarchyScheme() {
 
         this.elementTitle = "gpaActionHierarchy";
         this.actionHierarchy = new ArrayList<ActionInformation>();
-        setDummy(false);
+        setDummy( false );
+        setAssay( false );
+    }
+
+    /**
+     * Parses the "name" parameter from a form field, filling the class members for later access
+     *
+     * @param parameterName the raw name of the parameter from the form.
+     */
+    public void parse( String parameterName ) {
+        String[] parsedStrings = parameterName.split( separator );
+
+        // the datafileNumber will only be present if running through the assay protocol form
+        if ( parsedStrings.length >= 2 ) {
+            this.datafileNumber = Integer.parseInt( parsedStrings[1] );
+            setAssay( true );
+        }
+    }
+
+    /**
+     * Assuming the values have been set, the write method allows the creation of the value
+     * of the "id" and "name" attributes within a form field element.
+     *
+     * @return the string to put inside the id and/or name attributes of a form field element
+     */
+    public String write() {
+        String label = elementTitle;
+        if ( isAssay ) {
+            label += separator + datafileNumber;
+        }
+        return label;
     }
 
     /**
@@ -38,10 +69,10 @@ public class ActionHierarchyScheme extends SkeletonScheme {
      *
      * @param parameterName the raw name of the parameter from the form.
      */
-    public void parse( String parameterName ) {
+    public void parseValueAttribute( String parameterName ) {
 
-        // the gpaIdentifier is optional. It is present if the first item in the split list does not contain any
-        // separators from the ActionInformation.
+        // the gpaIdentifier is optional. It is present at the beginning, if the first
+        // splitted term does not contain separators from the ActionInformation.
 
         String[] parsedStrings = parameterName.split( separator );
         for ( int iii = 0; iii < parsedStrings.length; iii++ ) {
@@ -61,13 +92,13 @@ public class ActionHierarchyScheme extends SkeletonScheme {
      * elements of the form. Note that this is different behaviour from the rest of the
      * schemes. In this case, the id and name should be just the value of elementTitle.
      *
-     * @return the value to identify the form field "value" element
+     * @return the string to put inside the id and/or name attributes of a form field element
      */
-    public String write() {
+    public String writeValueAttribute() {
         String label = "";
         boolean labelBegun = false;
         if ( gpaIdentifier != null && gpaIdentifier.length() > 0 ) {
-            label = gpaIdentifier;
+            label += gpaIdentifier;
             labelBegun = true;
         }
         for ( ActionInformation actionInformation : actionHierarchy ) {
@@ -90,6 +121,14 @@ public class ActionHierarchyScheme extends SkeletonScheme {
         if ( isDummy ) {
             elementTitle = "gpaDummyActionHierarchy";
         }
+    }
+
+    public boolean isAssay() {
+        return isAssay;
+    }
+
+    public void setAssay( boolean assay ) {
+        this.isAssay = assay;
     }
 
     public void add( ActionInformation actionInformation ) {

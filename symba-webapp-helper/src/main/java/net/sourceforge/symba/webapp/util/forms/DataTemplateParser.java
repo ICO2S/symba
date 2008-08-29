@@ -4,12 +4,13 @@ import net.sourceforge.fuge.common.description.Description;
 import net.sourceforge.fuge.common.ontology.OntologySource;
 import net.sourceforge.fuge.common.ontology.OntologyTerm;
 import net.sourceforge.fuge.bio.data.ExternalData;
+import net.sourceforge.fuge.bio.data.Data;
 import net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore;
 import net.sourceforge.symba.webapp.util.SymbaFormSessionBean;
 import net.sourceforge.symba.webapp.util.PersonBean;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This file is part of SyMBA.
@@ -28,9 +29,9 @@ public class DataTemplateParser {
     public static StringBuffer parse( DatafileSpecificMetadataStore info,
                                       int currentDataFile,
                                       SymbaFormSessionBean symbaFormSessionBean,
-                                      PersonBean personBean) {
+                                      PersonBean personBean ) {
 
-        StringBuffer buffer = new StringBuffer( );
+        StringBuffer buffer = new StringBuffer();
 
         String selectDescName = "actionListDescription::" + currentDataFile;
 
@@ -38,9 +39,9 @@ public class DataTemplateParser {
         // of the file itself, and any file format information.
         buffer.append( "<fieldset>" );
         buffer.append( "<legend>Data</legend>" );
-        buffer.append(System.getProperty( "line.separator" ));
+        buffer.append( System.getProperty( "line.separator" ) );
         buffer.append( "<ol>" );
-        buffer.append(System.getProperty( "line.separator" ));
+        buffer.append( System.getProperty( "line.separator" ) );
 
         // Text Box for the description of the file
         buffer.append( "<li>" );
@@ -55,7 +56,7 @@ public class DataTemplateParser {
         buffer.append( "</textarea>" );
         buffer.append( "<br/>" );
         buffer.append( "</li>" );
-        buffer.append(System.getProperty( "line.separator" ));
+        buffer.append( System.getProperty( "line.separator" ) );
 
         // The file format for the ExternalData associated with the experiment.
         // Search the ExternalData for dummies named with the name of the current experiment.
@@ -97,7 +98,7 @@ public class DataTemplateParser {
                         }
 
                         buffer.append( instructions );
-                        buffer.append(System.getProperty( "line.separator" ));
+                        buffer.append( System.getProperty( "line.separator" ) );
                         buffer.append( "<li>" );
                         buffer.append( "<select name=\"" ).append( fileFormat ).append( "\" id=\"" )
                                 .append( fileFormat ).append( "\">" );
@@ -113,7 +114,7 @@ public class DataTemplateParser {
                         buffer.append( "</select>" );
                         buffer.append( "<br/>" );
                         buffer.append( "</li>" );
-                        buffer.append(System.getProperty( "line.separator" ));
+                        buffer.append( System.getProperty( "line.separator" ) );
                     }
                 }
 
@@ -124,8 +125,66 @@ public class DataTemplateParser {
 
         buffer.append( "</ol>" );
         buffer.append( "</fieldset>" );
-        buffer.append(System.getProperty( "line.separator" ));
+        buffer.append( System.getProperty( "line.separator" ) );
 
         return buffer;
     }
+
+    public static StringBuffer printDataSummary( Set<Data> dataItems, boolean noChoice, String nameAttribute, String valueAttribute ) {
+        StringBuffer buffer = new StringBuffer();
+
+        for ( Data data : dataItems ) {
+            if ( data instanceof ExternalData ) {
+                ExternalData externalData = ( ExternalData ) data;
+
+                // print the friendly identifier, but don't save it to the session.
+                buffer.append( System.getProperty( "line.separator" ) );
+                buffer.append( System.getProperty( "line.separator" ) );
+                buffer.append( "      <li>" );
+                buffer.append( "<input type=\"radio\" name=\"" ).append( nameAttribute )
+                        .append( "\" value=\"" ).append( valueAttribute );
+                if ( noChoice ) {
+                    buffer.append( "\" checked=\"checked\">" );
+                } else {
+                    buffer.append( "\">" );
+                }
+                buffer.append( externalData.getName() );
+                buffer.append( "<ul>" );
+                // print the form to allow download of this data file.
+                String formId = "downloadSingle";
+                buffer.append( "<br/><form style=\"display:none;\" id=\"" ).append( formId ).append(
+                        "\" action=\"downloadSingleFile.jsp\">" +
+                        "<input type=\"hidden\" name=\"identifier\" value=\"" ).append( externalData.getLocation() )
+                        .append( "\"/>" + "<input type=\"hidden\" name=\"friendly\" value=\"" )
+                        .append( externalData.getName() ).append(
+                        "\"/>" + "</form>" + "<li><a href=\"javascript:void(0)\" onclick=\"document.getElementById('" )
+                        .append( formId ).append( "').submit();\">Download This File</a>" + "</li>" );
+
+                String fileDescription = "";
+                for ( Description description : ( Set<Description> ) externalData.getDescriptions() ) {
+                    fileDescription += description.getText();
+                }
+                // print and save the file description
+                if ( fileDescription.length() > 0 ) {
+                    buffer.append( System.getProperty( "line.separator" ) );
+                    buffer.append( "<li>Your description of this file is: " ).append( fileDescription )
+                            .append( "</li>" );
+                }
+                // print and save the file format
+                if ( externalData.getFileFormat() != null ) {
+                    buffer.append( System.getProperty( "line.separator" ) );
+                    buffer.append( "<li>The format of your file is: " ).append( externalData.getFileFormat().getTerm() )
+                            .append( "</li>" );
+                }
+                
+                buffer.append( System.getProperty( "line.separator" ) );
+                buffer.append( "</ul>" );
+                buffer.append( "</li>" );
+                buffer.append( System.getProperty( "line.separator" ) );
+            }
+        }
+
+        return buffer;
+    }
+
 }

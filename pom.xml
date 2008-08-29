@@ -478,6 +478,13 @@
                 <!-- The help email address for your group -->
                 <net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>
 
+                <!-- An optional status message to be displayed on the login screen only -->
+                <net.sourceforge.symba.webapp.status>
+                    If you wish to have your own login to the sandbox, please contact us. Otherwise, you may access \
+                    with the general login "MickeyM" with pass "MousePass". Please let us know if it seems anyone is \
+                    misusing this login and we can reset the database.
+                </net.sourceforge.symba.webapp.status>
+
                 <!-- The name and verison of this software: there are already reasonable defaults, so you don't need to
                 change this unless you want to -->
                 <net.sourceforge.symba.webapp.softwareName>SyMBA</net.sourceforge.symba.webapp.softwareName>

@@ -38,4 +38,8 @@ abstract public class BasicScheme extends SkeletonScheme {
     public int getDatafileNumber() {
         return datafileNumber;
     }
+
+    public void setDatafileNumber( int datafileNumber ) {
+        this.datafileNumber = datafileNumber;
+    }
 }

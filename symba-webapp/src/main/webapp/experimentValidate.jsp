@@ -32,7 +32,6 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
     FuGE fuge = ( FuGE ) validUser.getEntityService().getIdentifiable( symbaFormSessionBean.getFugeIdentifier() );
     symbaFormSessionBean.setFuGE( fuge );
     symbaFormSessionBean.setFugeEndurant( fuge.getEndurant().getIdentifier() );
-    symbaFormSessionBean.setFugeIdentifier( fuge.getIdentifier() );
 %>
 
 <%

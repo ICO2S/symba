@@ -2,10 +2,7 @@ package net.sourceforge.symba.webapp.util.forms;
 
 import net.sourceforge.fuge.common.description.Description;
 import net.sourceforge.fuge.common.measurement.AtomicValue;
-import net.sourceforge.fuge.common.protocol.GenericParameter;
-import net.sourceforge.fuge.common.protocol.GenericProtocolApplication;
-import net.sourceforge.fuge.common.protocol.Parameter;
-import net.sourceforge.fuge.common.protocol.ParameterValue;
+import net.sourceforge.fuge.common.protocol.*;
 import net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore;
 import net.sourceforge.symba.webapp.util.PersonBean;
 import net.sourceforge.symba.webapp.util.SymbaFormSessionBean;
@@ -43,22 +40,31 @@ public class GenericProtocolApplicationTemplateParser {
         // Only currently valid for AtomicValues.
         //
         // Also, GenericMaterials (inputs and outputs) will be linked from the templated dummy GPAs
+        // For assays that take the output of material transformations as their inputs, only display those
+        // materials which are valid choices, and don't allow modifications of them. If they wish to modify, provide
+        // them with a link to the add/modify specimen pages.
+        GenericProtocol chosenAssayProtocol = ( GenericProtocol ) personBean.getEntityService().getIdentifiable( info
+                .getNestedActions().getActionHierarchy()
+                .get( info.getNestedActions().getActionHierarchy().size() - 1 ).getProtocolOfActionIdentifier() );
+
         for ( Object gpaObj : personBean.getSymbaEntityService().getLatestGenericProtocolApplications( true ) ) {
             GenericProtocolApplication genericProtocolApplication = ( GenericProtocolApplication ) gpaObj;
-            if ( genericProtocolApplication.getName().trim()
-                    .contains( info.getAssayActionSummary().getChosenChildProtocolName() ) ) {
+            // we're only interested in the GPA of the dummy assay (the lowest level). This will be the last element
+            // in the ActionInformation ArrayList within the ActionHierarchyScheme.
+            if ( genericProtocolApplication.getName().trim().contains( chosenAssayProtocol.getName() ) ) {
 
                 // Print material portion of the form
                 buffer.append(
-                        MaterialTemplateParser.createMaterialForDataFormContents( session, personBean, symbaFormSessionBean, info, currentDataFile,
+                        MaterialTemplateParser.createMaterialForDataFormContents( session, personBean,
+                                symbaFormSessionBean, info, currentDataFile,
                                 genericProtocolApplication ) );
 
                 buffer.append( "<fieldset>" ).append( System.getProperty( "line.separator" ) );
-                // make a shorter version of the chosen child protocol name
-                String shortProtocolName = info.getAssayActionSummary().getChosenChildProtocolName();
-                if ( info.getAssayActionSummary().getChosenChildProtocolName().contains( "(Component of" ) ) {
-                    shortProtocolName = info.getAssayActionSummary().getChosenChildProtocolName().substring(
-                            0, info.getAssayActionSummary().getChosenChildProtocolName().indexOf( "(Component of" ) );
+                // make a shorter version of the chosen assay protocol name
+                String shortProtocolName = chosenAssayProtocol.getName();
+                if ( chosenAssayProtocol.getName().contains( "(Component of" ) ) {
+                    shortProtocolName =
+                            chosenAssayProtocol.getName().substring( 0, chosenAssayProtocol.getName().indexOf( "(Component of" ) );
                 }
                 buffer.append( "<legend>Further Details of the " ).append( shortProtocolName ).append( "</legend>" );
                 buffer.append( System.getProperty( "line.separator" ) ).append( "<ol>" )

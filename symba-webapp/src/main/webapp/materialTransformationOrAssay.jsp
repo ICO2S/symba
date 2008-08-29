@@ -85,13 +85,15 @@ branches at this stage). If there is only one or the other type, automatically d
                         ActionTemplateParser.hasMaterialTransformation(
                                 validUser.getSymbaEntityService(), symbaFormSessionBean.getTopLevelProtocolName() );
 
+                symbaFormSessionBean.setProtocolType( protocolTypePresent );
+
                 if ( protocolTypePresent == ActionTemplateParser.PROTOCOL_TYPE.ALL ) {
                     out.println( "<legend>Type of Protocol</legend>" );
                     out.println( "<ol>" );
                     out.println( "<li>" );
                     String listLabel = "protocolType";
                     out.println( "<label for=\"" + listLabel + "\">" );
-                    out.println( "Please choose the type of information you wish to provide from the list below:" );
+                    out.println( "Please choose the type of information you wish to provide:" );
                     out.println( "</label>" );
                     out.println( "<select id=\"" + listLabel + "\" name=\"" + listLabel + "\">" );
                     out.println( "<option value=\"materialTransformation\">Specimen or Material Measurement</option>" );

@@ -62,34 +62,10 @@ in this distribution, please see LICENSE.txt
 
         if ( !materialTransformations.isEmpty() ) {
 
-            out.println( "<form action=\"enterSpecimen.jsp\" method=\"post\">" );
-            out.println( "<fieldset>" );
-            out.println( "<legend>Create a specimen based on existing specimens</legend>" );
-
-            out.println( "<p>Below are a list of currently existing specimens in the database." );
-            out.println( "If what you need isn't on the list below, click on the one nearest to your" );
-            out.println( "needs, and you will be able to modify it." );
-            out.println( "</p>" );
-            out.println( "<p>" );
-            out.println( "If all of the specimens you require to describe a particular assay" );
-            out.println( "are present below, then please move " );
-            // using newOrExisting won't delete any session variables, as linking to beginNewSession would.
-            if ( symbaFormSessionBean.getFugeIdentifier() == null ||
-                 symbaFormSessionBean.getFugeIdentifier().length() == 0 ) {
-                out.println( "<a href=\"newExperiment.jsp\">on to describing that assay in SyMBA</a>" );
-            } else {
-                out.println( "<a href=\"experiment.jsp\">back to describing that assay in SyMBA</a>" );
-            }
-            out.println( "</p>" );
             // Print out those pairs with the clickable option, which is sent on to the form handler
             out.println( ActionTemplateParser.parseMaterialTransformationActions( materialTransformations,
                     validUser.getSymbaEntityService(), symbaFormSessionBean,
                     ActionTemplateParser.PROTOCOL_TYPE.MATERIAL_TRANSFORMATION ) );
-            out.println( "</fieldset>" );
-            out.println( "    <fieldset class=\"submit\">\n" +
-                         "        <input type=\"submit\" value=\"Submit\" onclick=\"disabled=true\"/>\n" +
-                         "    </fieldset>\n" +
-                         "    </form>" );
         }
         // Get a list of current starting materials, to always provide the option of starting from scratch.
     %>
@@ -107,7 +83,7 @@ in this distribution, please see LICENSE.txt
             %>
         </fieldset>
         <fieldset class="submit">
-            <input type="submit" value="Submit" onclick="disabled=true"/>
+            <input type="submit" value="Create New" onclick="disabled=true"/>
         </fieldset>
     </form>
     <br>

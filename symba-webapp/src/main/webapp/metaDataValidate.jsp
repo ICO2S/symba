@@ -39,7 +39,15 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
     // In this case enter loead new Term to Database, and return in the end back to metadata.jsp
     // instead of confirm.jsp (like if the user had chosen to review its data):
 
-    String toBeIgnoredParameterName =
+    // The session-parameter for the new term should then not be handled prior to the automatic redirection to the
+    // data-entry-page. This can be done in validateLoadRequest, but we need that method to return the session bean
+    String toBeIgnoredParameterName = "";
+    if ( request.getParameter( "hiddennewterminfofield" ) != null &&
+         request.getParameter( "hiddennewterminfofield" ).length() > 0 ) {
+        String[] tmpArr = request.getParameter( "hiddennewterminfofield" ).split( ":::" );
+        toBeIgnoredParameterName = tmpArr[2];
+    }
+    symbaFormSessionBean =
             OntologyLoader.validateLoadRequest( request, validUser, symbaFormSessionBean, true );
     if ( toBeIgnoredParameterName.length() > 0 ) {
         automaticReturnToMetaData = true;//will be checked at the end of this class
@@ -67,35 +75,38 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             // take what is already there, and add only those fields that have not been made yet
             DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( number );
             // get the endurant for the current equipment out.
-            String GpaParentEndurantId = parsedStrings[1];
+            String gpaParentEndurantId = parsedStrings[1];
             String parameterEndurantId = parsedStrings[2];
             // if there is already an existing map key, add to that one.
             GenericProtocolApplicationSummary summary = ( temp.getGenericProtocolApplicationInfo() ).get(
-                    GpaParentEndurantId );
+                    gpaParentEndurantId );
             if ( summary == null ) {
                 summary = new GenericProtocolApplicationSummary();
             }
             // now get the map of the parameter of the equipment, to assign an ontology term
             summary.putParameterAndAtomicPair( parameterEndurantId, request.getParameter( parameterName ) );
-            temp.putGenericProtocolApplicationInfoValue( GpaParentEndurantId, summary );
+            temp.putGenericProtocolApplicationInfoValue( gpaParentEndurantId, summary );
             symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
         } else if ( parameterName.startsWith( "GPAProtocolDescription::" ) &&
                     !parameterName.equals( toBeIgnoredParameterName ) ) {
+
+            System.err.println( "gpa protocol description name: " + parameterName);
+            System.err.println( "gpa protocol description value: " + request.getParameter(parameterName));
             String[] parsedStrings = parameterName.split( "::" );
             int number = Integer.valueOf( parsedStrings[2] );
             // take what is already there, and add only those fields that have not been made yet
             DatafileSpecificMetadataStore temp = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( number );
             // get the endurant for the current equipment out.
-            String GpaParentEndurantId = parsedStrings[1];
+            String gpaParentEndurantId = parsedStrings[1];
             // if there is already an existing map key, add to that one.
             GenericProtocolApplicationSummary summary = ( temp.getGenericProtocolApplicationInfo() ).get(
-                    GpaParentEndurantId );
+                    gpaParentEndurantId );
             if ( summary == null ) {
                 summary = new GenericProtocolApplicationSummary();
             }
             // now add the description to the list of GPA descriptions
             summary.putDescription( "ProtocolDescription", request.getParameter( parameterName ) );
-            temp.putGenericProtocolApplicationInfoValue( GpaParentEndurantId, summary );
+            temp.putGenericProtocolApplicationInfoValue( gpaParentEndurantId, summary );
             symbaFormSessionBean.setDatafileSpecificMetadataStore( temp, number );
         } else if ( parameterName.startsWith( "fileFormat" ) && !parameterName.equals( toBeIgnoredParameterName ) ) {
             int number = Integer.valueOf( parameterName.substring( 10 ) );

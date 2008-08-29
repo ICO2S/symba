@@ -42,7 +42,7 @@ in this distribution, please see LICENSE.txt
 
     <form name="selectProt" action="experimentValidate.jsp">
         <fieldset>
-            <legend>Select the experiment to which this data pertains:
+            <legend>Select the experiment which you wish to modify:
                 <a href="help.jsp#existingExperiment" onClick="return popup(this, 'notes')">
                     [ What Choice Should I Make? ]</a></legend>
 
@@ -84,7 +84,7 @@ in this distribution, please see LICENSE.txt
             <input type="radio" name="go2confirm" class="reset-radio" value="false"/><strong>I'd like to make more
             changes: continue on to the next form page</strong><br/>
             <% } // don't allow the use of the back button in the first step. %>
-            <input type="submit" value="Submit"/>
+            <input type="submit" value="Submit" onclick="disabled=true"/>
         </fieldset>
     </form>
     <br>

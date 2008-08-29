@@ -63,9 +63,10 @@ in this distribution, please see LICENSE.txt
             if ( summaries.isEmpty() ) {
                 out.println( "<h2>" );
                 out.println( "You have no experiments at the moment, or your search term returned no results." );
-                out.println( "If you wish, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">deposit" );
+                out.println( "If you wish, you may <a class=\"bigger\" href=\"newOrExisting.jsp\">add" );
                 out.println(
-                        "some data</a>, or go to the <a href=\"search.jsp\">Search Page</a> to search the database." );
+                        " some information</a>, or go to the <a href=\"search.jsp\">Search Page</a> to search the ");
+                out.println("database." );
                 out.println( "</h2>" );
             } else {
                 if ( summaries.size() == 1 ) {

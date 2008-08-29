@@ -93,7 +93,7 @@ in this distribution, please see LICENSE.txt
             the next form page</strong><br/>
             <%
                 }
-                out.println( "<input type=\"submit\" value=\"Submit\"/>" );
+                out.println( "<input type=\"submit\" value=\"Submit\" onclick=\"disabled=true\"/>" );
             %>
         </fieldset>
     </form>
@@ -106,7 +106,7 @@ in this distribution, please see LICENSE.txt
             If you wish to go back to the previous form page, <strong>without saving the changes on this page</strong>,
             use the "Back" button. You will, in any case, have the chance to review what you've written in at the end of
             the form, before final submission.<br/>
-            <input type="submit" value="Back"/>
+            <input type="submit" value="Back" />
         </form>
     </fieldset>
     <br/>

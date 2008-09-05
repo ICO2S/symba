@@ -129,7 +129,7 @@ public class ProviderLoader {
             protocolCollection.setAllSoftwares( softwares );
 
             // load the fuge object into the database
-            DatabaseObjectHelper
+            protocolCollection = (ProtocolCollection) DatabaseObjectHelper
                     .save( "net.sourceforge.fuge.collection.ProtocolCollection", protocolCollection, auditor );
             fuge.setProtocolCollection( protocolCollection );
         }

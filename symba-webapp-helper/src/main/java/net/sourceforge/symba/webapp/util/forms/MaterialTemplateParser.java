@@ -2,6 +2,7 @@ package net.sourceforge.symba.webapp.util.forms;
 
 import net.sourceforge.fuge.bio.material.GenericMaterial;
 import net.sourceforge.fuge.bio.material.Material;
+import net.sourceforge.fuge.bio.material.GenericMaterialMeasurement;
 import net.sourceforge.fuge.common.description.Description;
 import net.sourceforge.fuge.common.ontology.*;
 import net.sourceforge.fuge.common.protocol.GenericProtocolApplication;
@@ -62,74 +63,117 @@ public class MaterialTemplateParser {
             MtOutputAsAssayInputScheme mtScheme = new MtOutputAsAssayInputScheme();
             // note: material count isn't used in mtScheme
             mtScheme.setBasic( gpaParentEndurantId, 0, currentDataFile );
-            buffer.append( printMtPullDown( mtMaterials, mtScheme ) );
-            buffer.append("<p class=\"bigger\">");
-            buffer.append("If the specimen(s) you need for describing the data file are not present within the ");
-            buffer.append("set above, then ");
-            buffer.append("please go to the page for <a href=\"storedMaterials.jsp\">Creating Specimens</a>, and ");
-            buffer.append("add more specimens to your experiment.");
-            buffer.append("</p>");
+            buffer.append( printMtCheckBoxes( mtMaterials, mtScheme ) );
+            buffer.append( "<p class=\"bigger\">" );
+            buffer.append( "If the specimen(s) you need for describing the data file are not present within the " );
+            buffer.append( "set above, then " );
+            buffer.append( "please go to the page for <a href=\"storedMaterials.jsp\">Creating Specimens</a>, and " );
+            buffer.append( "add more specimens to your experiment." );
+            buffer.append( "</p>" );
             buffer.append( "</fieldset>" );
         }
 
         // sometimes, we may get factors from Materials associated with the experiment. Search the materials
         // associated with this GPA for dummies named with the addition of "XXX net.sourceforge.symba.keywords.dummy
         //  YYY", where XXX and YYY may be anything.
-        int dummyIcmCount = 0;
-        for ( Object gmObj : assay.getInputCompleteMaterials() ) {
-            GenericMaterial genericMaterial = ( GenericMaterial ) gmObj;
+        int dummyCount = 0;
+        for ( Material material : assay.getInputCompleteMaterials() ) {
+            GenericMaterial genericMaterial = ( GenericMaterial ) material;
+            if ( !dummyMtMaterials.contains( genericMaterial ) &&
+                 genericMaterial.getName().trim().contains( "net.sourceforge.symba.keywords.dummy" ) ) {
 
-            if ( !dummyMtMaterials.contains( genericMaterial ) ) {
+                buffer.append(
+                        parseSingleMaterialForm( genericMaterial, info, false, gpaParentEndurantId, currentDataFile,
+                                dummyCount, symbaFormSessionBean, personBean, session ) );
 
-                if ( genericMaterial.getName().trim().contains( "net.sourceforge.symba.keywords.dummy" ) ) {
-
-                    // Retrieve the MaterialFactorsStore list for input complete materials, to be searched when
-                    // pre-filling metadata into form fields throughout this document.
-                    MaterialFactorsStore currentMf = null;
-                    if ( info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId ) != null &&
-                         info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId )
-                                 .getInputCompleteMaterialFactors().size() >= dummyIcmCount ) {
-
-                        currentMf = info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId )
-                                .getInputCompleteMaterialFactors().get( dummyIcmCount );
-                    }
-
-                    // The displayName is just the name for this group of questions we are about to give to the user.
-                    // Should be something like "Material Characteristics".
-                    //                buffer.append( "Match Found<br/>" );
-                    String displayName = genericMaterial.getName()
-                            .substring( 0, genericMaterial.getName().indexOf( "net.sourceforge.symba.keywords.dummy" ) )
-                            .trim();
-
-                    buffer.append( "<fieldset>" );
-                    buffer.append( "<legend>" ).append( displayName ).append( "</legend>" );
-                    buffer.append( "<ol>" );
-                    buffer.append( System.getProperty( "line.separator" ) );
+                // only increment the count if we have found a dummy material, as those are the only ones we're
+                // printing
+                dummyCount++;
+            }
+        }
+        dummyCount = 0;
+        for ( GenericMaterialMeasurement gmm : assay.getInputMaterials() ) {
+            if ( gmm.getMeasuredMaterial() instanceof GenericMaterial ) {
+                GenericMaterial genericMaterial = ( GenericMaterial ) gmm.getMeasuredMaterial();
+                if ( !dummyMtMaterials.contains( genericMaterial ) &&
+                     genericMaterial.getName().trim().contains( "net.sourceforge.symba.keywords.dummy" ) ) {
 
                     buffer.append(
-                            createSingleMaterialForm( currentMf, null, personBean.getSymbaEntityService(),
-                                    genericMaterial,
-                                    dummyIcmCount, gpaParentEndurantId, currentDataFile ) );
-
-                    // don't include treatment in the above method, as it isn't present when other single materials
-                    // are made for material transformations.
-                    if ( !genericMaterial.getName().contains( " Notreatment" ) ) {
-                        TreatmentScheme treatmentScheme = new TreatmentScheme();
-                        treatmentScheme.setBasic( gpaParentEndurantId, dummyIcmCount, currentDataFile );
-                        buffer.append(
-                                parseTreatment( session, symbaFormSessionBean, currentMf, displayName,
-                                        treatmentScheme ) );
-                    }
-                    buffer.append( "</ol>" );
-                    buffer.append( "</fieldset>" );
-                    buffer.append( System.getProperty( "line.separator" ) );
+                            parseSingleMaterialForm( genericMaterial, info, true, gpaParentEndurantId, currentDataFile,
+                                    dummyCount, symbaFormSessionBean, personBean, session ) );
 
                     // only increment the count if we have found a dummy material, as those are the only ones we're
                     // printing
-                    dummyIcmCount++;
+                    dummyCount++;
                 }
             }
         }
+
+        return buffer;
+    }
+
+    private static StringBuffer parseSingleMaterialForm( GenericMaterial genericMaterial,
+                                                         DatafileSpecificMetadataStore info,
+                                                         boolean isMeasuredMaterial,
+                                                         String gpaParentEndurantId,
+                                                         int currentDataFile,
+                                                         int dummyCount,
+                                                         SymbaFormSessionBean symbaFormSessionBean,
+                                                         PersonBean personBean, HttpSession session ) {
+        StringBuffer buffer = new StringBuffer();
+
+        // Retrieve the MaterialFactorsStore list for input complete materials, to be searched when
+        // pre-filling metadata into form fields throughout this document.
+        MaterialFactorsStore currentMf = null;
+        if ( isMeasuredMaterial ) {
+            if ( info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId ) != null &&
+                 info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId )
+                         .getInputMeasuredMaterialFactors().size() >= dummyCount ) {
+
+                currentMf = info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId )
+                        .getInputMeasuredMaterialFactors().get( dummyCount );
+            }
+        } else {
+            if ( info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId ) != null &&
+                 info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId )
+                         .getInputCompleteMaterialFactors().size() >= dummyCount ) {
+
+                currentMf = info.getGenericProtocolApplicationInfo().get( gpaParentEndurantId )
+                        .getInputCompleteMaterialFactors().get( dummyCount );
+            }
+        }
+
+        // The displayName is just the name for this group of questions we are about to give to the user.
+        // Should be something like "Material Characteristics".
+        //                buffer.append( "Match Found<br/>" );
+        String displayName = genericMaterial.getName()
+                .substring( 0, genericMaterial.getName().indexOf( "net.sourceforge.symba.keywords.dummy" ) )
+                .trim();
+
+        buffer.append( "<fieldset>" );
+        buffer.append( "<legend>" ).append( displayName ).append( "</legend>" );
+        buffer.append( "<ol>" );
+        buffer.append( System.getProperty( "line.separator" ) );
+
+        buffer.append(
+                parseMaterialOntologyTermsAndName( currentMf, null, isMeasuredMaterial,
+                        personBean.getSymbaEntityService(),
+                        genericMaterial, dummyCount, gpaParentEndurantId, currentDataFile ) );
+
+        // don't include treatment in the above method, as it isn't present when other single materials
+        // are made for material transformations.
+        if ( !genericMaterial.getName().contains( " Notreatment" ) ) {
+            TreatmentScheme treatmentScheme = new TreatmentScheme();
+            treatmentScheme.setMeasuredMaterial( isMeasuredMaterial );
+            treatmentScheme.setBasic( gpaParentEndurantId, dummyCount, currentDataFile );
+            buffer.append(
+                    parseTreatment( session, symbaFormSessionBean, currentMf, displayName,
+                            treatmentScheme ) );
+        }
+        buffer.append( "</ol>" );
+        buffer.append( "</fieldset>" );
+        buffer.append( System.getProperty( "line.separator" ) );
+
 
         return buffer;
     }
@@ -149,8 +193,8 @@ public class MaterialTemplateParser {
         return materials;
     }
 
-    private static StringBuffer printMtPullDown( List<Material> mtMaterials,
-                                                 MtOutputAsAssayInputScheme mtScheme ) {
+    private static StringBuffer printMtCheckBoxes( List<Material> mtMaterials,
+                                                   MtOutputAsAssayInputScheme mtScheme ) {
         StringBuffer buffer = new StringBuffer();
 
         // todo add info from session variables
@@ -166,7 +210,7 @@ public class MaterialTemplateParser {
                 }
                 buffer.append( " value=\"" ).append( mtMaterial.getIdentifier() );
                 buffer.append( "\">" );
-                buffer.append( printMaterialPairSummary( ( GenericMaterial ) mtMaterial ) );
+                buffer.append( printMaterialPairSummary( ( GenericMaterial ) mtMaterial, "" ) );
                 buffer.append( "<br>" );
             }
         }
@@ -256,13 +300,13 @@ public class MaterialTemplateParser {
                     // we don't want to put anything in the form fields as default values, unless its in
                     // the session already.
                     buffer.append(
-                            createSingleMaterialForm( specimenMfs, null,
-                                    personBean.getSymbaEntityService(), ( GenericMaterial ) material, 0,
+                            parseMaterialOntologyTermsAndName( specimenMfs, null,
+                                    true, personBean.getSymbaEntityService(), ( GenericMaterial ) material, 0,
                                     gpa.getEndurant().getIdentifier(), 0 ) );
                 } else {
                     buffer.append(
-                            createSingleMaterialForm( specimenMfs, ( GenericMaterial ) material,
-                                    personBean.getSymbaEntityService(), ( GenericMaterial ) material, 0,
+                            parseMaterialOntologyTermsAndName( specimenMfs, ( GenericMaterial ) material,
+                                    true, personBean.getSymbaEntityService(), ( GenericMaterial ) material, 0,
                                     gpa.getEndurant().getIdentifier(), 0 ) );
                 }
             }
@@ -330,10 +374,10 @@ public class MaterialTemplateParser {
      * @param topLevelProtocolName the name of the top-level protocol for the investigation
      * @return the list of dummy Materials that are inputs to material transformations
      */
-    public static HashMap<String, Material> getDummyBaseMaterials( SymbaEntityService symbaEntityService,
-                                                                   String topLevelProtocolName ) {
+    public static HashMap<String, ArrayList<Material>> getDummyBaseMaterials( SymbaEntityService symbaEntityService,
+                                                                              String topLevelProtocolName ) {
 
-        HashMap<String, Material> materials = new HashMap<String, Material>();
+        HashMap<String, ArrayList<Material>> materials = new HashMap<String, ArrayList<Material>>();
 
         // material transformations can only be retrieved via the dummy GPAs, as it is only there where the
         // fact that it is a material transformation is stored. So we'll take these and use them later to
@@ -347,7 +391,7 @@ public class MaterialTemplateParser {
                     materials
                             .put( genericProtocolApplication.getIdentifier() + "::" +
                                   genericProtocolApplication.getProtocol().getIdentifier(),
-                                    genericProtocolApplication.getOutputMaterials().iterator().next() );
+                                    new ArrayList<Material>( genericProtocolApplication.getOutputMaterials() ) );
                 }
             }
         }
@@ -370,16 +414,24 @@ public class MaterialTemplateParser {
 //        return buffer;
 //    }
 
-    public static StringBuffer printMaterialPairSummary( GenericMaterial outputMaterial ) {
+    public static StringBuffer printMaterialPairSummary( GenericMaterial genericMaterial, String ioStatus ) {
 
         StringBuffer buffer = new StringBuffer();
 
-        // there is only one output material. show its name as the name of the paired material
-        buffer.append( outputMaterial.getName() );
+        if ( ioStatus.length() > 0 ) {
+            if ( ioStatus.equals( "output" ) ) {
+                buffer.append( "Output: " );
+            } else if ( ioStatus.startsWith( "input" ) ) {
+                buffer.append( "Input: " );
+            }
+        }
+        buffer.append( genericMaterial.getName() );
         buffer.append( ", consisting of: " );
-        // there will be multiple characteristics. One points to the whole descriptor parse. The others
-        // are each one experimental condition. 
-        for ( OntologyTerm ontologyTerm : outputMaterial.getCharacteristics() ) {
+
+        // print the material type
+        buffer.append( parseOntologyTerm( genericMaterial.getMaterialType() ) );
+        // print any characteristics
+        for ( OntologyTerm ontologyTerm : genericMaterial.getCharacteristics() ) {
             buffer.append( parseOntologyTerm( ontologyTerm ) );
         }
 
@@ -424,7 +476,8 @@ public class MaterialTemplateParser {
             // if there was nothing in the names, then it is a simple ontologyindividual. Print the term name and,
             // if it's not a dummy, the ontology source name.
             if ( names.length() == 0 ) {
-                if ( !ontologyTerm.getName().contains( "net.sourceforge.symba.keywords.dummy" ) ) {
+                if ( ontologyTerm.getName() == null ||
+                     !ontologyTerm.getName().contains( "net.sourceforge.symba.keywords.dummy" ) ) {
                     // if it isn't a dummy, also add the ontology source name in order to show the class of term
                     buffer.append( ontologyTerm.getOntologySource().getName() ).append( "(" );
                     buffer.append( ontologyTerm.getTerm() );
@@ -527,9 +580,11 @@ public class MaterialTemplateParser {
             // now we check and note if additional field necessary (i.e. term contains "Dummy") and if dropdown or not:
             OntologyTerm oterm = ( OntologyTerm ) symbaEntityService
                     .getLatestByEndurant( ontologyIndividual.getEndurant().getIdentifier() );
-            boolean newTermButtonWanted;
+            boolean newTermButtonWanted = false;
             if ( !chs.isNovel() ) {
-                newTermButtonWanted = oterm.getName().contains( "net.sourceforge.symba.keywords.dummy" );
+                if ( oterm.getName() != null ) {
+                    newTermButtonWanted = oterm.getName().contains( "net.sourceforge.symba.keywords.dummy" );
+                }
             } else {
                 // the dummy may not be in the current individual, but instead somewhere inside
                 // the list of term and accession pairs.
@@ -584,7 +639,8 @@ public class MaterialTemplateParser {
                 buffer.append( System.getProperty( "line.separator" ) );
                 if ( !chs.isNovel() ) {
                     for ( OntologyTerm ot : ontologyTerms ) {
-                        if ( !ot.getName().contains( "net.sourceforge.symba.keywords.dummy" ) ) {
+                        if ( ot.getName() == null ||
+                             !ot.getName().contains( "net.sourceforge.symba.keywords.dummy" ) ) {
                             buffer.append( printSingleOption( mfs, useAsMfs,
                                     chs.getSourceEndurant(),
                                     ot.getEndurant().getIdentifier(), ot.getTerm() ) );
@@ -616,8 +672,7 @@ public class MaterialTemplateParser {
                     buffer.append( "<table><tr><td>" );
                 }
                 buffer.append( "<td>" );
-                String v1 = "ontologyTextfield::" + chs.write() + "::" +
-                            chs.getSourceEndurant() + "::" + ontoCount;
+                String v1 = "ontologyTextfield::" + chs.getSourceEndurant() + "::" + ontoCount + "::" + chs.write();
                 buffer.append( "<input type=\"button\" name=\"addNewCharacteristic\" value=\"New Term" )
                         .append( "\" onclick=\"doNewTermEntered('" )
                         .append( v1 ).append( "','" )
@@ -929,20 +984,22 @@ public class MaterialTemplateParser {
     /**
      * @param mfs                used to fill in default values as a first choice. If null, will try to find defaults in useAsMfs
      * @param useAsMfs           Will be used to fill in default values if mfs is null. May be the same object as genericMaterial
+     * @param isMeasuredMaterial whether or not this information is for a measured material or a complete material
      * @param symbaEntityService connection to the database
      * @param genericMaterial    the material that provides structure to the form.  May be the same object as useAsMfs
      * @param materialCount      the current material we're in
      * @param parentGpaEndurant  (usually) the parent protocol endurant for the gpa
-     * @param currentDatafile    the number of the current data file
-     * @return the portion of the form, in html.
+     * @param currentDatafile    the number of the current data file @return the portion of the form, in html.
+     * @return the newly-added-to string buffer for output to the jsp
      */
-    private static StringBuffer createSingleMaterialForm( MaterialFactorsStore mfs,
-                                                          GenericMaterial useAsMfs,
-                                                          SymbaEntityService symbaEntityService,
-                                                          GenericMaterial genericMaterial,
-                                                          int materialCount,
-                                                          String parentGpaEndurant,
-                                                          int currentDatafile ) {
+    private static StringBuffer parseMaterialOntologyTermsAndName( MaterialFactorsStore mfs,
+                                                                   GenericMaterial useAsMfs,
+                                                                   boolean isMeasuredMaterial,
+                                                                   SymbaEntityService symbaEntityService,
+                                                                   GenericMaterial genericMaterial,
+                                                                   int materialCount,
+                                                                   String parentGpaEndurant,
+                                                                   int currentDatafile ) {
         StringBuffer buffer = new StringBuffer();
 
         boolean requestName = false;
@@ -952,10 +1009,12 @@ public class MaterialTemplateParser {
         }
 
         OntologyReplacementScheme ors = new OntologyReplacementScheme();
+        ors.setMeasuredMaterial( isMeasuredMaterial );
         ors.setBasic( parentGpaEndurant, materialCount, currentDatafile );
         buffer.append( parseOntologyReplacements( mfs, useAsMfs, genericMaterial, ors ) );
 
         MaterialNameScheme mns = new MaterialNameScheme();
+        mns.setMeasuredMaterial( isMeasuredMaterial );
         mns.setBasic( parentGpaEndurant, materialCount, currentDatafile );
         // Will show the user-inputted material name if already present
         if ( requestName ) {
@@ -981,11 +1040,13 @@ public class MaterialTemplateParser {
 
         if ( genericMaterial.getMaterialType() != null ) {
             MaterialTypeScheme mts = new MaterialTypeScheme();
+            mts.setMeasuredMaterial( isMeasuredMaterial );
             mts.setBasic( parentGpaEndurant, materialCount, currentDatafile );
             buffer.append( parseMaterialType( symbaEntityService, mfs, useAsMfs, genericMaterial, mts ) );
         }
 
         CharacteristicScheme chs = new CharacteristicScheme();
+        chs.setMeasuredMaterial( isMeasuredMaterial );
         chs.setBasic( parentGpaEndurant, materialCount, currentDatafile );
         buffer.append( parseCharacteristics( symbaEntityService, mfs, useAsMfs, genericMaterial, chs ) );
 

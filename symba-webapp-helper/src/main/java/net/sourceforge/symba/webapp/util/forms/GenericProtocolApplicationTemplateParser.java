@@ -59,16 +59,23 @@ public class GenericProtocolApplicationTemplateParser {
                                 symbaFormSessionBean, info, currentDataFile,
                                 genericProtocolApplication ) );
 
-                buffer.append( "<fieldset>" ).append( System.getProperty( "line.separator" ) );
                 // make a shorter version of the chosen assay protocol name
                 String shortProtocolName = chosenAssayProtocol.getName();
                 if ( chosenAssayProtocol.getName().contains( "(Component of" ) ) {
                     shortProtocolName =
-                            chosenAssayProtocol.getName().substring( 0, chosenAssayProtocol.getName().indexOf( "(Component of" ) );
+                            chosenAssayProtocol.getName()
+                                    .substring( 0, chosenAssayProtocol.getName().indexOf( "(Component of" ) );
                 }
-                buffer.append( "<legend>Further Details of the " ).append( shortProtocolName ).append( "</legend>" );
-                buffer.append( System.getProperty( "line.separator" ) ).append( "<ol>" )
-                        .append( System.getProperty( "line.separator" ) );
+
+                if ( !genericProtocolApplication.getDescriptions().isEmpty() ||
+                     !genericProtocolApplication.getParameterValues().isEmpty() ) {
+                    buffer.append( "<fieldset>" ).append( System.getProperty( "line.separator" ) );
+                    buffer.append( "<legend>Further Details of the " ).append( shortProtocolName )
+                            .append( "</legend>" );
+                    buffer.append( System.getProperty( "line.separator" ) ).append( "<ol>" )
+                            .append( System.getProperty( "line.separator" ) );
+                }
+
                 String gpaParentEndurantId = genericProtocolApplication.getProtocol()
                         .getEndurant()
                         .getIdentifier();
@@ -110,9 +117,12 @@ public class GenericProtocolApplicationTemplateParser {
                 buffer.append( parseParameterValues( info, currentDataFile, genericProtocolApplication,
                         gpaParentEndurantId ) );
 
-                buffer.append( "</ol>" );
-                buffer.append( "</fieldset>" );
-                buffer.append( System.getProperty( "line.separator" ) );
+                if ( !genericProtocolApplication.getDescriptions().isEmpty() ||
+                     !genericProtocolApplication.getParameterValues().isEmpty() ) {
+                    buffer.append( "</ol>" );
+                    buffer.append( "</fieldset>" );
+                    buffer.append( System.getProperty( "line.separator" ) );
+                }
             }
         }
         buffer.append( "<br/>" );

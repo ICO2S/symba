@@ -87,26 +87,30 @@ public class OntologyLoader {
 //            String selectionName = tmpArr[2];
 
             if ( mixedTermInfo.startsWith( "ontologyTextfield::" ) ) {
-                // after ontologyTextfield::characteristicScheme::ontologySourceEndurant::ontoCount
                 CharacteristicScheme chs = new CharacteristicScheme();
-                chs.parse( mixedTermInfo.substring( 19 ) );
                 String[] parsed = mixedTermInfo.split( "::" );
-                // second-to-last section
-                String otseLSID = parsed[parsed.length - 2];
+                // The second field is the one containing the ontology source endurant
+                String otseLSID = parsed[1];
+                // from field position [3] onward, it is the standard characteristic scheme.
+                int prefixLength = parsed[0].length() + 2 + parsed[1].length() + 2 + parsed[2].length() + 2;
+                chs.parse( mixedTermInfo.substring( prefixLength ) );
 
                 //Now we have to insert the single new Term into the DB (method now returns some info rg created oterm):
                 OntologyIndividual addedOI =
                         OntologyLoader.loadOnlyNewOntologytermToDB( validUser, userEntry, otseLSID );
-                //symbaFormSessionBean, validUser , scp).loadOnlyNewOntologytermToDB(userEntry, otseLSID);
-
-                //finally we parse a flag for a redirection back to metadata.jsp
 
                 // Now remove preexisting user selections for this entry from just this data files' MaterialFactorStores...
                 MaterialFactorsStore mf;
                 if ( isDuringAssayProcessing ) {
-                    mf = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( chs.getDatafileNumber() )
-                            .getGenericProtocolApplicationInfo().get( chs.getParentOfGpaEndurant() )
-                            .getInputCompleteMaterialFactors().get( chs.getMaterialCount() );
+                    if ( chs.isMeasuredMaterial() ) {
+                        mf = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( chs.getDatafileNumber() )
+                                .getGenericProtocolApplicationInfo().get( chs.getParentOfGpaEndurant() )
+                                .getInputMeasuredMaterialFactors().get( chs.getMaterialCount() );
+                    } else {
+                        mf = symbaFormSessionBean.getDatafileSpecificMetadataStores().get( chs.getDatafileNumber() )
+                                .getGenericProtocolApplicationInfo().get( chs.getParentOfGpaEndurant() )
+                                .getInputCompleteMaterialFactors().get( chs.getMaterialCount() );
+                    }
                 } else {
                     mf = symbaFormSessionBean.getSpecimenToBeUploaded();
                 }
@@ -151,10 +155,17 @@ public class OntologyLoader {
                 }
 
                 if ( isDuringAssayProcessing ) {
-                    symbaFormSessionBean.getDatafileSpecificMetadataStores()
-                            .get( chs.getDatafileNumber() ).getGenericProtocolApplicationInfo()
-                            .get( chs.getParentOfGpaEndurant() )
-                            .setInputCompleteMaterialFactor( mf, chs.getMaterialCount() );
+                    if ( chs.isMeasuredMaterial() ) {
+                        symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                                .get( chs.getDatafileNumber() ).getGenericProtocolApplicationInfo()
+                                .get( chs.getParentOfGpaEndurant() )
+                                .setInputMeasuredMaterialFactor( mf, chs.getMaterialCount() );
+                    } else {
+                        symbaFormSessionBean.getDatafileSpecificMetadataStores()
+                                .get( chs.getDatafileNumber() ).getGenericProtocolApplicationInfo()
+                                .get( chs.getParentOfGpaEndurant() )
+                                .setInputCompleteMaterialFactor( mf, chs.getMaterialCount() );
+                    }
                 } else {
                     symbaFormSessionBean.setSpecimenToBeUploaded( mf );
                 }

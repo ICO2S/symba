@@ -4,6 +4,10 @@ import net.sourceforge.fuge.bio.material.Material;
 import net.sourceforge.fuge.bio.material.GenericMaterial;
 import net.sourceforge.fuge.bio.data.Data;
 import net.sourceforge.fuge.common.protocol.*;
+import net.sourceforge.fuge.common.description.Description;
+import net.sourceforge.fuge.common.measurement.ComplexValue;
+import net.sourceforge.fuge.common.measurement.AtomicValue;
+import net.sourceforge.fuge.service.EntityService;
 import net.sourceforge.symba.service.SymbaEntityService;
 import net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore;
 import net.sourceforge.symba.webapp.util.SymbaFormSessionBean;
@@ -73,21 +77,73 @@ public class ActionTemplateParser {
         }
     }
 
-    public static LinkedHashSet<ActionHierarchyScheme> createFullHierarchy( SymbaEntityService symbaEntityService,
-                                                                            LinkedHashSet<ActionHierarchyScheme> hierarchy,
-                                                                            ActionHierarchyScheme listItem,
-                                                                            GenericProtocol genericProtocol ) {
+    /**
+     * @param symbaEntityService connection to the database
+     * @param hierarchy          a HashMap where the key is the assay / material transformation GPA identifier, and the value
+     *                           is an ArrayList of the action endurants, in order, from most general to most specific.
+     * @param listItem           the current setting of the value of the hierarchy key-value pair
+     * @param genericGpa         the current gpa
+     * @param topLevelGpa        the top-level gpa of the top-level protocol
+     * @return the updated hierarchy variable
+     */
+    public static HashMap<String, ArrayList<String>> createGpaActionHierarchy( SymbaEntityService symbaEntityService,
+                                                                               HashMap<String, ArrayList<String>> hierarchy,
+                                                                               ArrayList<String> listItem,
+                                                                               GenericProtocolApplication genericGpa,
+                                                                               GenericProtocolApplication topLevelGpa ) {
+        if ( !genericGpa.getActionApplications().isEmpty() ) {
+            Set<ActionApplication> actionApplications = ( Set<ActionApplication> ) genericGpa.getActionApplications();
+            // No need to worry about inherent ordering of AAs at the same level of the hierarchy
+            for ( ActionApplication actionApplication : actionApplications ) {
+                Action action = actionApplication.getAction();
+                if ( action instanceof GenericAction ) {
+                    GenericAction genericAction = ( GenericAction ) action;
+                    // each time you get to a new action in the list and we are back at the top-level protocol,
+                    // you need to reset the listItem.
+                    if ( genericGpa.getIdentifier().equals( topLevelGpa.getIdentifier() ) ) {
+                        listItem = new ArrayList<String>();
+                    }
+                    ProtocolApplication childProtocolApplication =
+                            ( ProtocolApplication ) symbaEntityService.getLatestByEndurant(
+                                    actionApplication.getChildProtocolApplication().getEndurant().getIdentifier() );
+                    listItem.add( genericAction.getEndurant().getIdentifier() );
+                    if ( childProtocolApplication instanceof GenericProtocolApplication ) {
+                        hierarchy = createGpaActionHierarchy( symbaEntityService, hierarchy, listItem,
+                                ( GenericProtocolApplication ) childProtocolApplication, topLevelGpa );
+                        // if this is an assay/mt-level, then remove the last action information after adding
+                        // the hierarchy item
+                        if ( childProtocolApplication.getActionApplications().isEmpty() ) {
+                            listItem.remove( listItem.size() - 1 );
+                        }
+                    }
+                }
+            }
+        } else {
+            // we're at the base of the tree. Add the current list to the hierarchy
+            hierarchy.put( genericGpa.getIdentifier(), new ArrayList<String>( listItem ) );
+        }
+        return hierarchy;
+    }
+
+    public static ArrayList<ActionHierarchyScheme> createProtocolActionHierarchy( SymbaEntityService symbaEntityService,
+                                                                                  ArrayList<ActionHierarchyScheme> hierarchy,
+                                                                                  ActionHierarchyScheme listItem,
+                                                                                  GenericProtocol genericProtocol,
+                                                                                  GenericProtocol topLevelProtocol ) {
 
         if ( !genericProtocol.getActions().isEmpty() ) {
             Set<Action> actions = ( Set<Action> ) genericProtocol.getActions();
             // ensure they are added in the order of their action ordinals.
             for ( int count = 1; count <= actions.size(); count++ ) {
-                // each time you get to a new action in the list, you need to reset the listItem.
-                listItem = new ActionHierarchyScheme();
                 for ( Action action : actions ) {
                     if ( action instanceof GenericAction ) {
                         GenericAction genericAction = ( GenericAction ) action;
                         if ( count == genericAction.getActionOrdinal() ) {
+                            // each time you get to a new action in the list and we are back at the top-level protocol,
+                            // you need to reset the listItem.
+                            if ( genericProtocol.getIdentifier().equals( topLevelProtocol.getIdentifier() ) ) {
+                                listItem = new ActionHierarchyScheme();
+                            }
                             Protocol childProtocol = ( Protocol ) symbaEntityService.getLatestByEndurant(
                                     genericAction.getChildProtocol().getEndurant().getIdentifier() );
                             ActionInformation ai = new ActionInformation( genericProtocol.getIdentifier(),
@@ -96,38 +152,42 @@ public class ActionTemplateParser {
                                     childProtocol.getIdentifier() );
                             listItem.add( ai );
                             if ( childProtocol instanceof GenericProtocol ) {
-                                hierarchy = createFullHierarchy( symbaEntityService, hierarchy, listItem,
-                                        ( GenericProtocol ) childProtocol );
+                                hierarchy = createProtocolActionHierarchy( symbaEntityService, hierarchy, listItem,
+                                        ( GenericProtocol ) childProtocol, topLevelProtocol );
+                                // if this is an assay-level, then remove the last action information after adding
+                                // the hierarchy item
+                                if ( ( ( GenericProtocol ) childProtocol ).getActions().isEmpty() ) {
+                                    listItem.remove( listItem.getActionHierarchy().size() - 1 );
+                                }
                             }
                         }
                     }
                 }
             }
         } else {
-            // we're at the base of the tree. Add the final assay / MT action information, then add to the hierarchy
-            hierarchy.add( listItem );
+            // we're at the base of the tree. Add the current list to the hierarchy
+            hierarchy.add( new ActionHierarchyScheme( listItem ) );
         }
         return hierarchy;
-
     }
 
-    private static StringBuffer parseDummyHierarchy( SymbaFormSessionBean symbaFormSessionBean,
-                                                     LinkedHashSet<ActionHierarchyScheme> hierarchy,
+    private static StringBuffer parseDummyHierarchy( EntityService entityService,
+                                                     ArrayList<ActionHierarchyScheme> hierarchy,
                                                      Integer datafileNumber ) {
-        return parseHierarchy( symbaFormSessionBean, hierarchy, null, null, true, datafileNumber );
+        return parseHierarchy( entityService, hierarchy, null, null, null, true, datafileNumber );
 
     }
 
-    private static StringBuffer parseHierarchy( SymbaFormSessionBean symbaFormSessionBean,
-                                                LinkedHashSet<ActionHierarchyScheme> hierarchy,
-                                                HashMap<String, Material> ownedMaterials,
+    private static StringBuffer parseHierarchy( EntityService entityService, ArrayList<ActionHierarchyScheme> hierarchy,
+                                                HashMap<String, ArrayList<Material>> ownedMaterials,
                                                 boolean isDummy ) {
-        return parseHierarchy( symbaFormSessionBean, hierarchy, ownedMaterials, null, isDummy, null );
+        return parseHierarchy( entityService, hierarchy, null, ownedMaterials, null, isDummy, null );
     }
 
-    public static StringBuffer parseHierarchy( SymbaFormSessionBean symbaFormSessionBean,
-                                               LinkedHashSet<ActionHierarchyScheme> hierarchy,
-                                               HashMap<String, Material> ownedMaterials,
+    public static StringBuffer parseHierarchy( EntityService entityService,
+                                               ArrayList<ActionHierarchyScheme> hierarchy,
+                                               HashMap<String, ArrayList<String>> gpaHierarchy,
+                                               HashMap<String, ArrayList<Material>> ownedMaterials,
                                                HashMap<String, Set<Data>> ownedDataItems,
                                                boolean isDummy,
                                                Integer datafileNumber ) {
@@ -211,8 +271,8 @@ public class ActionTemplateParser {
                 }
 
                 StringBuffer actionContents =
-                        printActionContents( item, actionInformation, ownedMaterials, ownedDataItems, isDummy,
-                                noChoice );
+                        printActionContents( entityService, gpaHierarchy, item, actionInformation, ownedMaterials,
+                                ownedDataItems, isDummy, noChoice );
 
                 // if action not present, print out.
                 if ( !previousActions.contains( actionInformation.getActionEndurant() ) ) {
@@ -255,8 +315,11 @@ public class ActionTemplateParser {
         return buffer;
     }
 
-    private static StringBuffer printActionContents( ActionHierarchyScheme ahs, ActionInformation actionInformation,
-                                                     HashMap<String, Material> ownedMaterials,
+    private static StringBuffer printActionContents( EntityService entityService,
+                                                     HashMap<String, ArrayList<String>> gpaHierarchy,
+                                                     ActionHierarchyScheme ahs,
+                                                     ActionInformation actionInformation,
+                                                     HashMap<String, ArrayList<Material>> ownedMaterials,
                                                      HashMap<String, Set<Data>> ownedDataItems,
                                                      boolean isDummy,
                                                      boolean noChoice ) {
@@ -268,46 +331,112 @@ public class ActionTemplateParser {
             if ( ownedMaterials != null ) {
                 for ( String gpaIdAndPrId : ownedMaterials.keySet() ) {
                     String[] parsedOwnedItemsKey = gpaIdAndPrId.split( "::" );
-                    // check that both share the same *protocol*
-                    if ( parsedOwnedItemsKey[1]
-                            .equals( actionInformation.getProtocolOfActionIdentifier() ) ) {
+                    // when displaying an already-loaded material, there is extra information in the third position
+                    // describing whether it's an input or output material
+                    String ioStatus = "";
+                    String justGpaAndPrId = gpaIdAndPrId;
+                    if ( parsedOwnedItemsKey.length >= 3 ) {
+                        ioStatus = parsedOwnedItemsKey[2];
+                        justGpaAndPrId = parsedOwnedItemsKey[0] + "::" + parsedOwnedItemsKey[1];
+                    }
+                    // check that both share the same hierarchy of actions if the gpaHierarchy is not null,
+                    // alternatively check that they have the same *protocol*.
+                    boolean matchFound = false;
+                    if ( gpaHierarchy == null || gpaHierarchy.isEmpty() ) {
+                        matchFound = parsedOwnedItemsKey[1].equals( actionInformation.getProtocolOfActionIdentifier() );
+                    } else if ( gpaHierarchy.get( parsedOwnedItemsKey[0] ) != null && ahs.getActionHierarchy()
+                            .get( ahs.getActionHierarchy().size() - 1 ).getActionEndurant()
+                            .equals( actionInformation.getActionEndurant() ) ) {
+                        // it must be a full match across the entire ActionHierarchyScheme, and the current
+                        // actionInformation must be the last item.
+                        matchFound = checkGpaHierarchyForMatch( gpaHierarchy.get( parsedOwnedItemsKey[0] ),
+                                ahs.getActionHierarchy() );
+                    }
+
+                    if ( matchFound ) {
 
                         ahs.setGpaIdentifier( parsedOwnedItemsKey[0] );
-                        // print options for specimen, if present.
-                        buffer.append( System.getProperty( "line.separator" ) );
-                        buffer.append( "      <li>" );
-                        buffer.append( "<input type=\"radio\" name=\"" ).append( ahs.write() )
-                                .append( "\" value=\"" ).append( ahs.writeValueAttribute() );
-                        if ( noChoice ) {
-                            buffer.append( "\" checked=\"checked\">" );
-                        } else {
-                            buffer.append( "\">" );
+
+                        GenericProtocolApplication gpa =
+                                ( GenericProtocolApplication ) entityService.getIdentifiable( parsedOwnedItemsKey[0] );
+
+                        // print the beginning of the list element to contain all info for this gpa
+                        buffer.append( printStartOfGpaInfo( gpa ) );
+                        buffer.append( printEquipmentUsed( gpa.getEquipmentApplications() ) );
+
+                        for ( Material material : ownedMaterials.get( gpaIdAndPrId ) ) {
+                            // print options for specimen, if present.
+                            buffer.append( System.getProperty( "line.separator" ) );
+                            buffer.append( "      <li>" );
+                            buffer.append( "<input type=\"radio\" name=\"" ).append( ahs.write() )
+                                    .append( "\" value=\"" ).append( ahs.writeValueAttribute() );
+                            if ( noChoice ) {
+                                buffer.append( "\" checked=\"checked\">" );
+                            } else {
+                                buffer.append( "\">" );
+                            }
+                            if ( isDummy ) {
+                                buffer.append( MaterialTemplateParser.printDummyBaseMaterialSummary(
+                                        material ) );
+                            } else {
+                                buffer.append( MaterialTemplateParser.printMaterialPairSummary(
+                                        ( GenericMaterial ) material, ioStatus ) );
+                            }
+                            buffer.append( "</li>" );
+                            buffer.append( System.getProperty( "line.separator" ) );
                         }
-                        if ( isDummy ) {
-                            buffer.append( MaterialTemplateParser.printDummyBaseMaterialSummary(
-                                    ownedMaterials.get( gpaIdAndPrId ) ) );
-                        } else {
-                            buffer.append( MaterialTemplateParser.printMaterialPairSummary(
-                                    ( GenericMaterial ) ownedMaterials.get( gpaIdAndPrId ) ) );
+                        if ( ownedDataItems != null && ownedDataItems.get( justGpaAndPrId ) != null ) {
+                            // add any associated data
+                            buffer.append( DataTemplateParser.printDataSummary(
+                                    ownedDataItems.get( justGpaAndPrId ), noChoice, ahs.write(),
+                                    ahs.writeValueAttribute() ) );
+                            buffer.append( System.getProperty( "line.separator" ) );
+
+                            // remove the item you've just printed, so it doesn't get printed twice
+                            ownedDataItems.remove( justGpaAndPrId );
+
                         }
-                        buffer.append( "</li>" );
+                        // close the list element containing all info for this gpa
+                        buffer.append( "      </ul>" );
+                        buffer.append( "      </li>" );
                         buffer.append( System.getProperty( "line.separator" ) );
+
                     }
                 }
             }
             if ( ownedDataItems != null ) {
                 for ( String gpaIdAndPrId : ownedDataItems.keySet() ) {
                     String[] parsedOwnedItemsKey = gpaIdAndPrId.split( "::" );
-                    // check that both share the same *protocol*
-                    if ( parsedOwnedItemsKey[1]
-                            .equals( actionInformation.getProtocolOfActionIdentifier() ) ) {
-
+                    // check that both share the same hierarchy of actions if the gpaHierarchy is not null,
+                    // alternatively check that they have the same *protocol*.
+                    boolean matchFound = false;
+                    if ( gpaHierarchy == null || gpaHierarchy.isEmpty() ) {
+                        matchFound = parsedOwnedItemsKey[1].equals( actionInformation.getProtocolOfActionIdentifier() );
+                    } else if ( gpaHierarchy.get( parsedOwnedItemsKey[0] ) != null && ahs.getActionHierarchy()
+                            .get( ahs.getActionHierarchy().size() - 1 ).getActionEndurant()
+                            .equals( actionInformation.getActionEndurant() ) ) {
+                        // it must be a full match across the entire ActionHierarchyScheme, and the current
+                        // actionInformation must be the last item.
+                        matchFound = checkGpaHierarchyForMatch( gpaHierarchy.get( parsedOwnedItemsKey[0] ),
+                                ahs.getActionHierarchy() );
+                    }
+                    if ( matchFound ) {
                         ahs.setGpaIdentifier( parsedOwnedItemsKey[0] );
+                        GenericProtocolApplication gpa =
+                                ( GenericProtocolApplication ) entityService.getIdentifiable( parsedOwnedItemsKey[0] );
+                        // print the beginning of the list element to contain all info for this gpa
+                        buffer.append( printStartOfGpaInfo( gpa ) );
+                        buffer.append( printEquipmentUsed( gpa.getEquipmentApplications() ) );
+
                         // print data information, if present.
                         // ownedDataItems will never contain dummy information
                         buffer.append( DataTemplateParser.printDataSummary(
                                 ownedDataItems.get( gpaIdAndPrId ), noChoice, ahs.write(),
                                 ahs.writeValueAttribute() ) );
+                        buffer.append( System.getProperty( "line.separator" ) );
+                        // close the list element containing all info for this gpa
+                        buffer.append( "      </ul>" );
+                        buffer.append( "      </li>" );
                         buffer.append( System.getProperty( "line.separator" ) );
                     }
                 }
@@ -317,26 +446,134 @@ public class ActionTemplateParser {
         return buffer;
     }
 
-    private static StringBuffer parseDatafiles( SymbaFormSessionBean symbaFormSessionBean,
-                                                LinkedHashSet<ActionHierarchyScheme> hierarchy ) {
+    private static StringBuffer printEquipmentUsed( Collection<EquipmentApplication> equipmentApplications ) {
+
+        StringBuffer buffer = new StringBuffer();
+        for ( EquipmentApplication equipmentApplication : equipmentApplications ) {
+            buffer.append( "<li>Equipment used: " )
+                    .append( equipmentApplication.getAppliedEquipment().getName() );
+            buffer.append( "<ul>" );
+            // print and save the equipment description
+            String equipmentDescription = "User description: ";
+            for ( Description description : ( Set<Description> ) equipmentApplication
+                    .getDescriptions() ) {
+                equipmentDescription += description.getText();
+            }
+            buffer.append( "<li>" ).append( equipmentDescription ).append( "</li>" );
+            // print and save the equipment ontology terms and atomic values
+            for ( ParameterValue parameterValue : ( Set<ParameterValue> ) equipmentApplication
+                    .getParameterValues() ) {
+                if ( parameterValue.getValue() instanceof AtomicValue ) {
+                    buffer.append( "<li>" );
+                    if ( parameterValue.getParameter().getName() != null ) {
+                        buffer.append( parameterValue.getParameter().getName() ).append( ": " );
+                    }
+                    buffer.append( ( ( AtomicValue ) parameterValue.getValue() ).getValue() )
+                            .append( "</li>" );
+                } else if ( parameterValue.getValue() instanceof ComplexValue ) {
+                    // not sure how to display the ontology sources yet
+//                                                    + " (From Ontology Source: " +
+//                                                    ( ( ComplexParameterValue ) parameterValue ).getParameterValue().getOntologySource().getName()
+//                                                    + ")"
+                    buffer.append( "<li>" ).append( parameterValue.getParameter().getName() ).append( ": " )
+                            .append( ( ( ComplexValue ) parameterValue.getValue() ).getValue().getTerm() )
+                            .append( "</li>" );
+                }
+            }
+            buffer.append( "</ul>" );
+            buffer.append( "</li>" );
+        }
+        return buffer;
+    }
+
+    private static StringBuffer printStartOfGpaInfo( GenericProtocolApplication gpa ) {
+
+        StringBuffer buffer = new StringBuffer();
+
+        // print out containing list element for the current GPA (may be >1 GPA per action/protocol.
+        // print out any information written about the "protocol" and stored in the GPA
+        String text = "<li> User description: ";
+        if ( gpa.getDescriptions() != null ) {
+            for ( Description description : gpa.getDescriptions() ) {
+                String currentText = description.getText();
+                if ( currentText.startsWith( "ProtocolDescription = " ) ) {
+                    currentText = currentText.substring( 22 );
+                }
+                text += currentText + " ";
+            }
+        }
+        if ( text.equals( "<li> User description: " ) ) {
+            text += "none";
+        }
+        text += "</li>";
+
+        String parameterText = "";
+        // print out information on any atomic parameters of the gpa
+        if ( !gpa.getParameterValues().isEmpty() ) {
+            // print and save all atomic parameters
+            for ( ParameterValue parameterValue : ( Set<ParameterValue> ) gpa
+                    .getParameterValues() ) {
+                if ( parameterValue.getValue() instanceof AtomicValue ) {
+                    parameterText += "<li>";
+                    if ( parameterValue.getParameter().getName() != null ) {
+                        parameterText += parameterValue.getParameter().getName() + ": ";
+                    }
+                    parameterText += ( ( AtomicValue ) parameterValue.getValue() ).getValue() + "</li>";
+                }
+            }
+        }
+
+        if ( text.length() > 0 || parameterText.length() > 0 ) {
+            buffer.append( "<li>Protocol Information: " );
+            buffer.append( "<ul>" );
+            buffer.append( text );
+            buffer.append( parameterText );
+            // don't close this yet - all other info will be part of this section
+        }
+
+        return buffer;
+    }
+
+    private static boolean checkGpaHierarchyForMatch( ArrayList<String> listOfActions,
+                                                      List<ActionInformation> actionInformations ) {
+
+        // first, they should contain the same number of items
+        if ( listOfActions.size() != actionInformations.size() ) {
+            return false;
+        }
+
+        // next, each action, in order, must match.
+        for ( int iii = 0; iii < listOfActions.size(); iii++ ) {
+            String actionEndurantLoa = listOfActions.get( iii );
+            String actionEndurantAi = actionInformations.get( iii ).getActionEndurant();
+            if ( !actionEndurantLoa.equals( actionEndurantAi ) ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static StringBuffer parseDatafiles( EntityService entityService, SymbaFormSessionBean symbaFormSessionBean,
+                                                ArrayList<ActionHierarchyScheme> hierarchy ) {
         StringBuffer buffer = new StringBuffer();
 
         buffer.append( "<ol>" );
         int counter = 0;
         for ( DatafileSpecificMetadataStore dsms : symbaFormSessionBean.getDatafileSpecificMetadataStores() ) {
             buffer.append( "<li>" );
-            buffer.append( "<table width=\"100%\" style=\"table-layout: fixed;\">");
+            buffer.append( "<table width=\"100%\" style=\"table-layout: fixed;\">" );
             buffer.append( System.getProperty( "line.separator" ) );
-            buffer.append( "<col width=\"250\"/>");
+            buffer.append( "<col width=\"250\"/>" );
             buffer.append( System.getProperty( "line.separator" ) );
-            buffer.append( "<col width=\"*\"/>");
+            buffer.append( "<col width=\"*\"/>" );
             buffer.append( System.getProperty( "line.separator" ) );
-            buffer.append("<tr><td>" );
+            buffer.append( "<tr><td>" );
             buffer.append( System.getProperty( "line.separator" ) );
             buffer.append( dsms.getOldFilename() ).append( " (" ).append( dsms.getFriendlyId() ).append( "):" );
             buffer.append( "</td><td>" );
             buffer.append( System.getProperty( "line.separator" ) );
-            buffer.append( parseDummyHierarchy( symbaFormSessionBean, hierarchy, counter ) );
+            buffer.append( parseDummyHierarchy( entityService, hierarchy, counter ) );
             buffer.append( "</td></tr></table>" );
             buffer.append( System.getProperty( "line.separator" ) );
             buffer.append( "</li>" );
@@ -348,27 +585,27 @@ public class ActionTemplateParser {
         return buffer;
     }
 
-    private static StringBuffer parseBaseMaterials( SymbaFormSessionBean symbaFormSessionBean,
-                                                    LinkedHashSet<ActionHierarchyScheme> hierarchy,
-                                                    HashMap<String, Material> ownedMaterials,
-                                                    boolean isDummy ) {
+    private static StringBuffer parseBaseMaterials( ArrayList<ActionHierarchyScheme> hierarchy,
+                                                    HashMap<String, ArrayList<Material>> ownedMaterials,
+                                                    boolean isDummy, EntityService entityService ) {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append( parseHierarchy( symbaFormSessionBean, hierarchy, ownedMaterials, isDummy ) );
+        buffer.append( parseHierarchy( entityService, hierarchy, ownedMaterials, isDummy ) );
 
         return buffer;
     }
 
     /**
      * @param ownedMaterials       holds information about the output materials of MTs. Ignored for assay actions.
+     * @param entityService        holds fuge connection to database
      * @param symbaEntityService   holds connection to database
      * @param symbaFormSessionBean holds the session info
      * @param typeToDisplay        PROTOCOL_TYPE MATERIAL_TRANSFORMATION or ASSAY only. Other types will be ignored.
-     * @param isDummy              ignored for assay actions. Used in MTs to determine what the id of the form element should be.
-     * @return the html to display
+     * @param isDummy              ignored for assay actions. Used in MTs to determine what the id of the form element should be. @return the html to display
+     * @return the part of the form that this method creates
      */
-    private static StringBuffer parse( HashMap<String, Material> ownedMaterials,
-                                       SymbaEntityService symbaEntityService,
+    private static StringBuffer parse( HashMap<String, ArrayList<Material>> ownedMaterials,
+                                       EntityService entityService, SymbaEntityService symbaEntityService,
                                        SymbaFormSessionBean symbaFormSessionBean,
                                        PROTOCOL_TYPE typeToDisplay,
                                        boolean isDummy ) {
@@ -387,9 +624,20 @@ public class ActionTemplateParser {
         // influence users to accept rather than choose.
 
         // Each ahs in the list goes straight to the assay / MT level
-        LinkedHashSet<ActionHierarchyScheme> hierarchy =
-                createFullHierarchy( symbaEntityService, new LinkedHashSet<ActionHierarchyScheme>(),
-                        new ActionHierarchyScheme(), topLevelProtocol );
+        ArrayList<ActionHierarchyScheme> hierarchy =
+                createProtocolActionHierarchy( symbaEntityService, new ArrayList<ActionHierarchyScheme>(),
+                        new ActionHierarchyScheme(), topLevelProtocol, topLevelProtocol );
+
+//        buffer.append( "<!-- FULL LIST OF HIERARCHY:\n" );
+//        for ( ActionHierarchyScheme actionHierarchyScheme : hierarchy ) {
+//            buffer.append( "Name: " ).append( actionHierarchyScheme.write() );
+//            buffer.append( "\n" );
+//            buffer.append( "Value attribute: " ).append( actionHierarchyScheme.writeValueAttribute() );
+//            buffer.append( "\n" );
+//            System.err.println( "Name: " + actionHierarchyScheme.write() );
+//            System.err.println( "Value attribute: " + actionHierarchyScheme.writeValueAttribute() );
+//        }
+//        buffer.append( "-->\n" );
 
         Set<String> materialActionEndurants = getBaseMaterialActions( symbaEntityService, topLevelProtocol.getName() );
 
@@ -415,14 +663,15 @@ public class ActionTemplateParser {
         // one option, print the hierarchy but pre-select that radio button. Otherwise, ONLY select if there
         // is already session information.
         if ( typeToDisplay == PROTOCOL_TYPE.ASSAY ) {
-            buffer.append( parseDatafiles( symbaFormSessionBean, hierarchy ) );
+            buffer.append( parseDatafiles( entityService, symbaFormSessionBean, hierarchy ) );
         } else if ( typeToDisplay == PROTOCOL_TYPE.MATERIAL_TRANSFORMATION ) {
-            buffer.append( parseBaseMaterials( symbaFormSessionBean, hierarchy, ownedMaterials, isDummy ) );
+            buffer.append( parseBaseMaterials( hierarchy, ownedMaterials, isDummy, entityService ) );
         }
         return buffer;
     }
 
     public static StringBuffer parseMaterialTransformationActions( List<GenericProtocolApplication> associatedMTs,
+                                                                   EntityService entityService,
                                                                    SymbaEntityService symbaEntityService,
                                                                    SymbaFormSessionBean symbaFormSessionBean,
                                                                    PROTOCOL_TYPE typeToDisplay ) {
@@ -433,7 +682,7 @@ public class ActionTemplateParser {
         // specimens that are already extant in this particular experiment, and another with a list of
         // specimens that are present in the database.
 
-        HashMap<String, Material> ownedMaterials = new HashMap<String, Material>();
+        HashMap<String, ArrayList<Material>> ownedMaterials = new HashMap<String, ArrayList<Material>>();
         if ( symbaFormSessionBean.getFuGE() != null ) {
             for ( ProtocolApplication associatedPA : symbaFormSessionBean.getFuGE().getProtocolCollection()
                     .getProtocolApplications() ) {
@@ -441,7 +690,7 @@ public class ActionTemplateParser {
                     GenericProtocolApplication gpa = ( GenericProtocolApplication ) associatedPA;
                     if ( gpa.getOutputMaterials() != null && !gpa.getOutputMaterials().isEmpty() ) {
                         ownedMaterials.put( gpa.getIdentifier() + "::" + gpa.getProtocol().getIdentifier(),
-                                gpa.getOutputMaterials().iterator().next() );
+                                new ArrayList<Material>( gpa.getOutputMaterials() ) );
                     }
                     associatedMTs.remove( gpa );
                 }
@@ -463,7 +712,8 @@ public class ActionTemplateParser {
                 buffer.append( "Continue to add specimens until you have all that you need. " );
                 buffer.append( "</p>" );
                 buffer.append(
-                        parse( ownedMaterials, symbaEntityService, symbaFormSessionBean, typeToDisplay, false ) );
+                        parse( ownedMaterials, entityService, symbaEntityService, symbaFormSessionBean, typeToDisplay,
+                                false ) );
 
                 // finish form
                 buffer.append( "</fieldset>" );
@@ -474,16 +724,17 @@ public class ActionTemplateParser {
             }
         }
 
-        buffer.append( "<form action=\"enterSpecimen.jsp\" method=\"post\">" );
-        buffer.append( "<fieldset>" );
-        buffer.append( "<legend>Create a specimen based on existing specimens</legend>" );
 
-        ownedMaterials = new HashMap<String, Material>();
+        ownedMaterials = new HashMap<String, ArrayList<Material>>();
         for ( GenericProtocolApplication associatedMT : associatedMTs ) {
             ownedMaterials.put( associatedMT.getIdentifier() + "::" + associatedMT.getProtocol().getIdentifier(),
-                    associatedMT.getOutputMaterials().iterator().next() );
+                    ( ArrayList<Material> ) associatedMT.getOutputMaterials() );
         }
         if ( !ownedMaterials.isEmpty() ) {
+            buffer.append( "<form action=\"enterSpecimen.jsp\" method=\"post\">" );
+            buffer.append( "<fieldset>" );
+            buffer.append( "<legend>Create a specimen based on existing specimens</legend>" );
+
             buffer.append( "<p class=\"bigger\">Below are a list of currently existing specimens in the database " );
             buffer.append( "that aren't connected to your experiment yet. " );
             buffer.append( "Click on the one that is closest to what you need, and you will be able to modify it. " );
@@ -495,28 +746,32 @@ public class ActionTemplateParser {
             buffer.append( "with a particular data file." );
             buffer.append( "</p>" );
             buffer.append(
-                    parse( ownedMaterials, symbaEntityService, symbaFormSessionBean, typeToDisplay, false ) );
+                    parse( ownedMaterials, entityService, symbaEntityService, symbaFormSessionBean, typeToDisplay,
+                            false ) );
+
+            buffer.append( "</fieldset>" );
+
+            buffer.append( "    <fieldset class=\"submit\">\n" +
+                           "        <input type=\"submit\" value=\"Create New\" onclick=\"disabled=true\"/>\n" +
+                           "    </fieldset>\n" +
+                           "    </form>" );
         }
 
-        buffer.append( "</fieldset>" );
-        buffer.append( "    <fieldset class=\"submit\">\n" +
-                       "        <input type=\"submit\" value=\"Create New\" onclick=\"disabled=true\"/>\n" +
-                       "    </fieldset>\n" +
-                       "    </form>" );
         return buffer;
     }
 
-    public static StringBuffer parseMaterialTransformationDummyActions( HashMap<String, Material> ownedMaterials,
+    public static StringBuffer parseMaterialTransformationDummyActions( HashMap<String, ArrayList<Material>> ownedMaterials,
+                                                                        EntityService entityService,
                                                                         SymbaEntityService symbaEntityService,
                                                                         SymbaFormSessionBean symbaFormSessionBean,
                                                                         PROTOCOL_TYPE typeToDisplay ) {
-        return parse( ownedMaterials, symbaEntityService, symbaFormSessionBean, typeToDisplay, true );
+        return parse( ownedMaterials, entityService, symbaEntityService, symbaFormSessionBean, typeToDisplay, true );
     }
 
-    public static StringBuffer parseAssayActions( SymbaEntityService symbaEntityService,
+    public static StringBuffer parseAssayActions( EntityService entityService, SymbaEntityService symbaEntityService,
                                                   SymbaFormSessionBean symbaFormSessionBean,
                                                   PROTOCOL_TYPE typeToDisplay ) {
-        return parse( null, symbaEntityService, symbaFormSessionBean, typeToDisplay, true );
+        return parse( null, entityService, symbaEntityService, symbaFormSessionBean, typeToDisplay, true );
     }
 
     /**

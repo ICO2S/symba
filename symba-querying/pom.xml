@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.sourceforge.symba</groupId>
         <artifactId>symba</artifactId>
-        <version>8.08-alpha</version>
+        <version>8.09</version>
     </parent>
     <artifactId>symba-querying</artifactId>
     <packaging>jar</packaging>

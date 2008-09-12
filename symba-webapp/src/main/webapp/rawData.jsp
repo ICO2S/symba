@@ -182,7 +182,7 @@ in this distribution, please see LICENSE.txt
     continue on to the next form page</strong><br/>
     <%
         }
-        out.println( "<input type=\"submit\" value=\"Submit\" onclick=\"disabled=true\"/>" );
+        out.println( "<input type=\"submit\" value=\"Submit\" onclick=\"this.disabled=true\"/>" );
     %>
 </fieldset>
 </form>

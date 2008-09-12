@@ -258,6 +258,23 @@ public class RandomXmlGenerator {
 
             investigationXML =
                     ( FuGEBioInvestigationInvestigationType ) generateRandomIdentifiableXML( investigationXML );
+
+            // top-level hypothesis
+            FuGEBioInvestigationInvestigationType.Hypothesis hypothesisXML =
+                    new FuGEBioInvestigationInvestigationType.Hypothesis();
+            FuGECommonDescriptionDescriptionType descriptionXML = new FuGECommonDescriptionDescriptionType();
+            descriptionXML.setText( "Some Hypothesis " + String.valueOf( Math.random() ) );
+            hypothesisXML.setDescription( descriptionXML );
+            investigationXML.setHypothesis( hypothesisXML );
+
+            // top-level conclusion
+            FuGEBioInvestigationInvestigationType.Conclusion conclusionXML =
+                    new FuGEBioInvestigationInvestigationType.Conclusion();
+            descriptionXML = new FuGECommonDescriptionDescriptionType();
+            descriptionXML.setText( "Some Conclusion " + String.valueOf( Math.random() ) );
+            conclusionXML.setDescription( descriptionXML );
+            investigationXML.setConclusion( conclusionXML );
+
             investigationCollectionXML.getInvestigation().add( investigationXML );
             FuGEBioInvestigationFactorType factorXML = new FuGEBioInvestigationFactorType();
 
@@ -672,7 +689,7 @@ public class RandomXmlGenerator {
             FuGECommonProtocolGenericProtocolApplicationType.OutputMaterials gomXML =
                     new FuGECommonProtocolGenericProtocolApplicationType.OutputMaterials();
             gomXML.setMaterialRef(
-                    fugeXML.getMaterialCollection().getMaterial().get( output ).getValue().getIdentifier() );
+                    fugeXML.getMaterialCollection().getMaterial().get( ordinal ).getValue().getIdentifier() );
             genericProtocolApplicationXML.getOutputMaterials().add( gomXML );
         }
 
@@ -927,9 +944,11 @@ public class RandomXmlGenerator {
     }
 
     /**
+     * todo deal with propertySets
+     *
      * @param defaultXML the measurement object to populate with random information
      * @param fugeXML    the object to get some information from for populating the measurement
-     * @return a Measurement wrapped in a JAXB2 element
+     * @return an AtomicValue Measurement wrapped in a JAXB2 element
      */
     private static FuGECommonMeasurementMeasurementType generateRandomMeasurementXML(
             FuGECommonMeasurementMeasurementType defaultXML,
@@ -1249,7 +1268,6 @@ public class RandomXmlGenerator {
 
         identifiableXML = ( FuGECommonIdentifiableType ) generateRandomDescribableXML( identifiableXML );
         identifiableXML.setIdentifier( identifierMaker.create( "random.class.name" ) );
-        identifiableXML.setEndurantRef( identifierMaker.create( "random.class.name.Endurant" ) );
         identifiableXML.setName( String.valueOf( Math.random() ) );
 
         // this ensures that if smaller objects (like DatabaseReference) are being created, there is no unneccessary attempt

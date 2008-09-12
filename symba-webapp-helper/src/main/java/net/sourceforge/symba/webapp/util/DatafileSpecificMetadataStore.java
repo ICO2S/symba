@@ -43,8 +43,6 @@ public class DatafileSpecificMetadataStore {
     private String oldFilename; // the original filename, to make it easier for users to determine which file they're annotating
 
     private ActionHierarchyScheme nestedActions; // stores the complete hierarchy of actions associated with the assay
-//    private ActionSummary assayActionSummary; // information regarding the selected action associated with the assay
-//    private ActionSummary oneLevelUpActionSummary; // information regarding the selected action one level up from the assay, IF PRESENT.
 
     private Map<String, GenericEquipmentSummary> genericEquipmentInfo; // the key is the equipment endurant id
     private Map<String, GenericProtocolApplicationSummary> genericProtocolApplicationInfo;  // the key is the GPA's Parent GenericProtocol endurant id. Input material information is also stored here
@@ -54,8 +52,6 @@ public class DatafileSpecificMetadataStore {
         this.genericProtocolApplicationInfo = new HashMap<String, GenericProtocolApplicationSummary>();
 
         this.nestedActions = new ActionHierarchyScheme();
-//        this.assayActionSummary = new ActionSummary();
-//        this.oneLevelUpActionSummary = new ActionSummary();
     }
 
     public File getDataFile() {
@@ -104,8 +100,6 @@ public class DatafileSpecificMetadataStore {
         this.oldFilename = "";
 
         this.nestedActions = new ActionHierarchyScheme();
-//        this.assayActionSummary = new ActionSummary();
-//        this.oneLevelUpActionSummary = new ActionSummary();
 
         this.genericEquipmentInfo.clear();
         this.genericProtocolApplicationInfo.clear();
@@ -166,19 +160,4 @@ public class DatafileSpecificMetadataStore {
     public void setNestedActions( ActionHierarchyScheme nestedActions ) {
         this.nestedActions = nestedActions;
     }
-//    public ActionSummary getAssayActionSummary() {
-//        return assayActionSummary;
-//    }
-//
-//    public void setAssayActionSummary( ActionSummary assayActionSummary ) {
-//        this.assayActionSummary = assayActionSummary;
-//    }
-//
-//    public ActionSummary getOneLevelUpActionSummary() {
-//        return oneLevelUpActionSummary;
-//    }
-//
-//    public void setOneLevelUpActionSummary( ActionSummary oneLevelUpActionSummary ) {
-//        this.oneLevelUpActionSummary = oneLevelUpActionSummary;
-//    }
 }

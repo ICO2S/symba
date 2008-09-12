@@ -1,7 +1,5 @@
 package net.sourceforge.symba.webapp.util.forms.schemes.material;
 
-import net.sourceforge.symba.webapp.util.forms.schemes.BasicScheme;
-
 /**
  * This file is part of SyMBA.
  * SyMBA is covered under the GNU Lesser General Public License (LGPL).
@@ -14,11 +12,15 @@ import net.sourceforge.symba.webapp.util.forms.schemes.BasicScheme;
  * $Author$
  * $HeadURL$
  */
-public class OntologyReplacementScheme extends BasicScheme {
+public class OntologyReplacementScheme extends BasicMaterialScheme {
+    
     private String titleOfReplacement;
 
     public OntologyReplacementScheme() {
-        elementTitle = "OntologyReplacement";        
+        completeMaterialElementTitle = "completeMaterialOntologyReplacement";
+        measuredMaterialElementTitle = "measuredMaterialOntologyReplacement";
+        elementTitle = completeMaterialElementTitle;
+        isMeasuredMaterial = false;
     }
 
     /**
@@ -28,6 +30,11 @@ public class OntologyReplacementScheme extends BasicScheme {
      */
     public void parse( String parameterName ) {
         String[] parsedStrings = parameterName.split( separator );
+        if ( parsedStrings[0].equals( completeMaterialElementTitle ) ) {
+            setMeasuredMaterial( false );
+        } else if ( parsedStrings[0].equals( measuredMaterialElementTitle ) ) {
+            setMeasuredMaterial( true );
+        }
         titleOfReplacement = parsedStrings[1];
         materialCount = Integer.valueOf( parsedStrings[2] );
         parentOfGpaEndurant = parsedStrings[3];

@@ -35,33 +35,31 @@ public class InvestigationLoader {
 
         Set<Investigation> investigations = new HashSet<Investigation>();
 
-        Set<Description> descriptions = new HashSet<Description>();
-        Description description1 = ( Description ) entityService.createDescribable(
+        Description hypothesis = ( Description ) entityService.createDescribable(
                 "net.sourceforge.fuge.common.description.Description" );
-        Description description2 = ( Description ) entityService.createDescribable(
+        Description conclusion = ( Description ) entityService.createDescribable(
                 "net.sourceforge.fuge.common.description.Description" );
         if ( formSessionBean.getHypothesis() != null ) {
-            description1.setText( "Hypothesis: " + formSessionBean.getHypothesis() );
+            hypothesis.setText( formSessionBean.getHypothesis() );
         } else {
-            description1.setText( "Hypothesis: None" );
+            hypothesis.setText( "None supplied" );
         }
-        DatabaseObjectHelper.save( "net.sourceforge.fuge.common.description.Description", description1, auditor );
+        DatabaseObjectHelper.save( "net.sourceforge.fuge.common.description.Description", hypothesis, auditor );
 
-        descriptions.add( description1 );
         if ( formSessionBean.getConclusion() != null ) {
-            description2.setText( "Conclusions: " + formSessionBean.getConclusion() );
+            conclusion.setText( formSessionBean.getConclusion() );
         } else {
-            description2.setText( "Conclusions: None" );
+            conclusion.setText( "None supplied" );
         }
-        DatabaseObjectHelper.save( "net.sourceforge.fuge.common.description.Description", description2, auditor );
-        descriptions.add( description2 );
+        DatabaseObjectHelper.save( "net.sourceforge.fuge.common.description.Description", conclusion, auditor );
 
         // Create a new investigation in the database.
         Investigation investigation = ( Investigation ) DatabaseObjectHelper.createEndurantAndIdentifiable(
                 "net.sourceforge.fuge.bio.investigation.Investigation", auditor );
 
         investigation.setName( "Investigation Details for " + formSessionBean.getExperimentName() );
-        investigation.setDescriptions( descriptions );
+        investigation.setHypothesis( hypothesis );
+        investigation.setConclusion( conclusion );
 
         DatabaseObjectHelper.save( "net.sourceforge.fuge.bio.investigation.Investigation", investigation, auditor );
 

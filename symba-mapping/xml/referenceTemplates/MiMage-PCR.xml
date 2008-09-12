@@ -57,7 +57,7 @@
                 <Description
                         text="TextBox::ProtocolDescription::Please describe the specifics of your Real-Time PCR protocol"/>
             </_descriptions>
-            <GenericMaterialMeasurement
+            <_inputCompleteMaterials
                     Material_ref="urn:lsid:cisban.cisbs.org:GenericMaterial:47261720-35ac-48f7-ad7c-a154cc3a2fc3"/>
 
             <!--

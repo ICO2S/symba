@@ -11,7 +11,7 @@
     <groupId>net.sourceforge.symba</groupId>
     <artifactId>symba</artifactId>
     <packaging>pom</packaging>
-    <version>8.08-alpha</version>
+    <version>8.09</version>
     <name>SyMBA</name>
     <url>http://symba.sourceforge.net</url>
     <description>The Systems and Molecular Biology data Archive (SyMBA) Project. The Centre for Integrated Systems
@@ -457,7 +457,7 @@
         <application.id>symba</application.id>
         <application.package>net.sourceforge.symba</application.package>
         <application.name>SyMBA: FuGE-Based Systems and Molecular Biology Data and Metadata Archive</application.name>
-        <application.version>8.08-alpha</application.version>
+        <application.version>8.09</application.version>
         <dataSource.name>jdbc/${application.id}</dataSource.name>
         <dataSource>java:comp/env/${dataSource.name}</dataSource>
     </properties>
@@ -480,8 +480,13 @@
 
                 <!-- An optional status message to be displayed on the login screen only -->
                 <net.sourceforge.symba.webapp.status>
+                    12 September 2008. We are nearly complete with the upgrade to FuGE Version 1. Please \
+                    be aware that some parts of the system may not be operating fully. Specifically, the ability to \
+                    copy metadata from a particular protocol run directly into a new loading of a protocol has \
+                    been temporarily disabled. However, we thought it best to  \
+                    allow you to play with the most up-to-date version of the software in the meantime. \
                     If you wish to have your own login to the sandbox, please contact us. Otherwise, you may access \
-                    with the general login "MickeyM" with pass "MousePass". Please let us know if it seems anyone is \
+                    with the general login "Anonymous" with pass "AnonymousPass". Please let us know if it seems anyone is \
                     misusing this login and we can reset the database.
                 </net.sourceforge.symba.webapp.status>
 

@@ -22,7 +22,6 @@ in this distribution, please see LICENSE.txt
 <%@ page import="net.sourceforge.symba.webapp.util.DisplayFuge" %>
 <%@ page import="net.sourceforge.symba.webapp.util.SecurityEngineInterrogator" %>
 <%@ page import="net.sourceforge.symba.webapp.util.SymbaFormSessionBean" %>
-<%--<%@ page import="javax.xml.rpc.ServiceException" %>--%>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.util.Map" %>
 
@@ -91,7 +90,7 @@ to a new one.
             if ( passedSecurity ) {
                 // Ok to print out the experiment
                 out.println( "For further searches, please visit our <a href=\"search.jsp\">Search Page</a><br/>" );
-                out.println( "<h2>Your Data is shown below <a href=\"help.jsp#viewExperiments\"" );
+                out.println( "<h2>Your Experiment is shown below <a href=\"help.jsp#viewExperiments\"" );
                 out.println( "onClick=\"return popup(this, 'notes')\"> [ Help? ]</a></h2>" );
 
 //                CisbanFuGEHelper cfh = new CisbanFuGEHelper( validUser.getReService() );

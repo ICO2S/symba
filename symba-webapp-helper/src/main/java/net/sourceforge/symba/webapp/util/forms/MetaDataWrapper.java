@@ -3,6 +3,7 @@ package net.sourceforge.symba.webapp.util.forms;
 import net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore;
 import net.sourceforge.symba.webapp.util.PersonBean;
 import net.sourceforge.symba.webapp.util.SymbaFormSessionBean;
+import net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionInformation;
 
 import javax.servlet.http.HttpSession;
 
@@ -56,7 +57,8 @@ public class MetaDataWrapper {
 
             // Print GPA portion of the form
             buffer.append(
-                    GenericProtocolApplicationTemplateParser.parse( session, symbaFormSessionBean, info, currentDataFile, personBean ) );
+                    GenericProtocolApplicationTemplateParser.parse( session, symbaFormSessionBean, info,
+                            currentDataFile, personBean ) );
 
             // Print equipment portion of the form
             buffer.append(
@@ -79,6 +81,17 @@ public class MetaDataWrapper {
         buffer.append( "<h3>Information for " )
                 .append( info.getFriendlyId() )
                 .append( "</h3>" );
+        buffer.append( "<h3>This data file is assigned to the following part of the experiment: " );
+        // this won't print out anything where it's only one deep, but that doesn't happen with current templates
+        for ( int iii = info.getNestedActions().getActionHierarchy().size() - 1; iii >= 0; iii-- ) {
+            ActionInformation ai = info.getNestedActions().getActionHierarchy().get( iii );
+            buffer.append( ai.getActionName() );
+            // if this isn't the last time it's going to be run, then add a ", part of the " to the heading.
+            if ( iii - 1 >= 0 ) {
+                buffer.append( ", part of the " );
+            }
+        }
+        buffer.append( "</h3>" );
         buffer.append( "<p>Original name: " )
                 .append( info.getOldFilename() )
                 .append( "</p>" );

@@ -130,7 +130,10 @@ public class DataTemplateParser {
         return buffer;
     }
 
-    public static StringBuffer printDataSummary( Set<Data> dataItems, boolean noChoice, String nameAttribute, String valueAttribute ) {
+    public static StringBuffer printDataSummary( Set<Data> dataItems,
+                                                 boolean noChoice,
+                                                 String nameAttribute,
+                                                 String valueAttribute ) {
         StringBuffer buffer = new StringBuffer();
 
         for ( Data data : dataItems ) {
@@ -148,7 +151,7 @@ public class DataTemplateParser {
                 } else {
                     buffer.append( "\">" );
                 }
-                buffer.append( externalData.getName() );
+                buffer.append( "Output: " ).append( externalData.getName() );
                 buffer.append( "<ul>" );
                 // print the form to allow download of this data file.
                 String formId = "downloadSingle";
@@ -164,19 +167,19 @@ public class DataTemplateParser {
                 for ( Description description : ( Set<Description> ) externalData.getDescriptions() ) {
                     fileDescription += description.getText();
                 }
-                // print and save the file description
+                // print the file description
                 if ( fileDescription.length() > 0 ) {
                     buffer.append( System.getProperty( "line.separator" ) );
                     buffer.append( "<li>Your description of this file is: " ).append( fileDescription )
                             .append( "</li>" );
                 }
-                // print and save the file format
+                // print the file format
                 if ( externalData.getFileFormat() != null ) {
                     buffer.append( System.getProperty( "line.separator" ) );
                     buffer.append( "<li>The format of your file is: " ).append( externalData.getFileFormat().getTerm() )
                             .append( "</li>" );
                 }
-                
+
                 buffer.append( System.getProperty( "line.separator" ) );
                 buffer.append( "</ul>" );
                 buffer.append( "</li>" );

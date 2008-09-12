@@ -21,9 +21,10 @@ public class GenericProtocolApplicationSummary {
     // Fill this with any descriptions you wish to add to the GPA. The key is the description type (e.g.
     // ProtocolDescription), and the value is the description itself. This way you only allow one description per type
     private HashMap<String, String> descriptions;
-    // todo The list of input materials allowed for this GPA (once GMMs are allowed)
     // The list of input complete materials allowed for this GPA
     private ArrayList<MaterialFactorsStore> inputCompleteMaterialFactors;
+    // The list of input complete materials allowed for this GPA
+    private ArrayList<MaterialFactorsStore> inputMeasuredMaterialFactors;
     // the list of pre-defined input complete materials that come as outputs of material transformations
     private Set<String> inputIdentifiersFromMaterialTransformations;
     // there are no output materials here, as this summary is only currently used for assays and not
@@ -33,6 +34,7 @@ public class GenericProtocolApplicationSummary {
         this.parameterAndAtomics = new HashMap<String, String>();
         this.descriptions = new HashMap<String, String>();
         this.inputCompleteMaterialFactors = new ArrayList<MaterialFactorsStore>();
+        this.inputMeasuredMaterialFactors = new ArrayList<MaterialFactorsStore>();
         this.inputIdentifiersFromMaterialTransformations = new HashSet<String>();
     }
 
@@ -73,7 +75,29 @@ public class GenericProtocolApplicationSummary {
     }
 
     public void setInputCompleteMaterialFactor( MaterialFactorsStore inputCompleteMaterialFactor, int value ) {
+        for ( int iii = this.inputCompleteMaterialFactors.size(); iii <= value; iii++ ) {
+            this.inputCompleteMaterialFactors.add( new MaterialFactorsStore() );
+        }
         this.inputCompleteMaterialFactors.set( value, inputCompleteMaterialFactor );
+    }
+
+    public List<MaterialFactorsStore> getInputMeasuredMaterialFactors() {
+        return inputMeasuredMaterialFactors;
+    }
+
+    public void setInputMeasuredMaterialFactors( ArrayList<MaterialFactorsStore> inputMeasuredMaterialFactors ) {
+        this.inputMeasuredMaterialFactors = inputMeasuredMaterialFactors;
+    }
+
+    public void addInputMeasuredMaterialFactor( MaterialFactorsStore inputMeasuredMaterialFactor ) {
+        this.inputMeasuredMaterialFactors.add( inputMeasuredMaterialFactor );
+    }
+
+    public void setInputMeasuredMaterialFactor( MaterialFactorsStore inputMeasuredMaterialFactor, int value ) {
+        for ( int iii = this.inputMeasuredMaterialFactors.size(); iii <= value; iii++ ) {
+            this.inputMeasuredMaterialFactors.add( new MaterialFactorsStore() );
+        }
+        this.inputMeasuredMaterialFactors.set( value, inputMeasuredMaterialFactor );
     }
 
     public Set<String> getInputIdentifiersFromMaterialTransformations() {

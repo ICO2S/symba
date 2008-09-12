@@ -428,15 +428,21 @@ public class SymbaFormSessionBean implements Serializable {
 
         String changeJsp = "metaData.jsp";
         if ( isMaterialTransformation ) {
-            changeJsp = "enterSpecimen.jsp";
+//            changeJsp = "enterSpecimen.jsp";
+            changeJsp = "";
         }
 
         if ( mfs.getMaterialName().length() > 0 ) {
 
             out.println( "<li>Name/Identifying Number: " );
+            // todo temporary removal of linking for material transformations
+            if (!isMaterialTransformation) {
             out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+            }
             out.println( mfs.getMaterialName() );
+            if (!isMaterialTransformation) {
             out.println( "</a>" );
+            }
             out.println( "</li>" );
         }
 
@@ -445,10 +451,14 @@ public class SymbaFormSessionBean implements Serializable {
             for ( String key : mfs.getOntologyReplacements().keySet() ) {
                 out.println( "<ul>" );
                 out.println( "<li>" );
+                if (!isMaterialTransformation) {
                 out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+                }
                 out.println(
                         key + " = " + mfs.getOntologyReplacements().get( key ) );
+                if (!isMaterialTransformation) {
                 out.println( "</a>" );
+                }
                 out.println( "</li>" );
                 out.println( "</ul>" );
             }
@@ -457,10 +467,14 @@ public class SymbaFormSessionBean implements Serializable {
 
         if ( mfs.getMaterialType().length() > 0 ) {
             out.println( "<li>Material Type: " );
+            if (!isMaterialTransformation) {
             out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+            }
             OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( mfs.getMaterialType() );
             out.println( ot.getTerm() );
+            if (!isMaterialTransformation) {
             out.println( "</a>" );
+            }
             out.println( "</li>" );
         }
 
@@ -469,9 +483,13 @@ public class SymbaFormSessionBean implements Serializable {
             out.println( "<ol>" );
             for ( String treatment : mfs.getTreatmentInfo() ) {
                 out.println( "<li>" );
+                if (!isMaterialTransformation) {
                 out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+                }
                 out.println( treatment );
+                if (!isMaterialTransformation) {
                 out.println( "</a>" );
+                }
                 out.println( "</li>" );
             }
             out.println( "</ol>" );
@@ -515,7 +533,10 @@ public class SymbaFormSessionBean implements Serializable {
         if ( characteristics != null && !characteristics.isEmpty() ) {
             for ( String mfbKey : characteristics.keySet() ) {
                 out.println( "<li>" );
+                // todo temporarily disable for material transformations
+                if (!changeJsp.isEmpty()) {
                 out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+                }
                 if ( isNovel ) {
                     String[] parsed = characteristics.get( mfbKey ).split( "::" );
                     out.println( parsed[0] );
@@ -524,7 +545,9 @@ public class SymbaFormSessionBean implements Serializable {
                             .getLatestByEndurant( characteristics.get( mfbKey ) );
                     out.println( ot.getTerm() );
                 }
+                if (!changeJsp.isEmpty()) {
                 out.println( "</a>" );
+                }
                 out.println( "</li>" );
             }
         }
@@ -532,7 +555,9 @@ public class SymbaFormSessionBean implements Serializable {
             for ( String mfbKey : multipleCharacteristics.keySet() ) {
                 for ( String currentValue : multipleCharacteristics.get( mfbKey ) ) {
                     out.println( "<li>" );
+                    if (!changeJsp.isEmpty()) {
                     out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
+                    }
                     if ( isNovel ) {
                         String[] parsed = currentValue.split( "::" );
                         out.println( parsed[0] );
@@ -540,7 +565,9 @@ public class SymbaFormSessionBean implements Serializable {
                         OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( currentValue );
                         out.println( ot.getTerm() );
                     }
+                    if (!changeJsp.isEmpty()) {
                     out.println( "</a>" );
+                    }
                     out.println( "</li>" );
                 }
             }
@@ -552,6 +579,7 @@ public class SymbaFormSessionBean implements Serializable {
                                         JspWriter out ) throws IOException {
 
         if ( gpaSummary.getInputCompleteMaterialFactors().size() > 0 ||
+             gpaSummary.getInputMeasuredMaterialFactors().size() > 0 ||
              gpaSummary.getInputIdentifiersFromMaterialTransformations().size() > 0 ) {
             out.println( "<li>" );
             out.println(
@@ -562,7 +590,14 @@ public class SymbaFormSessionBean implements Serializable {
             for ( MaterialFactorsStore mfs : gpaSummary.getInputCompleteMaterialFactors() ) {
                 displayMaterialFactorsStore( personBean.getSymbaEntityService(), out, mfs, false );
             }
+
+            for ( MaterialFactorsStore mfs : gpaSummary.getInputMeasuredMaterialFactors() ) {
+                displayMaterialFactorsStore( personBean.getSymbaEntityService(), out, mfs, false );
+            }
+
             // alternatively, there may be material information inside the InputIdentifiersFromMaterialTransformations
+            if ( !gpaSummary.getInputIdentifiersFromMaterialTransformations().isEmpty() ) {
+            }
             displayInputsFromMts( personBean.getEntityService(), out,
                     gpaSummary.getInputIdentifiersFromMaterialTransformations() );
 
@@ -581,7 +616,7 @@ public class SymbaFormSessionBean implements Serializable {
             out.println( "<li>" );
             out.println( "<a class=\"bigger\" href=\"metaData.jsp\">" );
             out.println( MaterialTemplateParser
-                    .printMaterialPairSummary( ( GenericMaterial ) entityService.getIdentifiable( identifier ) ) );
+                    .printMaterialPairSummary( ( GenericMaterial ) entityService.getIdentifiable( identifier ), "" ) );
             out.println( "</a>" );
             out.println( "</li>" );
         }

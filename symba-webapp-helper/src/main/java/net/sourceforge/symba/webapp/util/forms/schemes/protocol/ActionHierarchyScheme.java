@@ -26,13 +26,25 @@ public class ActionHierarchyScheme extends BasicScheme {
     private List<ActionInformation> actionHierarchy;
     private boolean isDummy;
     private boolean isAssay;
+    private static final String startingElementTitle = "gpaActionHierarchy";
 
     public ActionHierarchyScheme() {
 
-        this.elementTitle = "gpaActionHierarchy";
+        this.elementTitle = startingElementTitle;
         this.actionHierarchy = new ArrayList<ActionInformation>();
         setDummy( false );
         setAssay( false );
+    }
+
+    public ActionHierarchyScheme( ActionHierarchyScheme actionHierarchyScheme ) {
+        this.elementTitle = startingElementTitle;
+        setBasic( actionHierarchyScheme.getParentOfGpaEndurant(), actionHierarchyScheme.getMaterialCount(),
+                actionHierarchyScheme.getDatafileNumber() );
+        this.gpaIdentifier = actionHierarchyScheme.getGpaIdentifier();
+        this.isDummy = actionHierarchyScheme.isDummy();
+        this.isAssay = actionHierarchyScheme.isAssay();
+        actionHierarchy = new ArrayList<ActionInformation>( actionHierarchyScheme.getActionHierarchy() );
+
     }
 
     /**
@@ -133,6 +145,10 @@ public class ActionHierarchyScheme extends BasicScheme {
 
     public void add( ActionInformation actionInformation ) {
         this.actionHierarchy.add( actionInformation );
+    }
+
+    public void remove( int position ) {
+        this.actionHierarchy.remove( position );
     }
 
     public List<ActionInformation> getActionHierarchy() {

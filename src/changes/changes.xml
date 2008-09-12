@@ -13,6 +13,10 @@
         <release version="8.08" date="soon"
                  description="Upgrade to FuGE Version 1">
             <action dev="Allyson Lister" type="add">
+                We now allow material transformation protocols as well as data creation (Assay) protocols. See the
+                MiMage-*.xml documents (part of the symba-mapping module) in the Subversion repository.
+            </action>
+            <action dev="Allyson Lister" type="add">
                 We have upgraded SyMBA to FuGE Version 1. Up until this release, SyMBA has been using FuGE Milestone 3.
                 At the same time, we have refactored a lot of code, and cleaned up as we went. Now that there is both
                 an official FuGE XSD STK and an official FuGE Hibernate STK, SyMBA starts with these toolkits and builds

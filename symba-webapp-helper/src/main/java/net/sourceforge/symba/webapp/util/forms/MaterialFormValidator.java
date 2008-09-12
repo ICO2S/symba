@@ -40,14 +40,33 @@ public class MaterialFormValidator {
         symbaFormSessionBean.setMaterialCharacteristicsIncomplete( false );
 
         // create instances of all of the schemes we'll use
-        OntologyReplacementScheme ontologyReplacementScheme = new OntologyReplacementScheme();
         MtOutputAsAssayInputScheme mtScheme = new MtOutputAsAssayInputScheme();
+
         MaterialNameScheme materialNameScheme = new MaterialNameScheme();
-        TreatmentScheme treatmentScheme = new TreatmentScheme();
+        MaterialNameScheme mMaterialNameScheme = new MaterialNameScheme();
+        mMaterialNameScheme.setMeasuredMaterial( true );
+
+        OntologyReplacementScheme ontologyReplacementScheme = new OntologyReplacementScheme();
+        OntologyReplacementScheme mOntologyReplacementScheme = new OntologyReplacementScheme();
+        mOntologyReplacementScheme.setMeasuredMaterial( true );
+
+        TreatmentScheme completeMaterialTreatmentScheme = new TreatmentScheme();
+        TreatmentScheme mTreatmentScheme = new TreatmentScheme();
+        mTreatmentScheme.setMeasuredMaterial( true );
+
         MaterialTypeScheme materialTypeScheme = new MaterialTypeScheme();
+        MaterialTypeScheme mMaterialTypeScheme = new MaterialTypeScheme();
+        mMaterialTypeScheme.setMeasuredMaterial( true );
+
         CharacteristicScheme characteristicScheme = new CharacteristicScheme();
         CharacteristicScheme novelCharacteristicScheme = new CharacteristicScheme();
         novelCharacteristicScheme.setNovel( true );
+        CharacteristicScheme mCharacteristicScheme = new CharacteristicScheme();
+        mCharacteristicScheme.setMeasuredMaterial( true );
+        CharacteristicScheme mNovelCharacteristicScheme = new CharacteristicScheme();
+        mNovelCharacteristicScheme.setMeasuredMaterial( true );
+        mNovelCharacteristicScheme.setNovel( true );
+
         ActionHierarchyScheme ahs = new ActionHierarchyScheme();
         ActionHierarchyScheme dummyAhs = new ActionHierarchyScheme();
         dummyAhs.setDummy( true );
@@ -70,10 +89,14 @@ public class MaterialFormValidator {
 
                 symbaFormSessionBean =
                         setGpaSummary( symbaFormSessionBean, isPartOfDataFileForm, mtScheme, gpaSummary );
-            } else if ( parameterName.startsWith( ontologyReplacementScheme.getElementTitle() ) &&
-                        !parameterName.equals( toBeIgnoredParameterName ) ) {
+            } else if ( ( parameterName.startsWith( ontologyReplacementScheme.getElementTitle() ) ||
+                          parameterName.startsWith( mOntologyReplacementScheme.getElementTitle() ) )
+                        && !parameterName.equals( toBeIgnoredParameterName ) ) {
 
+                // once inside this section, no need to use the two versions of the scheme: the scheme
+                // values will get set appropriately.
                 ontologyReplacementScheme.parse( parameterName );
+
                 MaterialFactorsStore mfs =
                         getMfs( symbaFormSessionBean, isPartOfDataFileForm, ontologyReplacementScheme );
                 mfs.putOntologyReplacementsPair( ontologyReplacementScheme.getTitleOfReplacement(),
@@ -81,40 +104,67 @@ public class MaterialFormValidator {
                 symbaFormSessionBean =
                         setMfs( symbaFormSessionBean, isPartOfDataFileForm, ontologyReplacementScheme, mfs );
 
-            } else if ( parameterName.startsWith( materialNameScheme.getElementTitle() ) ) {
-                if ( request.getParameter( parameterName ) != null &&
-                     request.getParameter( parameterName ).length() > 0 &&
-                     !parameterName.equals( toBeIgnoredParameterName ) ) {
+                // reset scheme for the next parameter
+                ontologyReplacementScheme.setMeasuredMaterial( false );
 
+            } else if ( ( parameterName.startsWith( materialNameScheme.getElementTitle() ) ||
+                          parameterName.startsWith( mMaterialNameScheme.getElementTitle() ) )
+                        && !parameterName.equals( toBeIgnoredParameterName ) ) {
+                if ( request.getParameter( parameterName ) != null &&
+                     request.getParameter( parameterName ).length() > 0 ) {
+
+                    // once inside this section, no need to use the two versions of the scheme: the scheme
+                    // values will get set appropriately.
                     materialNameScheme.parse( parameterName );
+
                     MaterialFactorsStore mfs = getMfs( symbaFormSessionBean, isPartOfDataFileForm, materialNameScheme );
                     mfs.setMaterialName( request.getParameter( parameterName ) );
                     symbaFormSessionBean =
                             setMfs( symbaFormSessionBean, isPartOfDataFileForm, materialNameScheme, mfs );
 
+                    // reset scheme for the next parameter
+                    materialNameScheme.setMeasuredMaterial( false );
                 }
-            } else if ( parameterName.startsWith( treatmentScheme.getElementTitle() ) &&
-                        request.getParameter( parameterName ).length() > 0 &&
+            } else if ( ( parameterName.startsWith( completeMaterialTreatmentScheme.getElementTitle() ) ||
+                          parameterName.startsWith( mTreatmentScheme.getElementTitle() ) )
+                        && request.getParameter( parameterName ).length() > 0 &&
                         !parameterName.equals( toBeIgnoredParameterName ) ) {
+
+                // once inside this section, no need to use the two versions of the scheme: the scheme
+                // values will get set appropriately.
+                completeMaterialTreatmentScheme.parse( parameterName );
 
                 // will generate new array each time (unless there are *no* treatments at all,
                 // to prevent old choices from being copied multiple times into the array.
 
-                treatmentScheme.parse( parameterName );
-                MaterialFactorsStore mfs = getMfs( symbaFormSessionBean, isPartOfDataFileForm, treatmentScheme );
+                MaterialFactorsStore mfs =
+                        getMfs( symbaFormSessionBean, isPartOfDataFileForm, completeMaterialTreatmentScheme );
                 mfs.addTreatmentInfo( request.getParameter( parameterName ) );
-                symbaFormSessionBean = setMfs( symbaFormSessionBean, isPartOfDataFileForm, treatmentScheme, mfs );
+                symbaFormSessionBean =
+                        setMfs( symbaFormSessionBean, isPartOfDataFileForm, completeMaterialTreatmentScheme, mfs );
 
-            } else if ( parameterName.startsWith( materialTypeScheme.getElementTitle() ) &&
-                        !parameterName.equals( toBeIgnoredParameterName ) ) {
+                // reset scheme for the next parameter
+                completeMaterialTreatmentScheme.setMeasuredMaterial( false );
 
+            } else if ( ( parameterName.startsWith( materialTypeScheme.getElementTitle() ) ||
+                          parameterName.startsWith( mMaterialTypeScheme.getElementTitle() ) )
+                        && !parameterName.equals( toBeIgnoredParameterName ) ) {
+
+                // once inside this section, no need to use the two versions of the scheme: the scheme
+                // values will get set appropriately.
                 materialTypeScheme.parse( parameterName );
+
                 MaterialFactorsStore mfs = getMfs( symbaFormSessionBean, isPartOfDataFileForm, materialTypeScheme );
                 mfs.setMaterialType( request.getParameter( parameterName ) );
                 symbaFormSessionBean = setMfs( symbaFormSessionBean, isPartOfDataFileForm, materialTypeScheme, mfs );
 
+                // reset scheme for the next parameter
+                materialTypeScheme.setMeasuredMaterial( false );
+
             } else if ( ( parameterName.startsWith( characteristicScheme.getElementTitle() ) ||
-                          parameterName.startsWith( novelCharacteristicScheme.getElementTitle() ) )
+                          parameterName.startsWith( novelCharacteristicScheme.getElementTitle() ) ||
+                          parameterName.startsWith( mCharacteristicScheme.getElementTitle() ) ||
+                          parameterName.startsWith( mNovelCharacteristicScheme.getElementTitle() ) )
                         && !parameterName.equals( toBeIgnoredParameterName ) ) {
                 // each characteristic cannot be empty (except a new one was created and it will redirect directly to metaData.jsp),
                 // and might be multiple selections, which will be separated by commas
@@ -123,8 +173,8 @@ public class MaterialFormValidator {
                     symbaFormSessionBean.setMaterialCharacteristicsIncomplete( true );
                 } else {
 
-                    // once inside this section, no need to use the two versions of the scheme: the characteristicScheme
-                    // "novel" value will get set appropriately.
+                    // once inside this section, no need to use the two versions of the scheme: the scheme
+                    // values will get set appropriately.
                     characteristicScheme.parse( parameterName );
 
                     boolean multipleAllowed = false;
@@ -146,7 +196,8 @@ public class MaterialFormValidator {
                     symbaFormSessionBean =
                             setMfs( symbaFormSessionBean, isPartOfDataFileForm, characteristicScheme, mfs );
 
-                    // reset characteristicScheme for the next parameter
+                    // reset scheme for the next parameter
+                    characteristicScheme.setMeasuredMaterial( false );
                     characteristicScheme.setNovel( false );
                 }
             } else {
@@ -181,7 +232,7 @@ public class MaterialFormValidator {
                 }
             }
         }
-        
+
         if ( multipleAllowed && isNovel ) {
             mfs.addNovelMultipleCharacteristics( ontologySourceEndurantID, multiples );
         } else if ( multipleAllowed ) {
@@ -193,12 +244,19 @@ public class MaterialFormValidator {
 
     private static SymbaFormSessionBean setMfs( SymbaFormSessionBean symbaFormSessionBean,
                                                 boolean isPartOfDataFileForm,
-                                                BasicScheme scheme, MaterialFactorsStore mfs ) {
+                                                BasicMaterialScheme scheme, MaterialFactorsStore mfs ) {
         if ( isPartOfDataFileForm ) {
             GenericProtocolApplicationSummary summary = symbaFormSessionBean.getDatafileSpecificMetadataStores()
                     .get( scheme.getDatafileNumber() ).getGenericProtocolApplicationInfo()
                     .get( scheme.getParentOfGpaEndurant() );
-            summary.setInputCompleteMaterialFactor( mfs, scheme.getMaterialCount() );
+            if ( summary == null ) {
+                summary = new GenericProtocolApplicationSummary();
+            }
+            if ( scheme.isMeasuredMaterial() ) {
+                summary.setInputMeasuredMaterialFactor( mfs, scheme.getMaterialCount() );
+            } else {
+                summary.setInputCompleteMaterialFactor( mfs, scheme.getMaterialCount() );
+            }
             symbaFormSessionBean.getDatafileSpecificMetadataStores().get( scheme.getDatafileNumber() )
                     .putGenericProtocolApplicationInfoValue( scheme.getParentOfGpaEndurant(), summary );
         } else {
@@ -208,15 +266,37 @@ public class MaterialFormValidator {
     }
 
     private static MaterialFactorsStore getMfs( SymbaFormSessionBean symbaFormSessionBean,
-                                                boolean isPartOfDataFileForm, BasicScheme scheme ) {
+                                                boolean isPartOfDataFileForm,
+                                                BasicMaterialScheme scheme ) {
         // take what is already there, and add only those fields that have not been made yet
 
         if ( isPartOfDataFileForm ) {
 
             DatafileSpecificMetadataStore temp =
                     symbaFormSessionBean.getDatafileSpecificMetadataStores().get( scheme.getDatafileNumber() );
-            MaterialFactorsStore mfs = temp.getGenericProtocolApplicationInfo().get( scheme.getParentOfGpaEndurant() )
-                    .getInputCompleteMaterialFactors().get( scheme.getMaterialCount() );
+
+            if ( temp.getGenericProtocolApplicationInfo().get( scheme.getParentOfGpaEndurant() ) == null ) {
+                return new MaterialFactorsStore();
+            }
+
+            MaterialFactorsStore mfs;
+            if ( scheme.isMeasuredMaterial() ) {
+                if ( temp.getGenericProtocolApplicationInfo().get( scheme.getParentOfGpaEndurant() )
+                        .getInputMeasuredMaterialFactors().size() > scheme.getMaterialCount() ) {
+                    mfs = temp.getGenericProtocolApplicationInfo().get( scheme.getParentOfGpaEndurant() )
+                            .getInputMeasuredMaterialFactors().get( scheme.getMaterialCount() );
+                } else {
+                    return new MaterialFactorsStore();
+                }
+            } else {
+                if ( temp.getGenericProtocolApplicationInfo().get( scheme.getParentOfGpaEndurant() )
+                        .getInputCompleteMaterialFactors().size() > scheme.getMaterialCount() ) {
+                    mfs = temp.getGenericProtocolApplicationInfo().get( scheme.getParentOfGpaEndurant() )
+                            .getInputCompleteMaterialFactors().get( scheme.getMaterialCount() );
+                } else {
+                    return new MaterialFactorsStore();
+                }
+            }
             if ( mfs == null ) {
                 return new MaterialFactorsStore();
             }

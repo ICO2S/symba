@@ -69,7 +69,7 @@ in this distribution, please see LICENSE.txt
                     // todo
 
                     out.println(
-                            ActionTemplateParser.parseAssayActions( validUser.getSymbaEntityService(),
+                            ActionTemplateParser.parseAssayActions( validUser.getEntityService(), validUser.getSymbaEntityService(),
                                     symbaFormSessionBean,
                                     ActionTemplateParser.PROTOCOL_TYPE.ASSAY ) );
                 %>
@@ -93,7 +93,7 @@ in this distribution, please see LICENSE.txt
             the next form page</strong><br/>
             <%
                 }
-                out.println( "<input type=\"submit\" value=\"Submit\" onclick=\"disabled=true\"/>" );
+                out.println( "<input type=\"submit\" value=\"Submit\" onclick=\"this.disabled=true\"/>" );
             %>
         </fieldset>
     </form>

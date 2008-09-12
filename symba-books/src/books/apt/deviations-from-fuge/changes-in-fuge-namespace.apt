@@ -55,6 +55,8 @@ Additional Lazy Initializations Set to False
  * net.sourceforge.fuge.common.measurement.Measurement : set its association to OntologyTerm (unit) to lazy = false.
 
  * net.sourceforge.fuge.common.measurement.Measurement : set its association to OntologyTerm (dataType) to lazy = false.
+ 
+ * net.sourceforge.fuge.bio.material.GenericMaterial : set its association to OntologyTerm (materialType) to lazy = false.
 
 New Queries
 

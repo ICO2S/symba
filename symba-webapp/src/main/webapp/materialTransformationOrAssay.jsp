@@ -124,7 +124,7 @@ branches at this stage). If there is only one or the other type, automatically d
             <%
                 // we only allow the user to see this page when there has been no decision made the first time through.
                 // Otherwise, all other choices could be invalidated.
-                out.println( "<input type=\"submit\" value=\"Submit\" onclick=\"disabled=true\" />" );
+                out.println( "<input type=\"submit\" value=\"Submit\" onclick=\"this.disabled=true\" />" );
             %>
         </fieldset>
     </form>

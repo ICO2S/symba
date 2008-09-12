@@ -22,34 +22,14 @@ import java.io.IOException;
  */
 public class FileRetrieve {
 
-    /**
-     * Creates a new instance of ollytest
-     */
     public FileRetrieve() {
 
     }
-
-//    public File getFile( String LSID,
-//                         PersonBean pb,
-//                         String path ) throws RealizableEntityServiceException, FileNotFoundException, IOException {
-//        RealizableEntityService reService = pb.getEntityService();
-//        RawData rd = ( RawData ) reService.findIdentifiable( LSID );
-//        byte[] byteArray = rd.getStorage();
-//
-//        File returnFile = new File( path + File.separator + rd.getFriendlyIdentifier() );
-//        FileOutputStream fos = new FileOutputStream( returnFile );
-//        fos.write( byteArray );
-//        fos.flush();
-//        fos.close();
-//        return returnFile;
-//    }
 
     public File getFile( String LSID,
                          String friendly,
                          String path,
                          ScpBean scp ) throws IOException {
-
-        // we no longer store data within the database - instead, we store in a file store and use scp.
 
         /* Create a connection instance */
         Connection conn = new Connection( scp.getHostname() );
@@ -57,15 +37,11 @@ public class FileRetrieve {
 
         boolean isAuthenticated = conn.authenticateWithPassword( scp.getUsername(), scp.getPassword() );
 
-        if ( !isAuthenticated )
+        if ( !isAuthenticated ) {
             throw new IOException( "Authentication failed." );
-        String directoryForFile;
-        //js following two lines prevent error on dos (there doesnt need to be an added dir to the scp-dirs path on dos):
-        if(scp.getRemoteDataStoreOs().equals("dos")){
-            directoryForFile = scp.getDirectory() + "/";
-        }else{
-            directoryForFile = scp.getDirectory() + "/data";
         }
+        
+        String directoryForFile = scp.getDirectory() + "/";
 
         SCPClient scpClient = new SCPClient( conn );
 

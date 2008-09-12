@@ -1,17 +1,13 @@
 package net.sourceforge.symba.webapp.util;
 
-import net.sourceforge.fuge.bio.data.ExternalData;
 import net.sourceforge.fuge.bio.data.Data;
 import net.sourceforge.fuge.bio.investigation.Investigation;
-import net.sourceforge.fuge.bio.material.GenericMaterial;
 import net.sourceforge.fuge.bio.material.Material;
+import net.sourceforge.fuge.bio.material.GenericMaterialMeasurement;
 import net.sourceforge.fuge.collection.FuGE;
 import net.sourceforge.fuge.collection.ProtocolCollection;
-import net.sourceforge.fuge.common.description.Description;
-import net.sourceforge.fuge.common.measurement.AtomicValue;
-import net.sourceforge.fuge.common.measurement.ComplexValue;
-import net.sourceforge.fuge.common.ontology.OntologyTerm;
 import net.sourceforge.fuge.common.protocol.*;
+import net.sourceforge.fuge.service.EntityService;
 import net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionHierarchyScheme;
 import net.sourceforge.symba.webapp.util.forms.ActionTemplateParser;
 import net.sourceforge.symba.service.SymbaEntityService;
@@ -78,11 +74,7 @@ public class DisplayFuge {
         // FugeIdentifier if the person who made the experiment is the current user.
         // find out if the current user is the one that owns the experiment
         boolean userOwnsExperiment = false;
-        if ( fuge.getProvider()
-                .getProvider()
-                .getContact()
-                .getEndurant()
-                .getIdentifier()
+        if ( fuge.getProvider().getProvider().getContact().getEndurant().getIdentifier()
                 .equals( personBean.getEndurantLsid() ) ) {
             userOwnsExperiment = true;
         }
@@ -92,23 +84,28 @@ public class DisplayFuge {
             if ( !collection.isEmpty() ) {
                 for ( Object obj : collection ) {
                     Investigation inv = ( Investigation ) obj;
-                    for ( Object obj2 : inv.getDescriptions() ) {
-                        Description de = ( Description ) obj2;
-                        out.println( "<p>" );
-                        out.println( de.getText() );
+                    if ( inv.getHypothesis() != null ) {
+                        out.println( "<p class=\"bigger\">" );
+                        out.println( "Hypothesis: " + inv.getHypothesis().getText() );
+                        out.println( "</p>" );
+                    }
+                    if ( inv.getConclusion() != null ) {
+                        out.println( "<p class=\"bigger\">" );
+                        out.println( "Conclusion: " + inv.getConclusion().getText() );
                         out.println( "</p>" );
                     }
                 }
             }
         }
 
-        out.println("<fieldset>");
+        out.println( "<fieldset>" );
         out.println( "<legend>Further information on this experiment</legend>" );
         // ProtocolCollection is describable, so will always be the most up-to-date
         Map<String, SymbaFormSessionBean> sessionBeanHashMap = displayHtmlProtocolCollection(
-                userOwnsExperiment, sessionBean, fuge.getProtocolCollection(), personBean.getSymbaEntityService(),
+                personBean.getEntityService(), personBean.getSymbaEntityService(), userOwnsExperiment, sessionBean,
+                fuge.getProtocolCollection(),
                 out );
-        out.println("</fieldset>");
+        out.println( "</fieldset>" );
         out.flush();
 
         return sessionBeanHashMap;
@@ -117,20 +114,28 @@ public class DisplayFuge {
     /**
      * display just the information surrounding each data file, from the GPA holding the data file outwards.
      *
+     * @param entityService       the fuge connection to the database
+     * @param symbaEntityService  the connection to the database
      * @param userOwnsExperiment  true if the user who owns the exp is the one viewing it
      * @param templateSessionBean the session bean as provided by the website
      * @param protocolCollection  the fuge experiment's protocol collection
-     * @param symbaEntityService  the connection to the database
-     * @param out                 where to write all html
-     * @return a map of all possible session beans for pre-loading metadata to simplify things for users
+     * @param out                 where to write all html @return a map of all possible session beans for pre-loading metadata to simplify things for users
+     * @return the map that contains all possible session beans for adding metadata 
      */
-    private static Map<String, SymbaFormSessionBean> displayHtmlProtocolCollection( final boolean userOwnsExperiment,
+    private static Map<String, SymbaFormSessionBean> displayHtmlProtocolCollection( EntityService entityService,
+                                                                                    SymbaEntityService symbaEntityService,
+                                                                                    final boolean userOwnsExperiment,
                                                                                     SymbaFormSessionBean templateSessionBean,
                                                                                     ProtocolCollection protocolCollection,
-                                                                                    SymbaEntityService symbaEntityService,
                                                                                     PrintWriter out ) {
 
         Map<String, SymbaFormSessionBean> allBeans = new HashMap<String, SymbaFormSessionBean>();
+
+        if ( protocolCollection.getProtocols() == null ) {
+            out.println(
+                    "<li>Error: this experiment does not have all appropriate protocols. Please contact helpdesk@cisban.ac.uk</li>" );
+            return allBeans;
+        }
 
         Protocol topLevelProtocol = null;
         for ( Protocol protocol : protocolCollection.getProtocols() ) {
@@ -140,26 +145,79 @@ public class DisplayFuge {
             }
         }
 
-        if ( protocolCollection.getProtocols() == null || topLevelProtocol == null ) {
+        if ( topLevelProtocol == null ) {
             out.println(
                     "<li>Error: this experiment does not have all appropriate protocols. Please contact helpdesk@cisban.ac.uk</li>" );
             return allBeans;
         }
 
+        ProtocolApplication topLevelProtocolApplication = null;
+        if ( protocolCollection.getProtocolApplications() != null ) {
+            for ( ProtocolApplication protocolApplication : protocolCollection.getProtocolApplications() ) {
+                if ( protocolApplication instanceof GenericProtocolApplication
+                     && ( ( GenericProtocolApplication ) protocolApplication ).getProtocol().getIdentifier()
+                        .equals( topLevelProtocol.getIdentifier() ) ) {
+                    topLevelProtocolApplication = protocolApplication;
+                    break;
+                }
+            }
+        }
+
         // the hierarchical list of actions and protocols
-        LinkedHashSet<ActionHierarchyScheme> hierarchy =
+        ArrayList<ActionHierarchyScheme> hierarchy =
                 ActionTemplateParser
-                        .createFullHierarchy( symbaEntityService, new LinkedHashSet<ActionHierarchyScheme>(),
-                                new ActionHierarchyScheme(), ( GenericProtocol ) topLevelProtocol );
+                        .createProtocolActionHierarchy( symbaEntityService, new ArrayList<ActionHierarchyScheme>(),
+                                new ActionHierarchyScheme(), ( GenericProtocol ) topLevelProtocol,
+                                ( GenericProtocol ) topLevelProtocol );
+
+        // the matching hierarchical list of actions and assay/mt-level protocol applications
+        HashMap<String, ArrayList<String>> gpaHierarchy = null;
+        if ( topLevelProtocolApplication != null ) {
+            gpaHierarchy =
+                    ActionTemplateParser
+                            .createGpaActionHierarchy( symbaEntityService, new HashMap<String, ArrayList<String>>(),
+                                    new ArrayList<String>(), ( GenericProtocolApplication ) topLevelProtocolApplication,
+                                    ( GenericProtocolApplication ) topLevelProtocolApplication );
+
+            for ( String key : gpaHierarchy.keySet() ) {
+                out.println();
+                out.println( "<!--" );
+                out.println( "For GPA: " + key );
+                for ( String action : gpaHierarchy.get( key ) ) {
+                    out.println( "    " + action );
+                }
+                out.println( "-->" );
+            }
+        }
 
         // the list of materials in a way appropriate for parsing by the hierarchy display code
-        HashMap<String, Material> ownedMaterials = new HashMap<String, Material>();
+        HashMap<String, ArrayList<Material>> ownedMaterials = new HashMap<String, ArrayList<Material>>();
         for ( ProtocolApplication associatedPA : protocolCollection.getProtocolApplications() ) {
             if ( associatedPA instanceof GenericProtocolApplication ) {
                 GenericProtocolApplication gpa = ( GenericProtocolApplication ) associatedPA;
+                boolean hasOutputMaterials = false;
                 if ( gpa.getOutputMaterials() != null && !gpa.getOutputMaterials().isEmpty() ) {
-                    ownedMaterials.put( gpa.getIdentifier() + "::" + gpa.getProtocol().getIdentifier(),
-                            gpa.getOutputMaterials().iterator().next() );
+                    hasOutputMaterials = true;
+                    ownedMaterials.put( gpa.getIdentifier() + "::" + gpa.getProtocol().getIdentifier() + "::output",
+                            new ArrayList<Material>( gpa.getOutputMaterials() ) );
+                }
+                // allow input materials as long as it isn't a material transformation: in those cases,
+                // all we need to show are the output materials
+                if ( !hasOutputMaterials ) {
+                    if ( gpa.getInputCompleteMaterials() != null && !gpa.getInputCompleteMaterials().isEmpty() ) {
+                        ownedMaterials.put(
+                                gpa.getIdentifier() + "::" + gpa.getProtocol().getIdentifier() + "::inputComplete",
+                                new ArrayList<Material>( gpa.getInputCompleteMaterials() ) );
+                    }
+                    if ( gpa.getInputMaterials() != null && !gpa.getInputMaterials().isEmpty() ) {
+                        ArrayList<Material> measureds = new ArrayList<Material>();
+                        for ( GenericMaterialMeasurement gmm : gpa.getInputMaterials() ) {
+                            measureds.add( gmm.getMeasuredMaterial() );
+                        }
+                        ownedMaterials.put(
+                                gpa.getIdentifier() + "::" + gpa.getProtocol().getIdentifier() + "::inputMeasured",
+                                measureds );
+                    }
                 }
             }
         }
@@ -178,8 +236,8 @@ public class DisplayFuge {
 
         int dataNumber = 0;
         out.println(
-                ActionTemplateParser.parseHierarchy( templateSessionBean, hierarchy, ownedMaterials, ownedDataItems,
-                        false, null ) );
+                ActionTemplateParser.parseHierarchy( entityService, hierarchy, gpaHierarchy, ownedMaterials,
+                        ownedDataItems, false, null ) );
 //        for ( Object obj : assayGPAs ) {
 //            if ( obj instanceof GenericProtocolApplication ) {
 //                GenericProtocolApplication dataFilledGPA = ( GenericProtocolApplication ) obj;

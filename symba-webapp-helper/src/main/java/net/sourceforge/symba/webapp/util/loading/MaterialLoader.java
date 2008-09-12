@@ -101,6 +101,33 @@ public class MaterialLoader {
                             symbaFormSessionBean.setDatafileSpecificMetadataStore( rdib, dataFileNumber );
                             materialNumber++;
                         }
+                        //todo does not take into account any measurement of this material
+                        for ( MaterialFactorsStore mfs : rdib.getGenericProtocolApplicationInfo().get( currentKey )
+                                .getInputMeasuredMaterialFactors() ) {
+
+                            // only load the material if it hasn't already been created, e.g. via a pre-existing
+                            // material transformation. In this case, it won't be in getInputCompleteMaterialFactors()
+                            // but will instead be inside getInputIdentifiersFromMaterialTransformations(), which is
+                            // completely ignored by this section
+                            hasMaterial = true;
+
+                            Object[] objects = loadSingleMaterial( mfs, ontologyTerms, ontologySources,
+                                    auditor, entityService, symbaEntityService, false );
+                            GenericMaterial genericMaterial = ( GenericMaterial ) objects[0];
+                            ontologyTerms = ( Set<OntologyTerm> ) objects[1];
+                            ontologySources = ( Set<OntologySource> ) objects[2];
+                            genericMaterial = ( GenericMaterial ) DatabaseObjectHelper.save(
+                                    "net.sourceforge.fuge.bio.material.GenericMaterial", genericMaterial, auditor );
+
+                            // a final step for this rdib genericMaterial info: add the genericMaterial to the list
+                            // of materials after storing
+                            materials.add( genericMaterial );
+                            mfs.setCreatedMaterialEndurant( genericMaterial.getEndurant().getIdentifier() );
+                            rdib.getGenericProtocolApplicationInfo().get( currentKey )
+                                    .setInputMeasuredMaterialFactor( mfs, materialNumber );
+                            symbaFormSessionBean.setDatafileSpecificMetadataStore( rdib, dataFileNumber );
+                            materialNumber++;
+                        }
                     }
                     dataFileNumber++;
                 }
@@ -349,33 +376,58 @@ public class MaterialLoader {
                 }
             }
 
-            if ( mfs.getCharacteristics().size() > 0 ) {
+            if ( mfs.getCharacteristics().size() > 0 || mfs.getMultipleCharacteristics().size() > 0 ) {
+                Set<OntologyTerm> characteristics = new HashSet<OntologyTerm>();
                 // Now we have the characteristics to load.
-                Set<OntologyTerm> characteristics;
-                if ( genericMaterial.getCharacteristics() == null ) {
-                    characteristics = new HashSet<OntologyTerm>();
-                } else {
+                if ( genericMaterial.getCharacteristics() != null ) {
                     characteristics = ( Set<OntologyTerm> ) genericMaterial.getCharacteristics();
                 }
-                for ( String ontologySourceEndurant : mfs.getCharacteristics()
-                        .keySet() ) {
-                    String ontologyTermEndurant =
-                            mfs.getCharacteristics().get( ontologySourceEndurant );
-                    // todo proper algorithm
-                    boolean matchFound = LoaderHelper.findMatchingEndurant( ontologyTermEndurant, ontologyTerms );
-                    // irrespective of whether or not we found a match, we still need to add the term to the new material
-                    OntologyTerm termToAdd =
-                            ( OntologyTerm ) symbaEntityService
-                                    .getLatestByEndurant( ontologyTermEndurant );
-                    characteristics.add( termToAdd );
-                    // todo this won't catch cases where the ontology source was added at a later date
+                if ( mfs.getCharacteristics().size() > 0 ) {
+                    for ( String ontologySourceEndurant : mfs.getCharacteristics().keySet() ) {
+                        String ontologyTermEndurant =
+                                mfs.getCharacteristics().get( ontologySourceEndurant );
+                        // todo proper algorithm
+                        boolean matchFound = LoaderHelper.findMatchingEndurant( ontologyTermEndurant, ontologyTerms );
+                        // irrespective of whether or not we found a match, we still need to add the term to the new material
+                        OntologyTerm termToAdd =
+                                ( OntologyTerm ) symbaEntityService
+                                        .getLatestByEndurant( ontologyTermEndurant );
+                        characteristics.add( termToAdd );
+                        // todo this won't catch cases where the ontology source was added at a later date
 
-                    if ( !matchFound ) {
-                        // if we didn't find a match, both the OntologyTerm and its Source (if present) need to be added
-                        // to the fuge entry, which means added to the ontologyTerms and ontologySources.
-                        ontologyTerms.add( termToAdd );
-                        ontologySources.add( ( OntologySource ) symbaEntityService.getLatestByEndurant(
-                                ontologySourceEndurant ) );
+                        if ( !matchFound ) {
+                            // if we didn't find a match, both the OntologyTerm and its Source (if present) need to be added
+                            // to the fuge entry, which means added to the ontologyTerms and ontologySources.
+                            ontologyTerms.add( termToAdd );
+                            ontologySources.add( ( OntologySource ) symbaEntityService.getLatestByEndurant(
+                                    ontologySourceEndurant ) );
+                        }
+                    }
+                }
+                if ( mfs.getMultipleCharacteristics().size() > 0 ) {
+                    // Now we have the multiple characteristics to load.
+                    for ( String ontologySourceEndurant : mfs.getMultipleCharacteristics().keySet() ) {
+                        for ( String ontologyTermEndurant : mfs.getMultipleCharacteristics()
+                                .get( ontologySourceEndurant ) ) {
+
+                            // todo proper algorithm
+                            boolean matchFound =
+                                    LoaderHelper.findMatchingEndurant( ontologyTermEndurant, ontologyTerms );
+                            // irrespective of whether or not we found a match, we still need to add the term to the new material
+                            OntologyTerm termToAdd =
+                                    ( OntologyTerm ) symbaEntityService
+                                            .getLatestByEndurant( ontologyTermEndurant );
+                            characteristics.add( termToAdd );
+                            // todo this won't catch cases where the ontology source was added at a later date
+
+                            if ( !matchFound ) {
+                                // if we didn't find a match, both the OntologyTerm and its Source (if present) need to be added
+                                // to the fuge entry, which means added to the ontologyTerms and ontologySources.
+                                ontologyTerms.add( termToAdd );
+                                ontologySources.add( ( OntologySource ) symbaEntityService.getLatestByEndurant(
+                                        ontologySourceEndurant ) );
+                            }
+                        }
                     }
                 }
                 genericMaterial.setCharacteristics( characteristics );
@@ -407,10 +459,8 @@ public class MaterialLoader {
             // otherwise, not interested.
             if ( mfs.getNovelCharacteristics().size() > 0 || mfs.getNovelMultipleCharacteristics().size() > 0 ) {
                 // Now we have the characteristics to load.
-                Set<OntologyTerm> characteristics;
-                if ( genericMaterial.getCharacteristics() == null ) {
-                    characteristics = new HashSet<OntologyTerm>();
-                } else {
+                Set<OntologyTerm> characteristics = new HashSet<OntologyTerm>();
+                if ( genericMaterial.getCharacteristics() != null ) {
                     characteristics = ( Set<OntologyTerm> ) genericMaterial.getCharacteristics();
                 }
                 OntologyIndividual clonedDescriptorSet =
@@ -434,7 +484,7 @@ public class MaterialLoader {
                 Set<OntologyProperty> newProperties = new HashSet<OntologyProperty>();
                 for ( String ontologySourceEndurant : mfs.getNovelCharacteristics().keySet() ) {
                     ObjectProperty opForCurrentSource =
-                            fillObjectProperty( symbaEntityService, clonedDescriptorSet, ontologySourceEndurant,
+                            fillObjectProperty( clonedDescriptorSet, ontologySourceEndurant,
                                     mfs.getNovelCharacteristics().get( ontologySourceEndurant ),
                                     "Object Property for " + name, auditor );
                     if ( opForCurrentSource != null ) {
@@ -447,7 +497,7 @@ public class MaterialLoader {
                 }
                 for ( String ontologySourceEndurant : mfs.getNovelMultipleCharacteristics().keySet() ) {
                     ObjectProperty opForCurrentSource =
-                            fillObjectProperty( symbaEntityService, clonedDescriptorSet, ontologySourceEndurant,
+                            fillObjectProperty( clonedDescriptorSet, ontologySourceEndurant,
                                     mfs.getNovelMultipleCharacteristics().get( ontologySourceEndurant ),
                                     "Object Property for " + name, auditor );
                     if ( opForCurrentSource != null ) {
@@ -475,21 +525,19 @@ public class MaterialLoader {
         return new Object[]{ genericMaterial, ontologyTerms, ontologySources };
     }
 
-    private static ObjectProperty fillObjectProperty( SymbaEntityService symbaEntityService,
-                                                      OntologyIndividual descriptorSet,
+    private static ObjectProperty fillObjectProperty( OntologyIndividual descriptorSet,
                                                       String ontologySourceEndurant,
                                                       String termAndAccessionPair,
                                                       String defaultName,
                                                       Person auditor ) {
         LinkedHashSet<String> list = new LinkedHashSet<String>();
         list.add( termAndAccessionPair );
-        return fillObjectProperty( symbaEntityService, descriptorSet, ontologySourceEndurant, list, defaultName,
+        return fillObjectProperty( descriptorSet, ontologySourceEndurant, list, defaultName,
                 auditor );
 
     }
 
-    private static ObjectProperty fillObjectProperty( SymbaEntityService symbaEntityService,
-                                                      OntologyIndividual clonedDescriptorSet,
+    private static ObjectProperty fillObjectProperty( OntologyIndividual clonedDescriptorSet,
                                                       String ontologySourceEndurant,
                                                       LinkedHashSet<String> termAndAccessionPairs,
                                                       String defaultName,

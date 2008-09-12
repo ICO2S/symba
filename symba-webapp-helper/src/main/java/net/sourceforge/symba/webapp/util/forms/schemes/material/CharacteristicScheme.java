@@ -1,7 +1,5 @@
 package net.sourceforge.symba.webapp.util.forms.schemes.material;
 
-import net.sourceforge.symba.webapp.util.forms.schemes.BasicScheme;
-
 /**
  * This file is part of SyMBA.
  * SyMBA is covered under the GNU Lesser General Public License (LGPL).
@@ -14,7 +12,7 @@ import net.sourceforge.symba.webapp.util.forms.schemes.BasicScheme;
  * $Author$
  * $HeadURL$
  */
-public class CharacteristicScheme extends BasicScheme {
+public class CharacteristicScheme extends BasicMaterialScheme {
     private String multipleElementTitle;
     private String sourceEndurant;
     private boolean isNovel;
@@ -22,8 +20,16 @@ public class CharacteristicScheme extends BasicScheme {
     // only used if storing novel characteristics
     private String descriptorOiEndurant;
 
+    private static final String completeMaterialNovelElementTitle = "completeMaterialNovelCharacteristic";
+    private static final String measuredMaterialNovelElementTitle = "measuredMaterialNovelCharacteristic";
+
+
     public CharacteristicScheme() {
-        elementTitle = "characteristic";
+        completeMaterialElementTitle = "completeMaterialCharacteristic";
+        measuredMaterialElementTitle = "measuredMaterialCharacteristic";
+        elementTitle = completeMaterialElementTitle;
+        setMeasuredMaterial( false );        
+
         multipleElementTitle = elementTitle + "Multiple";
         setNovel( false );
     }
@@ -35,6 +41,14 @@ public class CharacteristicScheme extends BasicScheme {
      */
     public void parse( String parameterName ) {
         String[] parsedStrings = parameterName.split( separator );
+        if ( parsedStrings[0].startsWith( completeMaterialElementTitle ) ||
+             parsedStrings[0].startsWith( completeMaterialNovelElementTitle ) ) {
+            setMeasuredMaterial( false );
+        } else if ( parsedStrings[0].startsWith( measuredMaterialElementTitle ) ||
+                    parsedStrings[0].startsWith( measuredMaterialNovelElementTitle ) ) {
+            setMeasuredMaterial( true );
+        }
+        multipleElementTitle = elementTitle + "Multiple";
         materialCount = Integer.valueOf( parsedStrings[1] );
         parentOfGpaEndurant = parsedStrings[2];
         datafileNumber = Integer.valueOf( parsedStrings[3] );
@@ -77,9 +91,13 @@ public class CharacteristicScheme extends BasicScheme {
     public void setNovel( boolean value ) {
         isNovel = value;
         if ( isNovel ) {
-            elementTitle = "novelCharacteristic";
+            if ( isMeasuredMaterial ) {
+                elementTitle = measuredMaterialNovelElementTitle;
+            } else {
+                elementTitle = completeMaterialNovelElementTitle;
+            }
         } else {
-            elementTitle = "characteristic";
+            setElementTitle( isMeasuredMaterial );
             descriptorOiEndurant = "";
         }
         multipleElementTitle = elementTitle + "Multiple";

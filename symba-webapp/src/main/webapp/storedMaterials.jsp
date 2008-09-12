@@ -64,7 +64,7 @@ in this distribution, please see LICENSE.txt
 
             // Print out those pairs with the clickable option, which is sent on to the form handler
             out.println( ActionTemplateParser.parseMaterialTransformationActions( materialTransformations,
-                    validUser.getSymbaEntityService(), symbaFormSessionBean,
+                    validUser.getEntityService(), validUser.getSymbaEntityService(), symbaFormSessionBean,
                     ActionTemplateParser.PROTOCOL_TYPE.MATERIAL_TRANSFORMATION ) );
         }
         // Get a list of current starting materials, to always provide the option of starting from scratch.
@@ -78,7 +78,7 @@ in this distribution, please see LICENSE.txt
                 out.println( ActionTemplateParser.parseMaterialTransformationDummyActions(
                         MaterialTemplateParser.getDummyBaseMaterials(
                                 validUser.getSymbaEntityService(), symbaFormSessionBean.getTopLevelProtocolName() ),
-                        validUser.getSymbaEntityService(), symbaFormSessionBean,
+                        validUser.getEntityService(), validUser.getSymbaEntityService(), symbaFormSessionBean,
                         ActionTemplateParser.PROTOCOL_TYPE.MATERIAL_TRANSFORMATION ) );
             %>
         </fieldset>

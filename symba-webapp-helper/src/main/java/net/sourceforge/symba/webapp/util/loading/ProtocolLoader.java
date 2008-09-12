@@ -396,6 +396,43 @@ public class ProtocolLoader {
                     assayGPA.setDescriptions( descriptions );
                 }
             }
+
+            // store the materials
+            Set<Material> inputCompleteMaterials = new HashSet<Material>();
+            Set<GenericMaterialMeasurement> inputMeasuredMaterials = new HashSet<GenericMaterialMeasurement>();
+            // add newly-created non-material-transformation materials
+            for ( MaterialFactorsStore mfs : store.getGenericProtocolApplicationInfo()
+                    .get( assayGPA.getProtocol().getEndurant().getIdentifier() )
+                    .getInputCompleteMaterialFactors() ) {
+                if ( mfs.getCreatedMaterialEndurant() != null && mfs.getCreatedMaterialEndurant().length() > 0 ) {
+                    inputCompleteMaterials.add( ( Material ) symbaEntityService
+                            .getLatestByEndurant( mfs.getCreatedMaterialEndurant() ) );
+                }
+            }
+            for ( MaterialFactorsStore mfs : store.getGenericProtocolApplicationInfo()
+                    .get( assayGPA.getProtocol().getEndurant().getIdentifier() )
+                    .getInputMeasuredMaterialFactors() ) {
+                if ( mfs.getCreatedMaterialEndurant() != null && mfs.getCreatedMaterialEndurant().length() > 0 ) {
+                    GenericMaterialMeasurement gmm = ( GenericMaterialMeasurement ) entityService
+                            .createDescribable( "net.sourceforge.fuge.bio.material.GenericMaterialMeasurement" );
+                    Material inputMaterial = ( Material ) symbaEntityService
+                            .getLatestByEndurant( mfs.getCreatedMaterialEndurant() );
+                    gmm.setMeasuredMaterial( inputMaterial );
+                    gmm = ( GenericMaterialMeasurement ) DatabaseObjectHelper
+                            .save( "net.sourceforge.fuge.bio.material.GenericMaterialMeasurement", gmm, auditor );
+                    inputMeasuredMaterials.add( gmm );
+                }
+            }
+            // now also add the output of material transformations, if present
+            for ( String identifier : store.getGenericProtocolApplicationInfo()
+                    .get( assayGPA.getProtocol().getEndurant().getIdentifier() )
+                    .getInputIdentifiersFromMaterialTransformations() ) {
+                inputCompleteMaterials.add( ( Material ) entityService
+                        .getIdentifiable( identifier ) );
+            }
+            assayGPA.setInputCompleteMaterials( inputCompleteMaterials );
+            assayGPA.setInputMaterials( inputMeasuredMaterials );
+
         }
 
         // add any deviations from the zero or more generic parameters associated with the equipment associated
@@ -509,27 +546,6 @@ public class ProtocolLoader {
             assayGPA.setEquipmentApplications( eaSet );
         }
 
-        // add the materials: add all as input complete materials
-        if ( store.getGenericProtocolApplicationInfo() != null ) {
-            Set<Material> set2 = new HashSet<Material>();
-            // add newly-created non-material-transformation materials
-            for ( MaterialFactorsStore mfs : store.getGenericProtocolApplicationInfo()
-                    .get( assayGPA.getProtocol().getEndurant().getIdentifier() )
-                    .getInputCompleteMaterialFactors() ) {
-                if ( mfs.getCreatedMaterialEndurant() != null && mfs.getCreatedMaterialEndurant().length() > 0 ) {
-                    set2.add( ( Material ) symbaEntityService
-                            .getLatestByEndurant( mfs.getCreatedMaterialEndurant() ) );
-                }
-            }
-            // now also add the output of material transformations, if present
-            for ( String identifier : store.getGenericProtocolApplicationInfo()
-                    .get( assayGPA.getProtocol().getEndurant().getIdentifier() )
-                    .getInputIdentifiersFromMaterialTransformations() ) {
-                set2.add( ( Material ) entityService
-                        .getIdentifiable( identifier ) );
-            }
-            assayGPA.setInputCompleteMaterials( set2 );
-        }
         // load into the database
         DatabaseObjectHelper.save(
                 "net.sourceforge.fuge.common.protocol.GenericProtocolApplication", assayGPA, auditor );

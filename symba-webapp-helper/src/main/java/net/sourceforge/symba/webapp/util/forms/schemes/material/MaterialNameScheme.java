@@ -1,7 +1,5 @@
 package net.sourceforge.symba.webapp.util.forms.schemes.material;
 
-import net.sourceforge.symba.webapp.util.forms.schemes.BasicScheme;
-
 /**
  * This file is part of SyMBA.
  * SyMBA is covered under the GNU Lesser General Public License (LGPL).
@@ -14,10 +12,13 @@ import net.sourceforge.symba.webapp.util.forms.schemes.BasicScheme;
  * $Author$
  * $HeadURL$
  */
-public class MaterialNameScheme extends BasicScheme {
+public class MaterialNameScheme extends BasicMaterialScheme {
 
     public MaterialNameScheme() {
-        elementTitle = "materialName";        
+        completeMaterialElementTitle = "completeMaterialName";
+        measuredMaterialElementTitle = "measuredMaterialName";
+        elementTitle = completeMaterialElementTitle;
+        isMeasuredMaterial = false;
     }
 
     /**
@@ -27,6 +28,11 @@ public class MaterialNameScheme extends BasicScheme {
      */
     public void parse( String parameterName ) {
         String[] parsedStrings = parameterName.split( separator );
+        if ( parsedStrings[0].equals( completeMaterialElementTitle ) ) {
+            setMeasuredMaterial( false );
+        } else if ( parsedStrings[0].equals( measuredMaterialElementTitle ) ) {
+            setMeasuredMaterial( true );
+        }
         materialCount = Integer.valueOf( parsedStrings[1] );
         parentOfGpaEndurant = parsedStrings[2];
         datafileNumber = Integer.valueOf( parsedStrings[3] );

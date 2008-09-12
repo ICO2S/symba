@@ -10,6 +10,7 @@ import net.sourceforge.fuge.common.ontology.OntologyTerm;
 import net.sourceforge.fuge.common.ontology.OntologySource;
 import net.sourceforge.symba.webapp.util.DatafileSpecificMetadataStore;
 import net.sourceforge.symba.webapp.util.PersonBean;
+import net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionInformation;
 
 import java.util.List;
 
@@ -38,7 +39,8 @@ public class GenericEquipmentTemplateParser {
         // (e.g. make, model, annotations) is considered constant and unchangeable.
         // Search the GenericEquipment for GenericParameters, and print out their options.
         GenericProtocol chosenProtocol = ( GenericProtocol ) personBean.getEntityService()
-                .getIdentifiable( info.getNestedActions().getActionHierarchy().get(info.getNestedActions().getActionHierarchy().size() - 1).getProtocolOfActionIdentifier() );
+                .getIdentifiable( info.getNestedActions().getActionHierarchy().get(
+                        info.getNestedActions().getActionHierarchy().size() - 1 ).getProtocolOfActionIdentifier() );
 
         if ( chosenProtocol.getEquipment() != null ) {
             for ( GenericEquipment genericEquipment : chosenProtocol.getEquipment() ) {

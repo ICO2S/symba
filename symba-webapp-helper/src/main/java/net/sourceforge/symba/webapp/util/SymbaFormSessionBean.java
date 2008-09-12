@@ -534,7 +534,7 @@ public class SymbaFormSessionBean implements Serializable {
             for ( String mfbKey : characteristics.keySet() ) {
                 out.println( "<li>" );
                 // todo temporarily disable for material transformations
-                if (!changeJsp.isEmpty()) {
+                if (changeJsp.length() > 0) {
                 out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
                 }
                 if ( isNovel ) {
@@ -545,7 +545,7 @@ public class SymbaFormSessionBean implements Serializable {
                             .getLatestByEndurant( characteristics.get( mfbKey ) );
                     out.println( ot.getTerm() );
                 }
-                if (!changeJsp.isEmpty()) {
+                if (changeJsp.length() > 0) {
                 out.println( "</a>" );
                 }
                 out.println( "</li>" );
@@ -555,7 +555,7 @@ public class SymbaFormSessionBean implements Serializable {
             for ( String mfbKey : multipleCharacteristics.keySet() ) {
                 for ( String currentValue : multipleCharacteristics.get( mfbKey ) ) {
                     out.println( "<li>" );
-                    if (!changeJsp.isEmpty()) {
+                    if (changeJsp.length() > 0) {
                     out.println( "<a class=\"bigger\" href=\"" + changeJsp + "\">" );
                     }
                     if ( isNovel ) {
@@ -565,7 +565,7 @@ public class SymbaFormSessionBean implements Serializable {
                         OntologyTerm ot = ( OntologyTerm ) symbaEntityService.getLatestByEndurant( currentValue );
                         out.println( ot.getTerm() );
                     }
-                    if (!changeJsp.isEmpty()) {
+                    if (changeJsp.length() > 0) {
                     out.println( "</a>" );
                     }
                     out.println( "</li>" );

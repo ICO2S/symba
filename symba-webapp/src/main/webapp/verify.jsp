@@ -77,7 +77,7 @@ must go back to the login page--%>
              class="net.sourceforge.symba.webapp.util.PersonBean">
     <c:set target="${validUser}" property="userName"
            value="${dbValues.user_name}"/>
-    <c:set target="${validUser}" property="lsid"
+    <c:set target="${validUser}" property="endurantLsid"
            value="${dbValues.lsid}"/>
 </jsp:useBean>
 
@@ -88,7 +88,6 @@ must go back to the login page--%>
 <%
 
     validUser.startServices();
-    validUser.setEndurantLsid( validUser.getLsid().trim() );
     Person p = ( Person ) validUser.getSymbaEntityService().getLatestByEndurant( validUser.getEndurantLsid() );
     validUser.setLsid( p.getIdentifier() );
     validUser.setEmail( p.getEmail() );

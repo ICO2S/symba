@@ -45,7 +45,7 @@
                 <li>
                     September 1-4, 2008 <a href="http://www.mgedmeeting.org/">MGED Society Meeting</a>. SyMBA
                     was represented with a poster during this meeting. The SyMBA poster won 3rd place in the MGED
-                    poster competition! You can download this award-winning poster as a pdf document.
+                    poster competition! You can <a href="http://symba.sourceforge.net/SyMBA-Mged2008.pdf">download this poster as a pdf</a>.
                 </li>
                 <li>
                     Summer 2008 <a href="http://www.obi-ontology.org">OBI</a> Workshop. At this workshop a short
@@ -149,12 +149,11 @@
                 </li>
             </ul>
         </section>
-        <section name="Status: May 2008 Onwards: 8.05-SNAPSHOT">
+        <section name="Status: September 2008: 8.09">
 
             <p>
-                Ongoing snapshot releases.
-            </p>
-            <p>
+                <b>We are now fully upgraded to FuGE Version 1.</b> There are a couple of outstanding issues related
+                to session management that will get sorted in the next couple of weeks. 
                 There is now a general, all-purpose login to the sandbox (test) installation. The username is 'Anonymous'
                 and the pass is 'AnonymousPass'. Please feel free to use this account, and please send an email
                 to <a href="mailto:symba-devel@lists.sourceforge.net">the SyMBA developer's list</a> if something
@@ -175,7 +174,9 @@
                     <a href="http://sourceforge.net/project/screenshots.php?group_id=202680">Screenshots</a>
                     are available from the SourceForge website.
                 </li>
-                <li><a href="SyMBA-November2007.pdf">Summary Slides</a> - November 2007
+                <li><a href="http://symba.sourceforge.net/SyMBA-Mged2008.pdf">SyMBA Poster for MGED 2008 Meeting</a> - September 2008
+                </li>
+                <li><a href="http://symba.sourceforge.net/SyMBA-November2007.pdf">Summary Slides</a> - November 2007
                 </li>
                 <li>
                     <a href="http://fuge.sourceforge.net">FuGE</a>

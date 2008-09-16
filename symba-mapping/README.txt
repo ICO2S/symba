@@ -14,7 +14,7 @@ mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.Unm
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroarray.xml"
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroscopy.xml"
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/referenceTemplates/CarmenElectrophysiology.xml"
-mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroarray.xml xml/samples/SampleMicroscopy.xml xml/referenceTemplates/CarmenElectrophysiology.xml"
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroarray.xml xml/samples/SampleMicroscopy.xml xml/referenceTemplates/CarmenElectrophysiology.xml xml/referenceTemplates/MiMage-PCR.xml"
 
 # Unload a FuGE experiment into FuGE XML
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.MarshalXML" -Dexec.args="../symba-jaxb2/src/main/resources/xmlSchema.xsd your-identifier output-xml-file"

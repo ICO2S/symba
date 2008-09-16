@@ -10,8 +10,23 @@
         <!--A new cool feature.-->
         <!--</action>-->
         <!--</release>-->
-        <release version="8.08" date="soon"
+        <release version="8.09" date="2008-09-16"
                  description="Upgrade to FuGE Version 1">
+            <action dev="Allyson Lister" type="add">
+                Some session state code (i.e. copying metadata from the experiment display pages, and some movement
+                within form fields) has not yet been re-implemented, as it will require a re-write to allow for
+                both the improved protocol management and the change to the FuGE objects. This will reappear in the
+                next version of SyMBA.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                There can now be protocols of arbitrary depth, whereas in the past there could only be a depth
+                of two. This has ahd a knock-on effect for every bit of display code, which now handles the
+                possibility of larger depths.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                FuGE Milestone 1 contains specific objects for hypotheses and conclusions (Milestone 3 had no such
+                things). Therefore SyMBA now uses these objects to store the hypotheses and conclusions.
+            </action>
             <action dev="Allyson Lister" type="add">
                 We now allow material transformation protocols as well as data creation (Assay) protocols. See the
                 MiMage-*.xml documents (part of the symba-mapping module) in the Subversion repository.
@@ -34,7 +49,8 @@
             </action>
             <action dev="Allyson Lister" type="add">
                 Made an interface from which different types of copying of the data files (srb, scp, etc) can be used.
-                This can be found by examining the net.sourceforge.symba.webapp.util.storage classes in the webapp-helper
+                This can be found by examining the net.sourceforge.symba.webapp.util.storage classes in the
+                webapp-helper
                 sub-project.
             </action>
             <action dev="Allyson Lister" type="add">

@@ -129,7 +129,7 @@
     <distributionManagement>
         <site>
             <id>local-test</id>
-            <url>scp://localhost/media/disk/website-test/</url>
+            <url>scp://localhost/media/share/website-test/</url>
         </site>
         <!--<site>-->
             <!--<id>shell.sf.net</id>-->

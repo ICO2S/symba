@@ -29,10 +29,10 @@
                     once SyMBA is a sourceforge project
                 </li>
                 <li>
-                    add the description of each data file to the display screen
+                    <font color="#33cc00">completed, release 8.05</font> - add the description of each data file to the display screen
                 </li>
                 <li>
-                    upgrading to FuGE Version 1
+                    <font color="#33cc00">completed, release 8.09</font> - upgrading to FuGE Version 1
                 </li>
                 <li>
                     <font color="#33cc00">completed, release 7.10</font> - maven 1.0.2 to maven 2
@@ -44,7 +44,7 @@
                     andromda 3.2 to andromda 4
                 </li>
                 <li>
-                    UML 1.4 to UML 2
+                    <font color="#33cc00">completed, release 8.09</font> - UML 1.4 to UML 2
                 </li>
                 <li>
                     Increased Search facilities including:
@@ -82,7 +82,7 @@
 
                 </ul>
                 <li>
-                    Expandable hierarchy of Experiment List, rather than just a table view
+                    <font color="#33cc00">completed, release 8.09</font> - Expanded hierarchy of Experiment List, rather than just a table view
                 </li>
                 <li>
                     Creation of the front-end "Protocol Wizard", which will simplify addition of
@@ -99,26 +99,16 @@
                     Color-coding the experiment list by protocol/workflow type
                 </li>
                 <li>
-                    Re-build LSID authority (and add notes) from http://lsids.sourceforge.net
+                    <font color="#33cc00">completed, release 8.05</font> - Re-built LSID authority from scratch using
+                    CXF (Crossfire).
                 </li>
                 <li>
-                    Unit tests as part of maven that will check:
+                    <font color="#33cc00">completed and ongoing, release 8.09</font> - Unit tests have been added,
+                    with more that will be added as required.
                 </li>
 
-                <ul>
-                    <li>
-                        database connections (security and standard database)
-                    </li>
-                    <li>
-                        ssh connection to file store
-                    </li>
-                    <li>
-                        lsid authority connection
-
-                    </li>
-                </ul>
                 <li>
-                    set this namespace property to get all code to be
+                    <font color="#33cc00">completed, release 8.09</font> - set this namespace property to get all code to be
                     templated in Java 1.5 style:
                     <a href="http://galaxy.andromda.org/docs/andromda-metafacades/andromda-uml-metafacades/andromda-metafacades-uml14/namespace.html#enableTemplating"
                        target="_blank">

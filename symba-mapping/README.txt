@@ -14,7 +14,7 @@ mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.Unm
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroarray.xml"
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroscopy.xml"
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/referenceTemplates/CarmenElectrophysiology.xml"
-mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroarray.xml xml/samples/SampleMicroscopy.xml xml/referenceTemplates/CarmenElectrophysiology.xml xml/referenceTemplates/MiMage-PCR.xml"
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.UnmarshalWorkflow" -Dexec.args="xml/samples/SampleMicroarray.xml xml/samples/SampleMicroscopy.xml xml/samples/SampleMicroarray.xml xml/referenceTemplates/CarmenElectrophysiology.xml xml/referenceTemplates/MiMage-PCR.xml"
 
 # Unload a FuGE experiment into FuGE XML
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.mapping.hibernatejaxb2.MarshalXML" -Dexec.args="../symba-jaxb2/src/main/resources/xmlSchema.xsd your-identifier output-xml-file"
@@ -25,6 +25,10 @@ mvn exec:java -Dexec.mainClass="net.sourceforge.symba.lsid.RetrieveLsid" -Dexec.
 # Create usernames and passwords for the security database based on information found in an XML file formatted
 # as in symba-mapping/xml/samples/SamplePeople.xml. Run from symba-webapp-helper
 mvn exec:java -Dexec.mainClass="net.sourceforge.symba.webapp.util.security.CreateUserPassAndLoad" -Dexec.args="../symba-mapping/xml/samples/SamplePeople.xml"
+
+# Create usernames and passwords for the security database based on information found in an username/password file
+# in format "username	password	endurant". Run from symba-webapp-helper
+mvn exec:java -Dexec.mainClass="net.sourceforge.symba.webapp.util.security.LoadUserPass" -Dexec.args="input.txt"
 
 # Create an OntologyCollection in FuGE-ML, without modifying the database, using an input file that's much simpler in
 # structure to the XML. Run from the symba-mapping subdirectory

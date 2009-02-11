@@ -15,9 +15,39 @@ creates them.
 <!-- $Author$-->
 <!-- $HeadURL$-->
 
+<%@ page import="net.sourceforge.fuge.bio.material.Material" %>
+<%@ page import="net.sourceforge.fuge.collection.FuGE" %>
+<%@ page import="net.sourceforge.fuge.common.audit.Person" %>
+<%@ page import="net.sourceforge.fuge.common.ontology.OntologySource" %>
+<%@ page import="net.sourceforge.fuge.common.ontology.OntologyTerm" %>
 <%@ page import="net.sourceforge.fuge.common.protocol.GenericProtocol" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="java.util.HashMap" %>
+<%@ page import="net.sourceforge.fuge.common.protocol.GenericProtocolApplication" %>
+<%@ page import="net.sourceforge.fuge.common.protocol.Protocol" %>
+<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.helper.FuGEMappingHelper" %>
+<%@ page import="net.sourceforge.symba.mapping.hibernatejaxb2.xml.XMLMarshaler" %>
+<%@ page import="net.sourceforge.symba.webapp.util.*" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.ActionTemplateParser" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.MaterialFormValidator" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.MaterialTemplateParser" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.MetaDataWrapper" %>
+<%@ page import="net.sourceforge.symba.webapp.util.forms.schemes.protocol.ActionHierarchyScheme" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.AssayLoader" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.LoadPerson" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.MaterialTransformationLoader" %>
+<%@ page import="net.sourceforge.symba.webapp.util.loading.OntologyLoader" %>
+<%@ page import="org.apache.commons.fileupload.FileItem" %>
+<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.FileUploadException" %>
+<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
+<%@ page import="org.xml.sax.SAXException" %>
+<%@ page import="javax.xml.bind.JAXBException" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.io.StringWriter" %>
+<%@ page import="java.net.URISyntaxException" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.*" %>
 
 <!-- This include will validate the user -->
 <jsp:include page="checkUser.jsp"/>
@@ -140,7 +170,8 @@ creates them.
         continue on to the next form page</strong><br/>
         <%
             }
-            out.println( "<input type=\"submit\" value=\"Submit\" onclick=\"this.disabled=true\"/>" );
+//        out.println( "<input type=\"submit\" value=\"Submit\" onclick=\"this.disabled='disabled'\"/>" );
+            out.println( "<input type=\"submit\" value=\"Submit\"/>" );
         %>
     </fieldset>
 </form>

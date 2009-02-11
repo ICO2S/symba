@@ -64,7 +64,9 @@
     <properties>
         <andromda.version>3.2</andromda.version>
         <maven.andromda.config>${pom.basedir}/src/main/config</maven.andromda.config>
-        <model.uri>file:${project.build.sourceDirectory}/SyMBA-FuGEv1.uml2</model.uri>
+        <!-- Removed the reference to file:${project.build.sourceDirectory} as it can cause problems
+        with directory resolution - see http://www.andromda.org/jira/browse/ANDROMDAPP-40-->
+        <model.uri>${pom.basedir}/src/main/uml/SyMBA-FuGEv1.uml2</model.uri>
         <!-- If you remove the empty filter element below, the auto-generated files will not be made-->
         <filter></filter>
         <validation>true</validation>

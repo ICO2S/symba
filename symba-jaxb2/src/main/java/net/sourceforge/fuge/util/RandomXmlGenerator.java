@@ -1268,6 +1268,7 @@ public class RandomXmlGenerator {
 
         identifiableXML = ( FuGECommonIdentifiableType ) generateRandomDescribableXML( identifiableXML );
         identifiableXML.setIdentifier( identifierMaker.create( "random.class.name" ) );
+        identifiableXML.setEndurantRef( identifierMaker.create( "random.class.name.Endurant" ) );
         identifiableXML.setName( String.valueOf( Math.random() ) );
 
         // this ensures that if smaller objects (like DatabaseReference) are being created, there is no unneccessary attempt

@@ -67,12 +67,21 @@ public class ProtocolApplicationMappingHelper implements
         this.cgpa = new GenericProtocolApplicationMappingHelper();
     }
 
-    // @todo Have not coded PartitionPair
+
+    /**
+     * Use this method if you are absolutely SURE that all protocol applications referenced
+     * in this particular PA's ActionApplications have already been loaded in the database.
+     * Otherwise, access this method only via ProtocolCollectionMappingHelper.unmarshalPAsWithChecks
+     *
+     * @param protocolApplicationXML the current PA (in XML form) to load
+     * @param protocolApplication    the FuGE PA object to put the XML object into
+     * @param performer              the person to add in the audit information
+     * @return the newly-created FuGE PA object
+     */
     public ProtocolApplication unmarshal(
             FuGECommonProtocolProtocolApplicationType protocolApplicationXML,
             ProtocolApplication protocolApplication,
-            Person performer )
-            throws EntityServiceException {
+            Person performer ) {
 
         // determine what sort of protocol application it is
         if ( protocolApplicationXML instanceof FuGECommonProtocolGenericProtocolApplicationType ) {

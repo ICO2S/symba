@@ -1,7 +1,7 @@
 package net.sourceforge.symba.mapping.hibernatejaxb2;
 
-import net.sourceforge.symba.mapping.hibernatejaxb2.xml.XMLUnmarshaler;
 import net.sourceforge.fuge.common.audit.Person;
+import net.sourceforge.symba.mapping.hibernatejaxb2.xml.XMLUnmarshaler;
 
 import java.util.Date;
 
@@ -46,13 +46,13 @@ public class UnmarshalXML {
         if ( args.length != 2 )
             throw new java.lang.Exception( "You must provide 2 arguments in this order: schema-file input-xml-file" );
 
-        XMLUnmarshaler unmarshalTest = new XMLUnmarshaler( args[0], args[1] );
+        XMLUnmarshaler unmarshaler = new XMLUnmarshaler( args[0], args[1] );
 
         Person performer = ( Person ) DatabaseObjectHelper.getOrCreate( null, null,
                 "Example Person " + new Date(), "net.sourceforge.fuge.common.audit.Person" );
 
         DatabaseObjectHelper.save( "net.sourceforge.fuge.common.audit.Person", performer, null );
 
-        unmarshalTest.Jaxb2ToFuGE( performer );
+        unmarshaler.Jaxb2ToFuGE( performer );
     }
 }

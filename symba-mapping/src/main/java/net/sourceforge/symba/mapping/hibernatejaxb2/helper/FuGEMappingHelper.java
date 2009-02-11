@@ -3,8 +3,8 @@ package net.sourceforge.symba.mapping.hibernatejaxb2.helper;
 
 import net.sourceforge.fuge.bio.investigation.Investigation;
 import net.sourceforge.fuge.collection.*;
-import net.sourceforge.fuge.common.description.Description;
 import net.sourceforge.fuge.common.audit.Person;
+import net.sourceforge.fuge.common.description.Description;
 import net.sourceforge.fuge.service.EntityServiceException;
 import net.sourceforge.fuge.util.generatedJAXB2.*;
 import net.sourceforge.symba.mapping.hibernatejaxb2.DatabaseObjectHelper;
@@ -82,9 +82,11 @@ public class FuGEMappingHelper implements MappingHelper<FuGE, FuGECollectionFuGE
 
         // get and store in the database all OntologyCollection information
         // unmarshall the jaxb object into a fuge object, then set the fuge object within the top level fuge root object
+        if ( frXML.getOntologyCollection() != null ) {
         fr.setOntologyCollection( coc.unmarshal( frXML.getOntologyCollection(), ( OntologyCollection ) entityService.createDescribable(
                 "net.sourceforge.fuge.collection.OntologyCollection" ), performer ) );
-
+        }
+        
         // get and store in the database all ReferenceableCollection information
         if ( frXML.getReferenceableCollection() != null ) {
             // unmarshall the jaxb object into a fuge object, then set the fuge object within the top level fuge root object

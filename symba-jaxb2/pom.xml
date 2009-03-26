@@ -60,22 +60,22 @@
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
         </repository>
-        <repository>
-            <id>java.net</id>
-            <url>http://download.java.net/maven/1</url>
-            <layout>legacy</layout>
-        </repository>
+        <!--<repository>-->
+            <!--<id>java.net</id>-->
+            <!--<url>http://download.java.net/maven/1</url>-->
+            <!--<layout>legacy</layout>-->
+        <!--</repository>-->
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>maven2-repository.dev.java.net</id>
             <name>Java.net Maven 2 Repository</name>
-            <url>https://maven2-repository.dev.java.net/nonav/repository</url>
+            <url>http://download.java.net/maven/2</url>
         </pluginRepository>
-        <pluginRepository>
-            <id>java.net</id>
-            <url>http://download.java.net/maven/1</url>
-            <layout>legacy</layout>
-        </pluginRepository>
+        <!--<pluginRepository>-->
+            <!--<id>java.net</id>-->
+            <!--<url>http://download.java.net/maven/1</url>-->
+            <!--<layout>legacy</layout>-->
+        <!--</pluginRepository>-->
     </pluginRepositories>
 </project>

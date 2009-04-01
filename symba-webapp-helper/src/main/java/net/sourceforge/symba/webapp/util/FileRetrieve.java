@@ -1,11 +1,11 @@
 package net.sourceforge.symba.webapp.util;
 
-import ch.ethz.ssh2.Connection;
-import ch.ethz.ssh2.SCPClient;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import com.trilead.ssh2.Connection;
+import com.trilead.ssh2.SCPClient;
 
 /**
  * This file is part of SyMBA.

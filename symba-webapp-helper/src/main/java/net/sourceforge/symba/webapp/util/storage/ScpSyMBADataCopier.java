@@ -1,10 +1,10 @@
 package net.sourceforge.symba.webapp.util.storage;
 
-import ch.ethz.ssh2.Connection;
-import ch.ethz.ssh2.Session;
-import ch.ethz.ssh2.SCPClient;
-
 import java.io.*;
+
+import com.trilead.ssh2.Connection;
+import com.trilead.ssh2.SCPClient;
+import com.trilead.ssh2.Session;
 
 /**
  * This file is part of SyMBA.

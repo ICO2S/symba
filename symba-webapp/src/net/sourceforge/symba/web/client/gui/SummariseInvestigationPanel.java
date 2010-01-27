@@ -88,7 +88,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
 
                 if ( selectedRow >= 0 ) {
                     String id = investigationDetails.get( selectedRow ).getId();
-                    editTable.setInvestigationTable( id );
+                    editTable.set( id );
                 }
             }
         } );

@@ -38,13 +38,22 @@ public class EditInvestigationTable extends FlexTable {
     private TextBox stepTitle;
     private int editableRow, editableColumn, contentTableRowCount;
     private String editableTitle;
+    private boolean defaultHandlersSet;
 
     private enum ActionType {
         ADD, COPY, EDIT, IGNORE
     }
 
+    /**
+     * Initialise all final and modifiable variables
+     *
+     * @param rpcService       the service to use to call the GWT server side
+     * @param investigatePanel the panel that holds the main summaries of all investigations - used to update that panel
+     */
     public EditInvestigationTable( InvestigationsServiceAsync rpcService,
                                    SummariseInvestigationPanel investigatePanel ) {
+
+        // initialise all final variables
         this.rpcService = rpcService;
         this.investigatePanel = investigatePanel;
 
@@ -60,10 +69,16 @@ public class EditInvestigationTable extends FlexTable {
         lastName = new TextBox();
         emailAddress = new TextBox();
 
-        initModifiable();
+        // clear / set to empty all modifiable variables except defaultHandlersSet
+        clearModifiable();
+
+        // defaultHandlersSet should only be set to false in the constructor, and then true the first time
+        // the handlers are loaded. Other than that, no modifications should be performed on this variable.
+        // Therefore, it should not be included in clearModifiable()
+        defaultHandlersSet = false;
     }
 
-    private void initModifiable() {
+    private void clearModifiable() {
         investigation = new Investigation();
         contentTableRowCount = 0;
 
@@ -74,7 +89,8 @@ public class EditInvestigationTable extends FlexTable {
     }
 
     public void initEditInvestigationTable() {
-        investigation = new Investigation();
+
+        clearModifiable();
 
         setWidth( "100%" );
 //            getCellFormatter().addStyleName( 0, 0, "investigation-ListContainer" );
@@ -115,6 +131,20 @@ public class EditInvestigationTable extends FlexTable {
 
         stepsTable.setCellSpacing( 10 );
         stepsTable.setCellPadding( 0 );
+        stepsTable.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
+                ActionType type = getClickActionType( event );
+                if ( type == ActionType.ADD ) {
+                    System.err.println( "running stepsTable onclick add" );
+                    doAddStep( getClickedRowForSubStepAddition( event ) );
+                } else if ( type == ActionType.COPY ) {
+                    doCopyStep( getClickedRowForStepCopying( event ) );
+                } else if ( type == ActionType.EDIT ) {
+                    doMakeEditable( getClickedCoordinatesForEdit( event ) );
+                }
+            }
+        } );
+
 //        stepsTable.setWidth( "100%" );
         stepsTable.getColumnFormatter().setWidth( 0, "15px" );
         setWidget( contentTableRowCount++, 0, stepsTable );
@@ -122,10 +152,13 @@ public class EditInvestigationTable extends FlexTable {
         addDefaultHandlers();
     }
 
-    public void setInvestigationTable( String id ) {
+    public void set( String id ) {
 
         rpcService.getInvestigation( id, new AsyncCallback<Investigation>() {
             public void onSuccess( Investigation result ) {
+
+                initEditInvestigationTable();
+
                 investigation = result;
                 investigationId.setValue( investigation.getId() );
                 investigationTitle.setValue( investigation.getInvestigationTitle() );
@@ -135,8 +168,6 @@ public class EditInvestigationTable extends FlexTable {
                 emailAddress.setValue( investigation.getProvider().getEmailAddress() );
 
                 fetchExperimentStepDetails();
-
-                initEditInvestigationTable();
             }
 
             public void onFailure( Throwable caught ) {
@@ -147,6 +178,13 @@ public class EditInvestigationTable extends FlexTable {
     }
 
     private void addDefaultHandlers() {
+
+        if ( defaultHandlersSet ) {
+            return;
+        } else {
+            defaultHandlersSet = true;
+        }
+
         saveButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 doSave();
@@ -155,32 +193,20 @@ public class EditInvestigationTable extends FlexTable {
 
         addSubStepButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
+                System.err.println( "running addsubstep (top level)" );
                 doAddStep( -2 ); // force a top-level add of an experiment step
             }
         } );
 
         cancelButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                initModifiable();
+                clearModifiable();
             }
         } );
 
         saveInfoButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 doSaveStepInformation( getClickedCoordinatesForSave( event ) );
-            }
-        } );
-
-        stepsTable.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
-                ActionType type = getClickActionType( event );
-                if ( type == ActionType.ADD ) {
-                    doAddStep( getClickedRowForSubStepAddition( event ) );
-                } else if ( type == ActionType.COPY ) {
-                    doCopyStep( getClickedRowForStepCopying( event ) );
-                } else if ( type == ActionType.EDIT ) {
-                    doMakeEditable( getClickedCoordinatesForEdit( event ) );
-                }
             }
         } );
 
@@ -235,7 +261,7 @@ public class EditInvestigationTable extends FlexTable {
 
         rpcService.updateInvestigation( investigation, new AsyncCallback<ArrayList<InvestigationDetails>>() {
             public void onSuccess( ArrayList<InvestigationDetails> updatedDetails ) {
-                initModifiable();
+                clearModifiable();
                 investigatePanel.setInvestigationDetails( updatedDetails );
                 investigatePanel.sortInvestigationDetails();
                 investigatePanel.setViewData();
@@ -265,7 +291,7 @@ public class EditInvestigationTable extends FlexTable {
     }
 
     private void fetchExperimentStepDetails() {
-        //todo replace with RPC call that will retrieve details. For now, all details start as empty.
+        //todo replace with RPC call that will retrieve summary details only
 
         setData( investigation.getExperiments() );
     }

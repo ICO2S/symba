@@ -1,5 +1,6 @@
 package net.sourceforge.symba.web.client.gui;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -27,8 +28,10 @@ public class EditInvestigationTable extends FlexTable {
     private final Button saveButton;
     private final Button cancelButton;
     private final Button addSubStepButton;
-    private final String addChildImageUrl = "/images/addChild30x30.png";
-    private final String copyStepImageUrl = "/images/copyStep30x15.png";
+    private final String baseApp = GWT.getModuleBaseURL()
+            .substring( 0, GWT.getModuleBaseURL().lastIndexOf( GWT.getModuleName() ) );
+    private final String addChildImageUrl = baseApp + "/images/addChild30x30.png";
+    private final String copyStepImageUrl = baseApp + "/images/copyStep30x15.png";
 
     private final Button saveInfoButton;
 
@@ -116,7 +119,6 @@ public class EditInvestigationTable extends FlexTable {
         detailsTable.setCellSpacing( 0 );
         detailsTable.setCellPadding( 0 );
         detailsTable.setWidth( "100%" );
-        detailsTable.getColumnFormatter().addStyleName( 1, "add-contact-input" );
         initDetailsTable();
         detailsTable.getColumnFormatter().setWidth( 0, "15px" );
         setWidget( contentTableRowCount++, 0, detailsTable );
@@ -129,13 +131,12 @@ public class EditInvestigationTable extends FlexTable {
 //            getCellFormatter().addStyleName( 2, 0, "contacts-ListMenu" );
         setWidget( contentTableRowCount++, 0, addStepPanel );
 
-        stepsTable.setCellSpacing( 10 );
+        stepsTable.setCellSpacing( 0 );
         stepsTable.setCellPadding( 0 );
         stepsTable.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 ActionType type = getClickActionType( event );
                 if ( type == ActionType.ADD ) {
-                    System.err.println( "running stepsTable onclick add" );
                     doAddStep( getClickedRowForSubStepAddition( event ) );
                 } else if ( type == ActionType.COPY ) {
                     doCopyStep( getClickedRowForStepCopying( event ) );
@@ -193,14 +194,15 @@ public class EditInvestigationTable extends FlexTable {
 
         addSubStepButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                System.err.println( "running addsubstep (top level)" );
                 doAddStep( -2 ); // force a top-level add of an experiment step
             }
         } );
 
         cancelButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
+                String savedTitle = investigation.getInvestigationTitle();
                 clearModifiable();
+                setWidget( contentTableRowCount++, 0, new Label( "Did not modify " + savedTitle + "." ) );
             }
         } );
 
@@ -261,14 +263,21 @@ public class EditInvestigationTable extends FlexTable {
 
         rpcService.updateInvestigation( investigation, new AsyncCallback<ArrayList<InvestigationDetails>>() {
             public void onSuccess( ArrayList<InvestigationDetails> updatedDetails ) {
+                String savedTitle = investigation.getInvestigationTitle();
                 clearModifiable();
                 investigatePanel.setInvestigationDetails( updatedDetails );
                 investigatePanel.sortInvestigationDetails();
                 investigatePanel.setViewData();
+                setWidget( contentTableRowCount++, 0, new Label( savedTitle + " saved." ) );
             }
 
             public void onFailure( Throwable caught ) {
-                Window.alert( "Error updating investigation" );
+                String savedTitle = "unknown title";
+                if ( investigation.getInvestigationTitle() != null &&
+                        investigation.getInvestigationTitle().length() > 0 ) {
+                    savedTitle = investigation.getInvestigationTitle();
+                }
+                Window.alert( "Error updating investigation " + savedTitle );
                 caught.printStackTrace( System.err );
             }
         } );

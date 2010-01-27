@@ -1,0 +1,21 @@
+BODY {
+    width: 100%;
+    margin: 5px;
+}
+
+.note {
+    width: 90%;
+    text-align: center;
+    margin: 5px;
+    padding: 5px;
+    border: 2px dashed #ddd;
+    background: #ffffe0;
+}
+
+.experiment-EvenStep {
+    background-color: #FFFFFF;
+}
+
+.experiment-OddStep {
+    background-color: #FFFF99;
+}

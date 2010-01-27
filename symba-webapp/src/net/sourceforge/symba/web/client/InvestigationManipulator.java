@@ -1,33 +1,29 @@
 package net.sourceforge.symba.web.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.gui.EditInvestigationTable;
 import net.sourceforge.symba.web.client.gui.SummariseInvestigationPanel;
 import org.swfupload.client.File;
 import org.swfupload.client.SWFUpload;
 import org.swfupload.client.UploadBuilder;
-import org.swfupload.client.event.FileDialogCompleteHandler;
-import org.swfupload.client.event.FileQueuedHandler;
-import org.swfupload.client.event.UploadCompleteHandler;
-import org.swfupload.client.event.UploadErrorHandler;
-import org.swfupload.client.event.UploadProgressHandler;
-import org.swfupload.client.event.UploadSuccessHandler;
+import org.swfupload.client.event.*;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InvestigationManipulator implements EntryPoint {
 
     private boolean disabled = false;
-    SWFUpload upload;
+    SWFUpload uploadToExistingStep, uploadToNewStep;
     private List<File> files = new ArrayList<File>();
     VerticalPanel centerPanel;
     HTML northHtml;
     HTML southHtml;
     HTML eastHtml;
+    private final String toNewStepImageUrl = "/images/toNewStep70w76h.png";
+    private final String toExistingStepImageUrl = "/images/toExistingStep70w52h.png";
 
     private void removeFile( String id ) {
         for ( File ff : files ) {
@@ -97,25 +93,25 @@ public class InvestigationManipulator implements EntryPoint {
             return;
         }
 
-        // lets go ...
 //        vp.setSpacing( 5 );
 //        RootPanel.get().add( container );
-        FlowPanel tempFlowPanel = new FlowPanel();
-        HTML bt = new HTML( "<span id=\"xpbutton\" />" );
-        tempFlowPanel.add( bt );
-        centerPanel.add( tempFlowPanel );
-//        vp.add( tempFlowPanel, "Two" );
-//        Button button = new Button( "Enable / Disable" );
-//        container.add( button, DockPanel.SOUTH );
+        HorizontalPanel tempPanel = new HorizontalPanel();
+        HTML bt = new HTML( "<span id=\"uploadToExistingStep-button\" />" );
+        tempPanel.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
+        tempPanel.setSpacing( 20 );
+        tempPanel.add( bt );
+        HTML bt2 = new HTML( "<span id=\"uploadToNewStep-button\" />" );
+        tempPanel.add( bt2 );
+        centerPanel.add( tempPanel );
 //        button.addClickHandler( new ClickHandler() {
 //            public void onClick( ClickEvent event ) {
 //                if ( disabled ) {
-//                    upload.setButtonDisabled( false );
-//                    upload.setButtonCursor( SWFUpload.ButtonCursor.HAND.getValue() );
+//                    uploadToExistingStep.setButtonDisabled( false );
+//                    uploadToExistingStep.setButtonCursor( SWFUpload.ButtonCursor.HAND.getValue() );
 //                    disabled = false;
 //                } else {
-//                    upload.setButtonDisabled( true );
-//                    upload.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
+//                    uploadToExistingStep.setButtonDisabled( true );
+//                    uploadToExistingStep.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
 //                    disabled = true;
 //                }
 //            }
@@ -135,6 +131,14 @@ public class InvestigationManipulator implements EntryPoint {
                 "<br />" + GWT.getModuleName() );
         // -----------------
 
+        setupExistingStepBuilder( baseApp, url );
+        setupNewStepBuilder( baseApp, url );
+
+    }
+
+    private void setupNewStepBuilder( String baseApp,
+                                      String url ) {
+
         final UploadBuilder builder = new UploadBuilder();
         // builder.setDebug(true);
         builder.setHTTPSuccessCodes( 200, 201 );
@@ -142,12 +146,14 @@ public class InvestigationManipulator implements EntryPoint {
                 "*.asf;*.wma;*.wmv;*.avi;*.flv;*.swf;*.mpg;*.mpeg;*.mp4;*.mov;*.m4v;*.aac;*.mp3;*.wav;*.png;*.jpg;*.jpeg;*.gif" );
         builder.setFileTypesDescription( "Images, Video & Sound" );
 
-        builder.setButtonPlaceholderID( "xpbutton" );
-        builder.setButtonImageURL( "XPButtonUploadText_61x22.png" );
+        builder.setButtonPlaceholderID( "uploadToNewStep-button" );
+        builder.setButtonImageURL( baseApp + toNewStepImageUrl );
+//        builder.setButtonText( "Each file is added to a copy of the selected step" );
+//        builder.setButtonTextTopPadding( 5 );
         builder.setButtonDisabled( false );
         builder.setButtonCursor( SWFUpload.ButtonCursor.HAND );
-        builder.setButtonWidth( 61 );
-        builder.setButtonHeight( 22 );
+        builder.setButtonWidth( 70 );
+        builder.setButtonHeight( 76 );
         builder.setButtonAction( SWFUpload.ButtonAction.SELECT_FILES );
 
         builder.setUploadProgressHandler( new UploadProgressHandler() {
@@ -175,7 +181,7 @@ public class InvestigationManipulator implements EntryPoint {
                 File ff = e.getFile();
                 String message = e.getMessage();
                 if ( message == null || message.trim().length() == 0 ) {
-                    message = "upload failed";
+                    message = "uploadToNewStep failed";
                 }
                 String t = southHtml.getHTML();
                 t += "<br />error: " + ff.getId() + ", " + ff.getName() + " / " + message;
@@ -187,7 +193,7 @@ public class InvestigationManipulator implements EntryPoint {
                     String tt = southHtml.getHTML();
                     tt += "<br />start: " + id;
                     southHtml.setHTML( tt );
-                    upload.startUpload( id );
+                    uploadToNewStep.startUpload( id );
                 }
             }
         } );
@@ -207,7 +213,7 @@ public class InvestigationManipulator implements EntryPoint {
                     String tt = southHtml.getHTML();
                     tt += "<br />start: " + id;
                     southHtml.setHTML( tt );
-                    upload.startUpload( id );
+                    uploadToNewStep.startUpload( id );
                 }
             }
         } );
@@ -231,11 +237,118 @@ public class InvestigationManipulator implements EntryPoint {
                     String t = southHtml.getHTML();
                     t += "<br />start: " + id;
                     southHtml.setHTML( t );
-                    upload.startUpload( id );
+                    uploadToNewStep.startUpload( id );
                 }
             }
         } );
-        upload = builder.build();
+        uploadToNewStep = builder.build();
+
+    }
+
+    private void setupExistingStepBuilder( String baseApp,
+                                           String url ) {
+        final UploadBuilder builder = new UploadBuilder();
+        // builder.setDebug(true);
+        builder.setHTTPSuccessCodes( 200, 201 );
+        builder.setFileTypes(
+                "*.asf;*.wma;*.wmv;*.avi;*.flv;*.swf;*.mpg;*.mpeg;*.mp4;*.mov;*.m4v;*.aac;*.mp3;*.wav;*.png;*.jpg;*.jpeg;*.gif" );
+        builder.setFileTypesDescription( "Images, Video & Sound" );
+
+        builder.setButtonPlaceholderID( "uploadToExistingStep-button" );
+        builder.setButtonImageURL( baseApp + toExistingStepImageUrl );
+//        builder.setButtonText( "All files are added to the selected step" );
+        builder.setButtonDisabled( false );
+        builder.setButtonCursor( SWFUpload.ButtonCursor.HAND );
+        builder.setButtonWidth( 70 );
+        builder.setButtonHeight( 52 );
+        builder.setButtonAction( SWFUpload.ButtonAction.SELECT_FILES );
+
+        builder.setUploadProgressHandler( new UploadProgressHandler() {
+
+            public void onUploadProgress( UploadProgressEvent e ) {
+                File f = e.getFile();
+
+                f.getName();
+                String text = southHtml.getHTML();
+                text += "<br />" + e.getBytesComplete() + "; " + f.getName();
+                southHtml.setHTML( text );
+            }
+        } );
+
+        builder.setUploadSuccessHandler( new UploadSuccessHandler() {
+            public void onUploadSuccess( UploadSuccessEvent e ) {
+                String t = southHtml.getHTML();
+                t += "<br />server data : " + e.getServerData();
+                southHtml.setHTML( t );
+            }
+        } );
+
+        builder.setUploadErrorHandler( new UploadErrorHandler() {
+            public void onUploadError( UploadErrorEvent e ) {
+                File ff = e.getFile();
+                String message = e.getMessage();
+                if ( message == null || message.trim().length() == 0 ) {
+                    message = "uploadToExistingStep failed";
+                }
+                String t = southHtml.getHTML();
+                t += "<br />error: " + ff.getId() + ", " + ff.getName() + " / " + message;
+                southHtml.setHTML( t );
+                removeFile( ff.getId() );
+                if ( files.size() > 0 ) {
+                    ff = files.get( 0 );
+                    String id = ff.getId();
+                    String tt = southHtml.getHTML();
+                    tt += "<br />start: " + id;
+                    southHtml.setHTML( tt );
+                    uploadToExistingStep.startUpload( id );
+                }
+            }
+        } );
+
+        builder.setUploadURL( url );
+
+        builder.setUploadCompleteHandler( new UploadCompleteHandler() {
+            public void onUploadComplete( UploadCompleteEvent e ) {
+                File f = e.getFile();
+                String t = southHtml.getHTML();
+                t += "<br />done : " + f.getId() + ", " + f.getName();
+                southHtml.setHTML( t );
+                removeFile( f.getId() );
+                if ( files.size() > 0 ) {
+                    File ff = files.get( 0 );
+                    String id = ff.getId();
+                    String tt = southHtml.getHTML();
+                    tt += "<br />start: " + id;
+                    southHtml.setHTML( tt );
+                    uploadToExistingStep.startUpload( id );
+                }
+            }
+        } );
+
+        builder.setFileQueuedHandler( new FileQueuedHandler() {
+            public void onFileQueued( FileQueuedEvent event ) {
+                String t = eastHtml.getHTML();
+                t += "<br />ofq: " + event.getFile().getId() + "; "
+                        + event.getFile().getName();
+                eastHtml.setHTML( t );
+                files.add( event.getFile() );
+            }
+        } );
+
+        builder.setFileDialogCompleteHandler( new FileDialogCompleteHandler() {
+            public void onFileDialogComplete( FileDialogCompleteEvent e ) {
+                southHtml.setHTML( "files = " + files.size() );
+                if ( files.size() > 0 ) {
+                    File ff = files.get( 0 );
+                    String id = ff.getId();
+                    String t = southHtml.getHTML();
+                    t += "<br />start: " + id;
+                    southHtml.setHTML( t );
+                    uploadToExistingStep.startUpload( id );
+                }
+            }
+        } );
+        uploadToExistingStep = builder.build();
 
     }
 }

@@ -38,7 +38,7 @@ public class InvestigationManipulator implements EntryPoint {
 
         DockPanel container = new DockPanel();
         northHtml = new HTML();
-        southHtml = new HTML();
+        southHtml = new HTML( wrapInFileQueueStyle( "", "" ) );
         eastHtml = new HTML();
 
         SummariseInvestigationPanel investigatePanel = new SummariseInvestigationPanel( rpcService );
@@ -103,7 +103,6 @@ public class InvestigationManipulator implements EntryPoint {
         tempPanel.add( bt2 );
         centerPanel.add( tempPanel );
 
-        southHtml.setHTML( "----" );
         eastHtml.setHTML( GWT.getHostPageBaseURL() + "<br />" + GWT.getModuleBaseURL() +
                 "<br />" + GWT.getModuleName() );
 
@@ -138,17 +137,15 @@ public class InvestigationManipulator implements EntryPoint {
                 File f = e.getFile();
 
                 f.getName();
-                String text = southHtml.getHTML();
-                text += "<br />" + e.getBytesComplete() + "; " + f.getName();
-                southHtml.setHTML( text );
+                southHtml.setHTML( wrapInFileQueueStyle( southHtml.getHTML(),
+                        "<br />" + e.getBytesComplete() + "; " + f.getName() ) );
             }
         } );
 
         builder.setUploadSuccessHandler( new UploadSuccessHandler() {
             public void onUploadSuccess( UploadSuccessEvent e ) {
-                String t = southHtml.getHTML();
-                t += "<br />server data : " + e.getServerData();
-                southHtml.setHTML( t );
+                southHtml.setHTML(
+                        wrapInFileQueueStyle( southHtml.getHTML(), "<br />server data : " + e.getServerData() ) );
             }
         } );
 
@@ -157,18 +154,15 @@ public class InvestigationManipulator implements EntryPoint {
                 File ff = e.getFile();
                 String message = e.getMessage();
                 if ( message == null || message.trim().length() == 0 ) {
-                    message = "uploadToNewStep failed";
+                    message = "uploadToNewStep failed: " + e.getMessage();
                 }
-                String t = southHtml.getHTML();
-                t += "<br />error: " + ff.getId() + ", " + ff.getName() + " / " + message;
-                southHtml.setHTML( t );
+                southHtml.setHTML( wrapInFileQueueStyle( southHtml.getHTML(),
+                        "<br />error: " + ff.getId() + ", " + ff.getName() + " / " + message ) );
                 removeFile( ff.getId() );
                 if ( files.size() > 0 ) {
                     ff = files.get( 0 );
                     String id = ff.getId();
-                    String tt = southHtml.getHTML();
-                    tt += "<br />start: " + id;
-                    southHtml.setHTML( tt );
+                    southHtml.setHTML( wrapInFileQueueStyle( southHtml.getHTML(), "<br />start: " + id ) );
                     uploadToNewStep.startUpload( id );
                 }
             }
@@ -179,16 +173,13 @@ public class InvestigationManipulator implements EntryPoint {
         builder.setUploadCompleteHandler( new UploadCompleteHandler() {
             public void onUploadComplete( UploadCompleteEvent e ) {
                 File f = e.getFile();
-                String t = southHtml.getHTML();
-                t += "<br />done : " + f.getId() + ", " + f.getName();
-                southHtml.setHTML( t );
+                southHtml.setHTML(
+                        wrapInFileQueueStyle( southHtml.getHTML(), "<br />done : " + f.getId() + ", " + f.getName() ) );
                 removeFile( f.getId() );
                 if ( files.size() > 0 ) {
                     File ff = files.get( 0 );
                     String id = ff.getId();
-                    String tt = southHtml.getHTML();
-                    tt += "<br />start: " + id;
-                    southHtml.setHTML( tt );
+                    southHtml.setHTML( wrapInFileQueueStyle( southHtml.getHTML(), "<br />start: " + id ) );
                     uploadToNewStep.startUpload( id );
                 }
             }
@@ -206,19 +197,31 @@ public class InvestigationManipulator implements EntryPoint {
 
         builder.setFileDialogCompleteHandler( new FileDialogCompleteHandler() {
             public void onFileDialogComplete( FileDialogCompleteEvent e ) {
-                southHtml.setHTML( "files = " + files.size() );
+                southHtml.setHTML( wrapInFileQueueStyle( "", "files = " + files.size() ) );
                 if ( files.size() > 0 ) {
                     File ff = files.get( 0 );
                     String id = ff.getId();
-                    String t = southHtml.getHTML();
-                    t += "<br />start: " + id;
-                    southHtml.setHTML( t );
+                    southHtml.setHTML( wrapInFileQueueStyle( southHtml.getHTML(), "<br />start: " + id ) );
                     uploadToNewStep.startUpload( id );
                 }
             }
         } );
         uploadToNewStep = builder.build();
 
+    }
+
+    private String wrapInFileQueueStyle( String originalHtml,
+                                         String appendedHtml ) {
+        final String startDiv = "<div class=\"fieldset flash\"> <span class=\"legend\">Upload Queue</span>";
+        final String endDiv = "</div>";
+
+        // remove the div from the original string, if present
+        if ( originalHtml.indexOf( startDiv ) != -1 ) {
+            originalHtml = originalHtml.substring( startDiv.length() );
+            originalHtml = originalHtml.substring( 0, originalHtml.length() - endDiv.length() );
+        }
+
+        return startDiv + originalHtml + appendedHtml + endDiv;
     }
 
     private void setupExistingStepBuilder( String baseApp,
@@ -245,17 +248,15 @@ public class InvestigationManipulator implements EntryPoint {
                 File f = e.getFile();
 
                 f.getName();
-                String text = southHtml.getHTML();
-                text += "<br />" + e.getBytesComplete() + "; " + f.getName();
-                southHtml.setHTML( text );
+                southHtml.setHTML( wrapInFileQueueStyle( southHtml.getHTML(),
+                        "<br />" + e.getBytesComplete() + "; " + f.getName() ) );
             }
         } );
 
         builder.setUploadSuccessHandler( new UploadSuccessHandler() {
             public void onUploadSuccess( UploadSuccessEvent e ) {
-                String t = southHtml.getHTML();
-                t += "<br />server data : " + e.getServerData();
-                southHtml.setHTML( t );
+                southHtml.setHTML(
+                        wrapInFileQueueStyle( southHtml.getHTML(), "<br />server data : " + e.getServerData() ) );
             }
         } );
 
@@ -264,18 +265,15 @@ public class InvestigationManipulator implements EntryPoint {
                 File ff = e.getFile();
                 String message = e.getMessage();
                 if ( message == null || message.trim().length() == 0 ) {
-                    message = "uploadToExistingStep failed";
+                    message = "uploadToExistingStep failed: " + e.getMessage();
                 }
-                String t = southHtml.getHTML();
-                t += "<br />error: " + ff.getId() + ", " + ff.getName() + " / " + message;
-                southHtml.setHTML( t );
+                southHtml.setHTML( wrapInFileQueueStyle( southHtml.getHTML(),
+                        "<br />error: " + ff.getId() + ", " + ff.getName() + " / " + message ) );
                 removeFile( ff.getId() );
                 if ( files.size() > 0 ) {
                     ff = files.get( 0 );
                     String id = ff.getId();
-                    String tt = southHtml.getHTML();
-                    tt += "<br />start: " + id;
-                    southHtml.setHTML( tt );
+                    southHtml.setHTML( wrapInFileQueueStyle( southHtml.getHTML(), "<br />start: " + id ) );
                     uploadToExistingStep.startUpload( id );
                 }
             }
@@ -286,16 +284,13 @@ public class InvestigationManipulator implements EntryPoint {
         builder.setUploadCompleteHandler( new UploadCompleteHandler() {
             public void onUploadComplete( UploadCompleteEvent e ) {
                 File f = e.getFile();
-                String t = southHtml.getHTML();
-                t += "<br />done : " + f.getId() + ", " + f.getName();
-                southHtml.setHTML( t );
+                southHtml.setHTML(
+                        wrapInFileQueueStyle( southHtml.getHTML(), "<br />done : " + f.getId() + ", " + f.getName() ) );
                 removeFile( f.getId() );
                 if ( files.size() > 0 ) {
                     File ff = files.get( 0 );
                     String id = ff.getId();
-                    String tt = southHtml.getHTML();
-                    tt += "<br />start: " + id;
-                    southHtml.setHTML( tt );
+                    southHtml.setHTML( wrapInFileQueueStyle( southHtml.getHTML(), "<br />start: " + id ) );
                     uploadToExistingStep.startUpload( id );
                 }
             }
@@ -313,13 +308,11 @@ public class InvestigationManipulator implements EntryPoint {
 
         builder.setFileDialogCompleteHandler( new FileDialogCompleteHandler() {
             public void onFileDialogComplete( FileDialogCompleteEvent e ) {
-                southHtml.setHTML( "files = " + files.size() );
+                southHtml.setHTML( wrapInFileQueueStyle( "", "files = " + files.size() ) );
                 if ( files.size() > 0 ) {
                     File ff = files.get( 0 );
                     String id = ff.getId();
-                    String t = southHtml.getHTML();
-                    t += "<br />start: " + id;
-                    southHtml.setHTML( t );
+                    southHtml.setHTML( wrapInFileQueueStyle( southHtml.getHTML(), "<br />start: " + id ) );
                     uploadToExistingStep.startUpload( id );
                 }
             }

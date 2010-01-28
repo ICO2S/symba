@@ -84,7 +84,7 @@ public class EditInvestigationTable extends FlexTable {
         this.buttonTwo = buttonTwo;
 
         saveInfoButton = new Button( "Save" );
-        saveButton = new Button( "Save" );
+        saveButton = new Button( "Save and Finish" );
         cancelButton = new Button( "Cancel" );
         addSubStepButton = new Button( "Add Top-Level Step" );
 
@@ -521,6 +521,12 @@ public class EditInvestigationTable extends FlexTable {
 //            System.err
 //                    .println( "Printing Row " + rowValue + " (" + depth + holder.getCurrent().getTitle() + ")" );
             holder.setStepId( rowValue );
+
+            // when radio buttons are added again, none are selected, so disable the upload buttons
+            buttonOne.setButtonDisabled( true );
+            buttonOne.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
+            buttonTwo.setButtonDisabled( true );
+            buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
 
             addRowActions( rowValue );
 

@@ -21,15 +21,18 @@ BODY {
 }
 
 .cell-modified {
-    background-color: lightgreen;
+    border: solid 1px forestgreen;
+    background-color: #EBFFEB;;
 }
 
 .textbox-warning {
-    border-color: crimson
+    border-color: crimson;
+    background-color: #FFEBEB;
 }
 
 .textbox-accepted {
-    border-color: green
+    border-color: green;
+    background-color: #EBFFEB;;
 }
 
 /* The styles below modified from those found in http://demo.swfupload.org/v220/css/default.css */
@@ -55,4 +58,31 @@ div.flash {
     border-color: #D9E4FF;
     border-radius: 5px;
 
+}
+
+.progressContainer {
+    margin: 5px;
+    padding: 4px;
+    border: solid 1px #E8E8E8;
+    background-color: #F7F7F7;
+    overflow: hidden;
+}
+
+/* Error */
+.red {
+    border: solid 1px #B50000;
+    background-color: #FFEBEB;
+}
+
+/* Current */
+.yellow {
+    border: solid 1px darkorange;
+    background-color: lightgoldenrodyellow; /*border: solid 1px #DDF0DD;*/
+/*background-color: #EBFFEB;*/
+}
+
+/* Complete */
+.blue {
+    border: solid 1px #CEE2F2;
+    background-color: #F0F5FF;
 }

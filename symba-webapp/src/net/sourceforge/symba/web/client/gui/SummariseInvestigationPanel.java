@@ -25,8 +25,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
 
         this.rpcService = rpcService;
 
-        setWidth( "100%" );
-        setWidth( "18em" );
+        setWidth( "30em" );
 
         FlexTable contentTable = new FlexTable();
         contentTable.setWidth( "100%" );
@@ -56,7 +55,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
         investigationsTable.setCellPadding( 0 );
         investigationsTable.setWidth( "100%" );
 //        investigationsTable.addStyleName( "contacts-ListContents" );
-        investigationsTable.getColumnFormatter().setWidth( 0, "15px" );
+//        investigationsTable.getColumnFormatter().setWidth( 0, "15px" );
         contentTable.setWidget( 1, 0, investigationsTable );
 
         add( contentTable );

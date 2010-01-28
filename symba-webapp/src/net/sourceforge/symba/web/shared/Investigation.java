@@ -1,6 +1,5 @@
 package net.sourceforge.symba.web.shared;
 
-import com.google.gwt.user.client.Random;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 
@@ -62,17 +61,17 @@ public class Investigation implements Serializable {
      * @return the new title, which may not be the same as the input parameter, or "" if no match in any experiments
      *         were found
      */
-    public String setExperimentStepTitle( int selectedRow,
-                                          String title ) {
+    public Object[] setExperimentStepTitle( int selectedRow,
+                                            String title ) {
 
         for ( ExperimentStepHolder holder : experiments ) {
-            String value = holder.setTitleAtStepId( selectedRow, title );
-            if ( value.length() > 0 ) {
+            Object[] values = holder.setTitleAtStepId( selectedRow, title );
+            if ( values[0] != null && ( ( String ) values[0] ).length() > 0 ) {
                 // the title was found and set appropriately.
-                return value;
+                return values;
             }
         }
-        return ""; // no match in any of the experiments were found. Nothing was changed
+        return new Object[2]; // no match in any of the experiments were found. Nothing was changed
     }
 
     /**
@@ -159,7 +158,7 @@ public class Investigation implements Serializable {
     public void deepExperimentCopy( int selectedRow ) {
 
         ExperimentStep step = null;
-        ExperimentStepHolder holder = null;
+        ExperimentStepHolder holder;
 
         for ( int i = 0, experimentsSize = getExperiments().size(); i < experimentsSize; i++ ) {
             holder = getExperiments().get( i );
@@ -173,6 +172,13 @@ public class Investigation implements Serializable {
         if ( step != null ) {
             System.err.println( "copying at top level" );
             addExperimentStep( step );
+        }
+    }
+
+    public void setAllModified( boolean value ) {
+        for ( int i = 0, experimentsSize = getExperiments().size(); i < experimentsSize; i++ ) {
+            ExperimentStepHolder holder = getExperiments().get( i );
+            holder.setAllModified( value );
         }
     }
 }

@@ -1,15 +1,14 @@
 package net.sourceforge.symba.web.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import net.sourceforge.symba.web.client.InvestigationsService;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetails;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @SuppressWarnings( "serial" )
 public class InvestigationsServiceImpl extends RemoteServiceServlet implements
@@ -68,6 +67,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
     }
 
     public ArrayList<InvestigationDetails> updateInvestigation( Investigation investigation ) {
+        // todo move the values in "current" to the value in "original"
         investigations.remove( investigation.getId() );
         investigations.put( investigation.getId(), investigation );
         return getInvestigationDetails();

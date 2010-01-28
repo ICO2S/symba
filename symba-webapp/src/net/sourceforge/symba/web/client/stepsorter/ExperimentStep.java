@@ -83,7 +83,9 @@ public class ExperimentStep implements Serializable {
      * @param step the new ExperimentalStep to add
      */
     public void addChild( ExperimentStep step ) {
-        this.children.add( new ExperimentStepHolder( step ) );
+        ExperimentStepHolder holder = new ExperimentStepHolder( step );
+        holder.setModified( true );
+        this.children.add( holder );
     }
 
     /**

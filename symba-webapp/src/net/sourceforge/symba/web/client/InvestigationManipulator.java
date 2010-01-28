@@ -15,7 +15,6 @@ import java.util.List;
 
 public class InvestigationManipulator implements EntryPoint {
 
-    private boolean disabled = false;
     SWFUpload uploadToExistingStep, uploadToNewStep;
     private List<File> files = new ArrayList<File>();
     VerticalPanel centerPanel;
@@ -45,9 +44,6 @@ public class InvestigationManipulator implements EntryPoint {
         SummariseInvestigationPanel investigatePanel = new SummariseInvestigationPanel( rpcService );
         investigatePanel.fetchInvestigationDetails();
 
-        EditInvestigationTable editTable = new EditInvestigationTable( rpcService, investigatePanel );
-        investigatePanel.addDefaultHandlers( editTable );
-
         container.setWidth( "100%" );
 
         container.add( northHtml, DockPanel.NORTH );
@@ -67,6 +63,11 @@ public class InvestigationManipulator implements EntryPoint {
         container.add( centerPanel, DockPanel.CENTER );
 
         setupMultipleFileUploader();
+
+        EditInvestigationTable editTable = new EditInvestigationTable( rpcService, investigatePanel,
+                uploadToExistingStep, uploadToNewStep );
+        investigatePanel.addDefaultHandlers( editTable );
+
         centerPanel.add( editTable );
     }
 
@@ -93,8 +94,6 @@ public class InvestigationManipulator implements EntryPoint {
             return;
         }
 
-//        vp.setSpacing( 5 );
-//        RootPanel.get().add( container );
         HorizontalPanel tempPanel = new HorizontalPanel();
         HTML bt = new HTML( "<span id=\"uploadToExistingStep-button\" />" );
         tempPanel.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
@@ -103,33 +102,10 @@ public class InvestigationManipulator implements EntryPoint {
         HTML bt2 = new HTML( "<span id=\"uploadToNewStep-button\" />" );
         tempPanel.add( bt2 );
         centerPanel.add( tempPanel );
-//        button.addClickHandler( new ClickHandler() {
-//            public void onClick( ClickEvent event ) {
-//                if ( disabled ) {
-//                    uploadToExistingStep.setButtonDisabled( false );
-//                    uploadToExistingStep.setButtonCursor( SWFUpload.ButtonCursor.HAND.getValue() );
-//                    disabled = false;
-//                } else {
-//                    uploadToExistingStep.setButtonDisabled( true );
-//                    uploadToExistingStep.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
-//                    disabled = true;
-//                }
-//            }
-//        } );
 
-//        final HTML html = new HTML( "----" );
-//        HorizontalPanel hp = new HorizontalPanel();
-//        hp.setSpacing( 5 );
-//        RootPanel.get().add( hp );
-//        hp.setWidth( "100%" );
-//        hp.add( html );
         southHtml.setHTML( "----" );
-//        final HTML html2 = new HTML( GWT.getHostPageBaseURL() + "<br />" + GWT.getModuleBaseURL() +
-//                "<br />" + GWT.getModuleName() );
-//        hp.add( html2 );
         eastHtml.setHTML( GWT.getHostPageBaseURL() + "<br />" + GWT.getModuleBaseURL() +
                 "<br />" + GWT.getModuleName() );
-        // -----------------
 
         setupExistingStepBuilder( baseApp, url );
         setupNewStepBuilder( baseApp, url );
@@ -150,8 +126,8 @@ public class InvestigationManipulator implements EntryPoint {
         builder.setButtonImageURL( baseApp + toNewStepImageUrl );
 //        builder.setButtonText( "Each file is added to a copy of the selected step" );
 //        builder.setButtonTextTopPadding( 5 );
-        builder.setButtonDisabled( false );
-        builder.setButtonCursor( SWFUpload.ButtonCursor.HAND );
+        builder.setButtonDisabled( true );
+        builder.setButtonCursor( SWFUpload.ButtonCursor.ARROW );
         builder.setButtonWidth( 70 );
         builder.setButtonHeight( 76 );
         builder.setButtonAction( SWFUpload.ButtonAction.SELECT_FILES );
@@ -257,8 +233,8 @@ public class InvestigationManipulator implements EntryPoint {
         builder.setButtonPlaceholderID( "uploadToExistingStep-button" );
         builder.setButtonImageURL( baseApp + toExistingStepImageUrl );
 //        builder.setButtonText( "All files are added to the selected step" );
-        builder.setButtonDisabled( false );
-        builder.setButtonCursor( SWFUpload.ButtonCursor.HAND );
+        builder.setButtonDisabled( true );
+        builder.setButtonCursor( SWFUpload.ButtonCursor.ARROW );
         builder.setButtonWidth( 70 );
         builder.setButtonHeight( 52 );
         builder.setButtonAction( SWFUpload.ButtonAction.SELECT_FILES );

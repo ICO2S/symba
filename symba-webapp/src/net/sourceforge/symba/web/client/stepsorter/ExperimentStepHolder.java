@@ -1,9 +1,6 @@
 package net.sourceforge.symba.web.client.stepsorter;
 
-import com.google.gwt.user.client.Random;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Rather than storing the ExperimentSteps directly, store a Holder which contains the step, plus extra metadata
@@ -88,32 +85,39 @@ public class ExperimentStepHolder implements Serializable {
      *
      * @param selectedRow the row whose title is to be changed
      * @param title       the new title
-     * @return the new title value - this is important, as it isn't necessarily the same as the title parameter
+     * @return the new title value in [0], and true if new, false if matches original, in [1] - this is important,
+     *         as it isn't necessarily the same as the title parameter
      */
-    public String setTitleAtStepId( int selectedRow,
-                                    String title ) {
+    public Object[] setTitleAtStepId( int selectedRow,
+                                      String title ) {
+        Object[] values = new Object[2];
 
         if ( stepId == selectedRow ) {
             if ( title == null || title.length() == 0 ) {
                 current.setTitle( original.getTitle() );
-            } else {
-                current.setTitle( title );
+                setModified( false );
+            } else if ( !current.getTitle().equals( title.trim() ) ) {
+                // nothing needs to be done if the titles match already, including running setModified(): it should
+                // remain at whatever it was before.
+                current.setTitle( title.trim() );
+                setModified( true );
             }
-            setModified( true );
-            System.err.println( "Step found - modifying title. Now has title = " + current.getTitle() );
-            return current.getTitle();
+            values[0] = current.getTitle();
+            values[1] = isModified();
+            return values;
         }
 
         if ( !current.isLeaf() ) {
             for ( ExperimentStepHolder holder : current.getChildren() ) {
-                String returnedTitle = holder.setTitleAtStepId( selectedRow, title );
-                if ( returnedTitle.length() > 0 ) {
-                    setModified( true );
-                    return returnedTitle;
+                Object[] returnedValues = holder.setTitleAtStepId( selectedRow, title );
+                if ( returnedValues != null && returnedValues[0] != null &&
+                        ( ( String ) returnedValues[0] ).length() > 0 ) {
+                    setModified( ( Boolean ) returnedValues[1] );
+                    return returnedValues;
                 }
             }
         }
-        return ""; // if there was no match
+        return values; // if there was no match
     }
 
     /**
@@ -135,7 +139,7 @@ public class ExperimentStepHolder implements Serializable {
         }
 
         ExperimentStep step = null;
-        ExperimentStepHolder holder = null;
+        ExperimentStepHolder holder;
         if ( !current.isLeaf() ) {
             for ( int i = 0, childrenSize = current.getChildren().size(); i < childrenSize; i++ ) {
                 holder = current.getChildren().get( i );
@@ -155,5 +159,15 @@ public class ExperimentStepHolder implements Serializable {
         }
 
         return null;
+    }
+
+    public void setAllModified( boolean value ) {
+
+        setModified( value );
+        if ( !current.isLeaf() ) {
+            for ( int i = 0, childrenSize = current.getChildren().size(); i < childrenSize; i++ ) {
+                current.getChildren().get( i ).setAllModified( value );
+            }
+        }
     }
 }

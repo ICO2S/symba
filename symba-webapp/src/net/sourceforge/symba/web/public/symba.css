@@ -19,3 +19,15 @@ BODY {
 .experiment-OddStep {
     background-color: #FFFF99;
 }
+
+.cell-modified {
+    background-color: lightgreen;
+}
+
+.textbox-warning {
+    border-color: crimson
+}
+
+.textbox-accepted {
+    border-color: green
+}

@@ -1,6 +1,8 @@
 package net.sourceforge.symba.web.client.gui;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -10,6 +12,7 @@ import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetails;
+import org.swfupload.client.SWFUpload;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +36,13 @@ public class EditInvestigationTable extends FlexTable {
     private final String addChildImageUrl = baseApp + "/images/addChild30x30.png";
     private final String copyStepImageUrl = baseApp + "/images/copyStep30x15.png";
 
+    private final SWFUpload buttonOne, buttonTwo;
+
+
     private final Button saveInfoButton;
 
     private Investigation investigation;
-    private FlexTable detailsTable;
+    private VerticalPanel detailsPanel;
     private FlexTable stepsTable;
     private TextBox stepTitle;
     private int editableRow, editableColumn, contentTableRowCount;
@@ -44,7 +50,17 @@ public class EditInvestigationTable extends FlexTable {
     private boolean defaultHandlersSet;
 
     private enum ActionType {
-        ADD, COPY, EDIT, IGNORE
+        ADD( 0 ), COPY( 1 ), SELECT( 2 ), EDIT( 3 ), IGNORE( -1 ), UNDEFINED( -2 );
+
+        private final int value;
+
+        ActionType( int i ) {
+            this.value = i;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 
     /**
@@ -52,21 +68,28 @@ public class EditInvestigationTable extends FlexTable {
      *
      * @param rpcService       the service to use to call the GWT server side
      * @param investigatePanel the panel that holds the main summaries of all investigations - used to update that panel
+     * @param buttonOne        the first button to enable/disable
+     * @param buttonTwo        the second button to enable/disable
      */
     public EditInvestigationTable( InvestigationsServiceAsync rpcService,
-                                   SummariseInvestigationPanel investigatePanel ) {
+                                   SummariseInvestigationPanel investigatePanel,
+                                   SWFUpload buttonOne,
+                                   SWFUpload buttonTwo
+    ) {
 
         // initialise all final variables
         this.rpcService = rpcService;
         this.investigatePanel = investigatePanel;
+        this.buttonOne = buttonOne;
+        this.buttonTwo = buttonTwo;
 
         saveInfoButton = new Button( "Save" );
         saveButton = new Button( "Save" );
         cancelButton = new Button( "Cancel" );
         addSubStepButton = new Button( "Add Top-Level Step" );
 
-        investigationTitle = new TextBox();
         investigationId = new TextBox();
+        investigationTitle = new TextBox();
         providerId = new TextBox();
         firstName = new TextBox();
         lastName = new TextBox();
@@ -85,8 +108,9 @@ public class EditInvestigationTable extends FlexTable {
         investigation = new Investigation();
         contentTableRowCount = 0;
 
-        detailsTable = new FlexTable();
+        detailsPanel = new VerticalPanel();
         stepsTable = new FlexTable();
+
         removeAllRows();
 
     }
@@ -94,6 +118,13 @@ public class EditInvestigationTable extends FlexTable {
     public void initEditInvestigationTable() {
 
         clearModifiable();
+
+        investigationTitle.setText( "" );
+        investigationId.setText( "" );
+        providerId.setText( "" );
+        firstName.setText( "" );
+        lastName.setText( "" );
+        emailAddress.setText( "" );
 
         setWidth( "100%" );
 //            getCellFormatter().addStyleName( 0, 0, "investigation-ListContainer" );
@@ -116,12 +147,9 @@ public class EditInvestigationTable extends FlexTable {
         setWidget( contentTableRowCount++, 0, menuPanel );
 
         // Create the investigation summary view
-        detailsTable.setCellSpacing( 0 );
-        detailsTable.setCellPadding( 0 );
-        detailsTable.setWidth( "100%" );
+        detailsPanel.setWidth( "100%" );
         initDetailsTable();
-        detailsTable.getColumnFormatter().setWidth( 0, "15px" );
-        setWidget( contentTableRowCount++, 0, detailsTable );
+        setWidget( contentTableRowCount++, 0, detailsPanel );
 
         HorizontalPanel addStepPanel = new HorizontalPanel();
         addStepPanel.setBorderWidth( 0 );
@@ -194,15 +222,20 @@ public class EditInvestigationTable extends FlexTable {
 
         addSubStepButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                doAddStep( -2 ); // force a top-level add of an experiment step
+                doAddStep( ActionType.UNDEFINED.getValue() ); // force a top-level add of an experiment step
             }
         } );
 
         cancelButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                String savedTitle = investigation.getInvestigationTitle();
+                buttonOne.setButtonDisabled( true );
+                buttonOne.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
+                buttonTwo.setButtonDisabled( true );
+                buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
+
+                String cancelledTitle = investigation.getInvestigationTitle();
                 clearModifiable();
-                setWidget( contentTableRowCount++, 0, new Label( "Did not modify " + savedTitle + "." ) );
+                setWidget( contentTableRowCount++, 0, new Label( "Did not modify " + cancelledTitle + "." ) );
             }
         } );
 
@@ -212,36 +245,97 @@ public class EditInvestigationTable extends FlexTable {
             }
         } );
 
+        investigationId.addBlurHandler( new BlurHandler() {
+            public void onBlur( BlurEvent blurEvent ) {
+                checkEmptyValue( investigationId );
+            }
+        } );
+
+        investigationTitle.addBlurHandler( new BlurHandler() {
+            public void onBlur( BlurEvent blurEvent ) {
+                checkEmptyValue( investigationTitle );
+            }
+        } );
+
+        providerId.addBlurHandler( new BlurHandler() {
+            public void onBlur( BlurEvent blurEvent ) {
+                checkEmptyValue( providerId );
+            }
+        } );
+
+        firstName.addBlurHandler( new BlurHandler() {
+            public void onBlur( BlurEvent blurEvent ) {
+                checkEmptyValue( firstName );
+            }
+        } );
+
+        lastName.addBlurHandler( new BlurHandler() {
+            public void onBlur( BlurEvent blurEvent ) {
+                checkEmptyValue( lastName );
+            }
+        } );
+
+        emailAddress.addBlurHandler( new BlurHandler() {
+            public void onBlur( BlurEvent blurEvent ) {
+                checkEmptyValue( emailAddress );
+            }
+        } );
+
+    }
+
+    private void checkEmptyValue( TextBox box ) {
+        System.err.println( "inv id blur event" );
+        if ( box.getValue().length() == 0 ) {
+            box.addStyleName( "textbox-warning" );
+        } else {
+            box.addStyleName( "textbox-accepted" );
+        }
+
     }
 
     private void doSaveStepInformation( int[] coordinates ) {
         // do nothing if there is no useful information in the currently editable panel, e.g. there is no such panel
         // at present.
-        if ( coordinates[0] == -2 || coordinates[1] == -2 ) {
+        if ( coordinates[0] == ActionType.UNDEFINED.getValue() || coordinates[1] == ActionType.UNDEFINED.getValue() ) {
             return;
         }
 
-        String value = investigation
+        Object[] values = investigation
                 .setExperimentStepTitle( coordinates[0], getActiveText() );
-        setReadOnly( coordinates[0], coordinates[1], value );
+
+        // Set style based on change, then send the title to setReadOnly.
+        String title = "";
+        Boolean modified = false;
+        if ( values != null && values[0] != null && ( ( String ) values[0] ).length() > 0 ) {
+            title = ( String ) values[0];
+            modified = ( Boolean ) values[1];
+        }
+        // todo this style is currently only be applied to one cell until the entire table is redrawn, e.g. from an added step
+        if ( modified ) {
+            stepsTable.getCellFormatter().addStyleName( coordinates[0], coordinates[1], "cell-modified" );
+        } else {
+            stepsTable.getCellFormatter().removeStyleName( coordinates[0], coordinates[1], "cell-modified" );
+
+        }
+        setReadOnly( coordinates[0], coordinates[1], title );
     }
 
     private void doAddStep( int selectedRow ) {
         //todo allow multiple addition of steps
-        if ( selectedRow >= 0 ) {
+        if ( selectedRow >= ActionType.ADD.getValue() ) {
             investigation.addExperimentStep( selectedRow );
             setData( investigation.getExperiments() );
-        } else if ( selectedRow == -2 ) {
+        } else if ( selectedRow == ActionType.UNDEFINED.getValue() ) {
             investigation.addExperimentStep();
             setData( investigation.getExperiments() );
-        } // do nothing if -1 : we should ignore such clicks.
+        } // do nothing if ActionType.IGNORE.getValue() : we should ignore such clicks.
     }
 
     private void doCopyStep( int selectedRow ) {
-        if ( selectedRow >= 0 ) {
+        if ( selectedRow >= ActionType.ADD.getValue() ) {
             investigation.deepExperimentCopy( selectedRow );
             setData( investigation.getExperiments() );
-        } // do nothing if -1 or -2 : we should ignore such clicks.
+        } // do nothing if ActionType.IGNORE.getValue() or ActionType.UNDEFINED.getValue() : we should ignore such clicks.
 
     }
 
@@ -252,17 +346,50 @@ public class EditInvestigationTable extends FlexTable {
     }
 
     private void doSave() {
+
+        // there must be a nonzero value in every field: check each one, returning if any are empty
+        String emptyValues = "\n";
+        if ( investigationId.getValue().length() == 0 ) {
+            emptyValues += "identifier, ";
+        }
+        if ( investigationTitle.getValue().length() == 0 ) {
+            emptyValues += "title of investigation\n";
+        }
+        if ( providerId.getValue().length() == 0 ) {
+            emptyValues += "provider identifier\n";
+        }
+        if ( firstName.getValue().length() == 0 ) {
+            emptyValues += "provider first name\n";
+        }
+        if ( lastName.getValue().length() == 0 ) {
+            emptyValues += "provider last name\n";
+        }
+        if ( emailAddress.getValue().length() == 0 ) {
+            emptyValues += "provider email address\n";
+        }
+
+        if ( emptyValues.length() > 1 ) {
+            Window.alert( "Error updating the following fields: " + emptyValues );
+            return;
+        }
+
         investigation.setId( investigationId.getValue() );
         investigation.setInvestigationTitle( investigationTitle.getValue() );
         investigation.getProvider().setId( providerId.getValue() );
         investigation.getProvider().setFirstName( firstName.getValue() );
         investigation.getProvider().setLastName( lastName.getValue() );
         investigation.getProvider().setEmailAddress( emailAddress.getValue() );
+        investigation.setAllModified( false );
 
         // the experiment steps were saved as we went along, so nothing extra to do here.
 
         rpcService.updateInvestigation( investigation, new AsyncCallback<ArrayList<InvestigationDetails>>() {
             public void onSuccess( ArrayList<InvestigationDetails> updatedDetails ) {
+                buttonOne.setButtonDisabled( true );
+                buttonOne.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
+                buttonTwo.setButtonDisabled( true );
+                buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
+
                 String savedTitle = investigation.getInvestigationTitle();
                 clearModifiable();
                 investigatePanel.setInvestigationDetails( updatedDetails );
@@ -284,18 +411,37 @@ public class EditInvestigationTable extends FlexTable {
     }
 
     private void initDetailsTable() {
-        detailsTable.setWidget( 0, 0, new Label( "Investigation ID (temp):" ) );
-        detailsTable.setWidget( 0, 1, investigationId );
-        detailsTable.setWidget( 1, 0, new Label( "Investigation Title" ) );
-        detailsTable.setWidget( 1, 1, investigationTitle );
-        detailsTable.setWidget( 2, 0, new Label( "Provider ID (temp)" ) );
-        detailsTable.setWidget( 2, 1, providerId );
-        detailsTable.setWidget( 3, 0, new Label( "First Name" ) );
-        detailsTable.setWidget( 3, 1, firstName );
-        detailsTable.setWidget( 4, 0, new Label( "Last Name" ) );
-        detailsTable.setWidget( 4, 1, lastName );
-        detailsTable.setWidget( 5, 0, new Label( "Email Address" ) );
-        detailsTable.setWidget( 5, 1, emailAddress );
+
+        HorizontalPanel panel = new HorizontalPanel();
+        panel.add( new Label( "Investigation ID (temp):" ) );
+        panel.add( investigationId );
+        detailsPanel.add( panel );
+
+        panel = new HorizontalPanel();
+        panel.add( new Label( "Investigation Title" ) );
+        panel.add( investigationTitle );
+        detailsPanel.add( panel );
+
+        panel = new HorizontalPanel();
+        panel.add( new Label( "Provider ID (temp)" ) );
+        panel.add( providerId );
+        detailsPanel.add( panel );
+
+        panel = new HorizontalPanel();
+        panel.add( new Label( "First Name" ) );
+        panel.add( firstName );
+        detailsPanel.add( panel );
+
+        panel = new HorizontalPanel();
+        panel.add( new Label( "Last Name" ) );
+        panel.add( lastName );
+        detailsPanel.add( panel );
+
+        panel = new HorizontalPanel();
+        panel.add( new Label( "Email Address" ) );
+        panel.add( emailAddress );
+        detailsPanel.add( panel );
+
         firstName.setFocus( true );
     }
 
@@ -347,6 +493,8 @@ public class EditInvestigationTable extends FlexTable {
 
         Widget widget = stepsTable.getWidget( row, column );
         if ( isEditable( widget ) ) {
+            // here, the modification to the experiment marked with "isModified" is inaccessible, so just check
+            // that the value is different from what was in the
             stepsTable.setText( row, column, title );
             stepTitle = null;
             resetEditableMetadata();
@@ -373,16 +521,26 @@ public class EditInvestigationTable extends FlexTable {
 //            System.err
 //                    .println( "Printing Row " + rowValue + " (" + depth + holder.getCurrent().getTitle() + ")" );
             holder.setStepId( rowValue );
-//            stepsTable.setWidget( rowValue, 0, new RadioButton( "stepListing" ) );
 
             addRowActions( rowValue );
 
             int i = 0;
             while ( i != depth ) {
-                stepsTable.setText( rowValue, i + 2, " " );
+                stepsTable.setText( rowValue, i + ActionType.SELECT.getValue() + 1, " " );
                 i++;
             }
-            stepsTable.setText( rowValue, depth + 2, holder.getCurrent().getTitle() );
+
+            stepsTable.setText( rowValue, depth + ActionType.SELECT.getValue() + 1, holder.getCurrent().getTitle() );
+
+            // make just this cell a different style if it has been modified
+            if ( holder.isModified() ) {
+                stepsTable.getCellFormatter()
+                        .addStyleName( rowValue, depth + ActionType.SELECT.getValue() + 1, "cell-modified" );
+            } else {
+                stepsTable.getCellFormatter()
+                        .removeStyleName( rowValue, depth + ActionType.SELECT.getValue() + 1, "cell-modified" );
+            }
+
             if ( depth == 0 || ( depth % 2 == 0 ) ) {
                 stepsTable.getRowFormatter().setStyleName( rowValue, "experiment-EvenStep" );
             } else {
@@ -397,19 +555,38 @@ public class EditInvestigationTable extends FlexTable {
         return rowValue;
     }
 
+    /**
+     * Adds the actions for each row.
+     *
+     * @param rowValue the row to add to
+     */
     private void addRowActions( int rowValue ) {
 
         Image addChildImage = new Image();
         addChildImage.setUrl( addChildImageUrl );
 //        addChildImage.addStyleName( "size30x30" );
         addChildImage.setTitle( "Add Sub-Step" );
-        stepsTable.setWidget( rowValue, 0, addChildImage );
+        stepsTable.setWidget( rowValue, ActionType.ADD.getValue(), addChildImage );
 
         Image copyStepImage = new Image();
         copyStepImage.setUrl( copyStepImageUrl );
 //        copyStepImage.addStyleName( "size30x15" );
         copyStepImage.setTitle( "Copy Step" );
-        stepsTable.setWidget( rowValue, 1, copyStepImage );
+        stepsTable.setWidget( rowValue, ActionType.COPY.getValue(), copyStepImage );
+
+        RadioButton radio = new RadioButton( "fileSelector" );
+
+        // as long as at least one radio button is selected, then it's OK to have the upload button enabled.
+        radio.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent clickEvent ) {
+                buttonOne.setButtonDisabled( false );
+                buttonOne.setButtonCursor( SWFUpload.ButtonCursor.HAND.getValue() );
+                buttonTwo.setButtonDisabled( false );
+                buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.HAND.getValue() );
+            }
+        } );
+        stepsTable.setWidget( rowValue, ActionType.SELECT.getValue(), radio );
+
     }
 
     /**
@@ -426,12 +603,16 @@ public class EditInvestigationTable extends FlexTable {
         HTMLTable.Cell cell = stepsTable.getCellForEvent( event );
 
         if ( cell != null ) {
-            if ( cell.getCellIndex() == 0 ) {
+            if ( cell.getCellIndex() == ActionType.ADD.getValue() ) {
                 // this click is only allowed for additions
                 return ActionType.ADD;
-            } else if ( cell.getCellIndex() == 1 ) {
+            } else if ( cell.getCellIndex() == ActionType.COPY.getValue() ) {
                 // this click is only allowed for copying a step
                 return ActionType.COPY;
+            } else if ( cell.getCellIndex() == ActionType.SELECT.getValue() ) {
+                // this click is only allowed for selecting a radio button, and we don't need to do anything.
+                // return the IGNORE signal
+                return ActionType.IGNORE;
             } else {
                 // in other positions, the click is for editing or saving a cell.
                 if ( !isEditable( stepsTable.getWidget( cell.getRowIndex(), cell.getCellIndex() ) ) ) {
@@ -452,20 +633,21 @@ public class EditInvestigationTable extends FlexTable {
      * adding a child step.
      *
      * @param event the even that is being caught
-     * @return the row number of the clicked row; -1 if outside the appropriate area for clicking (i.e. ignore); -2 if
+     * @return the row number of the clicked row; ActionType.IGNORE.getValue() if outside the appropriate area for
+     *         clicking (i.e. ignore); ActionType.UNDEFINED.getValue() if
      *         there is some other error meaning that no cell was actually clicked
      */
     public int getClickedRowForSubStepAddition( ClickEvent event ) {
-        int selectedRow = -2;
+        int selectedRow = ActionType.UNDEFINED.getValue();
         HTMLTable.Cell cell = stepsTable.getCellForEvent( event );
 
         if ( cell != null ) {
             // Suppress clicks if the user is not pressing in the correct area
-            if ( cell.getCellIndex() == 0 ) {
+            if ( cell.getCellIndex() == ActionType.ADD.getValue() ) {
                 selectedRow = cell.getRowIndex();
             } else {
                 // outside the appropriate area for clicking on a whole-row level
-                return -1;
+                return ActionType.IGNORE.getValue();
             }
         }
 
@@ -477,20 +659,21 @@ public class EditInvestigationTable extends FlexTable {
      * copying the current step.
      *
      * @param event the even that is being caught
-     * @return the row number of the clicked row; -1 if outside the appropriate area for clicking (i.e. ignore); -2 if
+     * @return the row number of the clicked row; ActionType.IGNORE.getValue() if outside the appropriate area for
+     *         clicking (i.e. ignore); ActionType.UNDEFINED.getValue() if
      *         there is some other error meaning that no cell was actually clicked
      */
     public int getClickedRowForStepCopying( ClickEvent event ) {
-        int selectedRow = -2;
+        int selectedRow = ActionType.UNDEFINED.getValue();
         HTMLTable.Cell cell = stepsTable.getCellForEvent( event );
 
         if ( cell != null ) {
             // Suppress clicks if the user is not pressing in the correct area
-            if ( cell.getCellIndex() == 1 ) {
+            if ( cell.getCellIndex() == ActionType.COPY.getValue() ) {
                 selectedRow = cell.getRowIndex();
             } else {
                 // outside the appropriate area for clicking on a whole-row level
-                return -1;
+                return ActionType.IGNORE.getValue();
             }
         }
 
@@ -503,34 +686,35 @@ public class EditInvestigationTable extends FlexTable {
      *
      * @param event the even that is being caught
      * @return an int[] of size 2. In position [0], the row number of the clicked cell; in position[1] the column
-     *         number of the clicked cell. Values for each will be -1 if outside the appropriate area for clicking
-     *         (i.e. ignore); -2 if there is some other error meaning that no cell was actually clicked
+     *         number of the clicked cell. Values for each will be ActionType.IGNORE.getValue() if outside the
+     *         appropriate area for clicking (i.e. ignore); ActionType.UNDEFINED.getValue() if there is some other
+     *         error meaning that no cell was actually clicked
      */
     public int[] getClickedCoordinatesForEdit( ClickEvent event ) {
-        int selectedRow = -2;
-        int selectedColumn = -2;
+        int selectedRow = ActionType.UNDEFINED.getValue();
+        int selectedColumn = ActionType.UNDEFINED.getValue();
         HTMLTable.Cell cell = stepsTable.getCellForEvent( event );
 
         if ( cell != null ) {
             // Suppress clicks if the user is not pressing in the correct area
-            if ( cell.getCellIndex() > 1 ) {
+            if ( cell.getCellIndex() > ActionType.SELECT.getValue() ) {
                 // check that it doesn't already have a text box in it, and therefore doesn't need updating
                 if ( !isEditable( stepsTable.getWidget( cell.getRowIndex(), cell.getCellIndex() ) ) ) {
                     // if it is a cell with some text, then it is a cell with an experiment step that should be
                     // editable. If empty, return the value for ignoring the cell.
                     if ( stepsTable.getText( cell.getRowIndex(), cell.getCellIndex() ).length() == 0 ) {
                         // outside the appropriate area for clicking
-                        return new int[]{ -1, -1 };
+                        return new int[]{ ActionType.IGNORE.getValue(), ActionType.IGNORE.getValue() };
                     }
                     selectedRow = cell.getRowIndex();
                     selectedColumn = cell.getCellIndex();
                 } else {
                     // outside the appropriate area for clicking
-                    return new int[]{ -1, -1 };
+                    return new int[]{ ActionType.IGNORE.getValue(), ActionType.IGNORE.getValue() };
                 }
             } else {
                 // outside the appropriate area for clicking
-                return new int[]{ -1, -1 };
+                return new int[]{ ActionType.IGNORE.getValue(), ActionType.IGNORE.getValue() };
             }
         }
 
@@ -543,33 +727,34 @@ public class EditInvestigationTable extends FlexTable {
      *
      * @param event the even that is being caught
      * @return an int[] of size 2. In position [0], the row number of the clicked cell; in position[1] the column
-     *         number of the clicked cell. Values for each will be -1 if outside the appropriate area for clicking
-     *         (i.e. ignore); -2 if there is some other error meaning that no cell was actually clicked
+     *         number of the clicked cell. Values for each will be ActionType.IGNORE.getValue() if outside the
+     *         appropriate area for clicking (i.e. ignore); ActionType.UNDEFINED.getValue() if there is some other
+     *         error meaning that no cell was actually clicked
      */
     public int[] getClickedCoordinatesForSave( ClickEvent event ) {
-        int selectedRow = -2;
-        int selectedColumn = -2;
+        int selectedRow = ActionType.UNDEFINED.getValue();
+        int selectedColumn = ActionType.UNDEFINED.getValue();
         HTMLTable.Cell cell = stepsTable.getCellForEvent( event );
 
         if ( cell != null ) {
             // Suppress clicks if the user is not pressing in the correct area
-            if ( cell.getCellIndex() > 1 ) {
+            if ( cell.getCellIndex() > ActionType.SELECT.getValue() ) {
                 // check that it already has a text box in it, and therefore is valid for saving
                 if ( isEditable( stepsTable.getWidget( cell.getRowIndex(), cell.getCellIndex() ) ) ) {
                     // check that it is the saveInfoButton that has been clicked
                     if ( event.getSource() != saveInfoButton ) {
                         // outside the appropriate area for clicking
-                        return new int[]{ -1, -1 };
+                        return new int[]{ ActionType.IGNORE.getValue(), ActionType.IGNORE.getValue() };
                     }
                     selectedRow = cell.getRowIndex();
                     selectedColumn = cell.getCellIndex();
                 } else {
                     // outside the appropriate area for clicking
-                    return new int[]{ -1, -1 };
+                    return new int[]{ ActionType.IGNORE.getValue(), ActionType.IGNORE.getValue() };
                 }
             } else {
                 // outside the appropriate area for clicking
-                return new int[]{ -1, -1 };
+                return new int[]{ ActionType.IGNORE.getValue(), ActionType.IGNORE.getValue() };
             }
         }
 

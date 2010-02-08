@@ -21,12 +21,13 @@ public class InvestigationManipulator implements EntryPoint {
     private VerticalPanel centerPanel;
     private HTML northHtml;
     private FlexTable southTable;
+    private EditInvestigationTable editTable;
     private HTML eastHtml;
     private final String toNewStepImageUrl = "/images/toNewStep70w76h.png";
     private final String toExistingStepImageUrl = "/images/toExistingStep70w52h.png";
 
     private HashMap<String, Integer> fileIdToRow;
-
+    private int radioRowSelectedOnUpload;
 
     private void removeFile( String id ) {
         for ( File ff : files ) {
@@ -45,9 +46,11 @@ public class InvestigationManipulator implements EntryPoint {
         southTable = new FlexTable();
         southTable.addStyleName( "fieldset flash" );
         southTable.setWidth( "40%" );
-        eastHtml = new HTML( "<em>You can only upload files once you have selected an experimental step.</em>" );
+        eastHtml = new HTML( "<em>You can only upload files once you have selected an experimental step." +
+                "Do not upload more files until the files you have selected have completed.</em>" );
         eastHtml.setWidth( "25%" );
         fileIdToRow = new HashMap<String, Integer>();
+        radioRowSelectedOnUpload = -1;
 
         SummariseInvestigationPanel investigatePanel = new SummariseInvestigationPanel( rpcService );
         investigatePanel.fetchInvestigationDetails();
@@ -74,7 +77,7 @@ public class InvestigationManipulator implements EntryPoint {
         // todo disable all functions on entire page until file uploads are complete
         setupMultipleFileUploader();
 
-        EditInvestigationTable editTable = new EditInvestigationTable( rpcService, investigatePanel,
+        editTable = new EditInvestigationTable( rpcService, investigatePanel,
                 uploadToExistingStep, uploadToNewStep );
         investigatePanel.addDefaultHandlers( editTable );
 
@@ -90,8 +93,7 @@ public class InvestigationManipulator implements EntryPoint {
         northHtml.setHTML( "SyMBA upload service is running on " + url );
 
         // Determine if the demo is being viewed in Hosted mode, if so display a
-        // warning.
-        // This is because Flash to JavaScript communications does not work
+        // warning. This is because Flash to JavaScript communications does not work
         // correctly in hosted mode.
         if ( !GWT.isScript() ) {
             HTML warning = new HTML();
@@ -113,9 +115,6 @@ public class InvestigationManipulator implements EntryPoint {
         tempPanel.add( bt2 );
         centerPanel.add( tempPanel );
 
-//        eastHtml.setHTML( GWT.getHostPageBaseURL() + "<br />" + GWT.getModuleBaseURL() +
-//                "<br />" + GWT.getModuleName() );
-
         setupExistingStepBuilder( baseApp, url );
         setupNewStepBuilder( baseApp, url );
 
@@ -128,13 +127,12 @@ public class InvestigationManipulator implements EntryPoint {
         // builder.setDebug(true);
         builder.setHTTPSuccessCodes( 200, 201 );
         builder.setFileTypes(
-                "*.asf;*.wma;*.wmv;*.avi;*.flv;*.swf;*.mpg;*.mpeg;*.mp4;*.mov;*.m4v;*.aac;*.mp3;*.wav;*.png;*.jpg;*.jpeg;*.gif" );
-        builder.setFileTypesDescription( "Images, Video & Sound" );
+                "*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.mp4;*.mov;*.m4v;*.aac;*.mp3;*.wav;*.png;*.jpg;*.jpeg;*.gif;*.svg;*.txt;*.doc;*.xls;*.odt" );
+        builder.setFileTypesDescription( "Images, Video & Text" );
 
         builder.setButtonPlaceholderID( "uploadToNewStep-button" );
         builder.setButtonImageURL( baseApp + toNewStepImageUrl );
 //        builder.setButtonText( "Each file is added to a copy of the selected step" );
-//        builder.setButtonTextTopPadding( 5 );
         builder.setButtonDisabled( true );
         builder.setButtonCursor( SWFUpload.ButtonCursor.ARROW );
         builder.setButtonWidth( 70 );
@@ -153,22 +151,22 @@ public class InvestigationManipulator implements EntryPoint {
 
         builder.setUploadSuccessHandler( new UploadSuccessHandler() {
             public void onUploadSuccess( UploadSuccessEvent e ) {
-//                southTable.setHTML(
-//                        wrapInFileQueueStyle( southTable.getHTML(), "<br />server data : " + e.getServerData() ) );
                 southTable.getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
+
             }
         } );
 
         builder.setUploadErrorHandler( new UploadErrorHandler() {
             public void onUploadError( UploadErrorEvent e ) {
-//                File ff = e.getFile();
-//                String message = e.getMessage();
-//                if ( message == null || message.trim().length() == 0 ) {
-//                    message = "uploadToNewStep failed: " + e.getMessage();
-//                }
-//                southTable.setHTML( wrapInFileQueueStyle( southTable.getHTML(),
-//                        "<br />error: " + ff.getId() + ", " + ff.getName() + " / " + message ) );
+                String message = e.getMessage();
+                if ( message == null || message.trim().length() == 0 ) {
+                    message = "uploadToExistingStep failed";
+                }
+                eastHtml.setHTML(
+                        eastHtml.getText() + "<br />Upload error: " + e.getFile().getId() + ", " +
+                                e.getFile().getName() + " / " +
+                                message );
                 removeFile( e.getFile().getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
@@ -185,10 +183,6 @@ public class InvestigationManipulator implements EntryPoint {
         builder.setUploadCompleteHandler( new UploadCompleteHandler() {
             public void onUploadComplete( UploadCompleteEvent e ) {
                 File f = e.getFile();
-//                String completeMessage = "<br />done : " + f.getId() + ", " + f.getName();
-//                String completeMessage = "<br />" + f.getName() + " complete";
-//                southTable.setHTML(
-//                        wrapInFileQueueStyle( southTable.getHTML(), completeMessage ) );
                 removeFile( f.getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
@@ -202,10 +196,6 @@ public class InvestigationManipulator implements EntryPoint {
 
         builder.setFileQueuedHandler( new FileQueuedHandler() {
             public void onFileQueued( FileQueuedEvent event ) {
-//                String t = eastHtml.getHTML();
-//                t += "<br />ofq: " + event.getFile().getId() + "; "
-//                        + event.getFile().getName();
-//                eastHtml.setHTML( t );
                 files.add( event.getFile() );
             }
         } );
@@ -235,28 +225,14 @@ public class InvestigationManipulator implements EntryPoint {
 
     }
 
-//    private String wrapInFileQueueStyle( String originalHtml,
-//                                         String appendedHtml ) {
-//        final String startDiv = "<div class=\"fieldset flash\"> <span class=\"legend\">Upload Queue</span>";
-//        final String endDiv = "</div>";
-//
-//        // remove the div from the original string, if present
-//        if ( originalHtml.indexOf( startDiv ) != -1 ) {
-//            originalHtml = originalHtml.substring( startDiv.length() );
-//            originalHtml = originalHtml.substring( 0, originalHtml.length() - endDiv.length() );
-//        }
-//
-//        return startDiv + originalHtml + appendedHtml + endDiv;
-//    }
-
     private void setupExistingStepBuilder( String baseApp,
                                            String url ) {
         final UploadBuilder builder = new UploadBuilder();
         // builder.setDebug(true);
         builder.setHTTPSuccessCodes( 200, 201 );
         builder.setFileTypes(
-                "*.asf;*.wma;*.wmv;*.avi;*.flv;*.swf;*.mpg;*.mpeg;*.mp4;*.mov;*.m4v;*.aac;*.mp3;*.wav;*.png;*.jpg;*.jpeg;*.gif" );
-        builder.setFileTypesDescription( "Images, Video & Sound" );
+                "*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.mp4;*.mov;*.m4v;*.aac;*.mp3;*.wav;*.png;*.jpg;*.jpeg;*.gif;*.svg;*.txt;*.doc;*.xls;*.odt" );
+        builder.setFileTypesDescription( "Images, Video & Text" );
 
         builder.setButtonPlaceholderID( "uploadToExistingStep-button" );
         builder.setButtonImageURL( baseApp + toExistingStepImageUrl );
@@ -281,9 +257,9 @@ public class InvestigationManipulator implements EntryPoint {
             public void onUploadSuccess( UploadSuccessEvent e ) {
                 southTable.getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
-//                southTable.setHTML(
-//                        wrapInFileQueueStyle( southTable.getHTML(),
-//                                "<br />" + e.getFile().getName() + " completed successfully." ) );
+
+                // now assign this file to the appropriate experimental step
+                editTable.assignFileToStep( e.getFile(), radioRowSelectedOnUpload );
             }
         } );
 
@@ -291,18 +267,17 @@ public class InvestigationManipulator implements EntryPoint {
             public void onUploadError( UploadErrorEvent e ) {
                 southTable.getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer red" );
-//                File ff = e.getFile();
-//                String message = e.getMessage();
-//                if ( message == null || message.trim().length() == 0 ) {
-//                    message = "uploadToExistingStep failed: " + e.getMessage();
-//                }
-//                southTable.setHTML( wrapInFileQueueStyle( southTable.getHTML(),
-//                        "<br />error: " + ff.getId() + ", " + ff.getName() + " / " + message ) );
+                String message = e.getMessage();
+                if ( message == null || message.trim().length() == 0 ) {
+                    message = "uploadToExistingStep failed";
+                }
+                eastHtml.setHTML(
+                        eastHtml.getText() + "<br />Upload error: " + e.getFile().getId() + ", " +
+                                e.getFile().getName() + " / " +
+                                message );
                 removeFile( e.getFile().getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
-//                    southTable.setHTML( wrapInFileQueueStyle( southTable.getHTML(),
-//                            "<br />started uploading " + file.getName() + "..." ) );
                     southTable.setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
                     southTable.getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
@@ -316,8 +291,6 @@ public class InvestigationManipulator implements EntryPoint {
         builder.setUploadCompleteHandler( new UploadCompleteHandler() {
             public void onUploadComplete( UploadCompleteEvent e ) {
                 File f = e.getFile();
-//                southTable.setHTML(
-//                        wrapInFileQueueStyle( southTable.getHTML(), "<br />done : " + f.getId() + ", " + f.getName() ) );
                 removeFile( f.getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
@@ -331,17 +304,18 @@ public class InvestigationManipulator implements EntryPoint {
 
         builder.setFileQueuedHandler( new FileQueuedHandler() {
             public void onFileQueued( FileQueuedEvent event ) {
-//                String t = eastHtml.getHTML();
-//                t += "<br />ofq: " + event.getFile().getId() + "; "
-//                        + event.getFile().getName();
-//                eastHtml.setHTML( t );
                 files.add( event.getFile() );
+            }
+        } );
+
+        builder.setDialogStartHandler( new DialogStartHandler() {
+            public void onDialogStart() {
+                radioRowSelectedOnUpload = editTable.getSelectedRadioRow();
             }
         } );
 
         builder.setFileDialogCompleteHandler( new FileDialogCompleteHandler() {
             public void onFileDialogComplete( FileDialogCompleteEvent e ) {
-//                southTable.setHTML( wrapInFileQueueStyle( "", "files = " + files.size() ) );
                 if ( files.size() > 0 ) {
                     // reset table variables
                     southTable.removeAllRows();

@@ -1,6 +1,7 @@
 package net.sourceforge.symba.web.client.stepsorter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Rather than storing the ExperimentSteps directly, store a Holder which contains the step, plus extra metadata
@@ -80,19 +81,56 @@ public class ExperimentStepHolder implements Serializable {
     }
 
     /**
+     * adds a parameter triple to the step specified by selectedRow
+     *
+     * @param selectedRow the row identifier used to identify which step to add the parameter to
+     * @param subject     the parameter name
+     * @param predicate   the connection between the subject and object, defaults to hasValue
+     * @param objectValue the "object" of the triple, the value that fits with the subject and predicate
+     * @param unit        the optional units of the objectValue
+     * @return true if a triple was added, false if no matching row was found.
+     */
+    public boolean addParameterAtStepId( int selectedRow,
+                                         String subject,
+                                         String predicate,
+                                         String objectValue,
+                                         String unit ) {
+
+        if ( stepId == selectedRow ) {
+            current.getParameters().add( new ExperimentParameter( subject, predicate, objectValue, unit ) );
+            setModified( true );
+            System.err.println( "Step found - adding parameter" );
+            return true;
+        }
+
+        if ( !current.isLeaf() ) {
+            for ( ExperimentStepHolder holder : current.getChildren() ) {
+                if ( holder.addParameterAtStepId( selectedRow, subject, predicate, objectValue, unit ) ) {
+                    setModified( true );
+                    return true;
+                }
+            }
+        }
+        return false; // if there was no match
+    }
+
+    /**
      * sets the value of the "current" object to the value in the string. If title is null or empty, the value of
      * the "current" object is reset to the value in the original object.
      *
      * @param selectedRow the row whose title is to be changed
      * @param title       the new title
+     * @param parameters  the new parameters (existing ones will be overwritten)
      * @return the new title value in [0], and true if new, false if matches original, in [1] - this is important,
      *         as it isn't necessarily the same as the title parameter
      */
-    public Object[] setTitleAtStepId( int selectedRow,
-                                      String title ) {
+    public Object[] setInfoAtStepId( int selectedRow,
+                                     String title,
+                                     ArrayList<ExperimentParameter> parameters ) {
         Object[] values = new Object[2];
 
         if ( stepId == selectedRow ) {
+            // title changes
             if ( title == null || title.length() == 0 ) {
                 current.setTitle( original.getTitle() );
                 setModified( false );
@@ -102,6 +140,20 @@ public class ExperimentStepHolder implements Serializable {
                 current.setTitle( title.trim() );
                 setModified( true );
             }
+
+            // parameter changes: delete the row if all three elements have zero length
+            if ( current.getParameters() != parameters ) {
+                setModified( true );
+                current.getParameters().clear();
+                for ( ExperimentParameter parameter : parameters ) {
+                    if ( parameter.getSubject().length() == 0 && parameter.getPredicate().length() == 0 &&
+                            parameter.getObjectValue().length() == 0 && parameter.getUnit().length() == 0 ) {
+                        continue;
+                    }
+                    current.getParameters().add( parameter );
+                }
+            }
+
             values[0] = current.getTitle();
             values[1] = isModified();
             return values;
@@ -109,9 +161,8 @@ public class ExperimentStepHolder implements Serializable {
 
         if ( !current.isLeaf() ) {
             for ( ExperimentStepHolder holder : current.getChildren() ) {
-                Object[] returnedValues = holder.setTitleAtStepId( selectedRow, title );
-                if ( returnedValues != null && returnedValues[0] != null &&
-                        ( ( String ) returnedValues[0] ).length() > 0 ) {
+                Object[] returnedValues = holder.setInfoAtStepId( selectedRow, title, parameters );
+                if ( returnedValues != null ) {
                     setModified( ( Boolean ) returnedValues[1] );
                     return returnedValues;
                 }
@@ -169,5 +220,28 @@ public class ExperimentStepHolder implements Serializable {
                 current.getChildren().get( i ).setAllModified( value );
             }
         }
+    }
+
+    public int setFileAtStepId( int selectedRow,
+                                int depth,
+                                String fileName ) {
+        if ( stepId == selectedRow ) {
+            if ( fileName != null && fileName.length() > 0 ) {
+                current.getFileNames().add( fileName );
+                setModified( true );
+            }
+            return depth;
+        }
+
+        if ( !current.isLeaf() ) {
+            for ( ExperimentStepHolder holder : current.getChildren() ) {
+                int returnedDepth = holder.setFileAtStepId( selectedRow, depth + 1, fileName );
+                if ( returnedDepth != -1 ) {
+                    setModified( true );
+                    return returnedDepth;
+                }
+            }
+        }
+        return -1;
     }
 }

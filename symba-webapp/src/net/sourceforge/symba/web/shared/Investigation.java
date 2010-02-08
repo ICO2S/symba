@@ -1,7 +1,9 @@
 package net.sourceforge.symba.web.shared;
 
+import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
+import org.swfupload.client.File;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -58,14 +60,16 @@ public class Investigation implements Serializable {
      *
      * @param selectedRow the row in the view that is to get a new title - will match the holder's stepId.
      * @param title       the new title to set the step to (this may be empty, but will be dealt with appropriately)
+     * @param parameters  the new parameters to set the step to (these parameters completely re-write existing ones)
      * @return the new title, which may not be the same as the input parameter, or "" if no match in any experiments
      *         were found
      */
-    public Object[] setExperimentStepTitle( int selectedRow,
-                                            String title ) {
+    public Object[] setExperimentStepInfo( int selectedRow,
+                                           String title,
+                                           ArrayList<ExperimentParameter> parameters ) {
 
         for ( ExperimentStepHolder holder : experiments ) {
-            Object[] values = holder.setTitleAtStepId( selectedRow, title );
+            Object[] values = holder.setInfoAtStepId( selectedRow, title, parameters );
             if ( values[0] != null && ( ( String ) values[0] ).length() > 0 ) {
                 // the title was found and set appropriately.
                 return values;
@@ -180,5 +184,17 @@ public class Investigation implements Serializable {
             ExperimentStepHolder holder = getExperiments().get( i );
             holder.setAllModified( value );
         }
+    }
+
+    public int addExperimentFile( int selectedRow,
+                                  File file ) {
+        for ( ExperimentStepHolder holder : experiments ) {
+            int returnedDepth = holder.setFileAtStepId( selectedRow, 0, file.getName() );
+            if ( returnedDepth != -1 ) {
+                // the title was found and set appropriately.
+                return returnedDepth;
+            }
+        }
+        return -1;
     }
 }

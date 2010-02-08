@@ -13,6 +13,8 @@ public class ExperimentStep implements Serializable {
 
     private String databaseId;
     private String title;
+    private ArrayList<ExperimentParameter> parameters;
+    private ArrayList<String> fileNames;
 
     // todo parameters etc. go here
 
@@ -21,16 +23,22 @@ public class ExperimentStep implements Serializable {
     public ExperimentStep() {
         this.databaseId = "0"; // todo proper identification creation here or in createDatabaseId
         this.title = "Empty Experiment Step";
+        this.fileNames = new ArrayList<String>();
         this.children = new ArrayList<ExperimentStepHolder>();
+        this.parameters = new ArrayList<ExperimentParameter>();
     }
 
     public ExperimentStep( String databaseId,
                            String title,
-                           ArrayList<ExperimentStepHolder> children ) {
+                           ArrayList<String> fileNames,
+                           ArrayList<ExperimentStepHolder> children,
+                           ArrayList<ExperimentParameter> parameters ) {
 
         this.databaseId = databaseId;
         this.title = title;
+        this.fileNames = fileNames;
         this.children = children;
+        this.parameters = parameters;
     }
 
     /**
@@ -41,7 +49,9 @@ public class ExperimentStep implements Serializable {
      * @param step the step to copy.
      */
     public ExperimentStep( ExperimentStep step ) {
-        this( step.getDatabaseId(), step.getTitle(), new ArrayList<ExperimentStepHolder>( step.getChildren() ) );
+        this( step.getDatabaseId(), step.getTitle(), new ArrayList<String>( step.getFileNames() ),
+                new ArrayList<ExperimentStepHolder>( step.getChildren() ),
+                new ArrayList<ExperimentParameter>( step.getParameters() ) );
     }
 
     public String getDatabaseId() {
@@ -62,6 +72,14 @@ public class ExperimentStep implements Serializable {
 
     public void setTitle( String title ) {
         this.title = title;
+    }
+
+    public ArrayList<ExperimentParameter> getParameters() {
+        return parameters;
+    }
+
+    public ArrayList<String> getFileNames() {
+        return fileNames;
     }
 
     public ArrayList<ExperimentStepHolder> getChildren() {
@@ -106,7 +124,9 @@ public class ExperimentStep implements Serializable {
 
     /**
      * Copies the information stored in this step except for the databaseId. Therefore this copy does include the
-     * ENTIRE child hierarchy
+     * ENTIRE child hierarchy. What this will NOT add is the files, as it is not expected that files should be copied
+     * (unless the user wishes this). Instead, it is the structure of the experimental step, and its parameters,
+     * which should be copied.
      *
      * @return the copy of the Experiment step
      */

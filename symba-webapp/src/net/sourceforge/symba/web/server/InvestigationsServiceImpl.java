@@ -68,6 +68,8 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
 
     public ArrayList<InvestigationDetails> updateInvestigation( Investigation investigation ) {
         // todo move the values in "current" to the value in "original"
+        // todo copy files to new server
+        // todo convert to FuGE and store in database
         investigations.remove( investigation.getId() );
         investigations.put( investigation.getId(), investigation );
         return getInvestigationDetails();

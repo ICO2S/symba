@@ -12,6 +12,11 @@ BODY {
     background: #ffffe0;
 }
 
+.textbox-legend {
+    font-style: italic;
+    font-weight: bold;
+}
+
 .experiment-EvenStep {
     background-color: #FFFFFF;
 }

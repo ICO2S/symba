@@ -244,4 +244,19 @@ public class ExperimentStepHolder implements Serializable {
         }
         return -1;
     }
+
+    public void clearFileAssociations() {
+        current.getFileNames().clear();
+        original.getFileNames().clear();
+        if ( !current.isLeaf() ) {
+            for ( ExperimentStepHolder holder : current.getChildren() ) {
+                holder.clearFileAssociations();
+            }
+        }
+        if ( !original.isLeaf() ) {
+            for ( ExperimentStepHolder holder : original.getChildren() ) {
+                holder.clearFileAssociations();
+            }
+        }
+    }
 }

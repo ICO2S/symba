@@ -5,7 +5,7 @@ import net.sourceforge.symba.web.client.InvestigationsService;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
-import net.sourceforge.symba.web.shared.InvestigationDetails;
+import net.sourceforge.symba.web.shared.InvestigationDetail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         //
         // this is cheating a little, as we're not testing the size of the contacts* variables, but OK for testing now.
         for ( int i = 0; i < investigationIdData.length && i < investigationTitleData.length; ++i ) {
-            Investigation investigation = new Investigation( investigationIdData[i], investigationTitleData[i],
+            Investigation investigation = new Investigation( false, investigationIdData[i], investigationTitleData[i],
                     initProvider( i ), new ArrayList<ExperimentStepHolder>() );
             investigations.put( investigation.getId(), investigation );
         }
@@ -66,7 +66,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         return investigation;
     }
 
-    public ArrayList<InvestigationDetails> updateInvestigation( Investigation investigation ) {
+    public ArrayList<InvestigationDetail> updateInvestigation( Investigation investigation ) {
         // todo move the values in "current" to the value in "original"
         // todo copy files to new server
         // todo convert to FuGE and store in database
@@ -75,13 +75,26 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         return getInvestigationDetails();
     }
 
-    public InvestigationDetails copyInvestigation( String id ) {
+    public InvestigationDetail copyInvestigation( String id ) {
         Investigation copy = new Investigation( investigations.get( id ) );
         copy.setId( "X" + copy.getId() ); //todo need a better way to make a new id
         copy.setInvestigationTitle( "Copy of " + copy.getInvestigationTitle() );
+
+        // the original may be a template - unset the copy as a template
+        copy.setTemplate( false );
         investigations.put( copy.getId(), copy );
 
         return copy.getLightWeightInvestigation();
+    }
+
+    public ArrayList<InvestigationDetail> setInvestigationAsTemplate( String id ) {
+        Investigation template = investigations.get( id );
+        template.setTemplate( true );
+        // remove file associations
+        for ( ExperimentStepHolder holder : template.getExperiments() ) {
+            holder.clearFileAssociations();
+        }
+        return getInvestigationDetails();
     }
 
     public Boolean deleteInvestigation( String id ) {
@@ -90,7 +103,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
     }
 
     //todo this method will not be allowed in future, except perhaps by admins.
-    public ArrayList<InvestigationDetails> deleteInvestigations( ArrayList<String> ids ) {
+    public ArrayList<InvestigationDetail> deleteInvestigations( ArrayList<String> ids ) {
 
         for ( String id : ids ) {
             deleteInvestigation( id );
@@ -99,8 +112,8 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         return getInvestigationDetails();
     }
 
-    public ArrayList<InvestigationDetails> getInvestigationDetails() {
-        ArrayList<InvestigationDetails> investigationDetails = new ArrayList<InvestigationDetails>();
+    public ArrayList<InvestigationDetail> getInvestigationDetails() {
+        ArrayList<InvestigationDetail> investigationDetails = new ArrayList<InvestigationDetail>();
 
         for ( String s : investigations.keySet() ) {
             Investigation investigation = investigations.get( s );

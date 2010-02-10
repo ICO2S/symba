@@ -6,7 +6,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
-import net.sourceforge.symba.web.shared.InvestigationDetails;
+import net.sourceforge.symba.web.shared.InvestigationDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
     private final Button deleteButton;
 
     private FlexTable investigationsTable;
-    private List<InvestigationDetails> investigationDetails;
+    private List<InvestigationDetail> investigationDetails;
 
     public SummariseInvestigationPanel( InvestigationsServiceAsync rpcService ) {
 
@@ -29,7 +29,6 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
 
         FlexTable contentTable = new FlexTable();
         contentTable.setWidth( "100%" );
-//    contentTable.getCellFormatter().addStyleName( 0, 0, "investigation-ListContainer" );
         contentTable.getCellFormatter().setWidth( 0, 0, "100%" );
         contentTable.getFlexCellFormatter().setVerticalAlignment( 0, 0, DockPanel.ALIGN_TOP );
 
@@ -45,7 +44,6 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
         menuPanel.add( addButton );
         menuPanel.add( copyButton );
         menuPanel.add( deleteButton );
-//    contentTable.getCellFormatter().addStyleName( 0, 0, "contacts-ListMenu" );
         contentTable.setWidget( 0, 0, menuPanel );
 
         // Create the investigation list
@@ -54,7 +52,6 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
         investigationsTable.setCellSpacing( 0 );
         investigationsTable.setCellPadding( 0 );
         investigationsTable.setWidth( "100%" );
-//        investigationsTable.addStyleName( "contacts-ListContents" );
 //        investigationsTable.getColumnFormatter().setWidth( 0, "15px" );
         contentTable.setWidget( 1, 0, investigationsTable );
 
@@ -69,6 +66,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
             }
         } );
 
+        // todo only enabled and visible for Admins (once login enabled)
         deleteButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 deleteSelectedInvestigation();
@@ -95,8 +93,8 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
     }
 
     public void fetchInvestigationDetails() {
-        rpcService.getInvestigationDetails( new AsyncCallback<ArrayList<InvestigationDetails>>() {
-            public void onSuccess( ArrayList<InvestigationDetails> result ) {
+        rpcService.getInvestigationDetails( new AsyncCallback<ArrayList<InvestigationDetail>>() {
+            public void onSuccess( ArrayList<InvestigationDetail> result ) {
                 investigationDetails = result;
                 sortInvestigationDetails();
                 setViewData();
@@ -119,8 +117,8 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
         }
 
         rpcService.copyInvestigation( investigationDetails.get( selectedRow ).getId(),
-                new AsyncCallback<InvestigationDetails>() {
-                    public void onSuccess( InvestigationDetails result ) {
+                new AsyncCallback<InvestigationDetail>() {
+                    public void onSuccess( InvestigationDetail result ) {
                         investigationDetails.add( result );
                         sortInvestigationDetails();
                         setViewData();
@@ -130,7 +128,6 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
                         Window.alert( "Error copying investigation" );
                     }
                 } );
-
     }
 
     private void deleteSelectedInvestigation() {
@@ -139,8 +136,8 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
         ArrayList<String> sizeOneList = new ArrayList<String>();
         sizeOneList.add( id );
 
-        rpcService.deleteInvestigations( sizeOneList, new AsyncCallback<ArrayList<InvestigationDetails>>() {
-            public void onSuccess( ArrayList<InvestigationDetails> result ) {
+        rpcService.deleteInvestigations( sizeOneList, new AsyncCallback<ArrayList<InvestigationDetail>>() {
+            public void onSuccess( ArrayList<InvestigationDetail> result ) {
                 investigationDetails = result;
                 sortInvestigationDetails();
                 setViewData();
@@ -158,7 +155,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
             for ( int j = 0; j < investigationDetails.size() - 1; ++j ) {
                 if ( investigationDetails.get( j ).getInvestigationTitle()
                         .compareToIgnoreCase( investigationDetails.get( j + 1 ).getInvestigationTitle() ) >= 0 ) {
-                    InvestigationDetails tmp = investigationDetails.get( j );
+                    InvestigationDetail tmp = investigationDetails.get( j );
                     investigationDetails.set( j, investigationDetails.get( j + 1 ) );
                     investigationDetails.set( j + 1, tmp );
                 }
@@ -171,7 +168,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
 
         for ( int i = 0; i < investigationDetails.size(); ++i ) {
             investigationsTable.setWidget( i, 0, new RadioButton( "investigationListing" ) );
-            investigationsTable.setText( i, 1, investigationDetails.get( i ).summarise() );
+            investigationsTable.setWidget( i, 1, investigationDetails.get( i ).summarise() );
         }
     }
 
@@ -203,7 +200,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
         return -1;
     }
 
-    public void setInvestigationDetails( List<InvestigationDetails> investigationDetails ) {
+    public void setInvestigationDetails( List<InvestigationDetail> investigationDetails ) {
         this.investigationDetails = investigationDetails;
     }
 }

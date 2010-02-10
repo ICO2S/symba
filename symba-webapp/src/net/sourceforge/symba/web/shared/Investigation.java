@@ -10,11 +10,13 @@ import java.util.ArrayList;
 
 /**
  * The JAXB-created XML code for FuGE cannot be used within the client-side GWT code. Therefore,
- * Investigation and InvestigationDetails (a summary of what's in Investigation) are used instead on
+ * Investigation and InvestigationDetail (a summary of what's in Investigation) are used instead on
  * the client side.
  */
 @SuppressWarnings( "serial" )
 public class Investigation implements Serializable {
+
+    private boolean template;
 
     private String id;
     private String investigationTitle;
@@ -24,6 +26,7 @@ public class Investigation implements Serializable {
     private ArrayList<ExperimentStepHolder> experiments;
 
     public Investigation() {
+        this.template = false;
         this.id = "0";
         this.investigationTitle = "";
         this.provider = new Contact();
@@ -32,10 +35,12 @@ public class Investigation implements Serializable {
 //        new Investigation( "00", "", new Contact("0", "", "", "") );
     }
 
-    public Investigation( String id,
+    public Investigation( boolean isTemplate,
+                          String id,
                           String investigationTitle,
                           Contact provider,
                           ArrayList<ExperimentStepHolder> experiments ) {
+        this.template = isTemplate;
         this.id = id;
         this.investigationTitle = investigationTitle;
         this.provider = provider;
@@ -49,8 +54,8 @@ public class Investigation implements Serializable {
      * @param investigation the object to be copied
      */
     public Investigation( Investigation investigation ) {
-        this( investigation.getId(), investigation.getInvestigationTitle(), investigation.getProvider(),
-                investigation.getExperiments() );
+        this( investigation.isTemplate(), investigation.getId(), investigation.getInvestigationTitle(),
+                investigation.getProvider(), investigation.getExperiments() );
     }
 
 
@@ -119,6 +124,13 @@ public class Investigation implements Serializable {
         addExperimentStep();
     }
 
+    public boolean isTemplate() {
+        return template;
+    }
+
+    public void setTemplate( boolean template ) {
+        this.template = template;
+    }
 
     public String getId() {
         return id;
@@ -140,16 +152,12 @@ public class Investigation implements Serializable {
         return provider;
     }
 
-    public void setProvider( Contact provider ) {
-        this.provider = provider;
-    }
-
     public ArrayList<ExperimentStepHolder> getExperiments() {
         return experiments;
     }
 
-    public InvestigationDetails getLightWeightInvestigation() {
-        return new InvestigationDetails( id, investigationTitle, provider.getLightWeight() );
+    public InvestigationDetail getLightWeightInvestigation() {
+        return new InvestigationDetail( template, id, investigationTitle, provider.getLightWeight() );
     }
 
     /**

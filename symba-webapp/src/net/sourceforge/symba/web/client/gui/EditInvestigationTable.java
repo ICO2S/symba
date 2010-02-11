@@ -179,14 +179,19 @@ public class EditInvestigationTable extends FlexTable {
                 // its consequences.
                 // todo allow read-only investigations to be removed or modified by their owners only.
                 boolean response = Window.confirm(
-                        "Setting this Investigation as a template will remove any links to files you may have " +
+                        "Setting this Investigation as a template will first save its current state, and then remove " +
+                                "any links to files you may have " +
                                 "made. It will set this Investigation as read-only. The purpose of a template is for " +
                                 "it to be copied by you and other users, thus sharing common aspects of " +
                                 "Investigations. If, instead, you want a copy of this Investigation to be made a " +
                                 "template, cancel this request and choose \"Save A Copy As Template\". Are you sure " +
                                 "you wish to continue?" );
                 if ( response ) {
-                    setAsTemplate( investigation.getId(), investigation.getInvestigationTitle() );
+                    String id = investigation.getId(); // unchangeable by the user
+                    String title = investigation
+                            .getInvestigationTitle(); // todo take the version from the page, not the stored investigation
+                    doSave();
+                    setAsTemplate( id, title );
                 } else {
                     Window.alert( "Saving as template cancelled." );
                 }
@@ -204,20 +209,7 @@ public class EditInvestigationTable extends FlexTable {
                                 "it to be copied by you and other users, thus sharing common aspects of " +
                                 "Investigations. Are you sure you wish to continue?" );
                 if ( response ) {
-                    doSave();
-                    rpcService.copyInvestigation( investigation.getId(),
-                            new AsyncCallback<InvestigationDetail>() {
-                                public void onSuccess( InvestigationDetail result ) {
-                                    setAsTemplate( result.getId(), result.getInvestigationTitle() );
-                                }
-
-                                public void onFailure( Throwable caught ) {
-                                    Window.alert(
-                                            "Error copying Investigation " + investigation.getInvestigationTitle() +
-                                                    ": no template created." +
-                                                    Arrays.toString( caught.getStackTrace() ) );
-                                }
-                            } );
+                    doSave( true );
                 } else {
                     Window.alert( "Saving a copy as a template cancelled." );
                 }
@@ -481,6 +473,10 @@ public class EditInvestigationTable extends FlexTable {
     }
 
     private void doSave() {
+        doSave( false );
+    }
+
+    private void doSave( final boolean makeTemplate ) {
 
         String emptyValues = readWriteDetailsPanel.makeErrorMessages();
         if ( emptyValues.length() > 1 ) {
@@ -509,6 +505,23 @@ public class EditInvestigationTable extends FlexTable {
                 investigatePanel.sortInvestigationDetails();
                 investigatePanel.setViewData();
                 setWidget( contentTableRowCount++, 0, new Label( title + " saved." ) );
+
+                if ( makeTemplate ) {
+                    rpcService.copyInvestigation( investigation.getId(),
+                            new AsyncCallback<InvestigationDetail>() {
+                                public void onSuccess( InvestigationDetail result ) {
+                                    setAsTemplate( result.getId(), result.getInvestigationTitle() );
+                                }
+
+                                public void onFailure( Throwable caught ) {
+                                    Window.alert(
+                                            "Error copying Investigation " + investigation.getInvestigationTitle() +
+                                                    ": no template created." +
+                                                    Arrays.toString( caught.getStackTrace() ) );
+                                }
+                            } );
+
+                }
             }
 
             public void onFailure( Throwable caught ) {

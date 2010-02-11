@@ -44,14 +44,6 @@ public class EditableStepPanel extends VerticalPanel {
         Button saveStepButton = new Button( "Save This Step" );
         saveStepButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
-//                    int coordinates[] = getClickedCoordinatesForSave( clickEvent, tableToAddTo );
-
-                // do nothing if there is no useful information in the currently editable panel, e.g. there is no such panel
-                // at present.
-//                    if ( coordinates[0] == ActionType.UNDEFINED.getValue() ||
-//                            coordinates[1] == ActionType.UNDEFINED.getValue() ) {
-//                        return;
-//                    }
 
                 // save the text in the parameters text boxes
                 getParameterTable().savePanelValues();
@@ -193,39 +185,26 @@ public class EditableStepPanel extends VerticalPanel {
 
                 subject = new TextBox();
                 subject.setText( parameter.getSubject() );
-//                    subject.addBlurHandler( new BlurHandler() {
-//                        public void onBlur( BlurEvent blurEvent ) {
-//                            parameter.setSubject( subject.getText() );
-//                        }
-//                    } );
                 add( subject );
 
                 predicate = new TextBox();
                 predicate.setText( parameter.getPredicate() );
-//                    predicate.addBlurHandler( new BlurHandler() {
-//                        public void onBlur( BlurEvent blurEvent ) {
-//                            parameter.setSubject( predicate.getText() );
-//                        }
-//                    } );
                 add( predicate );
 
                 objectValue = new TextBox();
                 objectValue.setText( parameter.getObjectValue() );
-//                    objectValue.addBlurHandler( new BlurHandler() {
-//                        public void onBlur( BlurEvent blurEvent ) {
-//                            parameter.setSubject( objectValue.getText() );
-//                        }
-//                    } );
                 add( objectValue );
 
                 unit = new TextBox();
                 unit.setText( parameter.getUnit() );
-//                    unit.addBlurHandler( new BlurHandler() {
-//                        public void onBlur( BlurEvent blurEvent ) {
-//                            parameter.setSubject( unit.getText() );
-//                        }
-//                    } );
                 add( unit );
+
+                // do not allow modifications to anything other than the objectValue and the unit if this
+                // parameter has been copied from a template.
+                if ( !parameter.isFullyWriteable() ) {
+                    subject.setEnabled( false );
+                    predicate.setEnabled( false );
+                }
             }
 
             public TextBox getSubject() {

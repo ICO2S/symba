@@ -12,7 +12,7 @@ public class ExperimentParameter implements Serializable {
     String objectValue; // e.g. "30", "10"
     String unit; // e.g. "hours", "mM"
 
-    boolean subjectObjectFixed;
+    boolean fullyWriteable;
 
     public ExperimentParameter() {
         subject = "";
@@ -20,7 +20,7 @@ public class ExperimentParameter implements Serializable {
         objectValue = "";
         unit = "";
 
-        subjectObjectFixed = false;
+        fullyWriteable = true;
     }
 
     public ExperimentParameter( String subject,
@@ -32,7 +32,7 @@ public class ExperimentParameter implements Serializable {
         this.objectValue = objectValue;
         this.unit = unit;
 
-        subjectObjectFixed = false;
+        fullyWriteable = true;
 
     }
 
@@ -68,11 +68,11 @@ public class ExperimentParameter implements Serializable {
         this.unit = unit;
     }
 
-    public boolean isSubjectObjectFixed() {
-        return subjectObjectFixed;
+    public boolean isFullyWriteable() {
+        return fullyWriteable;
     }
 
-    public void setSubjectObjectFixed( boolean subjectObjectFixed ) {
-        this.subjectObjectFixed = subjectObjectFixed;
+    public void setFullyWriteable( boolean fullyWriteable ) {
+        this.fullyWriteable = fullyWriteable;
     }
 }

@@ -259,4 +259,23 @@ public class ExperimentStepHolder implements Serializable {
             }
         }
     }
+
+    public void setFullyWriteableParameters( boolean writeable ) {
+        for ( ExperimentParameter parameter : current.getParameters() ) {
+            parameter.setFullyWriteable( writeable );
+        }
+        for ( ExperimentParameter parameter : original.getParameters() ) {
+            parameter.setFullyWriteable( writeable );
+        }
+        if ( !current.isLeaf() ) {
+            for ( ExperimentStepHolder holder : current.getChildren() ) {
+                holder.setFullyWriteableParameters( writeable );
+            }
+        }
+        if ( !original.isLeaf() ) {
+            for ( ExperimentStepHolder holder : original.getChildren() ) {
+                holder.setFullyWriteableParameters( writeable );
+            }
+        }
+    }
 }

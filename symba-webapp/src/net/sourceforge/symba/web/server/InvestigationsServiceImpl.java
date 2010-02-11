@@ -90,9 +90,11 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
     public ArrayList<InvestigationDetail> setInvestigationAsTemplate( String id ) {
         Investigation template = investigations.get( id );
         template.setTemplate( true );
-        // remove file associations
         for ( ExperimentStepHolder holder : template.getExperiments() ) {
+            // remove file associations
             holder.clearFileAssociations();
+            // set all currently-present parameters' subjects and objects as read only
+            holder.setFullyWriteableParameters( false );
         }
         return getInvestigationDetails();
     }

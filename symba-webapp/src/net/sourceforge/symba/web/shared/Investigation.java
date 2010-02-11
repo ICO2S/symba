@@ -88,7 +88,6 @@ public class Investigation implements Serializable {
      */
     public void addExperimentStep() {
 
-        System.err.println( "Adding at top level" );
         ExperimentStep step = new ExperimentStep();
         step.createDatabaseId();
         addExperimentStep( step );

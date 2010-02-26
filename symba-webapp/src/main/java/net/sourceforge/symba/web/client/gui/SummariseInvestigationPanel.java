@@ -25,11 +25,11 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
 
         this.rpcService = rpcService;
 
-        setWidth( "30em" );
+//        setWidth( "30em" );
 
         FlexTable contentTable = new FlexTable();
-        contentTable.setWidth( "100%" );
-        contentTable.getCellFormatter().setWidth( 0, 0, "100%" );
+//        contentTable.setWidth( "100%" );
+//        contentTable.getCellFormatter().setWidth( 0, 0, "100%" );
         contentTable.getFlexCellFormatter().setVerticalAlignment( 0, 0, DockPanel.ALIGN_TOP );
 
         // Create the menu

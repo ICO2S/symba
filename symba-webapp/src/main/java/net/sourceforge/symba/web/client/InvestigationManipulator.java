@@ -45,16 +45,16 @@ public class InvestigationManipulator implements EntryPoint {
         northHtml = new HTML();
         southTable = new FlexTable();
         southTable.addStyleName( "fieldset flash" );
-        southTable.setWidth( "40%" );
+//        southTable.setWidth( "40%" );
         eastHtml = new HTML( "<em>You can only upload files once you have selected an experimental step." +
                 "Do not upload more files until the files you have selected have completed.</em>" );
-        eastHtml.setWidth( "25%" );
+//        eastHtml.setWidth( "25%" );
         fileIdToRow = new HashMap<String, Integer>();
         radioRowSelectedOnUpload = -1;
 
         SummariseInvestigationPanel investigatePanel = new SummariseInvestigationPanel( rpcService );
         investigatePanel.fetchInvestigationDetails();
-        investigatePanel.setWidth( "35%" );
+//        investigatePanel.setWidth( "35%" );
 
         container.setWidth( "100%" );
 

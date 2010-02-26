@@ -29,8 +29,8 @@ public class EditInvestigationTable extends FlexTable {
     private final Button addSubStepButton;
     private final String baseApp = GWT.getModuleBaseURL()
             .substring( 0, GWT.getModuleBaseURL().lastIndexOf( GWT.getModuleName() ) );
-    private final String addChildImageUrl = baseApp + "/images/addChild30x30.png";
-    private final String copyStepImageUrl = baseApp + "/images/copyStep30x15.png";
+    private final String addChildImageUrl;
+    private final String copyStepImageUrl;
 
     private final SWFUpload buttonOne, buttonTwo;
 
@@ -79,6 +79,15 @@ public class EditInvestigationTable extends FlexTable {
         this.investigatePanel = investigatePanel;
         this.buttonOne = buttonOne;
         this.buttonTwo = buttonTwo;
+
+        if ( GWT.isScript() ) {
+            addChildImageUrl = baseApp + "/images/addChild30x30.png";
+            copyStepImageUrl = baseApp + "/images/copyStep30x15.png";
+        } else {
+            // you need slightly different URLs when in development mode.
+            addChildImageUrl = "/images/addChild30x30.png";
+            copyStepImageUrl = "/images/copyStep30x15.png";
+        }
 
         saveButton = new Button( "Save and Finish" );
         setAsTemplateButton = new Button( "Set As Template" );
@@ -139,7 +148,7 @@ public class EditInvestigationTable extends FlexTable {
         stepsTable.setCellPadding( 0 );
 
 //        stepsTable.setWidth( "100%" );
-        stepsTable.getColumnFormatter().setWidth( 0, "15px" );
+//        stepsTable.getColumnFormatter().setWidth( 0, "15px" );
         setWidget( contentTableRowCount++, 0, stepsTable );
 
         addDefaultHandlers();

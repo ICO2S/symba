@@ -2,6 +2,7 @@
 <project name="SyMBA" default="build" basedir=".">
     <!-- Configure path to GWT SDK -->
     <property name="gwt.sdk" location="/home/allyson/Apps/gwt-for-idea/gwt-2.0.0"/>
+    <property name="m2.repo" location="/home/allyson/.m2/repository"/>
 
     <path id="project.class.path">
         <pathelement location="war/WEB-INF/classes"/>
@@ -15,6 +16,14 @@
         <mkdir dir="war/WEB-INF/lib"/>
         <copy todir="war/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet.jar"/>
         <!-- Add any additional server libs that need to be copied -->
+        <copy todir="war/WEB-INF/lib" file="${m2.repo}/net/sourceforge/symba/symba-db/8.09/symba-db-8.09.jar"/>
+        <copy todir="war/WEB-INF/lib" file="${m2.repo}/net/sourceforge/symba/symba-jaxb2/8.09/symba-jaxb2-8.09.jar"/>
+        <copy todir="war/WEB-INF/lib" file="${m2.repo}/com/intellij/annotations/5.1/annotations-5.1.jar"/>
+        <copy todir="war/WEB-INF/lib" file="${m2.repo}/org/springframework/spring-core/3.0.1.RELEASE/spring-core-3.0.1.RELEASE.jar"/>
+        <copy todir="war/WEB-INF/lib" file="${m2.repo}/org/springframework/spring-beans/3.0.1.RELEASE/spring-beans-3.0.1.RELEASE.jar"/>
+        <copy todir="war/WEB-INF/lib" file="${m2.repo}/org/springframework/spring-tx/3.0.1.RELEASE/spring-tx-3.0.1.RELEASE.jar"/>
+        <copy todir="war/WEB-INF/lib" file="${m2.repo}/org/springframework/spring-context/3.0.1.RELEASE/spring-context-3.0.1.RELEASE.jar"/>
+        <copy todir="war/WEB-INF/lib" file="${m2.repo}/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar"/>
     </target>
 
     <target name="javac" depends="libs" description="Compile java source">

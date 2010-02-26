@@ -1,11 +1,15 @@
 package net.sourceforge.symba.web.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import net.sourceforge.symba.database.dao.SymbaDao;
 import net.sourceforge.symba.web.client.InvestigationsService;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
-import net.sourceforge.symba.web.shared.Contact;
+import net.sourceforge.symba.web.server.database.ServerDatabaseController;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,50 +18,26 @@ import java.util.HashMap;
 public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         InvestigationsService {
 
-    private static final String[] contactsFirstNameData = new String[]{
-            "Hollie", "Emerson", "Healy" }; //,"Brigitte", "Elba", "Claudio",
-//            "Dena", "Christina", "Gail", "Orville", "Rae", "Mildred",
-//            "Candice", "Louise", "Emilio", "Geneva", "Heriberto", "Bulrush",
-//            "Abigail", "Chad", "Terry", "Bell" };
+    @Autowired
+    private SymbaDao symbaDao;
 
-    private final String[] contactsLastNameData = new String[]{
-            "Voss", "Milton", "Colette" }; //,"Cobb", "Lockhart", "Engle",
-//            "Pacheco", "Blake", "Horton", "Daniel", "Childers", "Starnes",
-//            "Carson", "Kelchner", "Hutchinson", "Underwood", "Rush", "Bouchard",
-//            "Louis", "Andrews", "English", "Snedden" };
+    @SuppressWarnings( { "UnusedDeclaration" } )
+    public void setSymbaDao( SymbaDao symbaDao ) {
+        this.symbaDao = symbaDao;
+    }
 
-    private final String[] contactsEmailData = new String[]{
-            "mark@example.com", "hollie@example.com", "boticario@example.com" };
-//            ,"emerson@example.com", "healy@example.com", "brigitte@example.com",
-//            "elba@example.com", "claudio@example.com", "dena@example.com",
-//            "brasilsp@example.com", "parker@example.com", "derbvktqsr@example.com",
-//            "qetlyxxogg@example.com", "antenas_sul@example.com",
-//            "cblake@example.com", "gailh@example.com", "orville@example.com",
-//            "post_master@example.com", "rchilders@example.com", "buster@example.com",
-//            "user31065@example.com", "ftsgeolbx@example.com" };
-
-    private final HashMap<String, Investigation> investigations = new HashMap<String, Investigation>();
-    private final String[] investigationIdData = new String[]{ "1", "2", "3" };
-    private final String[] investigationTitleData = new String[]{ "Investigation 1", "Investigation 2", "Investigation 3" };
+    private final HashMap<String, Investigation> investigations;
 
     public InvestigationsServiceImpl() {
-        initInvestigations();
-    }
-
-    private void initInvestigations() {
         // TODO: Create a real UID on-the-fly for each contact
-        //
-        // this is cheating a little, as we're not testing the size of the contacts* variables, but OK for testing now.
-        for ( int i = 0; i < investigationIdData.length && i < investigationTitleData.length; ++i ) {
-            Investigation investigation = new Investigation( false, investigationIdData[i], investigationTitleData[i],
-                    initProvider( i ), new ArrayList<ExperimentStepHolder>() );
-            investigations.put( investigation.getId(), investigation );
-        }
-    }
 
-    private Contact initProvider( int testValue ) {
-        return new Contact( String.valueOf( testValue ), contactsFirstNameData[testValue],
-                contactsLastNameData[testValue], contactsEmailData[testValue] );
+        // retrieve investigations from the database
+        ApplicationContext ctxt = new ClassPathXmlApplicationContext( "spring-config.xml" );
+
+        ServerDatabaseController controller = ctxt
+                .getBean( "serverDatabaseController", ServerDatabaseController.class );
+
+        investigations = controller.convertFugeToGwt();
     }
 
     public Investigation addInvestigation( Investigation investigation ) {

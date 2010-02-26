@@ -28,16 +28,8 @@ public class ExperimentStepHolder implements Serializable {
         this.isModified = false;
     }
 
-    public ExperimentStep getOriginal() {
-        return original;
-    }
-
     public ExperimentStep getCurrent() {
         return current;
-    }
-
-    public int getStepId() {
-        return stepId;
     }
 
     public void setStepId( int stepId ) {

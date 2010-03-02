@@ -2,33 +2,103 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>net.sourceforge.symba</groupId>
-        <artifactId>symba</artifactId>
-        <version>8.09</version>
-    </parent>
     <groupId>net.sourceforge.symba</groupId>
     <artifactId>symba-jaxb2</artifactId>
+    <version>8.09</version>
     <packaging>jar</packaging>
     <name>SyMBA: Modified FuGE JAXB2 Code</name>
+
+    <!-- Before adding this back, ensure that your junit versions match-->
+    <!--<parent>-->
+    <!--<groupId>net.sourceforge.symba</groupId>-->
+    <!--<artifactId>symba</artifactId>-->
+    <!--<version>8.09</version>-->
+    <!--</parent>-->
+
+    <!-- This module is based on (and contains some code) the FuGE XSD project from http://fuge.sf.net -->
+    <!-- However, it is actually a hyperjaxb3 project and as such is not identical to that project. -->
+    <!-- Due to this deviation, the auto-generated package name has been changed to *.generated -->
+    <!-- Corresponding import statements in the FuGE code have also been modified, but that is the only other change. -->
+    <!-- The code from that project is attributed correctly in the source. -->
+
     <dependencies>
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>net.sourceforge.symba</groupId>
             <artifactId>symba-lsid-ws-api</artifactId>
-            <version>${pom.version}</version>
+            <version>8.09</version>
         </dependency>
+
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>2.1.6</version>
+            <version>2.1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jvnet.hyperjaxb3</groupId>
+            <artifactId>hyperjaxb3-ejb-runtime</artifactId>
+            <version>0.5.4</version>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <!--dependency>
+              <groupId>junit</groupId>
+              <artifactId>junit</artifactId>
+              <version>3.8.1</version>
+          </dependency-->
+
+        <!-- Roundtrip -->
+        <dependency>
+            <groupId>org.jvnet.hyperjaxb3</groupId>
+            <artifactId>hyperjaxb3-ejb-roundtrip</artifactId>
+            <version>0.5.4</version>
+        </dependency>
+
+        <!-- Hibernate Dependencies -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>3.4.0.GA</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Database -->
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>2.2</version>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>maven2-repository.dev.java.net</id>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+        <repository>
+            <id>maven2-repository.jboss.com</id>
+            <url>http://repository.jboss.com/maven2</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven2-repository.dev.java.net</id>
+            <url>http://download.java.net/maven/2</url>
+        </pluginRepository>
+    </pluginRepositories>
     <build>
         <defaultGoal>install</defaultGoal>
         <plugins>
             <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
+                <groupId>org.jvnet.hyperjaxb3</groupId>
+                <artifactId>maven-hyperjaxb3-plugin</artifactId>
+                <version>0.5.4</version>
                 <executions>
                     <execution>
                         <goals>
@@ -37,14 +107,13 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <generateDirectory>${project.build.directory}</generateDirectory>
-                    <generatePackage>net.sourceforge.fuge.util.generatedJAXB2</generatePackage>
+                    <generatePackage>net.sourceforge.fuge.util.generated</generatePackage>
+                    <extension>true</extension>
+                    <roundtripTestClassName>RoundtripTest</roundtripTestClassName>
                 </configuration>
             </plugin>
-            <!--Reconfigure the compiler plugin to use 1.5-->
             <plugin>
                 <inherited>true</inherited>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.5</source>
@@ -53,29 +122,4 @@
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Repository for Maven</name>
-            <url>http://download.java.net/maven/2/</url>
-            <layout>default</layout>
-        </repository>
-        <!--<repository>-->
-            <!--<id>java.net</id>-->
-            <!--<url>http://download.java.net/maven/1</url>-->
-            <!--<layout>legacy</layout>-->
-        <!--</repository>-->
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Maven 2 Repository</name>
-            <url>http://download.java.net/maven/2</url>
-        </pluginRepository>
-        <!--<pluginRepository>-->
-            <!--<id>java.net</id>-->
-            <!--<url>http://download.java.net/maven/1</url>-->
-            <!--<layout>legacy</layout>-->
-        <!--</pluginRepository>-->
-    </pluginRepositories>
 </project>

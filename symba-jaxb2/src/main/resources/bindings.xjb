@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings
+        version="2.1"
+        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations">
+
+    <!-- Some table names have been changed so they are easier to read in the schema and SQL statements if you are
+    wandering around the database directly. This is also where the named queries are stored to be added to the
+    final generated java classes via annotations. -->
+
+    <jaxb:bindings schemaLocation="xmlSchema.xsd" node="/xsd:schema">
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.FuGEType']">
+            <hj:entity>
+                <orm:table name="FUGE"/>
+                <orm:named-query name="fugeByIdentifier">
+                    <orm:query>select f from net.sourceforge.fuge.util.generated.FuGECollectionFuGEType f where
+                        f.identifier
+                        = :fugeId
+                    </orm:query>
+                </orm:named-query>
+                <orm:named-query name="fugeEndurantByIdentifier">
+                    <orm:query>select f.endurantRef from net.sourceforge.fuge.util.generated.FuGECollectionFuGEType f
+                        where f.identifier = :fugeId
+                    </orm:query>
+                </orm:named-query>
+                <orm:named-query name="allFuge">
+                    <orm:query>select f from net.sourceforge.fuge.util.generated.FuGECollectionFuGEType f</orm:query>
+                </orm:named-query>
+                <orm:named-query name="countAllFuge">
+                    <orm:query>select count(f) from net.sourceforge.fuge.util.generated.FuGECollectionFuGEType f
+                    </orm:query>
+                </orm:named-query>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.AuditCollectionType']">
+            <hj:entity>
+                <orm:table name="AUDIT_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.MaterialCollectionType']">
+            <hj:entity>
+                <orm:table name="MATERIAL_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.ReferenceableCollectionType']">
+            <hj:entity>
+                <orm:table name="REFERENCEABLE_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.ConceptualMoleculeCollectionType']">
+            <hj:entity>
+                <orm:table name="CONCEPTUAL_MOLECULE_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.InvestigationCollectionType']">
+            <hj:entity>
+                <orm:table name="INVESTIGATION_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.DataCollectionType']">
+            <hj:entity>
+                <orm:table name="DATA_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.ProtocolCollectionType']">
+            <hj:entity>
+                <orm:table name="PROTOCOL_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.OntologyCollectionType']">
+            <hj:entity>
+                <orm:table name="ONTOLOGY_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.IdentifiableType']">
+            <hj:entity>
+                <orm:table name="IDENTIFIABLE"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.DescribableType']">
+            <hj:entity>
+                <orm:table name="DESCRIBABLE"/>
+            </hj:entity>
+        </jaxb:bindings>
+    </jaxb:bindings>
+</jaxb:bindings>

@@ -51,9 +51,8 @@ public class InvestigationDetail implements Serializable {
         if ( template ) {
             // todo create proper css to describe templated text
             summary.setHTML( "<em>" + summary + "</em>" );
-        } else {
-            summary.addStyleName( "clickable-text" );
         }
+        summary.addStyleName( "clickable-text" );
         return summary;
     }
 }

@@ -1,5 +1,7 @@
 package net.sourceforge.symba.web.shared;
 
+import com.google.gwt.user.client.Random;
+
 import java.io.Serializable;
 
 @SuppressWarnings( "serial" )
@@ -23,13 +25,14 @@ public class Contact implements Serializable {
         this.emailAddress = emailAddress;
     }
 
-    public ContactDetails getLightWeight() {
-        return new ContactDetails( id, getFullName() );
-    }
-
     public String getId() { return id; }
 
     public void setId( String id ) { this.id = id; }
+
+    public void createId() {
+        // todo better ID creation
+        setId( Integer.toString( Random.nextInt() ) );
+    }
 
     public String getFirstName() { return firstName; }
 

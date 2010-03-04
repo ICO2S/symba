@@ -134,6 +134,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
             final Label label = new Label();
             label.setText( value );
             if ( !template ) {
+                label.addStyleName( "clickable-text" );
                 label.addClickHandler( new ClickHandler() {
                     public void onClick( ClickEvent clickEvent ) {
                         panel.remove( 1 ); // remove existing label widget
@@ -175,6 +176,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
 
             if ( !template ) {
                 // add the behaviour to switch to a listbox when the read-only text is clicked on
+                label.addStyleName( "clickable-text" );
                 label.addClickHandler( new ClickHandler() {
                     public void onClick( ClickEvent clickEvent ) {
                         contactPanel.remove( 1 ); // remove read-only label
@@ -193,6 +195,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
             // provide the ability to add new contacts
             Label addContact = new Label( "(add new contact)" );
             contactPanel.add( addContact );
+            addContact.addStyleName( "clickable-text" );
             addContact.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     startContactPopupPanel();

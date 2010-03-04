@@ -22,6 +22,8 @@ public class Investigation implements Serializable {
     private String investigationTitle;
     private Contact provider;
 
+    // todo private ArrayList<Contact> otherContacts; 
+
     // the experiment steps used in this investigation
     private ArrayList<ExperimentStepHolder> experiments;
 
@@ -151,12 +153,16 @@ public class Investigation implements Serializable {
         return provider;
     }
 
+    public void setProvider( Contact provider ) {
+        this.provider = provider;
+    }
+
     public ArrayList<ExperimentStepHolder> getExperiments() {
         return experiments;
     }
 
     public InvestigationDetail getLightWeightInvestigation() {
-        return new InvestigationDetail( template, id, investigationTitle, provider.getLightWeight() );
+        return new InvestigationDetail( template, id, investigationTitle, provider );
     }
 
     /**

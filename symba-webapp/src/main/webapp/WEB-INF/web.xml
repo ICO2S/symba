@@ -15,7 +15,7 @@
 
     <servlet-mapping>
         <servlet-name>UploadServlet</servlet-name>
-        <url-pattern>/upload</url-pattern>
+        <url-pattern>/net.sourceforge.symba.web.InvestigationManipulator/upload</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

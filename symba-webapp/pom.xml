@@ -22,7 +22,7 @@
     <artifactId>symba-webapp</artifactId>
     <version>8.09</version>
     <packaging>war</packaging>
-    <name>SyMBA Web Interface</name>        
+    <name>SyMBA Web Interface</name>
 
     <properties>
         <gwt.version>2.0.2</gwt.version>
@@ -36,15 +36,19 @@
             <version>8.09</version>
         </dependency>
         <dependency>
-              <groupId>org.swfupload</groupId>
-              <artifactId>swfupload-gwt</artifactId>
-              <version>1.1-SNAPSHOT</version>
-              <scope>provided</scope>
-            </dependency>
+            <groupId>org.swfupload</groupId>
+            <artifactId>swfupload-gwt</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
-        <groupId>commons-fileupload</groupId>
-        <artifactId>commons-fileupload</artifactId>
-        <version>1.2.1</version>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument</artifactId>
+            <version>3.0.1.RELEASE</version>
         </dependency>
         <!--<dependency>-->
         <!--<groupId>commons-logging</groupId>-->
@@ -160,12 +164,12 @@
     </build>
     <repositories>
         <repository>
-              <id>swfupload-gwt-snapshots</id>
-              <name>SWFUpload-GWT snapshot releases</name>
-              <url>http://swfupload-gwt.googlecode.com/svn/maven/snapshots</url>
-              <snapshots>
+            <id>swfupload-gwt-snapshots</id>
+            <name>SWFUpload-GWT snapshot releases</name>
+            <url>http://swfupload-gwt.googlecode.com/svn/maven/snapshots</url>
+            <snapshots>
                 <enabled>true</enabled>
-              </snapshots>
-            </repository>
+            </snapshots>
+        </repository>
     </repositories>
 </project>

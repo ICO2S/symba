@@ -1,0 +1,40 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+    <!-- The following 5 lines: To ensure transactions are handled properly (from Matt Pocock) -->
+    <tx:annotation-driven/>
+    <context:annotation-config/>
+    <aop:aspectj-autoproxy/>
+    <context:load-time-weaver aspectj-weaving="on"/>
+    <aop:config proxy-target-class="true"/>
+
+    <bean name="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="username" value="symba"/>
+        <property name="password" value="symba"/>
+        <property name="url" value="jdbc:postgresql://localhost:5433/symba"/>
+    </bean>
+
+    <bean name="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="persistenceUnitName" value="net.sourceforge.fuge.util.generated"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="generateDdl" value="true"/>
+                <property name="showSql" value="true"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="symbaDao" class="net.sourceforge.symba.database.dao.PostgresSymbaDaoImpl"/>
+    
+    <bean id="fugeDatabaseController" class="net.sourceforge.symba.database.controller.FugeDatabaseController"/>
+</beans>

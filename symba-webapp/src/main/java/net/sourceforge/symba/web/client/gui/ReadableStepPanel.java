@@ -29,8 +29,9 @@ public class ReadableStepPanel extends VerticalPanel {
         Label label = new Label( this.stepTitle );
         label.addClickHandler( myEditableHandler );
         add( label );
+        label.addStyleName( "clickable-text" );
+
         Label label2 = new Label( displayFileNames() );
-        label.addClickHandler( myEditableHandler );
         add( label2 );
         add( parameterTable );
     }

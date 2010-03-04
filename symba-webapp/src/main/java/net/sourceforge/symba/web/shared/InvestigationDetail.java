@@ -17,28 +17,28 @@ public class InvestigationDetail implements Serializable {
     private boolean template;
     private String id;
     private String investigationTitle;
-    private ContactDetails providerDetails;
+    private Contact provider;
 
     public InvestigationDetail() {
-        new InvestigationDetail( false, "0", investigationTitle, new ContactDetails() );
+        new InvestigationDetail( false, "0", investigationTitle, new Contact() );
     }
 
     public InvestigationDetail( boolean isTemplate,
                                 String id,
                                 String investigationTitle,
-                                ContactDetails contactDetails ) {
+                                Contact contactDetails ) {
         this.template = isTemplate;
         this.id = id;
         this.investigationTitle = investigationTitle;
-        this.providerDetails = contactDetails;
+        this.provider = contactDetails;
     }
 
     public String getId() { return id; }
 
     public String getInvestigationTitle() { return investigationTitle; }
 
-    public ContactDetails getProviderDetails() {
-        return providerDetails;
+    public Contact getProvider() {
+        return provider;
     }
 
     /**
@@ -47,12 +47,13 @@ public class InvestigationDetail implements Serializable {
      * @return a piece of HTML that can be displayed
      */
     public HTML summarise() {
+        HTML summary = new HTML( getInvestigationTitle() + " (provided by " + getProvider().getFullName() + ")" );
         if ( template ) {
-            return new HTML(
-                    "<em>" + getInvestigationTitle() + " (provided by " + getProviderDetails().getDisplayName() +
-                            ")</em>" );
+            // todo create proper css to describe templated text
+            summary.setHTML( "<em>" + summary + "</em>" );
         } else {
-            return new HTML( getInvestigationTitle() + " (provided by " + getProviderDetails().getDisplayName() + ")" );
+            summary.addStyleName( "clickable-text" );
         }
+        return summary;
     }
 }

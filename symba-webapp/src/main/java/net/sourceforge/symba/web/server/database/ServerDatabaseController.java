@@ -65,7 +65,7 @@ public class ServerDatabaseController extends FugeDatabaseController {
                     // match found to real contact value
                     // todo "Name" is the value in FuGE, so change that within the Symba UI to match
                     // todo allow people to have organisations.
-                    return new Contact( contact.getIdentifier(), contact.getName(), contact.getName(),
+                    return new Contact( contact.getIdentifier(), contact.getFirstName(), contact.getLastName(),
                             contact.getEmail() );
                 }
             }

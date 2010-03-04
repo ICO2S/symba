@@ -20,6 +20,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
 
     private FlexTable investigationsTable;
     private List<InvestigationDetail> investigationDetails;
+    // todo only retrieve contacts less often
 
     public SummariseInvestigationPanel( InvestigationsServiceAsync rpcService ) {
 
@@ -62,7 +63,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
 
         addButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                editTable.initEditInvestigationTable();
+                editTable.displayEmptyInvestigation();
             }
         } );
 
@@ -101,7 +102,7 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
             }
 
             public void onFailure( Throwable caught ) {
-                Window.alert( "Error fetching investigation list" );
+                Window.alert( "Error fetching investigation list: " + caught.getMessage() );
             }
         } );
     }
@@ -133,10 +134,8 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
     private void deleteSelectedInvestigation() {
         int selectedRow = getSelectedRow();
         String id = investigationDetails.get( selectedRow ).getId();
-        ArrayList<String> sizeOneList = new ArrayList<String>();
-        sizeOneList.add( id );
 
-        rpcService.deleteInvestigations( sizeOneList, new AsyncCallback<ArrayList<InvestigationDetail>>() {
+        rpcService.deleteInvestigation( id, new AsyncCallback<ArrayList<InvestigationDetail>>() {
             public void onSuccess( ArrayList<InvestigationDetail> result ) {
                 investigationDetails = result;
                 sortInvestigationDetails();

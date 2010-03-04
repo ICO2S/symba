@@ -2,9 +2,12 @@ package net.sourceforge.symba.web.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.gui.EditInvestigationTable;
 import net.sourceforge.symba.web.client.gui.SummariseInvestigationPanel;
+import net.sourceforge.symba.web.shared.Contact;
 import org.swfupload.client.File;
 import org.swfupload.client.SWFUpload;
 import org.swfupload.client.UploadBuilder;
@@ -52,7 +55,7 @@ public class InvestigationManipulator implements EntryPoint {
         fileIdToRow = new HashMap<String, Integer>();
         radioRowSelectedOnUpload = -1;
 
-        SummariseInvestigationPanel investigatePanel = new SummariseInvestigationPanel( rpcService );
+        final SummariseInvestigationPanel investigatePanel = new SummariseInvestigationPanel( rpcService );
         investigatePanel.fetchInvestigationDetails();
 //        investigatePanel.setWidth( "35%" );
 
@@ -77,11 +80,18 @@ public class InvestigationManipulator implements EntryPoint {
         // todo disable all functions on entire page until file uploads are complete
         setupMultipleFileUploader();
 
-        editTable = new EditInvestigationTable( rpcService, investigatePanel,
-                uploadToExistingStep, uploadToNewStep );
-        investigatePanel.addDefaultHandlers( editTable );
+        rpcService.getAllContacts( new AsyncCallback<HashMap<String, Contact>>() {
+            public void onFailure( Throwable caught ) {
+                Window.alert( "Error fetching contacts list: " + caught.getMessage() );
+            }
 
-        centerPanel.add( editTable );
+            public void onSuccess( HashMap<String, Contact> result ) {
+                editTable = new EditInvestigationTable( rpcService, result, investigatePanel,
+                        uploadToExistingStep, uploadToNewStep );
+                investigatePanel.addDefaultHandlers( editTable );
+                centerPanel.add( editTable );
+            }
+        } );
     }
 
     private void setupMultipleFileUploader() {

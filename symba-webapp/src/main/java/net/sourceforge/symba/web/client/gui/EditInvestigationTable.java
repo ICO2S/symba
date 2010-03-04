@@ -8,6 +8,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
+import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 import org.swfupload.client.File;
@@ -15,6 +16,7 @@ import org.swfupload.client.SWFUpload;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class EditInvestigationTable extends FlexTable {
@@ -27,15 +29,13 @@ public class EditInvestigationTable extends FlexTable {
     private final Button saveCopyAsTemplateButton;
     private final Button cancelButton;
     private final Button addSubStepButton;
-    private final String baseApp = GWT.getModuleBaseURL()
-            .substring( 0, GWT.getModuleBaseURL().lastIndexOf( GWT.getModuleName() ) );
     private final String addChildImageUrl;
     private final String copyStepImageUrl;
 
     private final SWFUpload buttonOne, buttonTwo;
 
     private FlexTable stepsTable;
-    private ReadWriteDetailsPanel readWriteDetailsPanel;
+    private final ReadWriteDetailsPanel readWriteDetailsPanel;
     private EditableStepPanel editableStepPanel;
 
     private int contentTableRowCount;
@@ -65,11 +65,13 @@ public class EditInvestigationTable extends FlexTable {
      * Initialise all final and modifiable variables
      *
      * @param rpcService       the service to use to call the GWT server side
+     * @param contacts         the contacts that are to be passed to the main panel
      * @param investigatePanel the panel that holds the main summaries of all investigations - used to update that panel
      * @param buttonOne        the first button to enable/disable
      * @param buttonTwo        the second button to enable/disable
      */
     public EditInvestigationTable( InvestigationsServiceAsync rpcService,
+                                   HashMap<String, Contact> contacts,
                                    SummariseInvestigationPanel investigatePanel,
                                    SWFUpload buttonOne,
                                    SWFUpload buttonTwo ) {
@@ -79,8 +81,11 @@ public class EditInvestigationTable extends FlexTable {
         this.investigatePanel = investigatePanel;
         this.buttonOne = buttonOne;
         this.buttonTwo = buttonTwo;
+        readWriteDetailsPanel = new ReadWriteDetailsPanel( contacts, rpcService );
 
         if ( GWT.isScript() ) {
+            String baseApp = GWT.getModuleBaseURL()
+                    .substring( 0, GWT.getModuleBaseURL().lastIndexOf( GWT.getModuleName() ) );
             addChildImageUrl = baseApp + "/images/addChild30x30.png";
             copyStepImageUrl = baseApp + "/images/copyStep30x15.png";
         } else {
@@ -133,7 +138,6 @@ public class EditInvestigationTable extends FlexTable {
         setWidget( contentTableRowCount++, 0, menuPanel );
 
         // Create the investigation summary view
-        readWriteDetailsPanel = new ReadWriteDetailsPanel();
         setWidget( contentTableRowCount++, 0, readWriteDetailsPanel );
 
         HorizontalPanel addStepPanel = new HorizontalPanel();
@@ -284,6 +288,21 @@ public class EditInvestigationTable extends FlexTable {
     //
     // Methods which change the class variables or run RPC calls which modify server variables
     //
+
+    public void displayEmptyInvestigation() {
+        initEditInvestigationTable();
+        Investigation investigation = new Investigation();
+
+        // we need the non-template settings here if a template was previously shown, and therefore buttons were
+        // previously disabled. In such cases, we need to explicitly enable them.
+        saveButton.setEnabled( true );
+        setAsTemplateButton.setEnabled( true );
+        saveCopyAsTemplateButton.setEnabled( true );
+        cancelButton.setEnabled( true );
+        addSubStepButton.setEnabled( true );
+
+        readWriteDetailsPanel.createReadableDisplay( investigation );
+    }
 
     public void displayInvestigation( String id ) {
 
@@ -508,7 +527,8 @@ public class EditInvestigationTable extends FlexTable {
                     buttonTwo.setButtonDisabled( true );
                     buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
                 }
-                String title = investigation.getInvestigationTitle();
+                final String title = investigation.getInvestigationTitle();
+                final String id = investigation.getId();
                 clearModifiable();
                 investigatePanel.setInvestigationDetails( updatedDetails );
                 investigatePanel.sortInvestigationDetails();
@@ -516,7 +536,7 @@ public class EditInvestigationTable extends FlexTable {
                 setWidget( contentTableRowCount++, 0, new Label( title + " saved." ) );
 
                 if ( makeTemplate ) {
-                    rpcService.copyInvestigation( investigation.getId(),
+                    rpcService.copyInvestigation( id,
                             new AsyncCallback<InvestigationDetail>() {
                                 public void onSuccess( InvestigationDetail result ) {
                                     setAsTemplate( result.getId(), result.getInvestigationTitle() );
@@ -524,7 +544,7 @@ public class EditInvestigationTable extends FlexTable {
 
                                 public void onFailure( Throwable caught ) {
                                     Window.alert(
-                                            "Error copying Investigation " + investigation.getInvestigationTitle() +
+                                            "Error copying Investigation " + title +
                                                     ": no template created." +
                                                     Arrays.toString( caught.getStackTrace() ) );
                                 }

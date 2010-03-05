@@ -1,4 +1,4 @@
-package net.sourceforge.symba.web.client.gui;
+package net.sourceforge.symba.web.client.gui.panel;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -8,6 +8,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
+import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.shared.Contact;
 
 import java.util.HashMap;
@@ -117,7 +118,7 @@ public class ContactPopupPanel extends PopupPanel {
 
             rpcService.addContact( contact, new AsyncCallback<HashMap<String, Contact>>() {
                 public void onFailure( Throwable caught ) {
-                    Window.alert( "Failed to store contact: " + contact.getFullName() );
+                    Window.alert( "Failed to store contact: " + contact.getFullName() + "\n" + caught.getMessage());
                 }
 
                 public void onSuccess( HashMap<String, Contact> result ) {

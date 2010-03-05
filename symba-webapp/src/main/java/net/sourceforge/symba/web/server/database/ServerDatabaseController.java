@@ -71,6 +71,7 @@ public class ServerDatabaseController extends FugeDatabaseController {
             }
         }
         return new Contact();
+        // todo create server-side ID
     }
 
     private ArrayList<ExperimentStepHolder> initExperiments( FuGECollectionProtocolCollectionType protocolCollection ) {

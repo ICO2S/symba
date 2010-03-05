@@ -12,7 +12,13 @@ public class Contact implements Serializable {
     private String emailAddress;
 
     public Contact() {
-        new Contact( "0", "", "", "" );
+        this.id = "0";
+        this.firstName = "";
+        this.lastName = "";
+        this.emailAddress = "";
+
+        // this way doesn't seem to work right - ends up with the string values being null!
+//        new Contact( "0", "", "", "" );
     }
 
     public Contact( String id,
@@ -20,9 +26,9 @@ public class Contact implements Serializable {
                     String lastName,
                     String emailAddress ) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.emailAddress = emailAddress;
+        this.firstName = firstName.trim();
+        this.lastName = lastName.trim();
+        this.emailAddress = emailAddress.trim();
     }
 
     public String getId() { return id; }
@@ -46,5 +52,5 @@ public class Contact implements Serializable {
 
     public void setEmailAddress( String emailAddress ) { this.emailAddress = emailAddress; }
 
-    public String getFullName() { return firstName + " " + lastName; }
+    public String getFullName() { return (firstName + " " + lastName).trim(); }
 }

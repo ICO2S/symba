@@ -6,15 +6,16 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
+import net.sourceforge.symba.web.client.gui.panel.SymbaControllerPanel;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SummariseInvestigationPanel extends DecoratorPanel {
+public class SummariseInvestigationTable extends FlexTable {
     private final InvestigationsServiceAsync rpcService;
+    private final SymbaControllerPanel symba;
 
-    private final Button addButton;
     private final Button copyButton;
     private final Button deleteButton;
 
@@ -22,16 +23,11 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
     private List<InvestigationDetail> investigationDetails;
     // todo only retrieve contacts less often
 
-    public SummariseInvestigationPanel( InvestigationsServiceAsync rpcService ) {
+    public SummariseInvestigationTable( SymbaControllerPanel symba,
+                                        InvestigationsServiceAsync rpcService ) {
 
         this.rpcService = rpcService;
-
-//        setWidth( "30em" );
-
-        FlexTable contentTable = new FlexTable();
-//        contentTable.setWidth( "100%" );
-//        contentTable.getCellFormatter().setWidth( 0, 0, "100%" );
-        contentTable.getFlexCellFormatter().setVerticalAlignment( 0, 0, DockPanel.ALIGN_TOP );
+        this.symba = symba;
 
         // Create the menu
         //
@@ -39,13 +35,11 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
         menuPanel.setBorderWidth( 0 );
         menuPanel.setSpacing( 0 );
         menuPanel.setHorizontalAlignment( HorizontalPanel.ALIGN_LEFT );
-        addButton = new Button( "Add" );
         copyButton = new Button( "Copy" );
         deleteButton = new Button( "Delete" );
-        menuPanel.add( addButton );
         menuPanel.add( copyButton );
         menuPanel.add( deleteButton );
-        contentTable.setWidget( 0, 0, menuPanel );
+        setWidget( 0, 0, menuPanel );
 
         // Create the investigation list
         //
@@ -53,19 +47,12 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
         investigationsTable.setCellSpacing( 0 );
         investigationsTable.setCellPadding( 0 );
         investigationsTable.setWidth( "100%" );
-//        investigationsTable.getColumnFormatter().setWidth( 0, "15px" );
-        contentTable.setWidget( 1, 0, investigationsTable );
+        setWidget( 1, 0, investigationsTable );
 
-        add( contentTable );
+        addDefaultHandlers();
     }
 
-    public void addDefaultHandlers( final EditInvestigationTable editTable ) {
-
-        addButton.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
-                editTable.displayEmptyInvestigation();
-            }
-        } );
+    public void addDefaultHandlers() {
 
         // todo only enabled and visible for Admins (once login enabled)
         deleteButton.addClickHandler( new ClickHandler() {
@@ -86,7 +73,8 @@ public class SummariseInvestigationPanel extends DecoratorPanel {
 
                 if ( selectedRow >= 0 ) {
                     String id = investigationDetails.get( selectedRow ).getId();
-                    editTable.displayInvestigation( id );
+                    symba.setCenterWidgetAsEditExperiment();
+                    ( ( EditInvestigationTable ) symba.getCenterWidget() ).displayInvestigation( id );
                 }
             }
         } );

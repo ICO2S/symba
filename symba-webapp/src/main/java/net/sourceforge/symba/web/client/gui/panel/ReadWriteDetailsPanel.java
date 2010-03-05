@@ -1,8 +1,9 @@
-package net.sourceforge.symba.web.client.gui;
+package net.sourceforge.symba.web.client.gui.panel;
 
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
+import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 
@@ -153,7 +154,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
     }
 
     public void setupProviderNameDetailPanel( final String fullNameValue,
-                                              final String emailAddress,
+                                              String emailAddress,
                                               boolean template ) {
 
         // clear the contact panel.
@@ -162,14 +163,14 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
         }
         contactPanel.setSpacing( 5 );
 
+        Label legendLabel = new Label( "Name: " );
+        legendLabel.addStyleName( "textbox-legend" );
+        contactPanel.add( legendLabel );
+
         // if there is no contact at all yet for this investigation, just start with the list box. Otherwise, start
         // with a read-only string.
         if ( fullNameValue != null && fullNameValue.length() > 0 ) {
             // add the read-only text
-            Label legendLabel = new Label( "Name: " );
-            legendLabel.addStyleName( "textbox-legend" );
-            contactPanel.add( legendLabel );
-
             // the read-only label for the full name
             final Label label = new Label();
             label.setText( fullNameValue );
@@ -189,6 +190,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
             contactPanel.add( label );
         } else {
             contactPanel.add( fullNameBox );
+            emailAddress = contacts.get( fullNameBox.getValue( 0 ) ).getEmailAddress();
         }
 
         if ( !template ) {

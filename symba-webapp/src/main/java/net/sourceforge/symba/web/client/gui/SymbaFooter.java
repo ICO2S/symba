@@ -12,7 +12,7 @@ import net.sourceforge.symba.web.client.HistoryToken;
  * @author Craig Smiles
  * @version 13-Aug-2009
  */
-public class Footer extends VerticalPanel {
+public class SymbaFooter extends VerticalPanel {
 
     /* Constants */
 
@@ -38,10 +38,10 @@ public class Footer extends VerticalPanel {
     private final Label whoAmI_;
 
     /**
-     * Constructor for Footer class. This creates a footer that assumes the user hasn't logged in yet.
+     * Constructor for SymbaFooter class. This creates a footer that assumes the user hasn't logged in yet.
      * Not providing login services yet.
      */
-    public Footer() {
+    public SymbaFooter() {
         /* The whoAmI_ label is given an empty text since the user is assumed not to be logged in */
         super();
         whoAmI_ = new Label();

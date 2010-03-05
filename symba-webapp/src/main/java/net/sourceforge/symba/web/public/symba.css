@@ -47,6 +47,33 @@ BODY {
     text-decoration: underline;
 }
 
+/* Change the following 2 styles to change the mouse looks when hovering over clickable images and when leaving those images */
+.image-pointer-enter {
+    cursor: pointer;
+}
+
+.image-pointer-exit {
+    cursor: default;
+}
+
+/* Header styles */
+.header-style {
+    border: solid 1px black;
+    border-radius: 10px;
+    /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
+    -moz-border-radius: 10px;
+    width: 100%;
+}
+
+.header-home-image {
+    height: 80px;
+}
+
+.header-images {
+    height: 50px;
+    padding: 5px 5px 5px 5px;
+}
+
 /* The styles below modified from those found in http://demo.swfupload.org/v220/css/default.css */
 
 div.fieldset {

@@ -1,4 +1,4 @@
-package net.sourceforge.symba.web.client.gui;
+package net.sourceforge.symba.web.client.gui.panel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

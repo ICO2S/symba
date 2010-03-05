@@ -1,5 +1,6 @@
 package net.sourceforge.symba.web.shared;
 
+import com.google.gwt.user.client.Random;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
@@ -60,6 +61,10 @@ public class Investigation implements Serializable {
                 investigation.getProvider(), investigation.getExperiments() );
     }
 
+    public void createId() {
+        // todo better ID creation
+        setId( Integer.toString( Random.nextInt() ) );
+    }
 
     /**
      * Updates the experiment step title of the one marked with the specified row. If the title is empty or null, the

@@ -7,12 +7,18 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
+import net.sourceforge.symba.web.client.gui.panel.EditableStepPanel;
+import net.sourceforge.symba.web.client.gui.panel.ReadWriteDetailsPanel;
+import net.sourceforge.symba.web.client.gui.panel.ReadableStepPanel;
+import net.sourceforge.symba.web.client.gui.panel.SymbaControllerPanel;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 import org.swfupload.client.File;
 import org.swfupload.client.SWFUpload;
+import org.swfupload.client.UploadBuilder;
+import org.swfupload.client.event.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +28,12 @@ import java.util.List;
 public class EditInvestigationTable extends FlexTable {
 
     private final InvestigationsServiceAsync rpcService;
-    private final SummariseInvestigationPanel investigatePanel;
+    private final SymbaControllerPanel symba;
+    private final String toNewStepImageUrl = "/images/toNewStep70w76h.png";
+    private final String toExistingStepImageUrl = "/images/toExistingStep70w52h.png";
+    private HashMap<String, Integer> fileIdToRow;
+    private int radioRowSelectedOnUpload;
+    private List<File> files = new ArrayList<File>();
 
     private final Button saveButton;
     private final Button setAsTemplateButton;
@@ -32,7 +43,7 @@ public class EditInvestigationTable extends FlexTable {
     private final String addChildImageUrl;
     private final String copyStepImageUrl;
 
-    private final SWFUpload buttonOne, buttonTwo;
+    private SWFUpload buttonOne, buttonTwo;
 
     private FlexTable stepsTable;
     private final ReadWriteDetailsPanel readWriteDetailsPanel;
@@ -64,23 +75,18 @@ public class EditInvestigationTable extends FlexTable {
     /**
      * Initialise all final and modifiable variables
      *
-     * @param rpcService       the service to use to call the GWT server side
-     * @param contacts         the contacts that are to be passed to the main panel
-     * @param investigatePanel the panel that holds the main summaries of all investigations - used to update that panel
-     * @param buttonOne        the first button to enable/disable
-     * @param buttonTwo        the second button to enable/disable
+     * @param rpcService the service to use to call the GWT server side
+     * @param contacts   the contacts that are to be passed to the main panel
      */
-    public EditInvestigationTable( InvestigationsServiceAsync rpcService,
-                                   HashMap<String, Contact> contacts,
-                                   SummariseInvestigationPanel investigatePanel,
-                                   SWFUpload buttonOne,
-                                   SWFUpload buttonTwo ) {
+    public EditInvestigationTable( SymbaControllerPanel symba,
+                                   InvestigationsServiceAsync rpcService,
+                                   HashMap<String, Contact> contacts ) {
 
         // initialise all final variables
         this.rpcService = rpcService;
-        this.investigatePanel = investigatePanel;
-        this.buttonOne = buttonOne;
-        this.buttonTwo = buttonTwo;
+        this.symba = symba;
+        fileIdToRow = new HashMap<String, Integer>();
+        radioRowSelectedOnUpload = -1;
         readWriteDetailsPanel = new ReadWriteDetailsPanel( contacts, rpcService );
 
         if ( GWT.isScript() ) {
@@ -120,6 +126,7 @@ public class EditInvestigationTable extends FlexTable {
     public void initEditInvestigationTable() {
 
         clearModifiable();
+        setupMultipleFileUploader();
 
         setWidth( "100%" );
 //            getCellFormatter().addStyleName( 0, 0, "investigation-ListContainer" );
@@ -156,10 +163,13 @@ public class EditInvestigationTable extends FlexTable {
         setWidget( contentTableRowCount++, 0, stepsTable );
 
         addDefaultHandlers();
+
     }
 
     private void clearModifiable() {
         investigation = new Investigation();
+        investigation.createId();
+        investigation.getProvider().createId();
         contentTableRowCount = 0;
         selectedRadioRow = -1;
 
@@ -244,9 +254,11 @@ public class EditInvestigationTable extends FlexTable {
                     buttonTwo.setButtonDisabled( true );
                     buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
                 }
-                String cancelledTitle = investigation.getInvestigationTitle();
+                if ( investigation != null ) {
+                    String cancelledTitle = investigation.getInvestigationTitle();
+                    setWidget( contentTableRowCount++, 0, new Label( "Did not modify " + cancelledTitle + "." ) );
+                }
                 clearModifiable();
-                setWidget( contentTableRowCount++, 0, new Label( "Did not modify " + cancelledTitle + "." ) );
             }
         } );
 
@@ -269,9 +281,10 @@ public class EditInvestigationTable extends FlexTable {
                             buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
                         }
                         clearModifiable();
-                        investigatePanel.setInvestigationDetails( results );
-                        investigatePanel.sortInvestigationDetails();
-                        investigatePanel.setViewData();
+                        // todo
+//                        investigatePanel.setInvestigationDetails( results );
+//                        investigatePanel.sortInvestigationDetails();
+//                        investigatePanel.setViewData();
                         setWidget( contentTableRowCount++, 0, new Label( title + " has been set as a template." ) );
                     }
                 } );
@@ -292,6 +305,8 @@ public class EditInvestigationTable extends FlexTable {
     public void displayEmptyInvestigation() {
         initEditInvestigationTable();
         Investigation investigation = new Investigation();
+        investigation.createId();
+        investigation.getProvider().createId();        
 
         // we need the non-template settings here if a template was previously shown, and therefore buttons were
         // previously disabled. In such cases, we need to explicitly enable them.
@@ -530,9 +545,10 @@ public class EditInvestigationTable extends FlexTable {
                 final String title = investigation.getInvestigationTitle();
                 final String id = investigation.getId();
                 clearModifiable();
-                investigatePanel.setInvestigationDetails( updatedDetails );
-                investigatePanel.sortInvestigationDetails();
-                investigatePanel.setViewData();
+                // todo
+//                investigatePanel.setInvestigationDetails( updatedDetails );
+//                investigatePanel.sortInvestigationDetails();
+//                investigatePanel.setViewData();
                 setWidget( contentTableRowCount++, 0, new Label( title + " saved." ) );
 
                 if ( makeTemplate ) {
@@ -596,6 +612,269 @@ public class EditInvestigationTable extends FlexTable {
                     new makeEditableHandler( row, column ) );
             stepsTable.setWidget( row, column, editableStepPanel );
 
+        }
+    }
+
+    private void setupMultipleFileUploader() {
+        String moduleBase = GWT.getModuleBaseURL();
+        String moduleName = GWT.getModuleName();
+        String baseApp = moduleBase.substring( 0, moduleBase.lastIndexOf( moduleName ) );
+        String url = baseApp + "upload";
+
+//        northHtml.setHTML( "SyMBA upload service is running on " + url );
+
+        // Determine if the demo is being viewed in Hosted mode, if so display a
+        // warning. This is because Flash to JavaScript communications does not work
+        // correctly in hosted mode.
+        if ( !GWT.isScript() ) {
+            HTML warning = new HTML();
+            warning.addStyleName( "note" );
+            warning.setHTML( "NIS: Not in scripting mode. You have to deploy the app to an application server! (" +
+                    url + ")" );
+            warning.setTitle( "Not in scripting mode. You have to deploy the app to an application server! (" +
+                    url + ")" );
+            // todo
+            setWidget( contentTableRowCount++, 0, warning );
+            return;
+        }
+
+        HorizontalPanel tempPanel = new HorizontalPanel();
+        HTML bt = new HTML( "<span id=\"buttonOne-button\" />" );
+        tempPanel.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
+        tempPanel.setSpacing( 20 );
+        tempPanel.add( bt );
+        HTML bt2 = new HTML( "<span id=\"uploadToNewStep-button\" />" );
+        tempPanel.add( bt2 );
+        // todo
+        setWidget( contentTableRowCount++, 0, tempPanel );
+
+        setupExistingStepBuilder( baseApp, url );
+        setupNewStepBuilder( baseApp, url );
+
+    }
+
+    private void setupNewStepBuilder( String baseApp,
+                                      String url ) {
+
+        final UploadBuilder builder = new UploadBuilder();
+        // builder.setDebug(true);
+        builder.setHTTPSuccessCodes( 200, 201 );
+        builder.setFileTypes(
+                "*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.mp4;*.mov;*.m4v;*.aac;*.mp3;*.wav;*.png;*.jpg;*.jpeg;*.gif;*.svg;*.txt;*.doc;*.xls;*.odt" );
+        builder.setFileTypesDescription( "Images, Video & Text" );
+
+        builder.setButtonPlaceholderID( "uploadToNewStep-button" );
+        builder.setButtonImageURL( baseApp + toNewStepImageUrl );
+//        builder.setButtonText( "Each file is added to a copy of the selected step" );
+        builder.setButtonDisabled( true );
+        builder.setButtonCursor( SWFUpload.ButtonCursor.ARROW );
+        builder.setButtonWidth( 70 );
+        builder.setButtonHeight( 76 );
+        builder.setButtonAction( SWFUpload.ButtonAction.SELECT_FILES );
+
+        builder.setUploadProgressHandler( new UploadProgressHandler() {
+
+            public void onUploadProgress( UploadProgressEvent e ) {
+                ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
+                        e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) + "%" ) );
+                ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                        .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer yellow" );
+            }
+        } );
+
+        builder.setUploadSuccessHandler( new UploadSuccessHandler() {
+            public void onUploadSuccess( UploadSuccessEvent e ) {
+                ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                        .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
+
+            }
+        } );
+
+        builder.setUploadErrorHandler( new UploadErrorHandler() {
+            public void onUploadError( UploadErrorEvent e ) {
+                String message = e.getMessage();
+                if ( message == null || message.trim().length() == 0 ) {
+                    message = "buttonOne failed";
+                }
+                ( ( HTML ) symba.getEastWidget() ).setHTML(
+                        ( ( HTML ) symba.getEastWidget() ).getText() + "<br />Upload error: " + e.getFile().getId() +
+                                ", " + e.getFile().getName() + " / " + message );
+                removeFile( e.getFile().getId() );
+                if ( files.size() > 0 ) {
+                    String id = files.get( 0 ).getId();
+                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
+                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
+                    buttonTwo.startUpload( id );
+                }
+            }
+        } );
+
+        builder.setUploadURL( url );
+
+        builder.setUploadCompleteHandler( new UploadCompleteHandler() {
+            public void onUploadComplete( UploadCompleteEvent e ) {
+                File f = e.getFile();
+                removeFile( f.getId() );
+                if ( files.size() > 0 ) {
+                    String id = files.get( 0 ).getId();
+                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
+                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
+                    buttonTwo.startUpload( id );
+                }
+            }
+        } );
+
+        builder.setFileQueuedHandler( new FileQueuedHandler() {
+            public void onFileQueued( FileQueuedEvent event ) {
+                files.add( event.getFile() );
+            }
+        } );
+
+        builder.setFileDialogCompleteHandler( new FileDialogCompleteHandler() {
+            public void onFileDialogComplete( FileDialogCompleteEvent e ) {
+//                ((FlexTable) symba.getSouthWidget()).setHTML( wrapInFileQueueStyle( "", "files = " + files.size() ) );
+                if ( files.size() > 0 ) {
+                    // reset table variables
+                    ((FlexTable) symba.getSouthWidget()).removeAllRows();
+                    fileIdToRow = new HashMap<String, Integer>();
+                    int fileIdToRowCount = 0;
+                    // fill in fileIdToRow
+                    for ( File file : files ) {
+                        fileIdToRow.put( file.getId(), fileIdToRowCount++ );
+                    }
+                    // next, set the value in the appropriate table row.
+                    String id = files.get( 0 ).getId();
+                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() + ": 0%" ) );
+                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
+                    buttonTwo.startUpload( id );
+                }
+            }
+        } );
+        buttonTwo = builder.build();
+
+    }
+
+    private void setupExistingStepBuilder( String baseApp,
+                                           String url ) {
+        final UploadBuilder builder = new UploadBuilder();
+        // builder.setDebug(true);
+        builder.setHTTPSuccessCodes( 200, 201 );
+        builder.setFileTypes(
+                "*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.mp4;*.mov;*.m4v;*.aac;*.mp3;*.wav;*.png;*.jpg;*.jpeg;*.gif;*.svg;*.txt;*.doc;*.xls;*.odt" );
+        builder.setFileTypesDescription( "Images, Video & Text" );
+
+        builder.setButtonPlaceholderID( "buttonOne-button" );
+        builder.setButtonImageURL( baseApp + toExistingStepImageUrl );
+//        builder.setButtonText( "All files are added to the selected step" );
+        builder.setButtonDisabled( true );
+        builder.setButtonCursor( SWFUpload.ButtonCursor.ARROW );
+        builder.setButtonWidth( 70 );
+        builder.setButtonHeight( 52 );
+        builder.setButtonAction( SWFUpload.ButtonAction.SELECT_FILES );
+
+        builder.setUploadProgressHandler( new UploadProgressHandler() {
+
+            public void onUploadProgress( UploadProgressEvent e ) {
+                ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
+                        e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) + "%" ) );
+                ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                        .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer yellow" );
+            }
+        } );
+
+        builder.setUploadSuccessHandler( new UploadSuccessHandler() {
+            public void onUploadSuccess( UploadSuccessEvent e ) {
+                ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                        .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
+
+                // now assign this file to the appropriate experimental step
+                ( ( EditInvestigationTable ) symba.getCenterWidget() )
+                        .assignFileToStep( e.getFile(), radioRowSelectedOnUpload );
+            }
+        } );
+
+        builder.setUploadErrorHandler( new UploadErrorHandler() {
+            public void onUploadError( UploadErrorEvent e ) {
+                ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                        .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer red" );
+                String message = e.getMessage();
+                if ( message == null || message.trim().length() == 0 ) {
+                    message = "buttonOne failed";
+                }
+                ( ( HTML ) symba.getEastWidget() ).setHTML(
+                        ( ( HTML ) symba.getEastWidget() ).getText() + "<br />Upload error: " + e.getFile().getId() +
+                                ", " + e.getFile().getName() + " / " + message );
+                removeFile( e.getFile().getId() );
+                if ( files.size() > 0 ) {
+                    String id = files.get( 0 ).getId();
+                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
+                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
+                    buttonOne.startUpload( id );
+                }
+            }
+        } );
+
+        builder.setUploadURL( url );
+
+        builder.setUploadCompleteHandler( new UploadCompleteHandler() {
+            public void onUploadComplete( UploadCompleteEvent e ) {
+                File f = e.getFile();
+                removeFile( f.getId() );
+                if ( files.size() > 0 ) {
+                    String id = files.get( 0 ).getId();
+                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
+                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
+                    buttonOne.startUpload( id );
+                }
+            }
+        } );
+
+        builder.setFileQueuedHandler( new FileQueuedHandler() {
+            public void onFileQueued( FileQueuedEvent event ) {
+                files.add( event.getFile() );
+            }
+        } );
+
+        builder.setDialogStartHandler( new DialogStartHandler() {
+            public void onDialogStart() {
+                radioRowSelectedOnUpload = ( ( EditInvestigationTable ) symba.getCenterWidget() ).getSelectedRadioRow();
+            }
+        } );
+
+        builder.setFileDialogCompleteHandler( new FileDialogCompleteHandler() {
+            public void onFileDialogComplete( FileDialogCompleteEvent e ) {
+                if ( files.size() > 0 ) {
+                    // reset table variables
+                    ((FlexTable) symba.getSouthWidget()).removeAllRows();
+                    fileIdToRow = new HashMap<String, Integer>();
+                    int fileIdToRowCount = 0;
+                    // fill in fileIdToRow
+                    for ( File file : files ) {
+                        fileIdToRow.put( file.getId(), fileIdToRowCount++ );
+                    }
+                    // next, set the value in the appropriate table row.
+                    String id = files.get( 0 ).getId();
+                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() + ": 0%" ) );
+                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
+                    buttonOne.startUpload( id );
+                }
+            }
+        } );
+        buttonOne = builder.build();
+
+    }
+
+    private void removeFile( String id ) {
+        for ( File ff : files ) {
+            if ( ff.getId().equals( id ) ) {
+                files.remove( ff );
+            }
         }
     }
 }

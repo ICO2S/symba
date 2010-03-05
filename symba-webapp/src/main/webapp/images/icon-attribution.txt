@@ -1,0 +1,1 @@
+arrow_down.svg, article.svg, plus.svg : by http://somerandomdude.com/projects/iconic/, licensed under http://creativecommons.org/licenses/by-sa/3.0/us/

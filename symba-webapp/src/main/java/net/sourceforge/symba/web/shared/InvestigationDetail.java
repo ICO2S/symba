@@ -19,8 +19,11 @@ public class InvestigationDetail implements Serializable {
     private String investigationTitle;
     private Contact provider;
 
+    @SuppressWarnings( "unused" )
     public InvestigationDetail() {
-        new InvestigationDetail( false, "0", investigationTitle, new Contact() );
+        Contact contact = new Contact();
+        contact.createId();
+        new InvestigationDetail( false, "0", investigationTitle, contact );
     }
 
     public InvestigationDetail( boolean isTemplate,

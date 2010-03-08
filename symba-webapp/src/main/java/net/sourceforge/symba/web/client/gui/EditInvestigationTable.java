@@ -7,10 +7,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
-import net.sourceforge.symba.web.client.gui.panel.EditableStepPanel;
-import net.sourceforge.symba.web.client.gui.panel.ReadWriteDetailsPanel;
-import net.sourceforge.symba.web.client.gui.panel.ReadableStepPanel;
-import net.sourceforge.symba.web.client.gui.panel.SymbaControllerPanel;
+import net.sourceforge.symba.web.client.gui.panel.*;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
@@ -26,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class EditInvestigationTable extends FlexTable {
+
+    // todo disable all functions on entire page until file uploads are complete
+    // todo refactor this class to make it easier to read
 
     private final InvestigationsServiceAsync rpcService;
     private final SymbaControllerPanel symba;
@@ -75,6 +75,7 @@ public class EditInvestigationTable extends FlexTable {
     /**
      * Initialise all final and modifiable variables
      *
+     * @param symba      the controller panel for the entire interface
      * @param rpcService the service to use to call the GWT server side
      * @param contacts   the contacts that are to be passed to the main panel
      */
@@ -216,7 +217,8 @@ public class EditInvestigationTable extends FlexTable {
                     doSave();
                     setAsTemplate( id, title );
                 } else {
-                    Window.alert( "Saving as template cancelled." );
+                    symba.showEastWidget(
+                            "<p>Saving as template cancelled.</p>", symba.getEastWidgetDirections() );
                 }
             }
         } );
@@ -234,7 +236,8 @@ public class EditInvestigationTable extends FlexTable {
                 if ( response ) {
                     doSave( true );
                 } else {
-                    Window.alert( "Saving a copy as a template cancelled." );
+                    symba.showEastWidget( "<p>Saving a copy as a template cancelled.</p>",
+                            symba.getEastWidgetDirections() );
                 }
 
             }
@@ -255,8 +258,14 @@ public class EditInvestigationTable extends FlexTable {
                     buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
                 }
                 if ( investigation != null ) {
-                    String cancelledTitle = investigation.getInvestigationTitle();
-                    setWidget( contentTableRowCount++, 0, new Label( "Did not modify " + cancelledTitle + "." ) );
+                    if ( investigation.getInvestigationTitle().length() > 0 ) {
+                        symba.showEastWidget(
+                                "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
+                                        "</strong> cancelled.</p>", symba.getEastWidgetDirections() );
+                    } else {
+                        symba.showEastWidget(
+                                "<p>Creation of new investigation cancelled.</p>", symba.getEastWidgetDirections() );
+                    }
                 }
                 clearModifiable();
             }
@@ -285,7 +294,7 @@ public class EditInvestigationTable extends FlexTable {
 //                        investigatePanel.setInvestigationDetails( results );
 //                        investigatePanel.sortInvestigationDetails();
 //                        investigatePanel.setViewData();
-                        setWidget( contentTableRowCount++, 0, new Label( title + " has been set as a template." ) );
+                        symba.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>", "" ) ;
                     }
                 } );
     }
@@ -306,7 +315,7 @@ public class EditInvestigationTable extends FlexTable {
         initEditInvestigationTable();
         Investigation investigation = new Investigation();
         investigation.createId();
-        investigation.getProvider().createId();        
+        investigation.getProvider().createId();
 
         // we need the non-template settings here if a template was previously shown, and therefore buttons were
         // previously disabled. In such cases, we need to explicitly enable them.
@@ -549,7 +558,7 @@ public class EditInvestigationTable extends FlexTable {
 //                investigatePanel.setInvestigationDetails( updatedDetails );
 //                investigatePanel.sortInvestigationDetails();
 //                investigatePanel.setViewData();
-                setWidget( contentTableRowCount++, 0, new Label( title + " saved." ) );
+                symba.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
 
                 if ( makeTemplate ) {
                     rpcService.copyInvestigation( id,
@@ -560,8 +569,7 @@ public class EditInvestigationTable extends FlexTable {
 
                                 public void onFailure( Throwable caught ) {
                                     Window.alert(
-                                            "Error copying Investigation " + title +
-                                                    ": no template created." +
+                                            "Error copying Investigation " + title + ": no template created." +
                                                     Arrays.toString( caught.getStackTrace() ) );
                                 }
                             } );
@@ -675,16 +683,16 @@ public class EditInvestigationTable extends FlexTable {
         builder.setUploadProgressHandler( new UploadProgressHandler() {
 
             public void onUploadProgress( UploadProgressEvent e ) {
-                ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
+                ( ( FlexTable ) symba.getSouthWidget() ).setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
                         e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) + "%" ) );
-                ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer yellow" );
             }
         } );
 
         builder.setUploadSuccessHandler( new UploadSuccessHandler() {
             public void onUploadSuccess( UploadSuccessEvent e ) {
-                ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
 
             }
@@ -702,8 +710,9 @@ public class EditInvestigationTable extends FlexTable {
                 removeFile( e.getFile().getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
-                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                    ( ( FlexTable ) symba.getSouthWidget() )
+                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
+                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonTwo.startUpload( id );
                 }
@@ -718,8 +727,9 @@ public class EditInvestigationTable extends FlexTable {
                 removeFile( f.getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
-                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                    ( ( FlexTable ) symba.getSouthWidget() )
+                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
+                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonTwo.startUpload( id );
                 }
@@ -737,7 +747,7 @@ public class EditInvestigationTable extends FlexTable {
 //                ((FlexTable) symba.getSouthWidget()).setHTML( wrapInFileQueueStyle( "", "files = " + files.size() ) );
                 if ( files.size() > 0 ) {
                     // reset table variables
-                    ((FlexTable) symba.getSouthWidget()).removeAllRows();
+                    ( ( FlexTable ) symba.getSouthWidget() ).removeAllRows();
                     fileIdToRow = new HashMap<String, Integer>();
                     int fileIdToRowCount = 0;
                     // fill in fileIdToRow
@@ -746,8 +756,9 @@ public class EditInvestigationTable extends FlexTable {
                     }
                     // next, set the value in the appropriate table row.
                     String id = files.get( 0 ).getId();
-                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() + ": 0%" ) );
-                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                    ( ( FlexTable ) symba.getSouthWidget() )
+                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() + ": 0%" ) );
+                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonTwo.startUpload( id );
                 }
@@ -778,16 +789,16 @@ public class EditInvestigationTable extends FlexTable {
         builder.setUploadProgressHandler( new UploadProgressHandler() {
 
             public void onUploadProgress( UploadProgressEvent e ) {
-                ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
+                ( ( FlexTable ) symba.getSouthWidget() ).setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
                         e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) + "%" ) );
-                ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer yellow" );
             }
         } );
 
         builder.setUploadSuccessHandler( new UploadSuccessHandler() {
             public void onUploadSuccess( UploadSuccessEvent e ) {
-                ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
 
                 // now assign this file to the appropriate experimental step
@@ -798,7 +809,7 @@ public class EditInvestigationTable extends FlexTable {
 
         builder.setUploadErrorHandler( new UploadErrorHandler() {
             public void onUploadError( UploadErrorEvent e ) {
-                ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer red" );
                 String message = e.getMessage();
                 if ( message == null || message.trim().length() == 0 ) {
@@ -810,8 +821,9 @@ public class EditInvestigationTable extends FlexTable {
                 removeFile( e.getFile().getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
-                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                    ( ( FlexTable ) symba.getSouthWidget() )
+                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
+                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonOne.startUpload( id );
                 }
@@ -826,8 +838,9 @@ public class EditInvestigationTable extends FlexTable {
                 removeFile( f.getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
-                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                    ( ( FlexTable ) symba.getSouthWidget() )
+                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
+                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonOne.startUpload( id );
                 }
@@ -850,7 +863,7 @@ public class EditInvestigationTable extends FlexTable {
             public void onFileDialogComplete( FileDialogCompleteEvent e ) {
                 if ( files.size() > 0 ) {
                     // reset table variables
-                    ((FlexTable) symba.getSouthWidget()).removeAllRows();
+                    ( ( FlexTable ) symba.getSouthWidget() ).removeAllRows();
                     fileIdToRow = new HashMap<String, Integer>();
                     int fileIdToRowCount = 0;
                     // fill in fileIdToRow
@@ -859,8 +872,9 @@ public class EditInvestigationTable extends FlexTable {
                     }
                     // next, set the value in the appropriate table row.
                     String id = files.get( 0 ).getId();
-                    ((FlexTable) symba.getSouthWidget()).setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() + ": 0%" ) );
-                    ((FlexTable) symba.getSouthWidget()).getCellFormatter()
+                    ( ( FlexTable ) symba.getSouthWidget() )
+                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() + ": 0%" ) );
+                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonOne.startUpload( id );
                 }

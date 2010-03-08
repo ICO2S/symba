@@ -21,6 +21,7 @@ public class ListExperimentsClickHandler implements ClickHandler {
 
         investigateTable.fetchInvestigationDetails();
         dock.setCenterWidget( investigateTable );
-        dock.showEastWidget();
+        dock.hideEastWidget();
+
     }
 }

@@ -15,6 +15,6 @@ public class AddExperimentClickHandler implements ClickHandler {
 
     public void onClick( ClickEvent event ) {
         dock.setCenterWidgetAsEditExperiment();
-        ( ( EditInvestigationTable ) dock.getCenterWidget() ).displayEmptyInvestigation( );
+        ( ( EditInvestigationTable ) dock.getCenterWidget() ).displayEmptyInvestigation();
     }
 }

@@ -16,7 +16,7 @@ public class SymbaControllerPanel extends DockPanel {
 
     // the type of widget in the non-center panels will not change, though they may not always be visible.
     private final FlexTable southWidget;
-    private final HTML eastWidget;
+    private final HelpPanel eastWidget;
     private final SymbaHeader northWidget;
     private boolean eastSet;
 
@@ -29,7 +29,7 @@ public class SymbaControllerPanel extends DockPanel {
     /**
      * Creates an dock panel with the default layout for the SyMBA pages.
      *
-     * @param rpcService           the service to use to connect to the data storage
+     * @param rpcService the service to use to connect to the data storage
      */
     public SymbaControllerPanel( InvestigationsServiceAsync rpcService ) {
 
@@ -45,8 +45,7 @@ public class SymbaControllerPanel extends DockPanel {
         southWidget = new FlexTable();
         southWidget.addStyleName( "fieldset flash" );
 
-        eastWidget = new HTML( "<em>You can only upload files once you have selected an experimental step." +
-                "Do not upload more files until the files you have selected have completed.</em>" );
+        eastWidget = new HelpPanel();
 
         add( northWidget, DockPanel.NORTH );
         add( southWidget, DockPanel.SOUTH );
@@ -97,6 +96,8 @@ public class SymbaControllerPanel extends DockPanel {
     public void setCenterWidgetAsEditExperiment() {
         EditInvestigationTable table = new EditInvestigationTable( this, rpcService, contacts );
         setCenterWidget( table );
+        showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
+                "Do not upload more files until the files you have selected have completed.</em>" );
     }
 
     public void hideEastWidget() {
@@ -106,12 +107,39 @@ public class SymbaControllerPanel extends DockPanel {
         }
     }
 
-    public void showEastWidget() {
+    /**
+     * Adds or updates the east widget. First, you change the status and the directions as appropriate.
+     * Then, if the east widget is not yet visible, make it visible.
+     *
+     * @param htmlStatus the html status to display in the East panel.
+     * @param htmlDirections the directions for symba at this point in time.
+     */
+    public void showEastWidget( String htmlStatus, String htmlDirections ) {
+        eastWidget.setStatus( htmlStatus );
+        eastWidget.setDirections( htmlDirections );
         if ( !eastSet ) {
             add( eastWidget, DockPanel.EAST );
             // set default east panel width
             eastWidget.setWidth( "20em" );
+            eastSet = true;
         }
-        eastSet = true;
+    }
+
+    /**
+     * This helper method allows you to access the status message without having to know what class type
+     * is sitting in the East panel.
+     * @return the current status message (may be an empty string).
+     */
+    public String getEastWidgetStatusMessage( ) {
+        return eastWidget.getStatusMessage();
+    }
+
+    /**
+     * This helper method allows you to access the current directions without having to know what class type
+     * is sitting in the East panel.
+     * @return the current directions (may be an empty string).
+     */
+    public String getEastWidgetDirections( ) {
+        return eastWidget.getDirections();
     }
 }

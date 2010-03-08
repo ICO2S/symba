@@ -1,6 +1,7 @@
 package net.sourceforge.symba.web.client.gui.panel;
 
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.gui.InputValidator;
@@ -16,9 +17,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
     private final TextBox providerIdBox;
     private final ListBox fullNameBox;
 
-    private final HorizontalPanel investigationIdPanel;
     private final HorizontalPanel investigationTitlePanel;
-    private final HorizontalPanel providerIdPanel;
     private final HorizontalPanel contactPanel;
 
     private final HashMap<String, Contact> contacts;
@@ -32,9 +31,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
         providerIdBox = new TextBox();
         fullNameBox = new ListBox();
 
-        investigationIdPanel = new HorizontalPanel();
         investigationTitlePanel = new HorizontalPanel();
-        providerIdPanel = new HorizontalPanel();
         contactPanel = new HorizontalPanel();
 
         this.rpcService = rpcService;
@@ -97,17 +94,9 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
      */
     public void createReadableDisplay( Investigation investigation ) {
 
-        setupDetailPanel( investigationIdPanel, investigationIdBox, "Investigation ID (temp): ",
-                investigation.getId(), investigation.isTemplate() );
-        add( investigationIdPanel );
-
         setupDetailPanel( investigationTitlePanel, investigationTitleBox, "Investigation Title: ",
                 investigation.getInvestigationTitle(), investigation.isTemplate() );
         add( investigationTitlePanel );
-
-        setupDetailPanel( providerIdPanel, providerIdBox, "Provider ID (temp): ", investigation.getProvider().getId(),
-                investigation.isTemplate() );
-        add( providerIdPanel );
 
         setupProviderNameDetailPanel( investigation.getProvider().getFullName(),
                 investigation.getProvider().getEmailAddress(), investigation.isTemplate() );
@@ -252,41 +241,43 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
         // there must be a nonzero value in every non-contact field (the contact behaviour is dealt with elsewhere, in
         // the ContactPopupPanel. Check each one, returning if any are empty
         String emptyValues = "\n";
-        if ( investigationIdPanel.getWidget( 1 ) instanceof TextBox &&
-                investigationIdBox.getText().trim().length() == 0 ) {
-            emptyValues += "identifier\n";
-        }
         if ( investigationTitlePanel.getWidget( 1 ) instanceof TextBox &&
                 investigationTitleBox.getText().length() == 0 ) {
             emptyValues += "title of investigation\n";
-        }
-        if ( providerIdPanel.getWidget( 1 ) instanceof TextBox && providerIdBox.getText().trim().length() == 0 ) {
-            emptyValues += "provider identifier\n";
         }
         return emptyValues;
     }
 
     public void updateModifiedDetails( Investigation investigation ) {
 
-        if ( investigationIdPanel.getWidget( 1 ) instanceof TextBox && investigationIdBox.getText().length() > 0 ) {
-            investigation.setId( investigationIdBox.getText() );
-        }
         if ( investigationTitlePanel.getWidget( 1 ) instanceof TextBox &&
                 investigationTitleBox.getText().length() > 0 ) {
             investigation.setInvestigationTitle( investigationTitleBox.getText() );
         }
-        if ( providerIdPanel.getWidget( 1 ) instanceof TextBox && providerIdBox.getText().length() > 0 ) {
-            investigation.getProvider().setId( providerIdBox.getText() );
-        }
-        // the contact will be identical if it is still in read-only mode. However, it may be new if there is a
-        // ListBox there. If so, assign the provider to the contact whose ID is in the getValue() of the ListBox's
-        // getSelectedIndex().
+        // Assign the provider to the contact whose ID is in the getValue() of the ListBox's getSelectedIndex().
+        // Otherwise, it is a read-only label. Unless it is a new contact, this label will already have been stored
+        // in the investigation. Store the contact either way. The information on the read-only contact
+        // will be present in the fullNameBox anyway.
+        String selected = "";
         if ( contactPanel.getWidget( 1 ) instanceof ListBox ) {
-            Contact chosen = contacts.get( fullNameBox.getValue( fullNameBox.getSelectedIndex() ) );
+            selected = fullNameBox.getValue( fullNameBox.getSelectedIndex() );
+        } else if ( contactPanel.getWidget( 1 ) instanceof Label ) {
+            // search the ListBox for a matching item value
+            for ( int iii = 0; iii < fullNameBox.getItemCount(); iii++ ) {
+                if ( fullNameBox.getItemText( iii ).equals( ( ( Label ) contactPanel.getWidget( 1 ) ).getText() ) ) {
+                    selected = fullNameBox.getValue( iii );
+                    break;
+                }
+            }
+        }
+        Contact chosen = contacts.get( selected );
+        if ( chosen != null ) {
             investigation.getProvider().setId( chosen.getId() );
             investigation.getProvider().setFirstName( chosen.getFirstName() );
             investigation.getProvider().setLastName( chosen.getLastName() );
             investigation.getProvider().setEmailAddress( chosen.getEmailAddress() );
+        } else {
+            Window.alert( "Error updating the provider information for this investigation." );
         }
     }
 }

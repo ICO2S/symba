@@ -82,7 +82,7 @@ public class ContactPopupPanel extends PopupPanel {
 
             saveButton.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
-                    doSave( contacts, callingPanel, firstBox.getText(), lastBox.getText(), emailBox.getText() );
+                    doSave( contacts, callingPanel, firstBox, lastBox, emailBox.getText() );
                 }
             } );
 
@@ -90,15 +90,15 @@ public class ContactPopupPanel extends PopupPanel {
 
         private String doSave( final HashMap<String, Contact> contacts,
                                final ReadWriteDetailsPanel callingPanel,
-                               String first,
-                               String last,
+                               TextBox first,
+                               TextBox last,
                                String email ) {
 
             String emptyValues = "";
-            if ( first == null || first.trim().length() == 0 ) {
+            if ( first.getText().trim().length() == 0 ) {
                 emptyValues += "First name\n";
             }
-            if ( last == null || last.trim().length() == 0 ) {
+            if ( last.getText().trim().length() == 0 ) {
                 emptyValues += "Last name\n";
             }
             if ( email == null || email.trim().length() == 0 ) {
@@ -112,13 +112,23 @@ public class ContactPopupPanel extends PopupPanel {
             // otherwise, it's OK to save the contact
             final Contact contact = new Contact();
             contact.createId();
-            contact.setFirstName( first );
-            contact.setLastName( last );
+            contact.setFirstName( first.getText().trim() );
+            contact.setLastName( last.getText().trim() );
             contact.setEmailAddress( email );
+
+            // basic validation: check that the full name isn't already in the contact list
+            for ( String key : contacts.keySet() ) {
+                if ( contacts.get( key ).getFullName().equals( contact.getFullName() ) ) {
+                    Window.alert( "You may not use the name of an existing contact to create a new contact" );
+                    InputValidator.setWarning( first );
+                    InputValidator.setWarning( last );
+                    return "";
+                }
+            }
 
             rpcService.addContact( contact, new AsyncCallback<HashMap<String, Contact>>() {
                 public void onFailure( Throwable caught ) {
-                    Window.alert( "Failed to store contact: " + contact.getFullName() + "\n" + caught.getMessage());
+                    Window.alert( "Failed to store contact: " + contact.getFullName() + "\n" + caught.getMessage() );
                 }
 
                 public void onSuccess( HashMap<String, Contact> result ) {
@@ -127,6 +137,7 @@ public class ContactPopupPanel extends PopupPanel {
                     callingPanel.populateNameListBox();
                     callingPanel
                             .setupProviderNameDetailPanel( contact.getFullName(), contact.getEmailAddress(), false );
+                    hide();
                 }
             } );
 

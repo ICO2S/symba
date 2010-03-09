@@ -7,7 +7,10 @@ import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.gui.EditInvestigationTable;
 import net.sourceforge.symba.web.client.gui.SymbaHeader;
 import net.sourceforge.symba.web.shared.Contact;
+import net.sourceforge.symba.web.shared.Investigation;
+import net.sourceforge.symba.web.shared.InvestigationDetail;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SymbaControllerPanel extends DockPanel {
@@ -22,6 +25,9 @@ public class SymbaControllerPanel extends DockPanel {
 
     // Store all current contacts in a central location so all other panels have access to it.
     private HashMap<String, Contact> contacts;
+
+    // Store all current investigations in a central location so all other panels have access to it.
+    private ArrayList<InvestigationDetail> investigationDetails;
 
     // The type of the Widget in the center panel might change
     private Widget centerWidget;
@@ -64,6 +70,20 @@ public class SymbaControllerPanel extends DockPanel {
             }
         } );
 
+        rpcService.getInvestigationDetails( new AsyncCallback<ArrayList<InvestigationDetail>>() {
+            public void onSuccess( ArrayList<InvestigationDetail> result ) {
+                investigationDetails = result;
+            }
+
+            public void onFailure( Throwable caught ) {
+                Window.alert( "Error fetching investigation list: " + caught.getMessage() );
+            }
+        } );
+
+    }
+
+    public Widget getNorthWidget() {
+        return northWidget;
     }
 
     public Widget getSouthWidget() {
@@ -141,5 +161,17 @@ public class SymbaControllerPanel extends DockPanel {
      */
     public String getEastWidgetDirections( ) {
         return eastWidget.getDirections();
+    }
+
+    public ArrayList<InvestigationDetail> getInvestigationDetails() {
+        return investigationDetails;
+    }
+
+    public void setInvestigationDetails( ArrayList<InvestigationDetail> investigationDetails ) {
+        this.investigationDetails = investigationDetails;
+    }
+
+    public InvestigationsServiceAsync getRpcService() {
+        return rpcService;
     }
 }

@@ -38,7 +38,7 @@ public class SymbaHeader extends HorizontalPanel {
         homeImage.addClickHandler( new CancelAllClickHandler( dock, home ) );
         homeImage.addMouseOverHandler( new MouseOverHandler() {
             public void onMouseOver( MouseOverEvent event ) {
-                homeImage.addStyleName( "image-pointer-enter" );
+                homeImage.addStyleName( "pointer-select" );
             }
         } );
         add( homeImage );
@@ -55,7 +55,7 @@ public class SymbaHeader extends HorizontalPanel {
         addExpImage.addClickHandler( new AddExperimentClickHandler( dock ) );
         addExpImage.addMouseOverHandler( new MouseOverHandler() {
             public void onMouseOver( MouseOverEvent event ) {
-                addExpImage.addStyleName( "image-pointer-enter" );
+                addExpImage.addStyleName( "pointer-select" );
             }
         } );
         rightSide.add( addExpImage );
@@ -66,7 +66,7 @@ public class SymbaHeader extends HorizontalPanel {
         listExpImage.addClickHandler( new ListExperimentsClickHandler( dock ) );
         listExpImage.addMouseOverHandler( new MouseOverHandler() {
             public void onMouseOver( MouseOverEvent event ) {
-                listExpImage.addStyleName( "image-pointer-enter" );
+                listExpImage.addStyleName( "pointer-select" );
             }
         } );
         rightSide.add( listExpImage );
@@ -77,7 +77,7 @@ public class SymbaHeader extends HorizontalPanel {
         downloadFileImage.addClickHandler( new CancelAllClickHandler( dock, home ) );
         downloadFileImage.addMouseOverHandler( new MouseOverHandler() {
             public void onMouseOver( MouseOverEvent event ) {
-                downloadFileImage.addStyleName( "image-pointer-enter" );
+                downloadFileImage.addStyleName( "pointer-select" );
             }
         } );
         rightSide.add( downloadFileImage );

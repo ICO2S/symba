@@ -18,9 +18,20 @@ public class ContactPopupPanel extends PopupPanel {
     public ContactPopupPanel( HashMap<String, Contact> contacts,
                               final ReadWriteDetailsPanel callingPanel,
                               InvestigationsServiceAsync rpcService ) {
-        super( true );
+        super( true ); // set auto-hide property
 
         setWidget( new AddContactPanel( contacts, callingPanel, rpcService ) );
+
+        // set the position to the center of the window
+        setPopupPositionAndShow( new PopupPanel.PositionCallback() {
+            public void setPosition( int offsetWidth,
+                                     int offsetHeight ) {
+                int left = (Window.getClientWidth() - offsetWidth) / 2;
+                int top = (Window.getClientHeight() - offsetHeight) / 2;
+                setPopupPosition( left, top );
+            }
+        } );
+        
     }
 
     private class AddContactPanel extends VerticalPanel {
@@ -59,6 +70,8 @@ public class ContactPopupPanel extends PopupPanel {
             add( last );
             add( email );
             add( save );
+
+            add( new Label( "(Click outside the box to cancel and close.)" ) );            
 
             // all handlers
 

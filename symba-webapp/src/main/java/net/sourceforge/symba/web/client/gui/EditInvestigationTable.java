@@ -290,10 +290,7 @@ public class EditInvestigationTable extends FlexTable {
                             buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
                         }
                         clearModifiable();
-                        // todo
-//                        investigatePanel.setInvestigationDetails( results );
-//                        investigatePanel.sortInvestigationDetails();
-//                        investigatePanel.setViewData();
+                        symba.setInvestigationDetails( results );
                         symba.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>", "" ) ;
                     }
                 } );
@@ -343,7 +340,6 @@ public class EditInvestigationTable extends FlexTable {
                     saveButton.setEnabled( false );
                     setAsTemplateButton.setEnabled( false );
                     saveCopyAsTemplateButton.setEnabled( false );
-                    cancelButton.setEnabled( false );
                     addSubStepButton.setEnabled( false );
                 } else {
                     // we need the "else" here if a template was previously shown, and therefore buttons were
@@ -351,9 +347,9 @@ public class EditInvestigationTable extends FlexTable {
                     saveButton.setEnabled( true );
                     setAsTemplateButton.setEnabled( true );
                     saveCopyAsTemplateButton.setEnabled( true );
-                    cancelButton.setEnabled( true );
                     addSubStepButton.setEnabled( true );
                 }
+                cancelButton.setEnabled( true );
 
                 displaySteps();
             }
@@ -554,10 +550,7 @@ public class EditInvestigationTable extends FlexTable {
                 final String title = investigation.getInvestigationTitle();
                 final String id = investigation.getId();
                 clearModifiable();
-                // todo
-//                investigatePanel.setInvestigationDetails( updatedDetails );
-//                investigatePanel.sortInvestigationDetails();
-//                investigatePanel.setViewData();
+                symba.setInvestigationDetails( updatedDetails );
                 symba.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
 
                 if ( makeTemplate ) {
@@ -641,7 +634,6 @@ public class EditInvestigationTable extends FlexTable {
                     url + ")" );
             warning.setTitle( "Not in scripting mode. You have to deploy the app to an application server! (" +
                     url + ")" );
-            // todo
             setWidget( contentTableRowCount++, 0, warning );
             return;
         }
@@ -653,7 +645,6 @@ public class EditInvestigationTable extends FlexTable {
         tempPanel.add( bt );
         HTML bt2 = new HTML( "<span id=\"uploadToNewStep-button\" />" );
         tempPanel.add( bt2 );
-        // todo
         setWidget( contentTableRowCount++, 0, tempPanel );
 
         setupExistingStepBuilder( baseApp, url );

@@ -48,7 +48,7 @@ BODY {
 }
 
 /* Change the following 2 styles to change the mouse looks when hovering over clickable images and when leaving those images */
-.image-pointer-enter {
+.pointer-select {
     cursor: pointer;
 }
 

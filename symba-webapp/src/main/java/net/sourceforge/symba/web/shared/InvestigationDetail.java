@@ -36,6 +36,10 @@ public class InvestigationDetail implements Serializable {
         this.provider = contactDetails;
     }
 
+    public boolean isTemplate() {
+        return template;
+    }
+
     public String getId() { return id; }
 
     public String getInvestigationTitle() { return investigationTitle; }

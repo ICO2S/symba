@@ -1,8 +1,26 @@
-BODY {
-    width: 100%;
-    margin: 5px;
+/* Add some settings for all HTML objects in the application */
+.gwt-HTML {
+    font-family: verdana, arial, helvetica, sans-serif;
 }
 
+/* Add some settings for all Hyperlink objects in the application */
+.gwt-Hyperlink {
+    font-family: verdana, arial, helvetica, sans-serif;
+}
+
+/* Add some settings for all Hyperlink objects in the application */
+.gwt-ListBox {
+    font-family: verdana, arial, helvetica, sans-serif;
+}
+
+/* Add some settings for all Label objects in the application */
+.gwt-Label {
+    font-family: verdana, arial, helvetica, sans-serif;
+}
+
+.metadata-style {
+    white-space: pre;    
+}
 .note {
     width: 90%;
     text-align: center;
@@ -17,6 +35,11 @@ BODY {
     font-weight: bold;
 }
 
+/* The style for showing a template inside a Summary view (either ListBox based or Table based */ 
+.summarise-template {
+    font-style: italic;
+}
+
 .experiment-EvenStep {
     background-color: #FFFFFF;
 }
@@ -27,8 +50,7 @@ BODY {
 }
 
 .cell-modified {
-    border-radius: 5px;
-    /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
+    border-radius: 5px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
     -moz-border-radius: 5px;
     border: solid 1px forestgreen;
     background-color: #EBFFEB;
@@ -63,8 +85,7 @@ BODY {
 /* Header styles */
 .header-style {
     border: solid 1px black;
-    border-radius: 10px;
-    /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
+    border-radius: 10px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
     -moz-border-radius: 10px;
     width: 100%;
 }
@@ -80,7 +101,7 @@ BODY {
 
 /* Footer styles */
 
-/* Width should match that of .header-style */ 
+/* Width should match that of .header-style */
 .footer-style {
     width: 100%;
 }

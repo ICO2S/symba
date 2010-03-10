@@ -13,9 +13,9 @@ import net.sourceforge.symba.web.shared.Contact;
 
 import java.util.HashMap;
 
-public class ContactPopupPanel extends PopupPanel {
+public class ContactPopup extends PopupPanel {
 
-    public ContactPopupPanel( HashMap<String, Contact> contacts,
+    public ContactPopup( HashMap<String, Contact> contacts,
                               final ReadWriteDetailsPanel callingPanel,
                               InvestigationsServiceAsync rpcService ) {
         super( true ); // set auto-hide property

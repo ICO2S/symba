@@ -9,12 +9,12 @@ import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 import java.util.ArrayList;
 
 
-public class ReadableStepPanel extends VerticalPanel {
+public class ReadableStepView extends VerticalPanel {
     private String stepTitle;
     private ArrayList<String> fileNames;
     private ReadableStepParameterTable parameterTable;
 
-    public ReadableStepPanel(
+    public ReadableStepView(
             String stepTitle,
             ArrayList<String> fileNames,
             ArrayList<ExperimentParameter> parameters,

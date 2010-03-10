@@ -209,7 +209,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
     }
 
     private void startContactPopupPanel() {
-        ContactPopupPanel panel = new ContactPopupPanel( contacts, this, rpcService );
+        ContactPopup panel = new ContactPopup( contacts, this, rpcService );
         panel.show();
     }
 
@@ -239,7 +239,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
     public String makeErrorMessages() {
 
         // there must be a nonzero value in every non-contact field (the contact behaviour is dealt with elsewhere, in
-        // the ContactPopupPanel. Check each one, returning if any are empty
+        // the ContactPopup. Check each one, returning if any are empty
         String emptyValues = "\n";
         if ( investigationTitlePanel.getWidget( 1 ) instanceof TextBox &&
                 investigationTitleBox.getText().length() == 0 ) {

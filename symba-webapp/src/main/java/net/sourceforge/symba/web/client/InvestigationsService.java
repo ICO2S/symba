@@ -29,4 +29,6 @@ public interface InvestigationsService extends RemoteService {
     HashMap<String, Contact> getAllContacts();
 
     HashMap<String, Contact> addContact( Contact contact );
+
+    String getMetadata(String id);
 }

@@ -28,7 +28,7 @@ public class EditInvestigationTable extends FlexTable {
     // todo refactor this class to make it easier to read
 
     private final InvestigationsServiceAsync rpcService;
-    private final SymbaControllerPanel symba;
+    private final SymbaController symba;
     private final String toNewStepImageUrl = "/images/toNewStep70w76h.png";
     private final String toExistingStepImageUrl = "/images/toExistingStep70w52h.png";
     private HashMap<String, Integer> fileIdToRow;
@@ -47,7 +47,7 @@ public class EditInvestigationTable extends FlexTable {
 
     private FlexTable stepsTable;
     private final ReadWriteDetailsPanel readWriteDetailsPanel;
-    private EditableStepPanel editableStepPanel;
+    private EditableStepView editableStepView;
 
     private int contentTableRowCount;
     private Investigation investigation;
@@ -79,7 +79,7 @@ public class EditInvestigationTable extends FlexTable {
      * @param rpcService the service to use to call the GWT server side
      * @param contacts   the contacts that are to be passed to the main panel
      */
-    public EditInvestigationTable( SymbaControllerPanel symba,
+    public EditInvestigationTable( SymbaController symba,
                                    InvestigationsServiceAsync rpcService,
                                    HashMap<String, Contact> contacts ) {
 
@@ -174,8 +174,8 @@ public class EditInvestigationTable extends FlexTable {
         contentTableRowCount = 0;
         selectedRadioRow = -1;
 
-        // cannot initialise an EditableStepPanel or ReadableStepPanel until we have rows and columns
-        editableStepPanel = null;
+        // cannot initialise an EditableStepView or ReadableStepView until we have rows and columns
+        editableStepView = null;
 
         stepsTable = new FlexTable();
 
@@ -413,10 +413,10 @@ public class EditInvestigationTable extends FlexTable {
 
             ClickHandler myEditableHandler = new makeEditableHandler( rowValue,
                     depth + ActionType.SELECT.getValue() + 1 );
-            ReadableStepPanel readableStepPanel = new ReadableStepPanel(
+            ReadableStepView readableStepView = new ReadableStepView(
                     holder.getCurrent().getTitle(),
                     holder.getCurrent().getFileNames(), holder.getCurrent().getParameters(), myEditableHandler );
-            stepsTable.setWidget( rowValue, depth + ActionType.SELECT.getValue() + 1, readableStepPanel );
+            stepsTable.setWidget( rowValue, depth + ActionType.SELECT.getValue() + 1, readableStepView );
 
             // make just this cell a different style if it has been modified
             if ( holder.isModified() ) {
@@ -614,15 +614,15 @@ public class EditInvestigationTable extends FlexTable {
             // no previously-editable fields, or there is an editable field that has not yet been reset to read only.
             // use the previously-stored coordinates and set them to read-only.
 
-            if ( editableStepPanel != null ) {
-                editableStepPanel.setReadOnly( stepsTable );
-                editableStepPanel = null;
+            if ( editableStepView != null ) {
+                editableStepView.setReadOnly( stepsTable );
+                editableStepView = null;
             }
 
-            ReadableStepPanel readable = ( ReadableStepPanel ) stepsTable.getWidget( row, column );
-            editableStepPanel = new EditableStepPanel( readable, stepsTable, investigation, row, column,
+            ReadableStepView readable = ( ReadableStepView ) stepsTable.getWidget( row, column );
+            editableStepView = new EditableStepView( readable, stepsTable, investigation, row, column,
                     new makeEditableHandler( row, column ) );
-            stepsTable.setWidget( row, column, editableStepPanel );
+            stepsTable.setWidget( row, column, editableStepView );
 
         }
     }

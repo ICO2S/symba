@@ -11,7 +11,7 @@ import net.sourceforge.symba.web.shared.InvestigationDetail;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SymbaControllerPanel extends DockPanel {
+public class SymbaController extends DockPanel {
 
     private static final String DEFAULT_EAST_WIDTH = "20em";
     private final InvestigationsServiceAsync rpcService;
@@ -34,7 +34,7 @@ public class SymbaControllerPanel extends DockPanel {
      *
      * @param rpcService the service to use to connect to the data storage
      */
-    public SymbaControllerPanel( InvestigationsServiceAsync rpcService ) {
+    public SymbaController( InvestigationsServiceAsync rpcService ) {
 
         this.rpcService = rpcService;
 

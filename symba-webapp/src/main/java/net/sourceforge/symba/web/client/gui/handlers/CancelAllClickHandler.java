@@ -3,13 +3,13 @@ package net.sourceforge.symba.web.client.gui.handlers;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
-import net.sourceforge.symba.web.client.gui.panel.SymbaControllerPanel;
+import net.sourceforge.symba.web.client.gui.panel.SymbaController;
 
 public class CancelAllClickHandler implements ClickHandler {
-    private final SymbaControllerPanel dock;
+    private final SymbaController dock;
     private final Widget replacement;
 
-    public CancelAllClickHandler( SymbaControllerPanel dock,
+    public CancelAllClickHandler( SymbaController dock,
                                   Widget replacement ) {
         this.dock = dock;
         this.replacement = replacement;

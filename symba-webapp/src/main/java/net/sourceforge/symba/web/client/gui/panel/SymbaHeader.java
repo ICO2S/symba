@@ -6,9 +6,8 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.gui.handlers.AddExperimentClickHandler;
 import net.sourceforge.symba.web.client.gui.handlers.CancelAllClickHandler;
+import net.sourceforge.symba.web.client.gui.handlers.DownloadClickHandler;
 import net.sourceforge.symba.web.client.gui.handlers.ListExperimentsClickHandler;
-import net.sourceforge.symba.web.client.gui.panel.HomePanel;
-import net.sourceforge.symba.web.client.gui.panel.SymbaControllerPanel;
 
 public class SymbaHeader extends HorizontalPanel {
 
@@ -17,7 +16,7 @@ public class SymbaHeader extends HorizontalPanel {
     private static final String LIST_EXPERIMENT = "/images/article.png";
     private static final String DOWNLOAD_FILE = "/images/arrow_down.png";
 
-    public SymbaHeader( SymbaControllerPanel dock,
+    public SymbaHeader( SymbaController dock,
                         HomePanel home ) {
 
         addStyleName( "header-style" );
@@ -75,10 +74,9 @@ public class SymbaHeader extends HorizontalPanel {
         rightSide.add( listExpImage );
 
         final Image downloadFileImage = new Image( prefix + DOWNLOAD_FILE );
-        // todo correct functionality
-        downloadFileImage.setTitle( "Download a Data File" );
+        downloadFileImage.setTitle( "Download a Data or Metadata File" );
         downloadFileImage.addStyleName( "header-images");
-        downloadFileImage.addClickHandler( new CancelAllClickHandler( dock, home ) );
+        downloadFileImage.addClickHandler( new DownloadClickHandler( dock ) );
         downloadFileImage.addMouseOverHandler( new MouseOverHandler() {
             public void onMouseOver( MouseOverEvent event ) {
                 downloadFileImage.addStyleName( "pointer-select" );

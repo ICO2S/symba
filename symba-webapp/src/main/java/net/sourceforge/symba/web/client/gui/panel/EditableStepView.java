@@ -12,14 +12,14 @@ import java.util.ArrayList;
  * This class holds all information for the current placement of the editable step, and for the values and
  * display structures present therein.
  */
-public class EditableStepPanel extends VerticalPanel {
+public class EditableStepView extends VerticalPanel {
     private int editableRow, editableColumn;
     private TextBox stepTitle;
     private ArrayList<String> fileNames;
     private EditableStepParameterTable parameterTable;
     private ClickHandler myEditableHandler;
 
-    public EditableStepPanel( ReadableStepPanel readablePanel,
+    public EditableStepView( ReadableStepView readableView,
                               final FlexTable tableToAddTo,
                               final Investigation investigationToAddTo,
                               int row,
@@ -30,10 +30,10 @@ public class EditableStepPanel extends VerticalPanel {
         this.editableRow = row;
         this.editableColumn = column;
         stepTitle = new TextBox();
-        stepTitle.setText( readablePanel.getStepTitle() );
+        stepTitle.setText( readableView.getStepTitle() );
 
-        fileNames = readablePanel.getFileNames();
-        parameterTable = new EditableStepParameterTable( readablePanel.getParameterTable() );
+        fileNames = readableView.getFileNames();
+        parameterTable = new EditableStepParameterTable( readableView.getParameterTable() );
         Button addNewParameterButton = new Button( "Add Parameter" );
         addNewParameterButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
@@ -92,7 +92,7 @@ public class EditableStepPanel extends VerticalPanel {
         // here, the modification to the experiment marked with "isModified" is inaccessible, so just check
         // that the value is different from what was in the
 
-        ReadableStepPanel readable = new ReadableStepPanel( getStepTitle().getValue(), getFileNames(),
+        ReadableStepView readable = new ReadableStepView( getStepTitle().getValue(), getFileNames(),
                 getParameterTable().getParameters(), myEditableHandler );
         tableToAddTo.setWidget( getEditableRow(), getEditableColumn(), readable );
     }
@@ -130,7 +130,7 @@ public class EditableStepPanel extends VerticalPanel {
         ArrayList<SingleParameterPanel> parameterPanels;
         int parameterRowCount;
 
-        private EditableStepParameterTable( ReadableStepPanel.ReadableStepParameterTable readable ) {
+        private EditableStepParameterTable( ReadableStepView.ReadableStepParameterTable readable ) {
             parameters = new ArrayList<ExperimentParameter>();
             parameterPanels = new ArrayList<SingleParameterPanel>();
             parameterRowCount = 0;

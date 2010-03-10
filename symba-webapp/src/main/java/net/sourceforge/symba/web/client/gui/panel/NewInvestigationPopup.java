@@ -8,9 +8,9 @@ import net.sourceforge.symba.web.client.gui.EditInvestigationTable;
 import net.sourceforge.symba.web.client.gui.SummariseInvestigationView;
 import net.sourceforge.symba.web.client.gui.handlers.ListExperimentsClickHandler;
 
-public class NewInvestigationPopupPanel extends PopupPanel {
+public class NewInvestigationPopup extends PopupPanel {
 
-    public NewInvestigationPopupPanel( final SymbaControllerPanel symba ) {
+    public NewInvestigationPopup( final SymbaController symba ) {
         super( true ); // set auto-hide property
         setWidget( new ChoicesPanel( symba, this ) );
 
@@ -26,8 +26,8 @@ public class NewInvestigationPopupPanel extends PopupPanel {
     }
 
     private class ChoicesPanel extends VerticalPanel {
-        public ChoicesPanel( final SymbaControllerPanel symba,
-                             NewInvestigationPopupPanel parentPanel ) {
+        public ChoicesPanel( final SymbaController symba,
+                             NewInvestigationPopup parentPanel ) {
             add( new HTML( "<h2>Would you like to...</h2>" ) );
 
             Label label = new Label( "...create a brand-new Investigation?" );
@@ -47,8 +47,7 @@ public class NewInvestigationPopupPanel extends PopupPanel {
             HorizontalPanel existing = new HorizontalPanel();
             Label existingLabel = new Label( "...make a copy of an existing Investigation?" );
             existing.add( existingLabel );
-            SummariseInvestigationView view = new SummariseInvestigationView( symba, symba.getRpcService(), true,
-                    parentPanel );
+            SummariseInvestigationView view = new SummariseInvestigationView( symba, SummariseInvestigationView.ViewType.COPY_CHOSEN, parentPanel );
             view.setInvestigationDetails( symba.getInvestigationDetails() );
             existing.add( view );
 

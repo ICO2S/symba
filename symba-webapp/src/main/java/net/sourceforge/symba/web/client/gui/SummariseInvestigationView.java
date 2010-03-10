@@ -6,18 +6,22 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
-import net.sourceforge.symba.web.client.gui.panel.SymbaControllerPanel;
+import net.sourceforge.symba.web.client.gui.panel.MetadataViewer;
+import net.sourceforge.symba.web.client.gui.panel.SymbaController;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SummariseInvestigationView extends FlexTable {
-    private final InvestigationsServiceAsync rpcService;
-    private final SymbaControllerPanel symba;
-    private PopupPanel popup = null;
+    public static enum ViewType {
+        EXTENDED, COPY_CHOSEN, DISPLAY_CHOSEN_METADATA
+    }
 
-    private final boolean copyOnly;
+    private final ViewType viewType;
+    private final InvestigationsServiceAsync rpcService;
+    private final SymbaController symba;
+    private PopupPanel popup = null;
 
     private final Button copyButton;
     private final Button deleteButton;
@@ -25,41 +29,40 @@ public class SummariseInvestigationView extends FlexTable {
     private FlexTable investigationsTable;
     private ListBox investigationsListBox;
     private List<InvestigationDetail> investigationDetails;
-    // todo only retrieve contacts less often
 
     /**
      * If a popup is passed, then we should also hide the popup on completion of the click handling.
      *
-     * @param symba      the controller panel
-     * @param rpcService the service to connect to the data storage medium
-     * @param copyOnly   whether or not to present the copy-only view
-     * @param popup      the popup to hide
+     * @param symba    the controller panel
+     * @param viewType which view to display
+     * @param popup    the popup to hide
      */
-    public SummariseInvestigationView( SymbaControllerPanel symba,
-                                       InvestigationsServiceAsync rpcService,
-                                       boolean copyOnly,
+    public SummariseInvestigationView( SymbaController symba,
+                                       ViewType viewType,
                                        PopupPanel popup ) {
-        this( symba, rpcService, copyOnly );
+        this( symba, viewType );
         this.popup = popup;
     }
 
-    public SummariseInvestigationView( SymbaControllerPanel symba,
-                                       InvestigationsServiceAsync rpcService,
-                                       boolean copyOnly ) {
-        this.rpcService = rpcService;
+    public SummariseInvestigationView( SymbaController symba,
+                                       ViewType viewType ) {
         this.symba = symba;
-        this.copyOnly = copyOnly;
+        this.rpcService = this.symba.getRpcService();
+        this.viewType = viewType;
         copyButton = new Button( "Copy" );
         deleteButton = new Button( "Delete" );
 
         investigationsTable = new FlexTable();
         investigationsListBox = new ListBox();
 
-        if ( copyOnly ) {
+        if ( viewType == ViewType.COPY_CHOSEN ) {
             makeListBox();
-        } else {
+        } else if ( viewType == ViewType.EXTENDED ) {
             makeExpandedTable();
+        } else if ( viewType == ViewType.DISPLAY_CHOSEN_METADATA ) {
+            makeMetadataListBox();
         }
+
     }
 
     private void makeListBox() {
@@ -77,6 +80,27 @@ public class SummariseInvestigationView extends FlexTable {
                     selected = 0; // choose the first in the list if none have been selected yet
                 }
                 copyInvestigation( investigationsListBox.getValue( selected ) );
+            }
+        } );
+    }
+
+    private void makeMetadataListBox() {
+
+        setWidget( 0, 0, investigationsListBox );
+
+        // force the user to click the display button in order to display the metadata. This will reduce
+        // the number of unnecessary calls to the MetadataViewer.
+        Button chooseButton = new Button( "Display Investigation Metadata" );
+        setWidget( 0, 1, chooseButton );
+        chooseButton.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
+                int selected = investigationsListBox.getSelectedIndex();
+                if ( selected == -1 ) {
+                    selected = 0; // choose the first in the list if none have been selected yet
+                }
+                MetadataViewer viewer = new MetadataViewer( symba );
+                viewer.display( investigationsListBox.getValue( selected ) );
+                popup.hide();
             }
         } );
     }
@@ -152,7 +176,7 @@ public class SummariseInvestigationView extends FlexTable {
                         setViewData();
                         // change the main display to the newly-copied investigation if we are in the
                         // minimal copy-only view
-                        if ( copyOnly ) {
+                        if ( viewType == ViewType.COPY_CHOSEN ) {
                             symba.setCenterWidgetAsEditExperiment();
                             ( ( EditInvestigationTable ) symba.getCenterWidget() )
                                     .displayInvestigation( result.getId() );
@@ -232,7 +256,7 @@ public class SummariseInvestigationView extends FlexTable {
 
     public void setViewData() {
 
-        if ( copyOnly ) {
+        if ( viewType != ViewType.EXTENDED ) {
             // remove existing entries
             for ( int iii = 0; iii < investigationsListBox.getItemCount(); iii++ ) {
                 investigationsListBox.removeItem( iii );
@@ -241,7 +265,6 @@ public class SummariseInvestigationView extends FlexTable {
             for ( InvestigationDetail detail : investigationDetails ) {
                 investigationsListBox.addItem( detail.summarise().getHTML(), detail.getId() );
             }
-
         } else {
             investigationsTable.removeAllRows();
 

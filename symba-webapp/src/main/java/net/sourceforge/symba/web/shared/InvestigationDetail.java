@@ -56,8 +56,7 @@ public class InvestigationDetail implements Serializable {
     public HTML summarise() {
         HTML summary = new HTML( getInvestigationTitle() + " (provided by " + getProvider().getFullName() + ")" );
         if ( template ) {
-            // todo create proper css to describe templated text
-            summary.setHTML( "<em>" + summary + "</em>" );
+            summary.addStyleName( "summarise-template" );
         }
         summary.addStyleName( "clickable-text" );
         return summary;

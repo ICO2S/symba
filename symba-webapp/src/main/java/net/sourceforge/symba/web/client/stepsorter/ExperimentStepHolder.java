@@ -57,7 +57,7 @@ public class ExperimentStepHolder implements Serializable {
             step.createDatabaseId();
             current.addChild( step );
             setModified( true );
-            System.err.println( "Step found - adding to child. Now has #children = " + current.getChildren().size() );
+//            System.err.println( "Step found - adding to child. Now has #children = " + current.getChildren().size() );
             return true;
         }
 
@@ -91,7 +91,7 @@ public class ExperimentStepHolder implements Serializable {
         if ( stepId == selectedRow ) {
             current.getParameters().add( new ExperimentParameter( subject, predicate, objectValue, unit ) );
             setModified( true );
-            System.err.println( "Step found - adding parameter" );
+//            System.err.println( "Step found - adding parameter" );
             return true;
         }
 

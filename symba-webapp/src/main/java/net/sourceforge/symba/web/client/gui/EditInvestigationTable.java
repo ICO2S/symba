@@ -217,6 +217,7 @@ public class EditInvestigationTable extends FlexTable {
                     doSave();
                     setAsTemplate( id, title );
                 } else {
+                    // no need to keep any file statuses at this point
                     symba.showEastWidget(
                             "<p>Saving as template cancelled.</p>", symba.getEastWidgetDirections() );
                 }
@@ -236,6 +237,7 @@ public class EditInvestigationTable extends FlexTable {
                 if ( response ) {
                     doSave( true );
                 } else {
+                    // no need to keep any file statuses at this point
                     symba.showEastWidget( "<p>Saving a copy as a template cancelled.</p>",
                             symba.getEastWidgetDirections() );
                 }
@@ -259,12 +261,15 @@ public class EditInvestigationTable extends FlexTable {
                 }
                 if ( investigation != null ) {
                     if ( investigation.getInvestigationTitle().length() > 0 ) {
+                        // no need to keep any file statuses at this point
                         symba.showEastWidget(
                                 "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
                                         "</strong> cancelled.</p>", symba.getEastWidgetDirections() );
                     } else {
+                        // no need to keep any file statuses at this point
                         symba.showEastWidget(
-                                "<p>Creation of new investigation cancelled.</p>", symba.getEastWidgetDirections() );
+                                "<p>Creation of new investigation cancelled.</p>", symba.getEastWidgetDirections()
+                        );
                     }
                 }
                 clearModifiable();
@@ -291,7 +296,9 @@ public class EditInvestigationTable extends FlexTable {
                         }
                         clearModifiable();
                         symba.setInvestigationDetails( results );
-                        symba.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>", "" ) ;
+                        // no need to keep any file statuses at this point
+                        symba.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>", ""
+                        );
                     }
                 } );
     }
@@ -674,16 +681,21 @@ public class EditInvestigationTable extends FlexTable {
         builder.setUploadProgressHandler( new UploadProgressHandler() {
 
             public void onUploadProgress( UploadProgressEvent e ) {
-                ( ( FlexTable ) symba.getSouthWidget() ).setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
-                        e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) + "%" ) );
-                ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                // ensure the east widget is visible using any current values
+                symba.showEastWidget();
+                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
+                        .setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
+                                e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) +
+                                        "%" ) );
+                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer yellow" );
             }
         } );
 
         builder.setUploadSuccessHandler( new UploadSuccessHandler() {
             public void onUploadSuccess( UploadSuccessEvent e ) {
-                ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                symba.showEastWidget();
+                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
 
             }
@@ -701,9 +713,10 @@ public class EditInvestigationTable extends FlexTable {
                 removeFile( e.getFile().getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
-                    ( ( FlexTable ) symba.getSouthWidget() )
+                    symba.showEastWidget();
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
                             .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonTwo.startUpload( id );
                 }
@@ -718,9 +731,10 @@ public class EditInvestigationTable extends FlexTable {
                 removeFile( f.getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
-                    ( ( FlexTable ) symba.getSouthWidget() )
+                    symba.showEastWidget();
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
                             .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonTwo.startUpload( id );
                 }
@@ -738,7 +752,8 @@ public class EditInvestigationTable extends FlexTable {
 //                ((FlexTable) symba.getSouthWidget()).setHTML( wrapInFileQueueStyle( "", "files = " + files.size() ) );
                 if ( files.size() > 0 ) {
                     // reset table variables
-                    ( ( FlexTable ) symba.getSouthWidget() ).removeAllRows();
+                    symba.showEastWidget();
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().removeAllRows();
                     fileIdToRow = new HashMap<String, Integer>();
                     int fileIdToRowCount = 0;
                     // fill in fileIdToRow
@@ -747,9 +762,9 @@ public class EditInvestigationTable extends FlexTable {
                     }
                     // next, set the value in the appropriate table row.
                     String id = files.get( 0 ).getId();
-                    ( ( FlexTable ) symba.getSouthWidget() )
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
                             .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() + ": 0%" ) );
-                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonTwo.startUpload( id );
                 }
@@ -780,16 +795,18 @@ public class EditInvestigationTable extends FlexTable {
         builder.setUploadProgressHandler( new UploadProgressHandler() {
 
             public void onUploadProgress( UploadProgressEvent e ) {
-                ( ( FlexTable ) symba.getSouthWidget() ).setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
+                symba.showEastWidget();
+                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
                         e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) + "%" ) );
-                ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer yellow" );
             }
         } );
 
         builder.setUploadSuccessHandler( new UploadSuccessHandler() {
             public void onUploadSuccess( UploadSuccessEvent e ) {
-                ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                symba.showEastWidget();
+                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
 
                 // now assign this file to the appropriate experimental step
@@ -800,7 +817,8 @@ public class EditInvestigationTable extends FlexTable {
 
         builder.setUploadErrorHandler( new UploadErrorHandler() {
             public void onUploadError( UploadErrorEvent e ) {
-                ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                symba.showEastWidget();
+                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer red" );
                 String message = e.getMessage();
                 if ( message == null || message.trim().length() == 0 ) {
@@ -812,9 +830,9 @@ public class EditInvestigationTable extends FlexTable {
                 removeFile( e.getFile().getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
-                    ( ( FlexTable ) symba.getSouthWidget() )
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
                             .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonOne.startUpload( id );
                 }
@@ -829,9 +847,10 @@ public class EditInvestigationTable extends FlexTable {
                 removeFile( f.getId() );
                 if ( files.size() > 0 ) {
                     String id = files.get( 0 ).getId();
-                    ( ( FlexTable ) symba.getSouthWidget() )
+                    symba.showEastWidget();
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
                             .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonOne.startUpload( id );
                 }
@@ -853,8 +872,9 @@ public class EditInvestigationTable extends FlexTable {
         builder.setFileDialogCompleteHandler( new FileDialogCompleteHandler() {
             public void onFileDialogComplete( FileDialogCompleteEvent e ) {
                 if ( files.size() > 0 ) {
+                    symba.showEastWidget();
                     // reset table variables
-                    ( ( FlexTable ) symba.getSouthWidget() ).removeAllRows();
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().removeAllRows();
                     fileIdToRow = new HashMap<String, Integer>();
                     int fileIdToRowCount = 0;
                     // fill in fileIdToRow
@@ -863,9 +883,9 @@ public class EditInvestigationTable extends FlexTable {
                     }
                     // next, set the value in the appropriate table row.
                     String id = files.get( 0 ).getId();
-                    ( ( FlexTable ) symba.getSouthWidget() )
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
                             .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() + ": 0%" ) );
-                    ( ( FlexTable ) symba.getSouthWidget() ).getCellFormatter()
+                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                             .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
                     buttonOne.startUpload( id );
                 }

@@ -1,4 +1,4 @@
-package net.sourceforge.symba.web.client.gui;
+package net.sourceforge.symba.web.client.gui.panel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -34,6 +34,7 @@ public class SymbaHeader extends HorizontalPanel {
         }
 
         final Image homeImage = new Image( prefix + HOME_ICON );
+        homeImage.setTitle( "SyMBA Home Page (Cancel Current Operation)" );
         homeImage.addStyleName( "header-home-image");
         homeImage.addClickHandler( new CancelAllClickHandler( dock, home ) );
         homeImage.addMouseOverHandler( new MouseOverHandler() {
@@ -51,6 +52,7 @@ public class SymbaHeader extends HorizontalPanel {
         HorizontalPanel rightSide = new HorizontalPanel();
 
         final Image addExpImage = new Image( prefix + ADD_EXPERIMENT );
+        addExpImage.setTitle( "Describe a New Investigation" );
         addExpImage.addStyleName( "header-images");
         addExpImage.addClickHandler( new AddExperimentClickHandler( dock ) );
         addExpImage.addMouseOverHandler( new MouseOverHandler() {
@@ -62,6 +64,7 @@ public class SymbaHeader extends HorizontalPanel {
 
 
         final Image listExpImage = new Image( prefix + LIST_EXPERIMENT );
+        listExpImage.setTitle( "List All Investigations" );
         listExpImage.addStyleName( "header-images");
         listExpImage.addClickHandler( new ListExperimentsClickHandler( dock ) );
         listExpImage.addMouseOverHandler( new MouseOverHandler() {
@@ -73,6 +76,7 @@ public class SymbaHeader extends HorizontalPanel {
 
         final Image downloadFileImage = new Image( prefix + DOWNLOAD_FILE );
         // todo correct functionality
+        downloadFileImage.setTitle( "Download a Data File" );
         downloadFileImage.addStyleName( "header-images");
         downloadFileImage.addClickHandler( new CancelAllClickHandler( dock, home ) );
         downloadFileImage.addMouseOverHandler( new MouseOverHandler() {

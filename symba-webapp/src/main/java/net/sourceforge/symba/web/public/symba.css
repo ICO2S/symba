@@ -74,6 +74,13 @@ BODY {
     padding: 5px 5px 5px 5px;
 }
 
+/* Footer styles */
+
+/* Width should match that of .header-style */ 
+.footer-style {
+    width: 100%;
+}
+
 /* The styles below modified from those found in http://demo.swfupload.org/v220/css/default.css */
 
 div.fieldset {

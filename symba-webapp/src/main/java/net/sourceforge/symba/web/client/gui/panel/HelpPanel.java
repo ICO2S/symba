@@ -1,37 +1,38 @@
 package net.sourceforge.symba.web.client.gui.panel;
 
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class HelpPanel extends VerticalPanel {
 
-    private HTML htmlStatus;
-    private HTML htmlDirections;
+    private HTML status;
+    private HTML directions;
+    private FlexTable fileStatus;
 
     public HelpPanel() {
-        htmlStatus = new HTML();
-        htmlDirections = new HTML();
+        status = new HTML();
+        directions = new HTML();
+        fileStatus = new FlexTable();
 
-        add( htmlStatus );
-        add( htmlDirections );
-    }
-
-    public void setStatus( String html ) {
-
-        htmlStatus.setHTML( html );
-
-    }
-
-    public void setDirections( String html ) {
-
-        htmlDirections.setHTML( html );
-    }
-
-    public String getStatusMessage() {
-        return htmlStatus.getHTML();
+        add( status );
+        add( directions );
+        add( fileStatus );
     }
 
     public String getDirections() {
-        return htmlDirections.getHTML();
+        return directions.getHTML();
+    }
+
+    public FlexTable getFileStatus() {
+        return fileStatus;
+    }
+
+    public void setStatus( String html ) {
+        status.setHTML( html );
+    }
+
+    public void setDirections( String html ) {
+        directions.setHTML( html );
     }
 }

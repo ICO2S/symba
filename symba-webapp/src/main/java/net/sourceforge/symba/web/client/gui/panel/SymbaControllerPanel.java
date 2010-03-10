@@ -5,9 +5,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.gui.EditInvestigationTable;
-import net.sourceforge.symba.web.client.gui.SymbaHeader;
 import net.sourceforge.symba.web.shared.Contact;
-import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 
 import java.util.ArrayList;
@@ -15,12 +13,11 @@ import java.util.HashMap;
 
 public class SymbaControllerPanel extends DockPanel {
 
+    private static final String DEFAULT_EAST_WIDTH = "20em";
     private final InvestigationsServiceAsync rpcService;
 
     // the type of widget in the non-center panels will not change, though they may not always be visible.
-    private final FlexTable southWidget;
     private final HelpPanel eastWidget;
-    private final SymbaHeader northWidget;
     private boolean eastSet;
 
     // Store all current contacts in a central location so all other panels have access to it.
@@ -46,17 +43,15 @@ public class SymbaControllerPanel extends DockPanel {
         // the center widget starts out as a HomePanel, but will change
         HomePanel home = new HomePanel();
         centerWidget = home;
-        northWidget = new SymbaHeader( this, home );
-
-        southWidget = new FlexTable();
-        southWidget.addStyleName( "fieldset flash" );
+        SymbaHeader northWidget = new SymbaHeader( this, home );
+        SymbaFooter southWidget = new SymbaFooter();
 
         eastWidget = new HelpPanel();
+        eastWidget.getFileStatus().addStyleName( "fieldset flash" );
+        eastSet = false;
 
         add( northWidget, DockPanel.NORTH );
         add( southWidget, DockPanel.SOUTH );
-        eastSet = false;
-
         add( centerWidget, DockPanel.CENTER );
 
         contacts = new HashMap<String, Contact>();
@@ -80,14 +75,6 @@ public class SymbaControllerPanel extends DockPanel {
             }
         } );
 
-    }
-
-    public Widget getNorthWidget() {
-        return northWidget;
-    }
-
-    public Widget getSouthWidget() {
-        return southWidget;
     }
 
     public Widget getEastWidget() {
@@ -128,38 +115,43 @@ public class SymbaControllerPanel extends DockPanel {
     }
 
     /**
-     * Adds or updates the east widget. First, you change the status and the directions as appropriate.
-     * Then, if the east widget is not yet visible, make it visible.
-     *
-     * @param htmlStatus the html status to display in the East panel.
-     * @param htmlDirections the directions for symba at this point in time.
+     * Unlike the version of showEastWidget() which accepts arguments, this method will assume all values
+     * for the components of the east widget are set, and this method simply ensures that the widget is visible.
      */
-    public void showEastWidget( String htmlStatus, String htmlDirections ) {
-        eastWidget.setStatus( htmlStatus );
-        eastWidget.setDirections( htmlDirections );
+    public void showEastWidget() {
         if ( !eastSet ) {
             add( eastWidget, DockPanel.EAST );
             // set default east panel width
-            eastWidget.setWidth( "20em" );
+            eastWidget.setWidth( DEFAULT_EAST_WIDTH );
             eastSet = true;
         }
     }
 
     /**
-     * This helper method allows you to access the status message without having to know what class type
-     * is sitting in the East panel.
-     * @return the current status message (may be an empty string).
+     * Adds or updates the east widget. First, you change the values within HelpPanel as appropriate.
+     * Then, if the east widget is not yet visible, make it visible.
+     * <p/>
+     * Please note that this is nothing more than a convenience method for the simple parts of the east
+     * widget. The fileStatus part of the current east widget is a flex table, and therefore, this method
+     * ignores that part. Access the FlexTable's methods directly via getEastWidget().getFileStatus()
+     *
+     * @param htmlStatus     the html status to display in the East panel.
+     * @param htmlDirections the directions for symba at this point in time.
      */
-    public String getEastWidgetStatusMessage( ) {
-        return eastWidget.getStatusMessage();
+    public void showEastWidget( String htmlStatus,
+                                String htmlDirections ) {
+        eastWidget.setStatus( htmlStatus );
+        eastWidget.setDirections( htmlDirections );
+        showEastWidget();
     }
 
     /**
      * This helper method allows you to access the current directions without having to know what class type
      * is sitting in the East panel.
+     *
      * @return the current directions (may be an empty string).
      */
-    public String getEastWidgetDirections( ) {
+    public String getEastWidgetDirections() {
         return eastWidget.getDirections();
     }
 

@@ -130,7 +130,6 @@ public class SummariseInvestigationView extends FlexTable {
             public void onClick( ClickEvent event ) {
                 int selectedRow = getClickedRow( event );
 
-                // why copy here?
                 if ( selectedRow >= 0 ) {
                     String id = investigationDetails.get( selectedRow ).getId();
                     symba.setCenterWidgetAsEditExperiment();

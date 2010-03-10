@@ -334,9 +334,13 @@ public class EditInvestigationTable extends FlexTable {
 
     public void displayInvestigation( String id ) {
 
+        // temporary message for the user
+        setWidget( 0, 0, new Label( "Loading selected investigation. Please wait..." ) );
+
         rpcService.getInvestigation( id, new AsyncCallback<Investigation>() {
             public void onSuccess( Investigation result ) {
 
+                // this init step will also remove the temporary message created outside this RPC call
                 initEditInvestigationTable();
 
                 investigation = result;
@@ -796,8 +800,10 @@ public class EditInvestigationTable extends FlexTable {
 
             public void onUploadProgress( UploadProgressEvent e ) {
                 symba.showEastWidget();
-                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
-                        e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) + "%" ) );
+                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
+                        .setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
+                                e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) +
+                                        "%" ) );
                 ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer yellow" );
             }

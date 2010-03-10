@@ -23,12 +23,16 @@ BODY {
 
 .experiment-OddStep {
     border: solid 1px forestgreen;
-    background-color: #EBFFEB;;
+    background-color: #EBFFEB;
 }
 
 .cell-modified {
+    border-radius: 5px;
+    /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
+    -moz-border-radius: 5px;
     border: solid 1px forestgreen;
-    background-color: #EBFFEB;;
+    background-color: #EBFFEB;
+    padding: 5px;
 }
 
 .textbox-warning {

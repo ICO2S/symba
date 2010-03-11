@@ -1,19 +1,16 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
-import net.sourceforge.fuge.util.generated.*;
 import net.sourceforge.fuge.util.generated.Audit;
 import net.sourceforge.fuge.util.generated.AuditCollection;
-import net.sourceforge.fuge.util.generated.AuditCollectionContactItem;
 import net.sourceforge.fuge.util.generated.AuditTrail;
 import net.sourceforge.fuge.util.generated.ContactRole;
 import net.sourceforge.fuge.util.generated.FuGE;
 import net.sourceforge.fuge.util.generated.GenericSoftware;
 import net.sourceforge.fuge.util.generated.Identifiable;
-import net.sourceforge.fuge.util.generated.Investigation;
 import net.sourceforge.fuge.util.generated.InvestigationCollection;
+import net.sourceforge.fuge.util.generated.ObjectFactory;
 import net.sourceforge.fuge.util.generated.Person;
 import net.sourceforge.fuge.util.generated.ProtocolCollection;
-import net.sourceforge.fuge.util.generated.ProtocolCollectionSoftwareItem;
 import net.sourceforge.fuge.util.generated.Provider;
 import net.sourceforge.symba.web.shared.Contact;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +25,8 @@ import java.util.Date;
  * holds no connections to databases and performs no checks of pre-existing objects in any data storage locations.
  */
 public class FugeConverter {
+
+    private final ObjectFactory factory = new ObjectFactory();
 
     @NotNull
     public String toFugeString( @NotNull net.sourceforge.symba.web.shared.Investigation inv ) {
@@ -107,7 +106,7 @@ public class FugeConverter {
      * @return the new provider for the given person and software
      */
     private Provider createProvider( Person person,
-                                                       GenericSoftware symbaSoftware ) {
+                                     GenericSoftware symbaSoftware ) {
         Provider provider = new Provider();
 
         // link the fuge contact to the provider of the new Fuge metadata
@@ -134,15 +133,13 @@ public class FugeConverter {
         symbaSoftware.setVersion( "8.09" );
         symbaSoftware.setName( "SyMBA (http://symba.sourceforge.net) by CISBAN (http://www.cisban.ac.uk)" );
         // add the software object to the protocol collection
-        ProtocolCollectionSoftwareItem sItem = new ProtocolCollectionSoftwareItem();
-        sItem.setItemValue( symbaSoftware );
-        allProtocol.getSoftwareItems().add( sItem );
+        allProtocol.getSoftware().add( factory.createGenericSoftware( symbaSoftware ) );
         return symbaSoftware;
     }
 
     private net.sourceforge.fuge.util.generated.Investigation addInvestigation( InvestigationCollection allInvestigation,
-                                                                    Person person,
-                                                                    net.sourceforge.symba.web.shared.Investigation uiInvestigation ) {
+                                                                                Person person,
+                                                                                net.sourceforge.symba.web.shared.Investigation uiInvestigation ) {
         // Convert the main features of the investigation. We are currently only allowing a single Investigation
         // object in the FuGE object per SyMBA investigation.
         net.sourceforge.fuge.util.generated.Investigation fugeInv = new net.sourceforge.fuge.util.generated.Investigation();
@@ -158,7 +155,7 @@ public class FugeConverter {
     }
 
     private Person addPerson( AuditCollection allAudit,
-                                                 Contact uiPerson ) {
+                              Contact uiPerson ) {
         // create a fuge person
         Person person = new Person();
         person.setIdentifier( uiPerson.getId() );
@@ -168,17 +165,14 @@ public class FugeConverter {
         person.setEmail( uiPerson.getEmailAddress() );
         // todo organisation
         // add to the Audit collection
-        AuditCollectionContactItem item = new AuditCollectionContactItem();
-        item.setItemValue( person );
-        item.setItemName( "Person" );
-        allAudit.getContactItems().add( item );
+        allAudit.getContact().add( factory.createPerson( person ) );
         // we don't add an audit trail to the contact, as it could be the added contact which is performing the addition
 
         return person;
     }
 
     private void addAuditTrail( Identifiable type,
-                                   Person person ) {
+                                Person person ) {
         AuditTrail trail = new AuditTrail();
         Audit item = new Audit();
         item.setContactRef( person.getIdentifier() );

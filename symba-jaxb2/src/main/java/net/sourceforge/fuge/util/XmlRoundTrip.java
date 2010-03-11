@@ -1,6 +1,6 @@
 package net.sourceforge.fuge.util;
 
-import net.sourceforge.fuge.util.generated.FuGECollectionFuGEType;
+import net.sourceforge.fuge.util.generated.FuGE;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -88,9 +88,9 @@ public class XmlRoundTrip {
         JAXBElement<?> genericTopLevelElement = ( JAXBElement<?> ) u.unmarshal( new FileInputStream( args[1] ) );
 
         // Get the jaxb root object. In the case of the default setup of the FuGE XSD STK, this is a
-        // FuGECollectionFuGEType object. However, if you are developing a community extension, this may
+        // FuGE object. However, if you are developing a community extension, this may
         // be a different type of object. Please modify as appropriate.
-        FuGECollectionFuGEType rootXML = ( FuGECollectionFuGEType ) genericTopLevelElement.getValue();
+        FuGE rootXML = ( FuGE ) genericTopLevelElement.getValue();
 
         //
         // Here is where you would perform any checks or manipulation of the FuGE objects.
@@ -115,7 +115,7 @@ public class XmlRoundTrip {
         OutputStream os = new FileOutputStream( args[2] );
         @SuppressWarnings( "unchecked" )
         JAXBElement element = new JAXBElement( new QName( "http://fuge.sourceforge.net/fuge/1.0", "FuGE" ),
-                FuGECollectionFuGEType.class,
+                FuGE.class,
                 rootXML );
         m.marshal( element, os );
 

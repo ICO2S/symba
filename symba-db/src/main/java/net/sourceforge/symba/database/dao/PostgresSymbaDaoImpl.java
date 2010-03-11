@@ -1,6 +1,6 @@
 package net.sourceforge.symba.database.dao;
 
-import net.sourceforge.fuge.util.generated.FuGECollectionFuGEType;
+import net.sourceforge.fuge.util.generated.FuGE;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.EntityManager;
@@ -23,19 +23,19 @@ public class PostgresSymbaDaoImpl implements SymbaDao {
         //entityManager.setFlushMode(FlushModeType.COMMIT);
     }
 
-    private Map<String, FuGECollectionFuGEType> fugeByFugeIdCache = new HashMap<String, FuGECollectionFuGEType>();
+    private Map<String, FuGE> fugeByFugeIdCache = new HashMap<String, FuGE>();
 
     @NotNull
-    public FuGECollectionFuGEType fetchOrMakeFuge( @NotNull String fugeId ) {
+    public FuGE fetchOrMakeFuge( @NotNull String fugeId ) {
 
-        FuGECollectionFuGEType fuge = fugeByFugeIdCache.get( fugeId );
+        FuGE fuge = fugeByFugeIdCache.get( fugeId );
 
         if ( fuge == null ) {
             System.out.print( "-" );
-            fuge = ( FuGECollectionFuGEType ) entityManager.createNamedQuery( "fugeByIdentifier" )
+            fuge = ( FuGE ) entityManager.createNamedQuery( "fugeByIdentifier" )
                     .setParameter( "fugeId", fugeId ).getSingleResult();
             if ( fuge == null ) {
-                fuge = new FuGECollectionFuGEType();
+                fuge = new FuGE();
                 fuge.setIdentifier( fugeId );
                 System.err.println( "Persisting a new Fuge object with id " + fugeId );
                 // todo set other default values, as you do elsewhere: audit, endurant, etc.
@@ -58,7 +58,7 @@ public class PostgresSymbaDaoImpl implements SymbaDao {
         return !( endurant.isEmpty() );
     }
 
-    public boolean addNewFugeEntry( @NotNull FuGECollectionFuGEType fuge ) {
+    public boolean addNewFugeEntry( @NotNull FuGE fuge ) {
         if ( fuge.getIdentifier() == null || fuge.getIdentifier().length() == 0 ) {
             return false;
         }
@@ -73,7 +73,7 @@ public class PostgresSymbaDaoImpl implements SymbaDao {
     }
 
     @NotNull
-    public List<FuGECollectionFuGEType> fetchAllFuge() {
+    public List<FuGE> fetchAllFuge() {
         return entityManager.createNamedQuery( "allFuge" ).getResultList();
     }
 

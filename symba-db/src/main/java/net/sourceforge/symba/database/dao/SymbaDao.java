@@ -1,6 +1,6 @@
 package net.sourceforge.symba.database.dao;
 
-import net.sourceforge.fuge.util.generated.FuGECollectionFuGEType;
+import net.sourceforge.fuge.util.generated.FuGE;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public interface SymbaDao {
      * @return the retrieved (or newly created and persisted, then retrieved) Fuge entry.
      */
     @NotNull
-    public FuGECollectionFuGEType fetchOrMakeFuge( @NotNull String fugeId );
+    public FuGE fetchOrMakeFuge( @NotNull String fugeId );
 
     /**
      * Checks to see if there is a Fuge object in the database with the provided identifier
@@ -50,7 +50,7 @@ public interface SymbaDao {
      * @return true if the fuge object was successfully added, false if there was some problem with the object and
      *         wasn't loaded
      */
-    public abstract boolean addNewFugeEntry( @NotNull FuGECollectionFuGEType fuge );
+    public abstract boolean addNewFugeEntry( @NotNull FuGE fuge );
 
     /**
      * Retrieve a list of all of the latest versions of the fuge objects in the database.
@@ -58,7 +58,7 @@ public interface SymbaDao {
      * @return all of the latest versions of the fuge objects currently in the database
      */
     @NotNull
-    public List<FuGECollectionFuGEType> fetchAllFuge();
+    public List<FuGE> fetchAllFuge();
 
     /**
      * Retrieve a count of all of the latest versions of the fuge objects in the database

@@ -1,7 +1,7 @@
 package net.sourceforge.symba.database;
 
 import net.sourceforge.fuge.util.RandomXmlGenerator;
-import net.sourceforge.fuge.util.generated.FuGECollectionFuGEType;
+import net.sourceforge.fuge.util.generated.FuGE;
 import net.sourceforge.symba.database.controller.FugeDatabaseController;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -21,7 +21,7 @@ public class CreateRandomFugeDatabaseEntry {
 
         System.out.println( "Filename for this run: " + xmlFilename );
 
-        FuGECollectionFuGEType fuge = RandomXmlGenerator.generate( xmlFilename );
+        FuGE fuge = RandomXmlGenerator.generate( xmlFilename );
 
         boolean response = controller.createOrAddFugeVersion( fuge );
 

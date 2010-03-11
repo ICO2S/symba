@@ -1,6 +1,6 @@
 package net.sourceforge.symba.database.controller;
 
-import net.sourceforge.fuge.util.generated.FuGECollectionFuGEType;
+import net.sourceforge.fuge.util.generated.FuGE;
 import net.sourceforge.symba.database.dao.SymbaDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,7 @@ public class FugeDatabaseController {
     }
 
     @Transactional( readOnly = false )
-    public boolean createOrAddFugeVersion( FuGECollectionFuGEType fuge ) {
+    public boolean createOrAddFugeVersion( FuGE fuge ) {
         return symbaDao.addNewFugeEntry( fuge );
     }
 

@@ -58,14 +58,14 @@ public class SimpleFugeEntriesDatabaseFiller {
 
             System.err.println( "Filename for this run: " + xmlFilename );
 
-            FuGECollectionFuGEType fuge = generateSimpleExample( xmlFilename, schemaFilename, i );
+            FuGE fuge = generateSimpleExample( xmlFilename, schemaFilename, i );
 
             controller.createOrAddFugeVersion( fuge );
         }
     }
 
     @NotNull
-    private FuGECollectionFuGEType generateSimpleExample( String xmlFilename,
+    private FuGE generateSimpleExample( String xmlFilename,
                                                           String schemaFilename,
                                                           int position ) throws JAXBException,
             SAXException,
@@ -78,10 +78,10 @@ public class SimpleFugeEntriesDatabaseFiller {
         ObjectFactory factory = new ObjectFactory();
 
         // create the root object
-        FuGECollectionFuGEType root = new FuGECollectionFuGEType();
+        FuGE root = new FuGE();
 
         // create a creator based on the stored details
-        FuGECommonAuditPersonType creator = new FuGECommonAuditPersonType();
+        Person creator = new Person();
         creator.setEmail( contactsEmailData[position] );
         creator.setFirstName( contactsFirstNameData[position] );
         creator.setLastName( contactsLastNameData[position] );
@@ -89,7 +89,7 @@ public class SimpleFugeEntriesDatabaseFiller {
         creator.setEndurantRef( ( ( Double ) Math.random() ).toString() );
 
         // add the creator to the AuditCollection
-        FuGECollectionAuditCollectionType auditCollection = new FuGECollectionAuditCollectionType();
+        AuditCollection auditCollection = new AuditCollection();
         auditCollection.getContact().add( factory.createPerson( creator ) );
 
         // Add the audit trail and the created audit collection to the root object
@@ -99,10 +99,10 @@ public class SimpleFugeEntriesDatabaseFiller {
         root.setIdentifier( investigationIdData[position] );
         root.setEndurantRef( investigationEndurantData[position] );
         root.setName( investigationTitleData[position] );
-        FuGECollectionProviderType provider = new FuGECollectionProviderType();
-        FuGECommonAuditContactRoleType contactRole = new FuGECommonAuditContactRoleType();
+        Provider provider = new Provider();
+        ContactRole contactRole = new ContactRole();
         contactRole.setContactRef( creator.getIdentifier() );
-//        FuGECommonAuditContactRoleType.Role role = factory.createFuGECommonAuditContactRoleTypeRole();
+//        ContactRole.Role role = factory.createContactRoleRole();
 //        contactRole.setRole(  );
         provider.setContactRole( contactRole );
         root.setProvider( provider );
@@ -134,7 +134,7 @@ public class SimpleFugeEntriesDatabaseFiller {
         @SuppressWarnings( "unchecked" )
         JAXBElement element = new JAXBElement(
                 new QName( "http://fuge.sourceforge.net/fuge/1.0", "FuGE" ),
-                FuGECollectionFuGEType.class,
+                FuGE.class,
                 root );
         m.marshal( element, os );
 
@@ -143,14 +143,14 @@ public class SimpleFugeEntriesDatabaseFiller {
         return root;
     }
 
-    private void createAuditInformation( FuGECommonDescribableType describableXML,
+    private void createAuditInformation( Describable describableXML,
                                          String auditContactIdentifier ) {
 
         // create jaxb object to hold all audit information
-        FuGECommonDescribableType.AuditTrail auditsXML = new FuGECommonDescribableType.AuditTrail();
+        AuditTrail auditsXML = new AuditTrail();
 
         // create jaxb object to hold a single audit item
-        FuGECommonAuditAuditType auditXML = new FuGECommonAuditAuditType();
+        Audit auditXML = new Audit();
 
         // When adding basic audit information, add the current date, the action and the contact ref, of which
         // the first two are required.

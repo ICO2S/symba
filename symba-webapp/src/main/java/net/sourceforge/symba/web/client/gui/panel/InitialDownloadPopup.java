@@ -27,23 +27,20 @@ public class InitialDownloadPopup extends PopupPanel {
             add( new HTML( "<h2>Would you like to...</h2>" ) );
 
             Label label = new Label( "...download one or more data files?" );
-            label.addStyleName( "clickable-text" );
-            label.addStyleName( "pointer-select" );
-            label.addClickHandler( new ListExperimentsClickHandler( symba, parentPanel ) );
+//            label.addStyleName( "clickable-text" );
+//            label.addStyleName( "pointer-select" );
+//            label.addClickHandler( new ListExperimentsClickHandler( symba, parentPanel ) );
 
             add( label );
 
+            add( new Label( "...download Investigation metadata?" ) );
             HorizontalPanel existing = new HorizontalPanel();
-            Label existingLabel = new Label( "...download Investigation metadata?" );
-            existing.add( existingLabel );
             SummariseInvestigationView view = new SummariseInvestigationView( symba,
                     SummariseInvestigationView.ViewType.DISPLAY_CHOSEN_METADATA, parentPanel );
             view.setInvestigationDetails( symba.getInvestigationDetails() );
             existing.add( view );
 
             add( existing );
-
-            add( new Label( "(Click outside the box to cancel and close.)" ) );
         }
     }
 

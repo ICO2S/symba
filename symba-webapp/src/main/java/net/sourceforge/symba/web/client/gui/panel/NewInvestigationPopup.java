@@ -18,8 +18,8 @@ public class NewInvestigationPopup extends PopupPanel {
         setPopupPositionAndShow( new PopupPanel.PositionCallback() {
             public void setPosition( int offsetWidth,
                                      int offsetHeight ) {
-                int left = (Window.getClientWidth() - offsetWidth) / 2;
-                int top = (Window.getClientHeight() - offsetHeight) / 2;
+                int left = ( Window.getClientWidth() - offsetWidth ) / 2;
+                int top = ( Window.getClientHeight() - offsetHeight ) / 2;
                 setPopupPosition( left, top );
             }
         } );
@@ -44,10 +44,10 @@ public class NewInvestigationPopup extends PopupPanel {
 
             add( label );
 
+            add( new Label( "...make a copy of an existing Investigation?" ) );
             HorizontalPanel existing = new HorizontalPanel();
-            Label existingLabel = new Label( "...make a copy of an existing Investigation?" );
-            existing.add( existingLabel );
-            SummariseInvestigationView view = new SummariseInvestigationView( symba, SummariseInvestigationView.ViewType.COPY_CHOSEN, parentPanel );
+            SummariseInvestigationView view = new SummariseInvestigationView( symba,
+                    SummariseInvestigationView.ViewType.COPY_CHOSEN, parentPanel );
             view.setInvestigationDetails( symba.getInvestigationDetails() );
             existing.add( view );
 
@@ -60,8 +60,6 @@ public class NewInvestigationPopup extends PopupPanel {
             moreInfo.addClickHandler( new ListExperimentsClickHandler( symba, parentPanel ) );
 
             add( moreInfo );
-
-            add( new Label( "(Click outside the box to cancel and close.)" ) );
         }
     }
 }

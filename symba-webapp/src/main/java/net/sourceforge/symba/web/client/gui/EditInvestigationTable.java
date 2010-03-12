@@ -27,6 +27,10 @@ public class EditInvestigationTable extends FlexTable {
     // todo disable all functions on entire page until file uploads are complete
     // todo refactor this class to make it easier to read
 
+    private static enum SaveType {
+        SAVE_ONLY, SET_AS_TEMPLATE, SET_COPY_AS_TEMPLATE
+    }
+
     private final InvestigationsServiceAsync rpcService;
     private final SymbaController symba;
     private final String toNewStepImageUrl = "/images/toNewStep70w76h.png";
@@ -211,11 +215,7 @@ public class EditInvestigationTable extends FlexTable {
                                 "template, cancel this request and choose \"Save A Copy As Template\". Are you sure " +
                                 "you wish to continue?" );
                 if ( response ) {
-                    String id = investigation.getId(); // unchangeable by the user
-                    String title = investigation
-                            .getInvestigationTitle(); // todo take the version from the page, not the stored investigation
-                    doSave();
-                    setAsTemplate( id, title );
+                    doSave( SaveType.SET_AS_TEMPLATE );
                 } else {
                     // no need to keep any file statuses at this point
                     symba.showEastWidget(
@@ -235,7 +235,7 @@ public class EditInvestigationTable extends FlexTable {
                                 "it to be copied by you and other users, thus sharing common aspects of " +
                                 "Investigations. Are you sure you wish to continue?" );
                 if ( response ) {
-                    doSave( true );
+                    doSave( SaveType.SET_COPY_AS_TEMPLATE );
                 } else {
                     // no need to keep any file statuses at this point
                     symba.showEastWidget( "<p>Saving a copy as a template cancelled.</p>",
@@ -532,10 +532,10 @@ public class EditInvestigationTable extends FlexTable {
     }
 
     private void doSave() {
-        doSave( false );
+        doSave( SaveType.SAVE_ONLY );
     }
 
-    private void doSave( final boolean makeTemplate ) {
+    private void doSave( final SaveType saveType ) {
 
         String emptyValues = readWriteDetailsPanel.makeErrorMessages();
         if ( emptyValues.length() > 1 ) {
@@ -550,6 +550,7 @@ public class EditInvestigationTable extends FlexTable {
 
         // the experiment steps were saved as we went along, so nothing extra to do here.
 
+        // todo ensure Identifier has changed before this step, if necessary
         rpcService.updateInvestigation( investigation, new AsyncCallback<ArrayList<InvestigationDetail>>() {
             public void onSuccess( ArrayList<InvestigationDetail> updatedDetails ) {
                 if ( GWT.isScript() ) {
@@ -564,7 +565,7 @@ public class EditInvestigationTable extends FlexTable {
                 symba.setInvestigationDetails( updatedDetails );
                 symba.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
 
-                if ( makeTemplate ) {
+                if ( saveType == SaveType.SET_COPY_AS_TEMPLATE ) {
                     rpcService.copyInvestigation( id,
                             new AsyncCallback<InvestigationDetail>() {
                                 public void onSuccess( InvestigationDetail result ) {
@@ -578,6 +579,8 @@ public class EditInvestigationTable extends FlexTable {
                                 }
                             } );
 
+                } else if ( saveType == SaveType.SET_AS_TEMPLATE ) {
+                    setAsTemplate( id, title );
                 }
             }
 

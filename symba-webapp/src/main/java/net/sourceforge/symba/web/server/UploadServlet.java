@@ -19,7 +19,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 /**
  * This servlet is based on that found in the SWF examples here: http://code.google.com/p/swfupload-gwt/source/browse/
  */
-@SuppressWarnings("serial")
+@SuppressWarnings( "serial" )
 public class UploadServlet extends HttpServlet {
 
     private long FILE_SIZE_LIMIT = 20 * 1024 * 1024; // 20 MiB
@@ -27,18 +27,17 @@ public class UploadServlet extends HttpServlet {
 
     @SuppressWarnings( "unchecked" )
     @Override
-    protected void doPost( HttpServletRequest req,
-                           HttpServletResponse resp )
+    protected void doPost( HttpServletRequest request,
+                           HttpServletResponse response )
             throws ServletException, IOException {
 
         try {
             ServletFileUpload fileUpload = new ServletFileUpload( new DiskFileItemFactory() );
             fileUpload.setSizeMax( FILE_SIZE_LIMIT );
 
-            List<FileItem> items = fileUpload.parseRequest( req );
+            List<FileItem> items = fileUpload.parseRequest( request );
 
             for ( FileItem item : items ) {
-                String filename;
                 if ( item.isFormField() ) {
                     logger.log( Level.INFO, "Received form field:" );
                     logger.log( Level.INFO, "Name: " + item.getFieldName() );
@@ -50,25 +49,9 @@ public class UploadServlet extends HttpServlet {
                 }
 
                 if ( !item.isFormField() ) {
-                    if ( item.getSize() > FILE_SIZE_LIMIT ) {
-                        resp.sendError( HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE,
-                                "File size excedes limit" );
-
-                        return;
-                    }
-
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream( item.getInputStream() );
-                    filename = "/tmp/" + item.getName();
-                    logger.log( Level.INFO, "new filename is " + filename );
-
-                    FileOutputStream output = new FileOutputStream( filename );
-                    int i;
-                    while ( ( i = bufferedInputStream.read() ) != -1 ) {
-                        output.write( i );
-                    }
-                    bufferedInputStream.close();
-                    output.close();
-
+                    
+                    storeFileLocally( item, response );
+                    // todo copy file to remote server specified by Spring
 
                     if ( !item.isInMemory() ) {
                         item.delete();
@@ -80,6 +63,31 @@ public class UploadServlet extends HttpServlet {
                     "Throwing servlet exception for unhandled exception", e );
             throw new ServletException( e );
         }
+    }
+
+    private void storeFileLocally( FileItem item,
+                                   HttpServletResponse response ) throws IOException {
+        
+        if ( item.getSize() > FILE_SIZE_LIMIT ) {
+            response.sendError( HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE,
+                    "File size exceeds limit" );
+
+            return;
+        }
+
+        BufferedInputStream bufferedInputStream = new BufferedInputStream( item.getInputStream() );
+        // todo temp location should be specified from Spring
+        String filename = "/tmp/" + item.getName();
+        logger.log( Level.INFO, "new filename is " + filename );
+
+        FileOutputStream output = new FileOutputStream( filename );
+        int i;
+        while ( ( i = bufferedInputStream.read() ) != -1 ) {
+            output.write( i );
+        }
+        bufferedInputStream.close();
+        output.close();
+
     }
 
 }

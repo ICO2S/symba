@@ -24,7 +24,6 @@ public class MetadataViewer extends VerticalPanel {
                 HTML metadata = new HTML( filtered );
                 metadata.addStyleName( "metadata-style" );
                 symba.setCenterWidget( metadata );
-                System.err.println( "result: " + result );
             }
         } );
 

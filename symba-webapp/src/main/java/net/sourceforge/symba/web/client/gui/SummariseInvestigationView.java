@@ -217,10 +217,10 @@ public class SummariseInvestigationView extends FlexTable {
      */
     public void sortInvestigationDetails() {
 
-        // sort on templates
+        // sort on templates: templates will be listed last. 
         for ( int i = 0; i < investigationDetails.size(); ++i ) {
             for ( int j = 0; j < investigationDetails.size() - 1; ++j ) {
-                if ( !investigationDetails.get( j ).isTemplate() ) {
+                if ( investigationDetails.get( j ).isTemplate() ) {
                     InvestigationDetail tmp = investigationDetails.get( j );
                     investigationDetails.set( j, investigationDetails.get( j + 1 ) );
                     investigationDetails.set( j + 1, tmp );
@@ -245,7 +245,8 @@ public class SummariseInvestigationView extends FlexTable {
                 if ( investigationDetails.get( j ).getInvestigationTitle()
                         .compareToIgnoreCase( investigationDetails.get( j + 1 ).getInvestigationTitle() ) >= 0 &&
                         investigationDetails.get( j ).getProvider().getLastName()
-                                .equals( investigationDetails.get( j + 1 ).getProvider().getLastName() ) ) {
+                                .equals( investigationDetails.get( j + 1 ).getProvider().getLastName() ) &&
+                        investigationDetails.get( j ).isTemplate() == investigationDetails.get( j + 1 ).isTemplate() ) {
                     InvestigationDetail tmp = investigationDetails.get( j );
                     investigationDetails.set( j, investigationDetails.get( j + 1 ) );
                     investigationDetails.set( j + 1, tmp );

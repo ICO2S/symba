@@ -46,7 +46,7 @@ public class SymbaController extends DockPanel {
         SymbaHeader northWidget = new SymbaHeader( this, home );
         SymbaFooter southWidget = new SymbaFooter();
 
-        eastWidget = new HelpPanel();
+        eastWidget = new HelpPanel( this );
         eastWidget.getFileStatus().addStyleName( "fieldset flash" );
         eastSet = false;
 

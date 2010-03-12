@@ -19,8 +19,9 @@
 }
 
 .metadata-style {
-    white-space: pre;    
+    white-space: pre;
 }
+
 .note {
     width: 90%;
     text-align: center;
@@ -35,11 +36,12 @@
     font-weight: bold;
 }
 
-/* The style for showing a template inside a Summary view (either ListBox based or Table based */ 
+/* The style for showing a template inside a Summary view (either ListBox based or Table based */
 .summarise-template {
     font-style: italic;
 }
 
+/* Various styles for the experiment step table */
 .experiment-EvenStep {
     background-color: #FFFFFF;
 }
@@ -47,6 +49,12 @@
 .experiment-OddStep {
     border: solid 1px forestgreen;
     background-color: #EBFFEB;
+}
+
+.parameter-title {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-style: italic;
+    font-size: 70%;
 }
 
 .cell-modified {
@@ -97,12 +105,24 @@
 .header-images {
     height: 50px;
     padding: 5px 5px 5px 5px;
+    border: solid 1px black;
+    border-radius: 10px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
+    -moz-border-radius: 10px;
+}
+
+.header-title {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 175%;
+    font-weight: bold;
 }
 
 /* Footer styles */
 
 /* Width should match that of .header-style */
 .footer-style {
+    border: solid 1px black;
+    border-radius: 10px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
+    -moz-border-radius: 10px;
     width: 100%;
 }
 

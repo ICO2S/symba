@@ -1,5 +1,6 @@
 package net.sourceforge.symba.web.client.gui.panel;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.HistoryToken;
 
@@ -35,15 +36,27 @@ public class SymbaFooter extends VerticalPanel {
     public SymbaFooter() {
         super();
 
+        String moduleBase = GWT.getModuleBaseURL();
+        String moduleName = GWT.getModuleName();
+        String baseApp = moduleBase.substring( 0, moduleBase.lastIndexOf( moduleName ) );
+
+        // you need slightly different URLs when in development mode (specifically, no prefix at all).
+        String prefix = "";
+        if ( GWT.isScript() ) {
+            prefix = baseApp;
+        }
+
         whoAmI_ = new Label( WHOAMI_TEXT );
-        final Hyperlink help = new Hyperlink( HELP_LINK, HistoryToken.HELP.toString() ); // todo help page
+        Label help = new Label( HELP_LINK );
+//        final Hyperlink help = new Hyperlink( HELP_LINK, HistoryToken.HELP.toString() ); // todo help page
         final HTML contact = new HTML();
-        final Anchor cisbanLogo = new Anchor("<img border=\"0\" src=\""+ CISBAN_LOGO + "\">", true, CISBAN_URL );
+        final Anchor cisbanLogo = new Anchor( "<img border=\"0\" src=\"" + prefix + CISBAN_LOGO + "\">", true,
+                CISBAN_URL );
         cisbanLogo.setTitle( CISBAN_TEXT );
         contact.setHTML( HELP_TEXT );
 
         addStyleName( "footer-style" );
-        
+
         // It only applies to widgets added after this property is set.
         setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
 

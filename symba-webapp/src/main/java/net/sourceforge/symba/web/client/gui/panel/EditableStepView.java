@@ -1,8 +1,12 @@
 package net.sourceforge.symba.web.client.gui.panel;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 import net.sourceforge.symba.web.shared.Investigation;
 
@@ -20,11 +24,12 @@ public class EditableStepView extends VerticalPanel {
     private ClickHandler myEditableHandler;
 
     public EditableStepView( ReadableStepView readableView,
-                              final FlexTable tableToAddTo,
-                              final Investigation investigationToAddTo,
-                              int row,
-                              int column,
-                              final ClickHandler myEditableHandler ) {
+                             final PopupPanel container,
+                             final FlexTable tableToAddTo,
+                             final Investigation investigationToAddTo,
+                             int row,
+                             int column,
+                             final ClickHandler myEditableHandler ) {
         this.myEditableHandler = myEditableHandler;
 
         this.editableRow = row;
@@ -35,18 +40,31 @@ public class EditableStepView extends VerticalPanel {
         fileNames = readableView.getFileNames();
         parameterTable = new EditableStepParameterTable( readableView.getParameterTable() );
         Button addNewParameterButton = new Button( "Add Parameter" );
+        Button saveStepButton = new Button( "Save This Step" );
+
+        // a panel to separate out the parameter addition steps
+        CaptionPanel parameterCaptionPanel = new CaptionPanel( "Parameters" );
+        parameterCaptionPanel.setStyleName( "gwt-Label" );
+        VerticalPanel parameterContentPanel = new VerticalPanel();
+        parameterCaptionPanel.add( parameterContentPanel );
+        parameterContentPanel.add( parameterTable );
+        parameterContentPanel.add( addNewParameterButton );
+
+
+        // add all handlers
         addNewParameterButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
                 parameterTable.addNewParameter();
             }
         } );
 
-        Button saveStepButton = new Button( "Save This Step" );
         saveStepButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
 
                 // save the text in the parameters text boxes
-                getParameterTable().savePanelValues();
+                if ( !getParameterTable().savePanelValues() ) {
+                    return;
+                }
 
                 Object[] values = investigationToAddTo
                         .setExperimentStepInfo( editableRow, stepTitle.getText(),
@@ -67,6 +85,7 @@ public class EditableStepView extends VerticalPanel {
 
                 }
                 setReadOnly( tableToAddTo );
+                container.hide();
 
             }
         } );
@@ -74,9 +93,8 @@ public class EditableStepView extends VerticalPanel {
 
         add( stepTitle );
         add( new HTML( getFileNamesString() ) );
-        add( addNewParameterButton );
+        add( parameterCaptionPanel );
         add( saveStepButton );
-        add( parameterTable );
     }
 
 
@@ -141,7 +159,6 @@ public class EditableStepView extends VerticalPanel {
         }
 
         private void addParameter( ExperimentParameter parameter ) {
-            parameters.add( parameter );
             SingleParameterPanel panel = new SingleParameterPanel( parameter );
             parameterPanels.add( panel );
             setWidget( parameterRowCount++, 0, panel );
@@ -151,26 +168,64 @@ public class EditableStepView extends VerticalPanel {
             return parameters;
         }
 
-        public void savePanelValues() {
-            int counter = 0;
-            for ( SingleParameterPanel panel : parameterPanels ) {
-                // in order to save, at least the first three text boxes must be non-empty
-                if ( panel.getSubject().getText().length() > 0 && panel.getPredicate().getText().length() > 0 &&
-                        panel.getObjectValue().getText().length() > 0 ) {
-                    parameters.get( counter ).setSubject( panel.getSubject().getText() );
-                    parameters.get( counter ).setPredicate( panel.getPredicate().getText() );
-                    parameters.get( counter ).setObjectValue( panel.getObjectValue().getText() );
-                    if ( panel.getUnit().getText().length() > 0 ) {
-                        parameters.get( counter ).setUnit( panel.getUnit().getText() );
-                    }
-                }
-                counter++;
+        /**
+         * Delete all current values of parameters, and fill it with what is in the parameterPanels.
+         * Let the user know what is missing if partially filled in.
+         */
+        public boolean savePanelValues() {
+
+            String emptyValues = makeErrorMessages( parameterPanels );
+            if ( emptyValues.length() > 1 ) {
+                Window.alert( "You must provide a value for all fields except the Unit, which is optional." +
+                        "\nThe following fields are missing for at least one parameter:\n" + emptyValues );
+                return false;
             }
+
+
+            parameters.clear();
+            for ( SingleParameterPanel panel : parameterPanels ) {
+                // We've already validated all rows. Just add.
+                ExperimentParameter p = new ExperimentParameter();
+                p.setSubject( panel.getSubject().getText() );
+                p.setPredicate( panel.getPredicate().getText() );
+                p.setObjectValue( panel.getObjectValue().getText() );
+                if ( panel.getUnit().getText().length() > 0 ) {
+                    p.setUnit( panel.getUnit().getText() );
+                }
+                parameters.add( p );
+            }
+
+            return true;
+        }
+
+        private String makeErrorMessages( ArrayList<SingleParameterPanel> parameterPanels ) {
+            // we can stop as soon as all three fields have are missing in at least one parameter
+            boolean subjectMissing = false, objectValueMissing = false, predicateValueMissing = false;
+            String emptyValues = "\n";
+            for ( SingleParameterPanel panel : parameterPanels ) {
+                // there must be a nonzero value in every non-unit field (the unit is optional).
+                if ( !subjectMissing && panel.getSubject().getText().trim().length() == 0 ) {
+                    subjectMissing = true;
+                    emptyValues += "Parameter Name\n";
+                }
+                if ( !predicateValueMissing && panel.getPredicate().getText().trim().length() == 0 ) {
+                    predicateValueMissing = true;
+                    emptyValues += "Relationship\n";
+                }
+                if ( !objectValueMissing && panel.getObjectValue().getText().trim().length() == 0 ) {
+                    objectValueMissing = true;
+                    emptyValues += "Value\n";
+                }
+                if ( subjectMissing && objectValueMissing && predicateValueMissing ) {
+                    break;
+                }
+            }
+            return emptyValues;
+
         }
 
         public void addNewParameter() {
-            ExperimentParameter parameter = new ExperimentParameter();
-            addParameter( parameter );
+            addParameter( new ExperimentParameter() );
         }
 
         // An internal panel contains the step stepTitle
@@ -184,20 +239,24 @@ public class EditableStepView extends VerticalPanel {
                 setHorizontalAlignment( HorizontalPanel.ALIGN_LEFT );
 
                 subject = new TextBox();
-                subject.setText( parameter.getSubject() );
-                add( subject );
+                ParameterCaptionBox sPanel = new ParameterCaptionBox( "Parameter Name, e.g. Camera", subject,
+                        parameter.getSubject() );
+                add( sPanel );
 
                 predicate = new TextBox();
-                predicate.setText( parameter.getPredicate() );
-                add( predicate );
+                ParameterCaptionBox pPanel = new ParameterCaptionBox( "Relationship, e.g. has brand", predicate,
+                        parameter.getPredicate() );
+                add( pPanel );
 
                 objectValue = new TextBox();
-                objectValue.setText( parameter.getObjectValue() );
-                add( objectValue );
+                ParameterCaptionBox oPanel = new ParameterCaptionBox( "Value, e.g. Canon 5D", objectValue,
+                        parameter.getSubject() );
+                add( oPanel );
 
                 unit = new TextBox();
-                unit.setText( parameter.getUnit() );
-                add( unit );
+                ParameterCaptionBox uPanel = new ParameterCaptionBox( "Units (optional), e.g. centimetres", unit,
+                        parameter.getSubject() );
+                add( uPanel );
 
                 // do not allow modifications to anything other than the objectValue and the unit if this
                 // parameter has been copied from a template.
@@ -222,8 +281,23 @@ public class EditableStepView extends VerticalPanel {
             public TextBox getUnit() {
                 return unit;
             }
-        }
 
+            private class ParameterCaptionBox extends CaptionPanel {
+                private ParameterCaptionBox( String captionText,
+                                             final TextBox box,
+                                             String boxText ) {
+                    super( captionText );
+                    addStyleName( "parameter-title" );
+                    box.setText( boxText );
+                    add( box );
+                    box.addBlurHandler( new BlurHandler() {
+                        public void onBlur( BlurEvent event ) {
+                            InputValidator.nonEmptyTextBoxStyle( box );
+                        }
+                    } );
+                }
+            }
+        }
     }
 
 }

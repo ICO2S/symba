@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EditInvestigationTable extends FlexTable {
+public class EditInvestigationTable extends VerticalPanel {
 
     // todo disable all functions on entire page until file uploads are complete
     // todo refactor this class to make it easier to read
@@ -53,7 +53,6 @@ public class EditInvestigationTable extends FlexTable {
     private final ReadWriteDetailsPanel readWriteDetailsPanel;
     private EditableStepView editableStepView;
 
-    private int contentTableRowCount;
     private Investigation investigation;
     private boolean defaultHandlersSet;
 
@@ -131,12 +130,7 @@ public class EditInvestigationTable extends FlexTable {
     public void initEditInvestigationTable() {
 
         clearModifiable();
-        setupMultipleFileUploader();
-
         setWidth( "100%" );
-//            getCellFormatter().addStyleName( 0, 0, "investigation-ListContainer" );
-        getCellFormatter().setWidth( 0, 0, "100%" );
-        getFlexCellFormatter().setVerticalAlignment( 0, 0, DockPanel.ALIGN_TOP );
 
         HorizontalPanel menuPanel = new HorizontalPanel();
         menuPanel.setBorderWidth( 0 );
@@ -146,28 +140,29 @@ public class EditInvestigationTable extends FlexTable {
         menuPanel.add( setAsTemplateButton );
         menuPanel.add( saveCopyAsTemplateButton );
         menuPanel.add( cancelButton );
-//            getCellFormatter().addStyleName( 0, 0, "contacts-ListMenu" );
-        setWidget( contentTableRowCount++, 0, menuPanel );
 
         // Create the investigation summary view
-        setWidget( contentTableRowCount++, 0, readWriteDetailsPanel );
+        setupMultipleFileUploader();
 
         HorizontalPanel addStepPanel = new HorizontalPanel();
         addStepPanel.setBorderWidth( 0 );
         addStepPanel.setSpacing( 0 );
         addStepPanel.setHorizontalAlignment( HorizontalPanel.ALIGN_LEFT );
         addStepPanel.add( addSubStepButton );
-//            getCellFormatter().addStyleName( 2, 0, "contacts-ListMenu" );
-        setWidget( contentTableRowCount++, 0, addStepPanel );
 
+        // wrap the stepsTable within a CaptionPanel
+        CaptionPanel protocolWrapper = new CaptionPanel( "Experimental Steps" );
+        protocolWrapper.setStyleName( "gwt-Label" );
         stepsTable.setCellSpacing( 0 );
         stepsTable.setCellPadding( 0 );
-
-//        stepsTable.setWidth( "100%" );
-//        stepsTable.getColumnFormatter().setWidth( 0, "15px" );
-        setWidget( contentTableRowCount++, 0, stepsTable );
+        protocolWrapper.add( stepsTable );
 
         addDefaultHandlers();
+
+        add( menuPanel );
+        add( readWriteDetailsPanel );
+        add( addStepPanel );
+        add( protocolWrapper );
 
     }
 
@@ -175,7 +170,6 @@ public class EditInvestigationTable extends FlexTable {
         investigation = new Investigation();
         investigation.createId();
         investigation.getProvider().createId();
-        contentTableRowCount = 0;
         selectedRadioRow = -1;
 
         // cannot initialise an EditableStepView or ReadableStepView until we have rows and columns
@@ -183,7 +177,9 @@ public class EditInvestigationTable extends FlexTable {
 
         stepsTable = new FlexTable();
 
-        removeAllRows();
+        for ( int iii = getWidgetCount() - 1; iii >= 0; iii-- ) {
+            remove( iii );
+        }
     }
 
     private void addDefaultHandlers() {
@@ -335,7 +331,7 @@ public class EditInvestigationTable extends FlexTable {
     public void displayInvestigation( String id ) {
 
         // temporary message for the user
-        setWidget( 0, 0, new Label( "Loading selected investigation. Please wait..." ) );
+        add( new Label( "Loading selected investigation. Please wait..." ) );
 
         rpcService.getInvestigation( id, new AsyncCallback<Investigation>() {
             public void onSuccess( Investigation result ) {
@@ -623,9 +619,19 @@ public class EditInvestigationTable extends FlexTable {
             }
 
             ReadableStepView readable = ( ReadableStepView ) stepsTable.getWidget( row, column );
-            editableStepView = new EditableStepView( readable, stepsTable, investigation, row, column,
+            final PopupPanel popup = new PopupPanel( true );
+            popup.setPopupPositionAndShow( new PopupPanel.PositionCallback() {
+                public void setPosition( int offsetWidth,
+                                         int offsetHeight ) {
+                    int top = ( Window.getClientHeight() - offsetHeight ) / 2;
+                    popup.setPopupPosition( 0, top );
+                }
+            } );
+
+            editableStepView = new EditableStepView( readable, popup, stepsTable, investigation, row, column,
                     new makeEditableHandler( row, column ) );
-            stepsTable.setWidget( row, column, editableStepView );
+            popup.add( editableStepView );
+            popup.show();
 
         }
     }
@@ -648,7 +654,7 @@ public class EditInvestigationTable extends FlexTable {
                     url + ")" );
             warning.setTitle( "Not in scripting mode. You have to deploy the app to an application server! (" +
                     url + ")" );
-            setWidget( contentTableRowCount++, 0, warning );
+            add( warning );
             return;
         }
 
@@ -659,7 +665,7 @@ public class EditInvestigationTable extends FlexTable {
         tempPanel.add( bt );
         HTML bt2 = new HTML( "<span id=\"uploadToNewStep-button\" />" );
         tempPanel.add( bt2 );
-        setWidget( contentTableRowCount++, 0, tempPanel );
+        add( tempPanel );
 
         setupExistingStepBuilder( baseApp, url );
         setupNewStepBuilder( baseApp, url );

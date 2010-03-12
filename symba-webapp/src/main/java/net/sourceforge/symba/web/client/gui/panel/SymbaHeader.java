@@ -32,9 +32,12 @@ public class SymbaHeader extends HorizontalPanel {
             prefix = baseApp;
         }
 
+        // It only applies to widgets added after this property is set.
+        setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
+
         final Image homeImage = new Image( prefix + HOME_ICON );
         homeImage.setTitle( "SyMBA Home Page (Cancel Current Operation)" );
-        homeImage.addStyleName( "header-home-image");
+        homeImage.addStyleName( "header-home-image" );
         homeImage.addClickHandler( new CancelAllClickHandler( dock, home ) );
         homeImage.addMouseOverHandler( new MouseOverHandler() {
             public void onMouseOver( MouseOverEvent event ) {
@@ -43,16 +46,21 @@ public class SymbaHeader extends HorizontalPanel {
         } );
         add( homeImage );
 
+        Label title = new Label( "SyMBA 2 Pre-Release 2010" );
+        title.addStyleName( "header-title" );
+        add( title );
+
         // It only applies to widgets added after this property is set.
         setHorizontalAlignment( HasHorizontalAlignment.ALIGN_RIGHT );
 
         // adding the other actions in their own HorizontalPanel ensures that there isn't a huge amount of space
         // between each image.
         HorizontalPanel rightSide = new HorizontalPanel();
+        rightSide.setSpacing( 10 );
 
         final Image addExpImage = new Image( prefix + ADD_EXPERIMENT );
         addExpImage.setTitle( "Describe a New Investigation" );
-        addExpImage.addStyleName( "header-images");
+        addExpImage.addStyleName( "header-images" );
         addExpImage.addClickHandler( new AddExperimentClickHandler( dock ) );
         addExpImage.addMouseOverHandler( new MouseOverHandler() {
             public void onMouseOver( MouseOverEvent event ) {
@@ -64,7 +72,7 @@ public class SymbaHeader extends HorizontalPanel {
 
         final Image listExpImage = new Image( prefix + LIST_EXPERIMENT );
         listExpImage.setTitle( "List All Investigations" );
-        listExpImage.addStyleName( "header-images");
+        listExpImage.addStyleName( "header-images" );
         listExpImage.addClickHandler( new ListExperimentsClickHandler( dock ) );
         listExpImage.addMouseOverHandler( new MouseOverHandler() {
             public void onMouseOver( MouseOverEvent event ) {
@@ -75,7 +83,7 @@ public class SymbaHeader extends HorizontalPanel {
 
         final Image downloadFileImage = new Image( prefix + DOWNLOAD_FILE );
         downloadFileImage.setTitle( "Download a Data or Metadata File" );
-        downloadFileImage.addStyleName( "header-images");
+        downloadFileImage.addStyleName( "header-images" );
         downloadFileImage.addClickHandler( new DownloadClickHandler( dock ) );
         downloadFileImage.addMouseOverHandler( new MouseOverHandler() {
             public void onMouseOver( MouseOverEvent event ) {

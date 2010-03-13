@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EditInvestigationTable extends VerticalPanel {
+public class EditInvestigationView extends VerticalPanel {
 
     // todo disable all functions on entire page until file uploads are complete
     // todo refactor this class to make it easier to read
@@ -51,7 +51,6 @@ public class EditInvestigationTable extends VerticalPanel {
 
     private FlexTable stepsTable;
     private final ReadWriteDetailsPanel readWriteDetailsPanel;
-    private EditableStepView editableStepView;
 
     private Investigation investigation;
     private boolean defaultHandlersSet;
@@ -82,9 +81,9 @@ public class EditInvestigationTable extends VerticalPanel {
      * @param rpcService the service to use to call the GWT server side
      * @param contacts   the contacts that are to be passed to the main panel
      */
-    public EditInvestigationTable( SymbaController symba,
-                                   InvestigationsServiceAsync rpcService,
-                                   HashMap<String, Contact> contacts ) {
+    public EditInvestigationView( SymbaController symba,
+                                  InvestigationsServiceAsync rpcService,
+                                  HashMap<String, Contact> contacts ) {
 
         // initialise all final variables
         this.rpcService = rpcService;
@@ -141,9 +140,6 @@ public class EditInvestigationTable extends VerticalPanel {
         menuPanel.add( saveCopyAsTemplateButton );
         menuPanel.add( cancelButton );
 
-        // Create the investigation summary view
-        setupMultipleFileUploader();
-
         HorizontalPanel addStepPanel = new HorizontalPanel();
         addStepPanel.setBorderWidth( 0 );
         addStepPanel.setSpacing( 0 );
@@ -152,16 +148,20 @@ public class EditInvestigationTable extends VerticalPanel {
 
         // wrap the stepsTable within a CaptionPanel
         CaptionPanel protocolWrapper = new CaptionPanel( "Experimental Steps" );
-        protocolWrapper.setStyleName( "gwt-Label" );
+        VerticalPanel protocolPanel = new VerticalPanel();
+        protocolPanel.add( addStepPanel );
+        protocolWrapper.setStyleName( "captionpanel-border" );
         stepsTable.setCellSpacing( 0 );
         stepsTable.setCellPadding( 0 );
-        protocolWrapper.add( stepsTable );
+        protocolPanel.add( stepsTable );
+        protocolWrapper.add( protocolPanel );
 
         addDefaultHandlers();
 
         add( menuPanel );
         add( readWriteDetailsPanel );
-        add( addStepPanel );
+        // Create the investigation summary view
+        setupMultipleFileUploader();
         add( protocolWrapper );
 
     }
@@ -172,8 +172,7 @@ public class EditInvestigationTable extends VerticalPanel {
         investigation.getProvider().createId();
         selectedRadioRow = -1;
 
-        // cannot initialise an EditableStepView or ReadableStepView until we have rows and columns
-        editableStepView = null;
+        // cannot initialise a ReadableStepView until we have rows and columns
 
         stepsTable = new FlexTable();
 
@@ -609,16 +608,6 @@ public class EditInvestigationTable extends VerticalPanel {
         public void displayEditable( final int row,
                                      final int column ) {
 
-            // we come to this method if a user has clicked on an experiment step. Prior to this, either there are
-            // no previously-editable fields, or there is an editable field that has not yet been reset to read only.
-            // use the previously-stored coordinates and set them to read-only.
-
-            if ( editableStepView != null ) {
-                editableStepView.setReadOnly( stepsTable );
-                editableStepView = null;
-            }
-
-            ReadableStepView readable = ( ReadableStepView ) stepsTable.getWidget( row, column );
             final PopupPanel popup = new PopupPanel( true );
             popup.setPopupPositionAndShow( new PopupPanel.PositionCallback() {
                 public void setPosition( int offsetWidth,
@@ -628,8 +617,9 @@ public class EditInvestigationTable extends VerticalPanel {
                 }
             } );
 
-            editableStepView = new EditableStepView( readable, popup, stepsTable, investigation, row, column,
-                    new makeEditableHandler( row, column ) );
+            EditableStepView editableStepView = new EditableStepView(
+                    ( ReadableStepView ) stepsTable.getWidget( row, column ), popup, stepsTable, investigation, row,
+                    column, this );
             popup.add( editableStepView );
             popup.show();
 
@@ -825,7 +815,7 @@ public class EditInvestigationTable extends VerticalPanel {
                         .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
 
                 // now assign this file to the appropriate experimental step
-                ( ( EditInvestigationTable ) symba.getCenterWidget() )
+                ( ( EditInvestigationView ) symba.getCenterWidget() )
                         .assignFileToStep( e.getFile(), radioRowSelectedOnUpload );
             }
         } );
@@ -880,7 +870,7 @@ public class EditInvestigationTable extends VerticalPanel {
 
         builder.setDialogStartHandler( new DialogStartHandler() {
             public void onDialogStart() {
-                radioRowSelectedOnUpload = ( ( EditInvestigationTable ) symba.getCenterWidget() ).getSelectedRadioRow();
+                radioRowSelectedOnUpload = ( ( EditInvestigationView ) symba.getCenterWidget() ).getSelectedRadioRow();
             }
         } );
 

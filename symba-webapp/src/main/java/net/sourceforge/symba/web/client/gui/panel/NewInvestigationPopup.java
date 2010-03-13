@@ -4,7 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import net.sourceforge.symba.web.client.gui.EditInvestigationTable;
+import net.sourceforge.symba.web.client.gui.EditInvestigationView;
 import net.sourceforge.symba.web.client.gui.SummariseInvestigationView;
 import net.sourceforge.symba.web.client.gui.handlers.ListExperimentsClickHandler;
 
@@ -37,7 +37,7 @@ public class NewInvestigationPopup extends PopupPanel {
                 public void onClick( ClickEvent event ) {
                     // They've requested a completely new experiment
                     symba.setCenterWidgetAsEditExperiment();
-                    ( ( EditInvestigationTable ) symba.getCenterWidget() ).displayEmptyInvestigation();
+                    ( ( EditInvestigationView ) symba.getCenterWidget() ).displayEmptyInvestigation();
                     hide();
                 }
             } );

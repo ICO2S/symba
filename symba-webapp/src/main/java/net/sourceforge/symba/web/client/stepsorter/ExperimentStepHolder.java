@@ -1,5 +1,7 @@
 package net.sourceforge.symba.web.client.stepsorter;
 
+import net.sourceforge.symba.web.client.gui.InputValidator;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -86,10 +88,11 @@ public class ExperimentStepHolder implements Serializable {
                                          String subject,
                                          String predicate,
                                          String objectValue,
-                                         String unit ) {
+                                         String unit,
+                                         InputValidator.MeasurementType type) {
 
         if ( stepId == selectedRow ) {
-            current.getParameters().add( new ExperimentParameter( subject, predicate, objectValue, unit ) );
+            current.getParameters().add( new ExperimentParameter( subject, predicate, objectValue, unit, type ) );
             setModified( true );
 //            System.err.println( "Step found - adding parameter" );
             return true;
@@ -97,7 +100,7 @@ public class ExperimentStepHolder implements Serializable {
 
         if ( !current.isLeaf() ) {
             for ( ExperimentStepHolder holder : current.getChildren() ) {
-                if ( holder.addParameterAtStepId( selectedRow, subject, predicate, objectValue, unit ) ) {
+                if ( holder.addParameterAtStepId( selectedRow, subject, predicate, objectValue, unit, type ) ) {
                     setModified( true );
                     return true;
                 }

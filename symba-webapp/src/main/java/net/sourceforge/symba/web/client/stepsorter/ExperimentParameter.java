@@ -1,5 +1,7 @@
 package net.sourceforge.symba.web.client.stepsorter;
 
+import net.sourceforge.symba.web.client.gui.InputValidator;
+
 import java.io.Serializable;
 
 /**
@@ -11,6 +13,7 @@ public class ExperimentParameter implements Serializable {
     String predicate; // e.g. "hasValue", "hasConcentration"
     String objectValue; // e.g. "30", "10"
     String unit; // e.g. "hours", "mM"
+    InputValidator.MeasurementType measurementType;
 
     boolean fullyWriteable;
 
@@ -19,6 +22,7 @@ public class ExperimentParameter implements Serializable {
         predicate = "";
         objectValue = "";
         unit = "";
+        measurementType = InputValidator.MeasurementType.UNKNOWN;
 
         fullyWriteable = true;
     }
@@ -26,11 +30,13 @@ public class ExperimentParameter implements Serializable {
     public ExperimentParameter( String subject,
                                 String predicate,
                                 String objectValue,
-                                String unit ) {
+                                String unit,
+                                InputValidator.MeasurementType measurementType ) {
         this.subject = subject;
         this.predicate = predicate;
         this.objectValue = objectValue;
         this.unit = unit;
+        this.measurementType = measurementType;
 
         fullyWriteable = true;
 
@@ -66,6 +72,14 @@ public class ExperimentParameter implements Serializable {
 
     public void setUnit( String unit ) {
         this.unit = unit;
+    }
+
+    public InputValidator.MeasurementType getMeasurementType() {
+        return measurementType;
+    }
+
+    public void setMeasurementType( InputValidator.MeasurementType measurementType ) {
+        this.measurementType = measurementType;
     }
 
     public boolean isFullyWriteable() {

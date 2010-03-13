@@ -4,7 +4,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
-import net.sourceforge.symba.web.client.gui.EditInvestigationTable;
+import net.sourceforge.symba.web.client.gui.EditInvestigationView;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 
@@ -101,8 +101,8 @@ public class SymbaController extends DockPanel {
     }
 
     public void setCenterWidgetAsEditExperiment() {
-        EditInvestigationTable table = new EditInvestigationTable( this, rpcService, contacts );
-        setCenterWidget( table );
+        EditInvestigationView view = new EditInvestigationView( this, rpcService, contacts );
+        setCenterWidget( view );
         showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
                 "Do not upload more files until the files you have selected have completed.</em>" );
     }

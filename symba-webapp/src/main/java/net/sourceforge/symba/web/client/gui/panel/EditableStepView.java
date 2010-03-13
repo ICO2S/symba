@@ -26,7 +26,7 @@ public class EditableStepView extends VerticalPanel {
     public EditableStepView( ReadableStepView readableView,
                              final PopupPanel container,
                              final FlexTable tableToAddTo,
-                             final Investigation investigationToAddTo,
+                             final Investigation investigation,
                              int row,
                              int column,
                              final ClickHandler myEditableHandler ) {
@@ -38,21 +38,22 @@ public class EditableStepView extends VerticalPanel {
         stepTitle.setText( readableView.getStepTitle() );
 
         fileNames = readableView.getFileNames();
-        parameterTable = new EditableStepParameterTable( readableView.getParameterTable() );
-        Button addNewParameterButton = new Button( "Add Parameter" );
+        parameterTable = new EditableStepParameterTable( readableView.getParameterTable().getParameters() );
+        Label addNewParameterLabel = new Label( "Add Parameter" );
+        addNewParameterLabel.addStyleName( "clickable-text" );
         Button saveStepButton = new Button( "Save This Step" );
 
         // a panel to separate out the parameter addition steps
         CaptionPanel parameterCaptionPanel = new CaptionPanel( "Parameters" );
-        parameterCaptionPanel.setStyleName( "gwt-Label" );
+        parameterCaptionPanel.setStyleName( "captionpanel-border" );
         VerticalPanel parameterContentPanel = new VerticalPanel();
         parameterCaptionPanel.add( parameterContentPanel );
         parameterContentPanel.add( parameterTable );
-        parameterContentPanel.add( addNewParameterButton );
+        parameterContentPanel.add( addNewParameterLabel );
 
 
         // add all handlers
-        addNewParameterButton.addClickHandler( new ClickHandler() {
+        addNewParameterLabel.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
                 parameterTable.addNewParameter();
             }
@@ -66,10 +67,9 @@ public class EditableStepView extends VerticalPanel {
                     return;
                 }
 
-                Object[] values = investigationToAddTo
+                Object[] values = investigation
                         .setExperimentStepInfo( editableRow, stepTitle.getText(),
                                 getParameterTable().getParameters() );
-
 
                 // Set style based on change, then send the stepTitle to setReadOnly.
                 Boolean modified = false;
@@ -148,17 +148,17 @@ public class EditableStepView extends VerticalPanel {
         ArrayList<SingleParameterPanel> parameterPanels;
         int parameterRowCount;
 
-        private EditableStepParameterTable( ReadableStepView.ReadableStepParameterTable readable ) {
-            parameters = new ArrayList<ExperimentParameter>();
+        private EditableStepParameterTable( ArrayList<ExperimentParameter> parameters ) {
+            this.parameters = parameters;
             parameterPanels = new ArrayList<SingleParameterPanel>();
             parameterRowCount = 0;
 
-            for ( ExperimentParameter parameter : readable.getParameters() ) {
-                addParameter( parameter );
+            for ( ExperimentParameter parameter : parameters ) {
+                addSingleParameterPanel( parameter );
             }
         }
 
-        private void addParameter( ExperimentParameter parameter ) {
+        private void addSingleParameterPanel( ExperimentParameter parameter ) {
             SingleParameterPanel panel = new SingleParameterPanel( parameter );
             parameterPanels.add( panel );
             setWidget( parameterRowCount++, 0, panel );
@@ -171,6 +171,8 @@ public class EditableStepView extends VerticalPanel {
         /**
          * Delete all current values of parameters, and fill it with what is in the parameterPanels.
          * Let the user know what is missing if partially filled in.
+         *
+         * @return true if at least one parameter value was saved, false otherwise (e.g. due to validation error)
          */
         public boolean savePanelValues() {
 
@@ -192,6 +194,7 @@ public class EditableStepView extends VerticalPanel {
                 if ( panel.getUnit().getText().length() > 0 ) {
                     p.setUnit( panel.getUnit().getText() );
                 }
+                p.setMeasurementType( panel.getMeasure() );
                 parameters.add( p );
             }
 
@@ -225,44 +228,109 @@ public class EditableStepView extends VerticalPanel {
         }
 
         public void addNewParameter() {
-            addParameter( new ExperimentParameter() );
+            addSingleParameterPanel( new ExperimentParameter() );
         }
 
         // An internal panel contains the step stepTitle
 
         private class SingleParameterPanel extends HorizontalPanel {
             private TextBox subject, predicate, objectValue, unit;
+            private InputValidator.MeasurementType measure;
+            private Label measurementTypeLabel;
+            private RadioButton number, trueOrFalse, phrase;
+            private VerticalPanel radioPanel;
 
             public SingleParameterPanel( final ExperimentParameter parameter ) {
                 setBorderWidth( 0 );
                 setSpacing( 0 );
                 setHorizontalAlignment( HorizontalPanel.ALIGN_LEFT );
 
+                radioPanel = new VerticalPanel();
+
+                measure = InputValidator.MeasurementType.UNKNOWN;
+                measurementTypeLabel = new Label();
+                number = new RadioButton( "measurementGroup", "number" );
+                number.addClickHandler( new ClickHandler() {
+                    public void onClick( ClickEvent event ) {
+                        measure = InputValidator.MeasurementType.ATOMIC;
+                    }
+                } );
+                trueOrFalse = new RadioButton( "measurementGroup", "true/false" );
+                trueOrFalse.addClickHandler( new ClickHandler() {
+                    public void onClick( ClickEvent event ) {
+                        measure = InputValidator.MeasurementType.BOOLEAN;
+                    }
+                } );
+                phrase = new RadioButton( "measurementGroup", "word" );
+                phrase.addClickHandler( new ClickHandler() {
+                    public void onClick( ClickEvent event ) {
+                        measure = InputValidator.MeasurementType.COMPLEX;
+                    }
+                } );
+                radioPanel.add( number );
+                radioPanel.add( trueOrFalse );
+                radioPanel.add( phrase );
+                radioPanel.setVisible( false );
+
                 subject = new TextBox();
                 ParameterCaptionBox sPanel = new ParameterCaptionBox( "Parameter Name, e.g. Camera", subject,
                         parameter.getSubject() );
-                add( sPanel );
 
                 predicate = new TextBox();
                 ParameterCaptionBox pPanel = new ParameterCaptionBox( "Relationship, e.g. has brand", predicate,
                         parameter.getPredicate() );
-                add( pPanel );
 
                 objectValue = new TextBox();
                 ParameterCaptionBox oPanel = new ParameterCaptionBox( "Value, e.g. Canon 5D", objectValue,
-                        parameter.getSubject() );
-                add( oPanel );
+                        parameter.getObjectValue() );
+                if ( parameter.getObjectValue().length() > 0 ) {
+                    setMeasureAndRadio( objectValue.getText() );
+                }
+                // in addition to the standard functionality provided by the ParameterCaptionBox, also check
+                // if we can tell the type of parameter. If we cannot, then it becomes a complext value
+                objectValue.addBlurHandler( new BlurHandler() {
+                    public void onBlur( BlurEvent event ) {
+                        if ( objectValue.getText().trim().length() > 0 ) {
+                            setMeasureAndRadio( objectValue.getText() );
+                        } else {
+                            measurementTypeLabel.setText( "" );
+                            radioPanel.setVisible( false );
+                            number.setValue( false );
+                            trueOrFalse.setValue( false );
+                            phrase.setValue( false );
+                        }
+                    }
+                } );
 
                 unit = new TextBox();
                 ParameterCaptionBox uPanel = new ParameterCaptionBox( "Units (optional), e.g. centimetres", unit,
-                        parameter.getSubject() );
-                add( uPanel );
+                        parameter.getUnit() );
 
                 // do not allow modifications to anything other than the objectValue and the unit if this
                 // parameter has been copied from a template.
                 if ( !parameter.isFullyWriteable() ) {
                     subject.setEnabled( false );
                     predicate.setEnabled( false );
+                }
+
+                add( sPanel );
+                add( pPanel );
+                add( oPanel );
+                add( uPanel );
+                add( measurementTypeLabel );
+                add( radioPanel );
+            }
+
+            private void setMeasureAndRadio( String text ) {
+                radioPanel.setVisible( true );
+                measure = InputValidator.measurementTypeChecker( text );
+                measurementTypeLabel.setText( InputValidator.measurementMessages.get( measure ) );
+                if ( measure == InputValidator.MeasurementType.ATOMIC ) {
+                    number.setValue( true );
+                } else if ( measure == InputValidator.MeasurementType.BOOLEAN ) {
+                    trueOrFalse.setValue( true );
+                } else if ( measure == InputValidator.MeasurementType.COMPLEX ) {
+                    phrase.setValue( true );
                 }
             }
 
@@ -282,12 +350,17 @@ public class EditableStepView extends VerticalPanel {
                 return unit;
             }
 
+            public InputValidator.MeasurementType getMeasure() {
+                return measure;
+            }
+
             private class ParameterCaptionBox extends CaptionPanel {
                 private ParameterCaptionBox( String captionText,
                                              final TextBox box,
                                              String boxText ) {
                     super( captionText );
                     addStyleName( "parameter-title" );
+                    addStyleName( "captionpanel-border" );
                     box.setText( boxText );
                     add( box );
                     box.addBlurHandler( new BlurHandler() {

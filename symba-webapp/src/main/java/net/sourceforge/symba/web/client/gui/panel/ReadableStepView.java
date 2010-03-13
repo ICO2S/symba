@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 
 import java.util.ArrayList;
@@ -69,9 +70,13 @@ public class ReadableStepView extends VerticalPanel {
             for ( ExperimentParameter parameter : this.parameters ) {
                 Label label = new Label(
                         parameter.getSubject() + " : " + parameter.getPredicate() + " : " +
-                                parameter.getObjectValue() + ": " + parameter.getUnit() );
+                                parameter.getObjectValue() + " : " + parameter.getUnit() );
                 label.addClickHandler( myEditableHandler );
-                setWidget( rowCount++, 0, label );
+                setWidget( rowCount, 0, label );
+                Label measureType = new Label(
+                        InputValidator.measurementMessages.get( parameter.getMeasurementType() ) );
+                measureType.addClickHandler( myEditableHandler );
+                setWidget( rowCount++, 1, measureType );
             }
         }
 

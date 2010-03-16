@@ -27,7 +27,8 @@ public class EditableStepView extends VerticalPanel {
                              final Investigation investigation,
                              int row,
                              int column,
-                             final ClickHandler myEditableHandler ) {
+                             final ClickHandler myEditableHandler,
+                             final boolean completed ) {
         this.myEditableHandler = myEditableHandler;
 
         this.editableRow = row;
@@ -60,7 +61,7 @@ public class EditableStepView extends VerticalPanel {
             public void onClick( ClickEvent clickEvent ) {
 
                 // save the text in the parameters text boxes
-                if ( !getParameterTable().savePanelValues() ) {
+                if ( !getParameterTable().savePanelValues( completed ) ) {
                     return;
                 }
 
@@ -71,7 +72,7 @@ public class EditableStepView extends VerticalPanel {
                 // Set style based on change, then send the stepTitle to setReadOnly.
                 Boolean modified = false;
                 if ( values.length == 2 && values[0] != null && values[1] != null &&
-                    ( ( String ) values[0] ).length() > 0 ) {
+                        ( ( String ) values[0] ).length() > 0 ) {
                     modified = ( Boolean ) values[1];
                 }
                 // todo this style is currently only be applied to one cell until the entire table is redrawn, e.g. from an added step
@@ -170,17 +171,16 @@ public class EditableStepView extends VerticalPanel {
          * Delete all current values of parameters, and fill it with what is in the parameterPanels.
          * Let the user know what is missing if partially filled in.
          *
+         * @param completed true if the user is trying to set the current Investigation as completed.
          * @return true if at least one parameter value was saved, false otherwise (e.g. due to validation error)
          */
-        public boolean savePanelValues() {
+        public boolean savePanelValues( boolean completed ) {
 
-            String emptyValues = makeErrorMessages( parameterPanels );
-            if ( emptyValues.length() > 1 ) {
-                Window.alert( "You must provide a value for all fields except the Unit, which is optional." +
-                        "\nThe following fields are missing for at least one parameter:\n" + emptyValues );
+            String emptyValues = makeErrorMessages( parameterPanels, completed );
+            if ( emptyValues.length() > 0 ) {
+                Window.alert( "At least one parameter is missing a value for the following fields:\n" + emptyValues );
                 return false;
             }
-
 
             parameters.clear();
             for ( SingleParameterPanel panel : parameterPanels ) {
@@ -199,10 +199,20 @@ public class EditableStepView extends VerticalPanel {
             return true;
         }
 
-        private String makeErrorMessages( ArrayList<SingleParameterPanel> parameterPanels ) {
-            // we can stop as soon as all three fields have are missing in at least one parameter
-            boolean subjectMissing = false, objectValueMissing = false, predicateValueMissing = false;
-            String emptyValues = "\n";
+        /**
+         * Creates an error message if any required fields are missing.
+         *
+         * @param parameterPanels the panels to check
+         * @param completed       true if the user is trying to set the current Investigation as completed. In this case,
+         *                        every parameter must have an objectValue, whereas in other cases it is not required.
+         * @return the error message, or "" if no errors.
+         */
+        private String makeErrorMessages( ArrayList<SingleParameterPanel> parameterPanels,
+                                          boolean completed ) {
+            // we can stop as soon as the first two fields are missing in at least one parameter, and as soon as
+            // at least one parameter does not have its measurement type chosen.
+            boolean subjectMissing = false, predicateValueMissing = false, radioMissing = false, objectMissing = false;
+            String emptyValues = "";
             for ( SingleParameterPanel panel : parameterPanels ) {
                 // there must be a nonzero value in every non-unit field (the unit is optional).
                 if ( !subjectMissing && panel.getSubject().getText().trim().length() == 0 ) {
@@ -213,16 +223,27 @@ public class EditableStepView extends VerticalPanel {
                     predicateValueMissing = true;
                     emptyValues += "Relationship\n";
                 }
-                if ( !objectValueMissing && panel.getObjectValue().getText().trim().length() == 0 ) {
-                    objectValueMissing = true;
-                    emptyValues += "Value\n";
+                if ( !radioMissing && panel.getObjectValue().getText().trim().length() > 0 &&
+                        panel.getMeasure() == InputValidator.MeasurementType.UNKNOWN ) {
+                    radioMissing = true;
+                    emptyValues += "Measurement Type (number, true/false, or word/phrase for each parameter)\n";
                 }
-                if ( subjectMissing && objectValueMissing && predicateValueMissing ) {
+                if ( completed ) {
+                    if ( !objectMissing && panel.getObjectValue().getText().trim().length() == 0 ) {
+                        objectMissing = true;
+                        emptyValues += "Parameter Value\n";
+                    }
+                }
+                if ( !completed && subjectMissing && predicateValueMissing && radioMissing ) {
+                    break;
+                } else if ( completed && subjectMissing && predicateValueMissing && radioMissing && objectMissing ) {
                     break;
                 }
             }
+            if ( emptyValues.length() > 0 ) {
+                emptyValues = "\n" + emptyValues;
+            }
             return emptyValues;
-
         }
 
         public void addNewParameter() {
@@ -256,7 +277,7 @@ public class EditableStepView extends VerticalPanel {
 
                 phrase = new RadioButton( "measurementGroup" + counter, "word" );
                 addRadioParameterHandlers( InputValidator.MeasurementType.COMPLEX, phrase );
-                               
+
                 radioPanel.add( number );
                 radioPanel.add( trueOrFalse );
                 radioPanel.add( phrase );
@@ -264,15 +285,15 @@ public class EditableStepView extends VerticalPanel {
 
                 subject = new TextBox();
                 ParameterCaptionBox sPanel = new ParameterCaptionBox( "Parameter Name, e.g. Camera", subject,
-                        parameter.getSubject() );
+                        parameter.getSubject(), true );
 
                 predicate = new TextBox();
                 ParameterCaptionBox pPanel = new ParameterCaptionBox( "Relationship, e.g. has brand", predicate,
-                        parameter.getPredicate() );
+                        parameter.getPredicate(), true );
 
                 objectValue = new TextBox();
                 ParameterCaptionBox oPanel = new ParameterCaptionBox( "Value, e.g. Canon 5D", objectValue,
-                        parameter.getObjectValue() );
+                        parameter.getObjectValue(), false );
                 if ( parameter.getObjectValue().length() > 0 ) {
                     setMeasureAndRadio( objectValue.getText() );
                 }
@@ -293,7 +314,7 @@ public class EditableStepView extends VerticalPanel {
 
                 unit = new TextBox();
                 ParameterCaptionBox uPanel = new ParameterCaptionBox( "Units (optional), e.g. centimetres", unit,
-                        parameter.getUnit() );
+                        parameter.getUnit(), false );
 
                 // do not allow modifications to anything other than the objectValue and the unit if this
                 // parameter has been copied from a template.
@@ -370,17 +391,20 @@ public class EditableStepView extends VerticalPanel {
             private class ParameterCaptionBox extends CaptionPanel {
                 private ParameterCaptionBox( String captionText,
                                              final TextBox box,
-                                             String boxText ) {
+                                             String boxText,
+                                             boolean nonEmpty ) {
                     super( captionText );
                     addStyleName( "parameter-title" );
                     addStyleName( "captionpanel-border" );
                     box.setText( boxText );
                     add( box );
-                    box.addBlurHandler( new BlurHandler() {
-                        public void onBlur( BlurEvent event ) {
-                            InputValidator.nonEmptyTextBoxStyle( box );
-                        }
-                    } );
+                    if ( nonEmpty ) {
+                        box.addBlurHandler( new BlurHandler() {
+                            public void onBlur( BlurEvent event ) {
+                                InputValidator.nonEmptyTextBoxStyle( box );
+                            }
+                        } );
+                    }
                 }
             }
         }

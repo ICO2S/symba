@@ -10,7 +10,7 @@ import net.sourceforge.symba.web.shared.Investigation;
 
 import java.util.HashMap;
 
-public class ReadWriteDetailsPanel extends VerticalPanel {
+public class InvestigationDetailsPanel extends VerticalPanel {
 
     private final TextBox investigationIdBox;
     private final TextBox investigationTitleBox;
@@ -23,7 +23,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
     private final HashMap<String, Contact> contacts;
     private final InvestigationsServiceAsync rpcService;
 
-    public ReadWriteDetailsPanel( HashMap<String, Contact> allContacts,
+    public InvestigationDetailsPanel( HashMap<String, Contact> allContacts,
                                   InvestigationsServiceAsync rpcService ) {
 
         investigationIdBox = new TextBox();
@@ -95,11 +95,11 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
     public void createReadableDisplay( Investigation investigation ) {
 
         setupDetailPanel( investigationTitlePanel, investigationTitleBox, "Investigation Title: ",
-                investigation.getInvestigationTitle(), investigation.isTemplate() );
+                investigation.getInvestigationTitle(), investigation.isReadOnly() );
         add( investigationTitlePanel );
 
         setupProviderNameDetailPanel( investigation.getProvider().getFullName(),
-                investigation.getProvider().getEmailAddress(), investigation.isTemplate() );
+                investigation.getProvider().getEmailAddress(), investigation.isReadOnly() );
         add( contactPanel );
 
     }
@@ -108,7 +108,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
                                    final TextBox box,
                                    String legend,
                                    String value,
-                                   boolean template ) {
+                                   boolean readOnly ) {
 
         // clear the panel.
         for ( int iii = panel.getWidgetCount(); iii > 0; iii-- ) {
@@ -123,7 +123,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
         if ( value != null && value.length() > 0 ) {
             final Label label = new Label();
             label.setText( value );
-            if ( !template ) {
+            if ( !readOnly ) {
                 label.addStyleName( "clickable-text" );
                 label.addClickHandler( new ClickHandler() {
                     public void onClick( ClickEvent clickEvent ) {
@@ -144,7 +144,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
 
     public void setupProviderNameDetailPanel( final String fullNameValue,
                                               String emailAddress,
-                                              boolean template ) {
+                                              boolean readOnly ) {
 
         // clear the contact panel.
         for ( int iii = contactPanel.getWidgetCount(); iii > 0; iii-- ) {
@@ -164,7 +164,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
             final Label label = new Label();
             label.setText( fullNameValue );
 
-            if ( !template ) {
+            if ( !readOnly ) {
                 // add the behaviour to switch to a listbox when the read-only text is clicked on
                 label.addStyleName( "clickable-text" );
                 label.addClickHandler( new ClickHandler() {
@@ -182,7 +182,7 @@ public class ReadWriteDetailsPanel extends VerticalPanel {
             emailAddress = contacts.get( fullNameBox.getValue( 0 ) ).getEmailAddress();
         }
 
-        if ( !template ) {
+        if ( !readOnly ) {
             // provide the ability to add new contacts
             Label addContact = new Label( "(add new contact)" );
             contactPanel.add( addContact );

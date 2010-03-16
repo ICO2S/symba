@@ -100,6 +100,7 @@ public class SummariseInvestigationView extends FlexTable {
                 }
                 MetadataViewer viewer = new MetadataViewer( symba );
                 viewer.display( investigationsListBox.getValue( selected ) );
+                symba.hideEastWidget();
                 popup.hide();
             }
         } );

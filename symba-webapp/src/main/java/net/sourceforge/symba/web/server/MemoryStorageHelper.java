@@ -24,7 +24,7 @@ public class MemoryStorageHelper extends StorageHelper {
      */
     @NotNull
     public HashMap<String, Investigation> fetchAll() {
-        Investigation investigation = new Investigation( false, "12345", "My Example Investigation", ALICE,
+        Investigation investigation = new Investigation( false, false, "12345", "My Example Investigation", ALICE,
                 new ArrayList<ExperimentStepHolder>() );
         getInvestigations().put( investigation.getId(), investigation );
         return getInvestigations();

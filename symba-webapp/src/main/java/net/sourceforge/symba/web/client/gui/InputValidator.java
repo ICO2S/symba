@@ -14,7 +14,8 @@ public class InputValidator implements Serializable {
 
     public static final String TOP_PROTOCOL = "net.sourceforge.symba.topProtocol";
     public static final String SUBJECT_PREDICATE_DIVIDER = "net.sourceforge.symba.subjectPredicateDivider";
-    public static final String COMPLETED_EXPERIMENT = "net.sourceforge.symba.completedExperiment";
+    public static final String COMPLETED_INVESTIGATION = "net.sourceforge.symba.completedInvestigation";
+    public static final String TEMPLATE = "net.sourceforge.symba.template";
     public static final HashMap<MeasurementType, String> measurementMessages = new HashMap<MeasurementType, String>();
 
     static {

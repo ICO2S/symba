@@ -17,7 +17,7 @@ import java.util.ArrayList;
 @SuppressWarnings( "serial" )
 public class Investigation implements Serializable {
 
-    private boolean template;
+    private boolean template, completed;
 
     private String id;
     private String investigationTitle;
@@ -30,6 +30,7 @@ public class Investigation implements Serializable {
 
     public Investigation() {
         this.template = false;
+        this.completed = false;
         this.id = "0";
         this.investigationTitle = "";
         this.provider = new Contact();
@@ -38,12 +39,14 @@ public class Investigation implements Serializable {
 //        new Investigation( "00", "", new Contact("0", "", "", "") );
     }
 
-    public Investigation( boolean isTemplate,
+    public Investigation( boolean template,
+                          boolean completed,
                           String id,
                           String investigationTitle,
                           Contact provider,
                           ArrayList<ExperimentStepHolder> experiments ) {
-        this.template = isTemplate;
+        this.template = template;
+        this.completed = completed;
         this.id = id;
         this.investigationTitle = investigationTitle;
         this.provider = provider;
@@ -57,8 +60,8 @@ public class Investigation implements Serializable {
      * @param investigation the object to be copied
      */
     public Investigation( Investigation investigation ) {
-        this( investigation.isTemplate(), investigation.getId(), investigation.getInvestigationTitle(),
-                investigation.getProvider(), investigation.getExperiments() );
+        this( investigation.isTemplate(), investigation.isCompleted(), investigation.getId(),
+                investigation.getInvestigationTitle(), investigation.getProvider(), investigation.getExperiments() );
     }
 
     public void createId() {
@@ -138,6 +141,18 @@ public class Investigation implements Serializable {
         this.template = template;
     }
 
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted( boolean completed ) {
+        this.completed = completed;
+    }
+
+    public boolean isReadOnly() {
+        return template || completed;
+    }
+
     public String getId() {
         return id;
     }
@@ -158,16 +173,12 @@ public class Investigation implements Serializable {
         return provider;
     }
 
-    public void setProvider( Contact provider ) {
-        this.provider = provider;
-    }
-
     public ArrayList<ExperimentStepHolder> getExperiments() {
         return experiments;
     }
 
     public InvestigationDetail getLightWeightInvestigation() {
-        return new InvestigationDetail( template, id, investigationTitle, provider );
+        return new InvestigationDetail( template, completed, id, investigationTitle, provider );
     }
 
     /**

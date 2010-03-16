@@ -3,6 +3,8 @@ package net.sourceforge.symba.web.client.gui;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -29,8 +31,9 @@ public class EditInvestigationView extends VerticalPanel {
     }
 
     private final InvestigationsServiceAsync rpcService;
-    private final SymbaController symba;
+    private final SymbaController controller;
 
+    private final CheckBox completedCheckBox;
     private final Button saveButton;
     private final Button setAsTemplateButton;
     private final Button saveCopyAsTemplateButton;
@@ -40,10 +43,9 @@ public class EditInvestigationView extends VerticalPanel {
     private final String copyStepImageUrl;
 
     private FlexTable stepsTable;
-    private final ReadWriteDetailsPanel readWriteDetailsPanel;
+    private final InvestigationDetailsPanel investigationDetailsPanel;
 
     private final Investigation investigation;
-    private boolean defaultHandlersSet;
 
     // This variable will change *whenever* an onClick for the radio Button occurs. As it may change while files
     // are being uploaded, the upload mechanism stores the value of this variable when the upload button is pressed.
@@ -67,28 +69,73 @@ public class EditInvestigationView extends VerticalPanel {
     /**
      * Initialise all final and modifiable variables
      *
-     * @param symba         the controller panel for the entire interface
-     * @param investigation the investigation assigned to this view.
-     * @param rpcService    the service to use to call the GWT server side
-     * @param contacts      the contacts that are to be passed to the main panel
+     * @param symbaController       the symbaController panel for the entire interface
+     * @param selectedInvestigation the investigation assigned to this view.
+     * @param rpc                   the service to use to call the GWT server side
+     * @param contacts              the contacts that are to be passed to the main panel
      */
-    public EditInvestigationView( SymbaController symba,
-                                  Investigation investigation,
-                                  InvestigationsServiceAsync rpcService,
+    public EditInvestigationView( SymbaController symbaController,
+                                  Investigation selectedInvestigation,
+                                  InvestigationsServiceAsync rpc,
                                   HashMap<String, Contact> contacts ) {
 
-        // initialise all final variables
-        this.rpcService = rpcService;
-        this.symba = symba;
-        if ( investigation != null ) {
-            this.investigation = investigation;
-        } else {
-            this.investigation = new Investigation();
-            this.investigation.createId();
-            this.investigation.getProvider().createId();
-        }
-        readWriteDetailsPanel = new ReadWriteDetailsPanel( contacts, rpcService );
+        setWidth( "100%" );
 
+        this.rpcService = rpc;
+        this.controller = symbaController;
+        if ( selectedInvestigation != null ) {
+            investigation = selectedInvestigation;
+        } else {
+            investigation = new Investigation();
+            investigation.createId();
+            investigation.getProvider().createId();
+        }
+
+        // set global variables
+        selectedRadioRow = -1;
+
+        //
+        // prepare all buttons and checkboxes.
+        //
+        completedCheckBox = new CheckBox(
+                "Check this box if your investigation is completely described. Checking this box " +
+                        "will disallow any further modifications to the investigation." );
+        completedCheckBox.addStyleName( "note" );
+        if ( this.investigation.isCompleted() ) {
+            completedCheckBox.setValue( true );
+            completedCheckBox.setEnabled( false ); // todo allow them to un-set the completed flag
+        }
+        saveButton = new Button( "Save and Finish" );
+        setAsTemplateButton = new Button( "Set As Template" );
+        saveCopyAsTemplateButton = new Button( "Save a Copy As Template" );
+        cancelButton = new Button( "Cancel" );
+        addSubStepButton = new Button( "Add Top-Level Step" );
+        if ( investigation.isReadOnly() ) {
+            // disable buttons that allow modifications
+            saveButton.setEnabled( false );
+            setAsTemplateButton.setEnabled( false );
+            saveCopyAsTemplateButton.setEnabled( false );
+            addSubStepButton.setEnabled( false );
+        } else {
+            // we need the "else" here if a template was previously shown, and therefore buttons were
+            // previously disabled. We need to explicitly enable them.
+            saveButton.setEnabled( true );
+            setAsTemplateButton.setEnabled( true );
+            saveCopyAsTemplateButton.setEnabled( true );
+            addSubStepButton.setEnabled( true );
+        }
+        cancelButton.setEnabled( true );
+
+        //
+        // prepare the top part of the page, where the details of the investigation are displayed
+        //
+        investigationDetailsPanel = new InvestigationDetailsPanel( contacts, rpc );
+        investigationDetailsPanel.createReadableDisplay( investigation );
+
+        //
+        // sort out image paths: must be done before displayStepData() is called to ensure paths are correct for the
+        // display itself.
+        //
         if ( GWT.isScript() ) {
             String baseApp = GWT.getModuleBaseURL()
                     .substring( 0, GWT.getModuleBaseURL().lastIndexOf( GWT.getModuleName() ) );
@@ -100,33 +147,17 @@ public class EditInvestigationView extends VerticalPanel {
             copyStepImageUrl = "/images/copyStep30x15.png";
         }
 
-        saveButton = new Button( "Save and Finish" );
-        setAsTemplateButton = new Button( "Set As Template" );
-        saveCopyAsTemplateButton = new Button( "Save a Copy As Template" );
-        cancelButton = new Button( "Cancel" );
-        addSubStepButton = new Button( "Add Top-Level Step" );
+        //
+        // prepare the bottom part of the page, where the experimental steps are displayed.
+        //
+        stepsTable = new FlexTable();
+        stepsTable.setCellSpacing( 0 );
+        stepsTable.setCellPadding( 0 );
+        displayStepData();
 
-        // defaultHandlersSet should only be set to false in the constructor, and then true the first time
-        // the handlers are loaded. Other than that, no modifications should be performed on this variable.
-        // Therefore, it should not be included in clearModifiable()
-        defaultHandlersSet = false;
-
-        displayInvestigation();
-    }
-
-    // todo
-    // upload URIs (must be on cisbclust) - once done, SyMBA checks the file is there and then sets it to read only.
-    //
-
-    //
-    // initialising/clearing/resetting methods
-    //
-
-    public void initEditInvestigationView() {
-
-        clearModifiable();
-        setWidth( "100%" );
-
+        //
+        // Prepare all container panels
+        //
         HorizontalPanel menuPanel = new HorizontalPanel();
         menuPanel.setBorderWidth( 0 );
         menuPanel.setSpacing( 0 );
@@ -150,35 +181,36 @@ public class EditInvestigationView extends VerticalPanel {
         protocolPanel.add( stepsTable );
         protocolWrapper.add( protocolPanel );
 
-        addDefaultHandlers();
+        addHandlers();
 
+        //
+        // Put everything together in one view.
+        //
+        if ( !investigation.isTemplate() ) {
+            add( completedCheckBox );
+        }
         add( menuPanel );
-        add( readWriteDetailsPanel );
+        add( investigationDetailsPanel );
         add( protocolWrapper );
 
+
     }
 
-    private void clearModifiable() {
-        selectedRadioRow = -1;
+    // todo
+    // upload URIs (must be on cisbclust) - once done, SyMBA checks the file is there and then sets it to read only.
+    //
 
-        // cannot initialise a ReadableStepView until we have rows and columns
+    //
+    // initialising/clearing/resetting methods
+    //
 
-        stepsTable = new FlexTable();
-        stepsTable.setCellSpacing( 0 );
-        stepsTable.setCellPadding( 0 );
+    private void addHandlers() {
 
-        for ( int iii = getWidgetCount() - 1; iii >= 0; iii-- ) {
-            remove( iii );
-        }
-    }
-
-    private void addDefaultHandlers() {
-
-        if ( defaultHandlersSet ) {
-            return;
-        } else {
-            defaultHandlersSet = true;
-        }
+        completedCheckBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+            public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
+                investigation.setCompleted( completedCheckBox.getValue() );
+            }
+        } );
 
         saveButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
@@ -204,8 +236,8 @@ public class EditInvestigationView extends VerticalPanel {
                     doSave( SaveType.SET_AS_TEMPLATE );
                 } else {
                     // no need to keep any file statuses at this point
-                    symba.showEastWidget(
-                            "<p>Saving as template cancelled.</p>", symba.getEastWidgetDirections() );
+                    controller.showEastWidget(
+                            "<p>Saving as template cancelled.</p>", controller.getEastWidgetDirections() );
                 }
             }
         } );
@@ -224,8 +256,8 @@ public class EditInvestigationView extends VerticalPanel {
                     doSave( SaveType.SET_COPY_AS_TEMPLATE );
                 } else {
                     // no need to keep any file statuses at this point
-                    symba.showEastWidget( "<p>Saving a copy as a template cancelled.</p>",
-                            symba.getEastWidgetDirections() );
+                    controller.showEastWidget( "<p>Saving a copy as a template cancelled.</p>",
+                            controller.getEastWidgetDirections() );
                 }
 
             }
@@ -241,16 +273,16 @@ public class EditInvestigationView extends VerticalPanel {
             public void onClick( ClickEvent event ) {
                 if ( investigation.getInvestigationTitle().length() > 0 ) {
                     // no need to keep any file statuses at this point
-                    symba.showEastWidget(
+                    controller.showEastWidget(
                             "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
-                                    "</strong> cancelled.</p>", symba.getEastWidgetDirections() );
+                                    "</strong> cancelled.</p>", controller.getEastWidgetDirections() );
                 } else {
                     // no need to keep any file statuses at this point
-                    symba.showEastWidget(
-                            "<p>Creation of new investigation cancelled.</p>", symba.getEastWidgetDirections()
+                    controller.showEastWidget(
+                            "<p>Creation of new investigation cancelled.</p>", controller.getEastWidgetDirections()
                     );
                 }
-                symba.setCenterWidgetAsListExperiments();
+                controller.setCenterWidgetAsListExperiments();
             }
         } );
 
@@ -266,10 +298,11 @@ public class EditInvestigationView extends VerticalPanel {
                     }
 
                     public void onSuccess( ArrayList<InvestigationDetail> results ) {
-                        symba.setInvestigationDetails( results );
+                        controller.setInvestigationDetails( results );
                         // no need to keep any file statuses at this point
-                        symba.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>", "" );
-                        symba.setCenterWidgetAsListExperiments();
+                        controller.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>",
+                                "" );
+                        controller.setCenterWidgetAsListExperiments();
                     }
                 } );
     }
@@ -286,51 +319,17 @@ public class EditInvestigationView extends VerticalPanel {
     // Methods which change the class variables or run RPC calls which modify server variables
     //
 
-    private void displayInvestigation() {
-        initEditInvestigationView();
-
-        // we need the non-template settings here if a template was previously shown, and therefore buttons were
-        // previously disabled. In such cases, we need to explicitly enable them.
-        saveButton.setEnabled( true );
-        setAsTemplateButton.setEnabled( true );
-        saveCopyAsTemplateButton.setEnabled( true );
-        cancelButton.setEnabled( true );
-        addSubStepButton.setEnabled( true );
-
-        readWriteDetailsPanel.createReadableDisplay( investigation );
-
-        if ( investigation.isTemplate() ) {
-            // disable buttons that allow modifications
-            saveButton.setEnabled( false );
-            setAsTemplateButton.setEnabled( false );
-            saveCopyAsTemplateButton.setEnabled( false );
-            addSubStepButton.setEnabled( false );
-        } else {
-            // we need the "else" here if a template was previously shown, and therefore buttons were
-            // previously disabled. We need to explicitly enable them.
-            saveButton.setEnabled( true );
-            setAsTemplateButton.setEnabled( true );
-            saveCopyAsTemplateButton.setEnabled( true );
-            addSubStepButton.setEnabled( true );
-        }
-        cancelButton.setEnabled( true );
-
-//                symba.showEastWidget( "Running Display Data", symba.getEastWidgetDirections() );
-
-        displayData();
-    }
-
     /**
-     * Should only be called from the [void displayData()] method which implements the Display interface
+     * Should only be called from the [void displayStepData()] method which implements the Display interface
      *
      * @param data     the thing to display in the table
      * @param rowValue the value being passed through the steps hierarchy
      * @param depth    the hierarchical depth of the current step
      * @return the new value of the row count
      */
-    public int displayData( List<ExperimentStepHolder> data,
-                            Integer rowValue,
-                            Integer depth ) {
+    public int displayStepData( List<ExperimentStepHolder> data,
+                                Integer rowValue,
+                                Integer depth ) {
 
         for ( ExperimentStepHolder holder : data ) {
 //            System.err
@@ -346,9 +345,9 @@ public class EditInvestigationView extends VerticalPanel {
             }
 
             ReadableStepView readableStepView;
-            if ( !investigation.isTemplate() ) {
-                ClickHandler myHandler = new makeEditableHandler( rowValue,
-                        depth + ActionType.SELECT.getValue() + 1 );
+            if ( !investigation.isReadOnly() ) {
+                ClickHandler myHandler = new makeEditableHandler( rowValue, depth + ActionType.SELECT.getValue() + 1,
+                        investigation.isCompleted() );
                 readableStepView = new ReadableStepView(
                         holder.getCurrent().getTitle(),
                         holder.getCurrent().getFileNames(), holder.getCurrent().getParameters(), myHandler );
@@ -376,7 +375,7 @@ public class EditInvestigationView extends VerticalPanel {
 
             rowValue++;
             if ( !holder.getCurrent().isLeaf() ) {
-                rowValue = displayData( holder.getCurrent().getChildren(), rowValue, depth + 1 );
+                rowValue = displayStepData( holder.getCurrent().getChildren(), rowValue, depth + 1 );
             }
         }
 
@@ -386,9 +385,9 @@ public class EditInvestigationView extends VerticalPanel {
     /**
      * clears the existing display of experiment steps and starts re-writing from the beginning.
      */
-    public void displayData() {
+    public void displayStepData() {
         stepsTable.removeAllRows();
-        displayData( investigation.getExperiments(), 0, 0 );
+        displayStepData( investigation.getExperiments(), 0, 0 );
     }
 
     public void assignFileToStep( File file,
@@ -430,8 +429,8 @@ public class EditInvestigationView extends VerticalPanel {
             }
         } );
         stepsTable.setWidget( rowValue, ActionType.COPY.getValue(), copyStepImage );
-        stepsTable.getCellFormatter().setHeight( rowValue, ActionType.ADD.getValue(), "30px" );
-        stepsTable.getCellFormatter().setWidth( rowValue, ActionType.ADD.getValue(), "15px" );
+        stepsTable.getCellFormatter().setHeight( rowValue, ActionType.COPY.getValue(), "30px" );
+        stepsTable.getCellFormatter().setWidth( rowValue, ActionType.COPY.getValue(), "15px" );
 
         RadioButton radio = new RadioButton( "fileSelector" );
 
@@ -451,17 +450,17 @@ public class EditInvestigationView extends VerticalPanel {
         //todo allow multiple addition of steps
         if ( selectedRow >= ActionType.ADD.getValue() ) {
             investigation.addExperimentStep( selectedRow );
-            displayData();
+            displayStepData();
         } else if ( selectedRow == ActionType.UNDEFINED.getValue() ) {
             investigation.addExperimentStep();
-            displayData();
+            displayStepData();
         } // do nothing if ActionType.IGNORE.getValue() : we should ignore such clicks.
     }
 
     private void doCopyStep( int selectedRow ) {
         if ( selectedRow >= ActionType.ADD.getValue() ) {
             investigation.deepExperimentCopy( selectedRow );
-            displayData();
+            displayStepData();
         } // do nothing if ActionType.IGNORE.getValue() or ActionType.UNDEFINED.getValue() : we should ignore such clicks.
 
     }
@@ -472,7 +471,7 @@ public class EditInvestigationView extends VerticalPanel {
 
     private void doSave( final SaveType saveType ) {
 
-        String emptyValues = readWriteDetailsPanel.makeErrorMessages();
+        String emptyValues = investigationDetailsPanel.makeErrorMessages();
         if ( emptyValues.length() > 1 ) {
             Window.alert( "Error updating the following fields: " + emptyValues );
             return;
@@ -480,19 +479,20 @@ public class EditInvestigationView extends VerticalPanel {
 
         // only change those values that have been modified, which in this simple case will just be those
         // with text boxes rather than simple labels.
-        readWriteDetailsPanel.updateModifiedDetails( investigation );
+        investigationDetailsPanel.updateModifiedDetails( investigation );
         investigation.setAllModified( false );
 
         // the experiment steps were saved as we went along, so nothing extra to do here.
+        // the "completed" flag was saved as we went along, so nothing extra to do here.
 
         // todo ensure Identifier has changed before this step, if necessary
         rpcService.updateInvestigation( investigation, new AsyncCallback<ArrayList<InvestigationDetail>>() {
             public void onSuccess( ArrayList<InvestigationDetail> updatedDetails ) {
                 final String title = investigation.getInvestigationTitle();
                 final String id = investigation.getId();
-                symba.setInvestigationDetails( updatedDetails );
-                symba.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
-                symba.setCenterWidgetAsListExperiments();
+                controller.setInvestigationDetails( updatedDetails );
+                controller.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
+                controller.setCenterWidgetAsListExperiments();
 
                 if ( saveType == SaveType.SET_COPY_AS_TEMPLATE ) {
                     rpcService.copyInvestigation( id,
@@ -527,20 +527,22 @@ public class EditInvestigationView extends VerticalPanel {
 
     private class makeEditableHandler implements ClickHandler {
         private int row, column;
+        private boolean completed;
 
         public makeEditableHandler( int row,
-                                    int column ) {
+                                    int column,
+                                    boolean completed ) {
             this.row = row;
             this.column = column;
+            this.completed = completed;
         }
 
         public void onClick( ClickEvent clickEvent ) {
-            displayEditable( row, column );
+            displayEditable();
 
         }
 
-        public void displayEditable( final int row,
-                                     final int column ) {
+        public void displayEditable() {
 
             final PopupPanel popup = new PopupPanel( true );
             popup.setPopupPositionAndShow( new PopupPanel.PositionCallback() {
@@ -554,7 +556,7 @@ public class EditInvestigationView extends VerticalPanel {
             popup.show();
             EditableStepView editableStepView = new EditableStepView(
                     ( ReadableStepView ) stepsTable.getWidget( row, column ), popup, stepsTable, investigation, row,
-                    column, this );
+                    column, this, completed );
             popup.add( editableStepView );
             editableStepView.getStepTitle().setFocus( true );
 

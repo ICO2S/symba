@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class ContactPopup extends PopupPanel {
 
     public ContactPopup( HashMap<String, Contact> contacts,
-                              final ReadWriteDetailsPanel callingPanel,
+                              final InvestigationDetailsPanel callingPanel,
                               InvestigationsServiceAsync rpcService ) {
         super( true ); // set auto-hide property
 
@@ -39,7 +39,7 @@ public class ContactPopup extends PopupPanel {
         private final InvestigationsServiceAsync rpcService;
 
         public AddContactPanel( final HashMap<String, Contact> contacts,
-                                final ReadWriteDetailsPanel callingPanel,
+                                final InvestigationDetailsPanel callingPanel,
                                 InvestigationsServiceAsync rpcService ) {
 
             this.rpcService = rpcService;
@@ -102,7 +102,7 @@ public class ContactPopup extends PopupPanel {
         }
 
         private String doSave( final HashMap<String, Contact> contacts,
-                               final ReadWriteDetailsPanel callingPanel,
+                               final InvestigationDetailsPanel callingPanel,
                                TextBox first,
                                TextBox last,
                                String email ) {

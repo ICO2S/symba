@@ -7,6 +7,7 @@ import net.sourceforge.fuge.util.generated.ProtocolCollection;
 import net.sourceforge.fuge.util.generated.ProtocolCollectionProtocolItem;
 import net.sourceforge.symba.database.controller.FugeDatabaseController;
 import net.sourceforge.symba.database.dao.SymbaDao;
+import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
@@ -42,12 +43,19 @@ public class ServerDatabaseController extends FugeDatabaseController {
     @NotNull
     public HashMap<String, Investigation> convertFugeToGwt() {
 
-        HashMap<String, Investigation> investigations = new HashMap<String, Investigation>( );
+        HashMap<String, Investigation> investigations = new HashMap<String, Investigation>();
 
         List<FuGE> fugeList = symbaDao.fetchAllFuge();
         for ( FuGE fuge : fugeList ) {
-            Investigation investigation = new Investigation( false, fuge.getIdentifier(), fuge.getName(),
-                    initProvider( fuge ), new ArrayList<ExperimentStepHolder>( ) );
+            // discover if the investigation is a template
+            boolean template = fuge.getName().contains( InputValidator.TEMPLATE );
+            // discover if the investigation is considered completed
+            boolean completed = fuge.getName().contains( InputValidator.COMPLETED_INVESTIGATION );
+
+            String investigationId = fuge.getInvestigationCollection().getInvestigation().get(0).getIdentifier();
+            String investigationName = fuge.getInvestigationCollection().getInvestigation().get(0).getName();
+            Investigation investigation = new Investigation( template, completed, investigationId, investigationName,
+                    initProvider( fuge ), new ArrayList<ExperimentStepHolder>() );
 //                    initProvider( fuge ), initExperiments( fuge.getProtocolCollection() ) );
             investigations.put( investigation.getId(), investigation );
         }

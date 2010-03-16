@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @SuppressWarnings( "serial" )
 public class InvestigationDetail implements Serializable {
-    private boolean template;
+    private boolean template, completed;
     private String id;
     private String investigationTitle;
     private Contact provider;
@@ -23,14 +23,16 @@ public class InvestigationDetail implements Serializable {
     public InvestigationDetail() {
         Contact contact = new Contact();
         contact.createId();
-        new InvestigationDetail( false, "0", investigationTitle, contact );
+        new InvestigationDetail( false, false, "0", investigationTitle, contact );
     }
 
-    public InvestigationDetail( boolean isTemplate,
+    public InvestigationDetail( boolean template,
+                                boolean completed,
                                 String id,
                                 String investigationTitle,
                                 Contact contactDetails ) {
-        this.template = isTemplate;
+        this.template = template;
+        this.completed = completed;
         this.id = id;
         this.investigationTitle = investigationTitle;
         this.provider = contactDetails;
@@ -38,6 +40,14 @@ public class InvestigationDetail implements Serializable {
 
     public boolean isTemplate() {
         return template;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public boolean isReadOnly() {
+        return template || completed;
     }
 
     public String getId() { return id; }
@@ -58,6 +68,9 @@ public class InvestigationDetail implements Serializable {
         if ( template ) {
             summary.setHTML( "template: " + summary.getHTML() );
             summary.addStyleName( "summarise-template" );
+        } else if ( completed ) {
+            summary.setHTML( "completed: " + summary.getHTML() );
+            summary.addStyleName( "summarise-completed" );
         }
         summary.addStyleName( "clickable-text" );
         return summary;

@@ -29,6 +29,7 @@ import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
+import net.sourceforge.symba.web.shared.Investigation;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.*;
@@ -77,11 +78,20 @@ public class FugeConverter {
     }
 
     @NotNull
-    public FuGE toFuge( @NotNull net.sourceforge.symba.web.shared.Investigation inv ) {
+    public FuGE toFuge( @NotNull final net.sourceforge.symba.web.shared.Investigation inv ) {
 
         // todo provider information may not match the login details
         // will need to pass the login details and set the audit trails to the person logged in, and the provider
         // to the person set within the Investigation as the provider.
+
+        // add template and completed information to the name used for JUST the FuGE entry.
+        String name = inv.getInvestigationTitle();
+        if ( inv.isCompleted() ) {
+            name = InputValidator.COMPLETED_INVESTIGATION + " " + name;
+        }
+        if ( inv.isTemplate() ) {
+            name = InputValidator.TEMPLATE + " " + name;
+        }
 
         FuGE fuge = new FuGE();
 
@@ -102,7 +112,7 @@ public class FugeConverter {
         addInvestigation( allInvestigation, person, inv );
 
         // create the main features of the Fuge object itself
-        fuge.setName( "FuGE structure for investigation: " + inv.getInvestigationTitle() );
+        fuge.setName( name );
         fuge.setEndurantRef( createRandom() );
         fuge.setIdentifier( createRandom() );
 
@@ -304,7 +314,7 @@ public class FugeConverter {
 
     private net.sourceforge.fuge.util.generated.Investigation addInvestigation( InvestigationCollection allInvestigation,
                                                                                 Person person,
-                                                                                net.sourceforge.symba.web.shared.Investigation uiInvestigation ) {
+                                                                                Investigation uiInvestigation ) {
         // Convert the main features of the investigation. We are currently only allowing a single Investigation
         // object in the FuGE object per SyMBA investigation.
         net.sourceforge.fuge.util.generated.Investigation fugeInv = new net.sourceforge.fuge.util.generated.Investigation();

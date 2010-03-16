@@ -41,6 +41,11 @@
     font-style: italic;
 }
 
+/* The style for showing a completed investigation inside a Summary view (either ListBox based or Table based) */
+.summarise-completed {
+    font-style: italic;
+}
+
 /* Various styles for the experiment step table */
 .experiment-EvenStep {
     background-color: #FFFFFF;

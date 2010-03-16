@@ -104,7 +104,6 @@ public class SymbaController extends DockPanel {
         Investigation investigation = new Investigation();
         investigation.createId();
         investigation.getProvider().createId();
-        showEastWidget("Trying to display investigation " + investigation.getId(), "");
         EditInvestigationView view = new EditInvestigationView( this, investigation, rpcService, contacts );
         setCenterWidget( view );
         showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
@@ -112,7 +111,6 @@ public class SymbaController extends DockPanel {
     }
 
     public void setCenterWidgetAsEditExperiment( final String id ) {
-        showEastWidget("Trying to retrieve investigation " + id, "");
         rpcService.getInvestigation( id, new AsyncCallback<Investigation>() {
             public void onFailure( Throwable caught ) {
                 Window.alert( "Error retrieving investigation " + id );

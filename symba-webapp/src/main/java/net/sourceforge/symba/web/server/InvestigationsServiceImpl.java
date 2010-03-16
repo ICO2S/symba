@@ -28,6 +28,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         // the spring config tells us which kind of helper to use.
         helper = ctxt.getBean( "storageImplementation", StorageHelper.class );
 
+        // todo make the fetching smarter as might not be great retrieving the entire database here!
         helper.fetchAll();
         helper.fetchAllContacts();
     }

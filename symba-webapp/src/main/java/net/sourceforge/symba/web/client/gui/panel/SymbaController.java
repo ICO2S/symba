@@ -5,7 +5,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.gui.EditInvestigationView;
+import net.sourceforge.symba.web.client.gui.SummariseInvestigationView;
 import net.sourceforge.symba.web.shared.Contact;
+import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 
 import java.util.ArrayList;
@@ -93,18 +95,37 @@ public class SymbaController extends DockPanel {
      * @param widget the widget to add
      */
     public void setCenterWidget( Widget widget ) {
-        if ( centerWidget != widget ) {
-            remove( centerWidget );
-            centerWidget = widget;
-            add( widget, DockPanel.CENTER );
-        }
+        remove( centerWidget );
+        centerWidget = widget;
+        add( widget, DockPanel.CENTER );
     }
 
     public void setCenterWidgetAsEditExperiment() {
-        EditInvestigationView view = new EditInvestigationView( this, rpcService, contacts );
+        Investigation investigation = new Investigation();
+        investigation.createId();
+        investigation.getProvider().createId();
+        showEastWidget("Trying to display investigation " + investigation.getId(), "");
+        EditInvestigationView view = new EditInvestigationView( this, investigation, rpcService, contacts );
         setCenterWidget( view );
         showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
                 "Do not upload more files until the files you have selected have completed.</em>" );
+    }
+
+    public void setCenterWidgetAsEditExperiment( final String id ) {
+        showEastWidget("Trying to retrieve investigation " + id, "");
+        rpcService.getInvestigation( id, new AsyncCallback<Investigation>() {
+            public void onFailure( Throwable caught ) {
+                Window.alert( "Error retrieving investigation " + id );
+            }
+
+            public void onSuccess( Investigation result ) {
+                EditInvestigationView view = new EditInvestigationView( SymbaController.this, result, rpcService,
+                        contacts );
+                setCenterWidget( view );
+                showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
+                        "Do not upload more files until the files you have selected have completed.</em>" );
+            }
+        } );
     }
 
     public void hideEastWidget() {
@@ -165,5 +186,13 @@ public class SymbaController extends DockPanel {
 
     public InvestigationsServiceAsync getRpcService() {
         return rpcService;
+    }
+
+    public void setCenterWidgetAsListExperiments() {
+        SummariseInvestigationView investigateView = new SummariseInvestigationView( this,
+                SummariseInvestigationView.ViewType.EXTENDED );
+        investigateView.setInvestigationDetails( getInvestigationDetails() );
+        setCenterWidget( investigateView );
+
     }
 }

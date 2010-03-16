@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 
 import java.util.ArrayList;
@@ -15,17 +14,36 @@ public class ReadableStepView extends VerticalPanel {
     private ArrayList<String> fileNames;
     private ReadableStepParameterTable parameterTable;
 
+
+    public ReadableStepView(
+            String stepTitle,
+            ArrayList<String> fileNames,
+            ArrayList<ExperimentParameter> parameters ) {
+
+        parameterTable = new ReadableStepParameterTable( parameters );
+
+        this.stepTitle = stepTitle;
+        this.fileNames = fileNames;
+
+        Label label = new Label( this.stepTitle );
+        add( label );
+
+        Label label2 = new Label( displayFileNames() );
+        add( label2 );
+        add( parameterTable );
+
+    }
+
     public ReadableStepView(
             String stepTitle,
             ArrayList<String> fileNames,
             ArrayList<ExperimentParameter> parameters,
             ClickHandler myEditableHandler ) {
 
-        this.stepTitle = stepTitle;
-
-        this.fileNames = fileNames;
         parameterTable = new ReadableStepParameterTable( parameters, myEditableHandler );
 
+        this.stepTitle = stepTitle;
+        this.fileNames = fileNames;
 
         Label label = new Label( this.stepTitle );
         label.addClickHandler( myEditableHandler );
@@ -62,6 +80,10 @@ public class ReadableStepView extends VerticalPanel {
         private ArrayList<ExperimentParameter> parameters;
         private int rowCount;
 
+        private ReadableStepParameterTable( ArrayList<ExperimentParameter> parameters ) {
+            this( parameters, null );
+        }
+
         private ReadableStepParameterTable( ArrayList<ExperimentParameter> parameters,
                                             ClickHandler myEditableHandler ) {
             rowCount = 0;
@@ -71,12 +93,11 @@ public class ReadableStepView extends VerticalPanel {
                 Label label = new Label(
                         parameter.getSubject() + " : " + parameter.getPredicate() + " : " +
                                 parameter.getObjectValue() + " : " + parameter.getUnit() );
-                label.addClickHandler( myEditableHandler );
-                setWidget( rowCount, 0, label );
-                Label measureType = new Label(
-                        InputValidator.measurementMessages.get( parameter.getMeasurementType() ) );
-                measureType.addClickHandler( myEditableHandler );
-                setWidget( rowCount++, 1, measureType );
+                setWidget( rowCount++, 0, label );
+                if ( myEditableHandler != null ) {
+                    label.addClickHandler( myEditableHandler );
+                    label.addStyleName( "clickable-text" );
+                }
             }
         }
 

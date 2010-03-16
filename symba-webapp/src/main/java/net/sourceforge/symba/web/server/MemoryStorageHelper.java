@@ -32,17 +32,17 @@ public class MemoryStorageHelper extends StorageHelper {
 
     @NotNull
     public HashMap<String, Contact> fetchAllContacts() {
-        getContacts().put( ALICE.getId(), ALICE);
+        getContacts().put( ALICE.getId(), ALICE );
         Contact contact = new Contact( "013265", "Bob", "Reynolds", "bob.reynolds@example.com" );
-        getContacts().put( contact.getId(), contact);
+        getContacts().put( contact.getId(), contact );
         contact = new Contact( "9561046", "Zach", "Peters", "zach.peters@example.com" );
-        getContacts().put( contact.getId(), contact);
+        getContacts().put( contact.getId(), contact );
         return getContacts();
     }
 
     @NotNull
     public HashMap<String, Contact> addContact( @NotNull Contact contact ) {
-        getContacts().put( contact.getId(), contact);
+        getContacts().put( contact.getId(), contact );
         return getContacts();
     }
 
@@ -66,8 +66,8 @@ public class MemoryStorageHelper extends StorageHelper {
     @NotNull
     public InvestigationDetail copy( @NotNull String id ) {
         Investigation copy = new Investigation( getInvestigations().get( id ) );
-        copy.setId( "X" + copy.getId() ); //todo need a better way to make a new id
-        copy.setInvestigationTitle( "Copy of " + copy.getInvestigationTitle() );
+        copy.setId( ( int ) ( Math.random() * 1000 ) + copy.getId() ); //todo need a better way to make a new id
+        copy.setInvestigationTitle( copy.getInvestigationTitle() + " " + ( int ) ( Math.random() * 1000 ) );
 
         // the original may be a template - unset the copy as a template
         copy.setTemplate( false );
@@ -77,6 +77,7 @@ public class MemoryStorageHelper extends StorageHelper {
     }
 
     //todo this method will not be allowed in future, except perhaps by admins.
+
     @NotNull
     public ArrayList<InvestigationDetail> delete( @NotNull String id ) {
         getInvestigations().remove( id );

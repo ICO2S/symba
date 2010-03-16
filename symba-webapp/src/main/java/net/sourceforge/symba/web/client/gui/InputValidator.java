@@ -12,6 +12,9 @@ public class InputValidator implements Serializable {
         ATOMIC, BOOLEAN, COMPLEX, RANGE, UNKNOWN
     }
 
+    public static final String TOP_PROTOCOL = "net.sourceforge.symba.topProtocol";
+    public static final String SUBJECT_PREDICATE_DIVIDER = "net.sourceforge.symba.subjectPredicateDivider";
+    public static final String COMPLETED_EXPERIMENT = "net.sourceforge.symba.completedExperiment";
     public static final HashMap<MeasurementType, String> measurementMessages = new HashMap<MeasurementType, String>();
 
     static {

@@ -82,6 +82,7 @@ public class ExperimentStepHolder implements Serializable {
      * @param predicate   the connection between the subject and object, defaults to hasValue
      * @param objectValue the "object" of the triple, the value that fits with the subject and predicate
      * @param unit        the optional units of the objectValue
+     * @param type        the measurement type for the parameter.
      * @return true if a triple was added, false if no matching row was found.
      */
     public boolean addParameterAtStepId( int selectedRow,
@@ -89,7 +90,7 @@ public class ExperimentStepHolder implements Serializable {
                                          String predicate,
                                          String objectValue,
                                          String unit,
-                                         InputValidator.MeasurementType type) {
+                                         InputValidator.MeasurementType type ) {
 
         if ( stepId == selectedRow ) {
             current.getParameters().add( new ExperimentParameter( subject, predicate, objectValue, unit, type ) );
@@ -130,11 +131,11 @@ public class ExperimentStepHolder implements Serializable {
                 current.setTitle( original.getTitle() );
                 setModified( false );
             } else if ( !current.getTitle().equals( title.trim() ) ) {
-                // nothing needs to be done if the titles match already, including running setModified(): it should
-                // remain at whatever it was before.
                 current.setTitle( title.trim() );
                 setModified( true );
             }
+            // nothing needs to be done if the titles match already, including running setModified(): it should
+            // remain at whatever it was before.
 
             // parameter changes: delete the row if all three elements have zero length
             if ( current.getParameters() != parameters ) {
@@ -157,7 +158,7 @@ public class ExperimentStepHolder implements Serializable {
         if ( !current.isLeaf() ) {
             for ( ExperimentStepHolder holder : current.getChildren() ) {
                 Object[] returnedValues = holder.setInfoAtStepId( selectedRow, title, parameters );
-                if ( returnedValues != null ) {
+                if ( returnedValues.length == 2 && returnedValues[0] != null && returnedValues[1] != null ) {
                     setModified( ( Boolean ) returnedValues[1] );
                     return returnedValues;
                 }

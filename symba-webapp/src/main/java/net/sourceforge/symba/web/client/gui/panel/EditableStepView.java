@@ -1,12 +1,10 @@
 package net.sourceforge.symba.web.client.gui.panel;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.gui.InputValidator;
+import net.sourceforge.symba.web.client.gui.handlers.ToolTip;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 import net.sourceforge.symba.web.shared.Investigation;
 
@@ -51,7 +49,6 @@ public class EditableStepView extends VerticalPanel {
         parameterContentPanel.add( parameterTable );
         parameterContentPanel.add( addNewParameterLabel );
 
-
         // add all handlers
         addNewParameterLabel.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
@@ -73,7 +70,8 @@ public class EditableStepView extends VerticalPanel {
 
                 // Set style based on change, then send the stepTitle to setReadOnly.
                 Boolean modified = false;
-                if ( values != null && values[0] != null && ( ( String ) values[0] ).length() > 0 ) {
+                if ( values.length == 2 && values[0] != null && values[1] != null &&
+                    ( ( String ) values[0] ).length() > 0 ) {
                     modified = ( Boolean ) values[1];
                 }
                 // todo this style is currently only be applied to one cell until the entire table is redrawn, e.g. from an added step
@@ -159,9 +157,9 @@ public class EditableStepView extends VerticalPanel {
         }
 
         private void addSingleParameterPanel( ExperimentParameter parameter ) {
-            SingleParameterPanel panel = new SingleParameterPanel( parameter );
+            SingleParameterPanel panel = new SingleParameterPanel( parameterRowCount++, parameter );
             parameterPanels.add( panel );
-            setWidget( parameterRowCount++, 0, panel );
+            setWidget( parameterRowCount, 0, panel );
         }
 
         public ArrayList<ExperimentParameter> getParameters() {
@@ -236,11 +234,12 @@ public class EditableStepView extends VerticalPanel {
         private class SingleParameterPanel extends HorizontalPanel {
             private TextBox subject, predicate, objectValue, unit;
             private InputValidator.MeasurementType measure;
-            private Label measurementTypeLabel;
             private RadioButton number, trueOrFalse, phrase;
+            private ToolTip measurementTip;
             private VerticalPanel radioPanel;
 
-            public SingleParameterPanel( final ExperimentParameter parameter ) {
+            public SingleParameterPanel( int counter,
+                                         final ExperimentParameter parameter ) {
                 setBorderWidth( 0 );
                 setSpacing( 0 );
                 setHorizontalAlignment( HorizontalPanel.ALIGN_LEFT );
@@ -248,25 +247,16 @@ public class EditableStepView extends VerticalPanel {
                 radioPanel = new VerticalPanel();
 
                 measure = InputValidator.MeasurementType.UNKNOWN;
-                measurementTypeLabel = new Label();
-                number = new RadioButton( "measurementGroup", "number" );
-                number.addClickHandler( new ClickHandler() {
-                    public void onClick( ClickEvent event ) {
-                        measure = InputValidator.MeasurementType.ATOMIC;
-                    }
-                } );
-                trueOrFalse = new RadioButton( "measurementGroup", "true/false" );
-                trueOrFalse.addClickHandler( new ClickHandler() {
-                    public void onClick( ClickEvent event ) {
-                        measure = InputValidator.MeasurementType.BOOLEAN;
-                    }
-                } );
-                phrase = new RadioButton( "measurementGroup", "word" );
-                phrase.addClickHandler( new ClickHandler() {
-                    public void onClick( ClickEvent event ) {
-                        measure = InputValidator.MeasurementType.COMPLEX;
-                    }
-                } );
+                number = new RadioButton( "measurementGroup" + counter, "number" );
+                addRadioParameterHandlers( InputValidator.MeasurementType.ATOMIC, number );
+
+
+                trueOrFalse = new RadioButton( "measurementGroup" + counter, "true/false" );
+                addRadioParameterHandlers( InputValidator.MeasurementType.BOOLEAN, trueOrFalse );
+
+                phrase = new RadioButton( "measurementGroup" + counter, "word" );
+                addRadioParameterHandlers( InputValidator.MeasurementType.COMPLEX, phrase );
+                               
                 radioPanel.add( number );
                 radioPanel.add( trueOrFalse );
                 radioPanel.add( phrase );
@@ -287,13 +277,12 @@ public class EditableStepView extends VerticalPanel {
                     setMeasureAndRadio( objectValue.getText() );
                 }
                 // in addition to the standard functionality provided by the ParameterCaptionBox, also check
-                // if we can tell the type of parameter. If we cannot, then it becomes a complext value
+                // if we can tell the type of parameter. If we cannot, then it becomes a complex value
                 objectValue.addBlurHandler( new BlurHandler() {
                     public void onBlur( BlurEvent event ) {
                         if ( objectValue.getText().trim().length() > 0 ) {
                             setMeasureAndRadio( objectValue.getText() );
                         } else {
-                            measurementTypeLabel.setText( "" );
                             radioPanel.setVisible( false );
                             number.setValue( false );
                             trueOrFalse.setValue( false );
@@ -317,14 +306,38 @@ public class EditableStepView extends VerticalPanel {
                 add( pPanel );
                 add( oPanel );
                 add( uPanel );
-                add( measurementTypeLabel );
                 add( radioPanel );
+            }
+
+            private void addRadioParameterHandlers( final InputValidator.MeasurementType type,
+                                                    final RadioButton currentButton ) {
+                currentButton.addClickHandler( new ClickHandler() {
+                    public void onClick( ClickEvent event ) {
+                        measure = type;
+                    }
+                } );
+                currentButton.addMouseOverHandler( new MouseOverHandler() {
+                    public void onMouseOver( MouseOverEvent event ) {
+                        if ( measurementTip != null ) {
+                            measurementTip.hide(); // ensure any old value is not present
+                        }
+                        if ( currentButton.getValue() ) {
+                            measurementTip = new ToolTip( currentButton,
+                                    InputValidator.measurementMessages.get( measure ) );
+                            measurementTip.show();
+                        }
+                    }
+                } );
+                currentButton.addMouseOutHandler( new MouseOutHandler() {
+                    public void onMouseOut( MouseOutEvent event ) {
+                        measurementTip.hide();
+                    }
+                } );
             }
 
             private void setMeasureAndRadio( String text ) {
                 radioPanel.setVisible( true );
                 measure = InputValidator.measurementTypeChecker( text );
-                measurementTypeLabel.setText( InputValidator.measurementMessages.get( measure ) );
                 if ( measure == InputValidator.MeasurementType.ATOMIC ) {
                     number.setValue( true );
                 } else if ( measure == InputValidator.MeasurementType.BOOLEAN ) {
@@ -372,5 +385,4 @@ public class EditableStepView extends VerticalPanel {
             }
         }
     }
-
 }

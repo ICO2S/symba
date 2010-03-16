@@ -37,7 +37,6 @@ public class NewInvestigationPopup extends PopupPanel {
                 public void onClick( ClickEvent event ) {
                     // They've requested a completely new experiment
                     symba.setCenterWidgetAsEditExperiment();
-                    ( ( EditInvestigationView ) symba.getCenterWidget() ).displayEmptyInvestigation();
                     hide();
                 }
             } );

@@ -155,9 +155,7 @@ public class SummariseInvestigationView extends FlexTable {
                 int selectedRow = getClickedRow( event );
 
                 if ( selectedRow >= 0 ) {
-                    String id = investigationDetails.get( selectedRow ).getId();
-                    symba.setCenterWidgetAsEditExperiment();
-                    ( ( EditInvestigationView ) symba.getCenterWidget() ).displayInvestigation( id );
+                    symba.setCenterWidgetAsEditExperiment( investigationDetails.get( selectedRow ).getId() );
                 }
             }
         } );
@@ -177,9 +175,7 @@ public class SummariseInvestigationView extends FlexTable {
                         // change the main display to the newly-copied investigation if we are in the
                         // minimal copy-only view
                         if ( viewType == ViewType.COPY_CHOSEN ) {
-                            symba.setCenterWidgetAsEditExperiment();
-                            ( ( EditInvestigationView ) symba.getCenterWidget() )
-                                    .displayInvestigation( result.getId() );
+                            symba.setCenterWidgetAsEditExperiment( result.getId() );
                         }
                         // if a popup was passed, then hide that popup upon successful completion.
                         if ( popup != null ) {

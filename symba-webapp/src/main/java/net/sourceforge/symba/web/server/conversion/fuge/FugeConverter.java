@@ -1,23 +1,40 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
+import net.sourceforge.fuge.util.generated.*;
+import net.sourceforge.fuge.util.generated.AtomicValue;
 import net.sourceforge.fuge.util.generated.Audit;
 import net.sourceforge.fuge.util.generated.AuditCollection;
 import net.sourceforge.fuge.util.generated.AuditTrail;
+import net.sourceforge.fuge.util.generated.BooleanValue;
+import net.sourceforge.fuge.util.generated.ComplexValue;
 import net.sourceforge.fuge.util.generated.ContactRole;
 import net.sourceforge.fuge.util.generated.FuGE;
+import net.sourceforge.fuge.util.generated.GenericAction;
+import net.sourceforge.fuge.util.generated.GenericParameter;
+import net.sourceforge.fuge.util.generated.GenericProtocol;
 import net.sourceforge.fuge.util.generated.GenericSoftware;
 import net.sourceforge.fuge.util.generated.Identifiable;
 import net.sourceforge.fuge.util.generated.InvestigationCollection;
 import net.sourceforge.fuge.util.generated.ObjectFactory;
+import net.sourceforge.fuge.util.generated.OntologyCollection;
+import net.sourceforge.fuge.util.generated.OntologyIndividual;
+import net.sourceforge.fuge.util.generated.OntologyTerm;
 import net.sourceforge.fuge.util.generated.Person;
 import net.sourceforge.fuge.util.generated.ProtocolCollection;
 import net.sourceforge.fuge.util.generated.Provider;
+import net.sourceforge.fuge.util.generated.Unit;
+import net.sourceforge.fuge.util.generated.Value;
+import net.sourceforge.symba.web.client.gui.InputValidator;
+import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
+import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
+import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.QName;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -77,6 +94,9 @@ public class FugeConverter {
         // create and add the protocol collection to the fuge object
         ProtocolCollection allProtocol = new ProtocolCollection();
         fuge.setProtocolCollection( allProtocol );
+        // create and add the ontology collection to the fuge object
+        OntologyCollection allOntology = new OntologyCollection();
+        fuge.setOntologyCollection( allOntology );
 
         Person person = addPerson( allAudit, inv.getProvider() );
         addInvestigation( allInvestigation, person, inv );
@@ -86,15 +106,158 @@ public class FugeConverter {
         fuge.setEndurantRef( createRandom() );
         fuge.setIdentifier( createRandom() );
 
+        // create a software instance for SyMBA
         GenericSoftware symbaSoftware = addSymbaSoftware( allProtocol );
-        // create a provider object
+        // create a provider object linked to the person creating it and the SyMBA software
         Provider provider = createProvider( person, symbaSoftware );
         // link the provider to the fuge object
         fuge.setProvider( provider );
+
+        // create all protocols
+        addAllProtocols( allProtocol, allOntology, person, inv );
+
         // create an audit trail associated with the object
         addAuditTrail( fuge, person );
 
         return fuge;
+    }
+
+    private void addAllProtocols( ProtocolCollection allProtocol,
+                                  OntologyCollection allOntology,
+                                  Person person,
+                                  final net.sourceforge.symba.web.shared.Investigation inv ) {
+
+
+        // create a top-level protocol for the name of the investigation, and add everything as an action
+        // relating to the other protocols. In order for the top-level protocol to be recognised easily as
+        // the top one, add InputValidator.TOP_PROTOCOL to the name of the protocol. This will be
+        // parsed out when viewing and downloading.
+        GenericProtocol topProtocol = createGenericProtocol(
+                InputValidator.TOP_PROTOCOL + " " + inv.getInvestigationTitle() );
+
+        addProtocols( allProtocol, allOntology, topProtocol, 0, person, inv.getExperiments() );
+
+    }
+
+    private void addProtocols( ProtocolCollection allProtocol,
+                               OntologyCollection allOntology,
+                               GenericProtocol currentProtocol,
+                               int ordinal,
+                               Person person,
+                               final ArrayList<ExperimentStepHolder> holders ) {
+
+        // now we need a Generic Protocol for each further experiment step, then add that step to the
+        // top protocol as a Generic Action.
+        // Also, we will need to add GenericProtocolApplication objects for each item with a file name.
+        for ( ExperimentStepHolder holder : holders ) {
+            ExperimentStep child = holder.getCurrent();
+            System.err.println( "child.getTitle(): " + child.getTitle() );
+            // create basic protocol
+            GenericProtocol childProtocol = createGenericProtocol( child.getTitle() );
+            // add any parameters
+            for ( ExperimentParameter parameter : child.getParameters() ) {
+                createAndAddGenericParameter( allOntology, childProtocol, parameter );
+            }
+            // link the protocol to the collection
+            allProtocol.getProtocol().add( factory.createGenericProtocol( childProtocol ) );
+
+            // run this method for all children of this protocol
+            if ( !child.isLeaf() ) {
+                addProtocols( allProtocol, allOntology, childProtocol, 0, person, child.getChildren() );
+            }
+
+            // add the protocol as an action on the top protocol
+            createGenericAction( currentProtocol, childProtocol, ordinal++ );
+        }
+
+        // link the top protocol to the collection
+        allProtocol.getProtocol().add( factory.createGenericProtocol( currentProtocol ) );
+    }
+
+    private void createGenericAction( GenericProtocol topProtocol,
+                                      GenericProtocol childProtocol,
+                                      int ordinal ) {
+        GenericAction action = new GenericAction();
+        action.setActionOrdinal( ordinal );
+        action.setProtocolRef( childProtocol.getIdentifier() );
+        action.setName( childProtocol.getName() );
+        action.setIdentifier( createRandom() );
+        action.setEndurantRef( createRandom() );
+        topProtocol.getAction().add( factory.createGenericAction( action ) );
+    }
+
+    private void createAndAddGenericParameter( OntologyCollection allOntology,
+                                               GenericProtocol protocol,
+                                               ExperimentParameter parameter ) {
+        // todo extra validation of measurement type?
+        GenericParameter p = new GenericParameter();
+        p.setIdentifier( createRandom() );
+        p.setEndurantRef( createRandom() );
+        p.setName( parameter.getSubject() + " " + InputValidator.SUBJECT_PREDICATE_DIVIDER + " " +
+                parameter.getPredicate() );
+        if ( parameter.getMeasurementType() == InputValidator.MeasurementType.ATOMIC ) {
+            AtomicValue value = new AtomicValue();
+            value.setValue( parameter.getObjectValue() );
+            Unit unit = createUnit( allOntology, parameter.getUnit() );
+            value.setUnit( unit );
+            p.setMeasurement( factory.createAtomicValue( value ) );
+        } else if ( parameter.getMeasurementType() == InputValidator.MeasurementType.BOOLEAN ) {
+            BooleanValue value = new BooleanValue();
+            value.setValue( parameter.getObjectValue().equals( "true" ) );
+            Unit unit = createUnit( allOntology, parameter.getUnit() );
+            value.setUnit( unit );
+            p.setMeasurement( factory.createBooleanValue( value ) );
+        } else if ( parameter.getMeasurementType() == InputValidator.MeasurementType.COMPLEX ) {
+            ComplexValue value = new ComplexValue();
+            Value ontologyValue = new Value();
+            String ontoRef = createOrRetrieveOntologyTerm( allOntology, parameter.getObjectValue() );
+            ontologyValue.setOntologyTermRef( ontoRef );
+            value.setValue( ontologyValue );
+            Unit unit = createUnit( allOntology, parameter.getUnit() );
+            value.setUnit( unit );
+            p.setMeasurement( factory.createComplexValue( value ) );
+        }
+        protocol.getGenericParameter().add( p );
+    }
+
+    private Unit createUnit( OntologyCollection allOntology,
+                             String unitValue ) {
+        String termId = createOrRetrieveOntologyTerm( allOntology, unitValue );
+
+        Unit unit = new Unit();
+        unit.setOntologyTermRef( termId );
+        return unit;
+    }
+
+    private String createOrRetrieveOntologyTerm( OntologyCollection allOntology,
+                                                 String objectValue ) {
+        // find a matching term, if present, within this fuge object's ontology collection. If found,
+        // use that rather than creating a new ontology term
+        for ( JAXBElement<? extends OntologyTerm> jaxbElement : allOntology.getOntologyTerm() ) {
+            OntologyTerm term = jaxbElement.getValue();
+            if ( term instanceof OntologyIndividual && term.getTerm().equals( objectValue ) ) {
+                return term.getIdentifier();
+            }
+        }
+
+        OntologyIndividual term = new OntologyIndividual();
+        term.setIdentifier( createRandom() );
+        term.setEndurantRef( createRandom() );
+        term.setName( objectValue );
+        // todo allow real ontology terms and have their term accession specified
+        term.setTerm( objectValue );
+        allOntology.getOntologyTerm().add( factory.createOntologyIndividual( term ) );
+
+        return term.getIdentifier();
+    }
+
+    private GenericProtocol createGenericProtocol( String name ) {
+        GenericProtocol p = new GenericProtocol();
+        p.setIdentifier( createRandom() );
+        p.setEndurantRef( createRandom() );
+        p.setName( name );
+
+        return p;
     }
 
     /**
@@ -108,6 +271,8 @@ public class FugeConverter {
     private Provider createProvider( Person person,
                                      GenericSoftware symbaSoftware ) {
         Provider provider = new Provider();
+        provider.setIdentifier( createRandom() );
+        provider.setEndurantRef( createRandom() );
 
         // link the fuge contact to the provider of the new Fuge metadata
         ContactRole roleType = new ContactRole();

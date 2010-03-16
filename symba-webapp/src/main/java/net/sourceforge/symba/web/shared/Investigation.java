@@ -67,14 +67,13 @@ public class Investigation implements Serializable {
     }
 
     /**
-     * Updates the experiment step title of the one marked with the specified row. If the title is empty or null, the
+     * Updates the experiment step info of the one marked with the specified row. If the title is empty or null, the
      * original title will be used.
      *
      * @param selectedRow the row in the view that is to get a new title - will match the holder's stepId.
      * @param title       the new title to set the step to (this may be empty, but will be dealt with appropriately)
      * @param parameters  the new parameters to set the step to (these parameters completely re-write existing ones)
-     * @return the new title, which may not be the same as the input parameter, or "" if no match in any experiments
-     *         were found
+     * @return the new title at [0] and the modified value at [1]. Will be empty array if no matches found
      */
     public Object[] setExperimentStepInfo( int selectedRow,
                                            String title,
@@ -82,7 +81,8 @@ public class Investigation implements Serializable {
 
         for ( ExperimentStepHolder holder : experiments ) {
             Object[] values = holder.setInfoAtStepId( selectedRow, title, parameters );
-            if ( values[0] != null && ( ( String ) values[0] ).length() > 0 ) {
+            if ( values.length == 2 && values[0] != null && values[1] != null &&
+                    ( ( String ) values[0] ).length() > 0 ) {
                 // the title was found and set appropriately.
                 return values;
             }

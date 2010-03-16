@@ -93,6 +93,11 @@
     cursor: pointer;
 }
 
+.tooltip-style {
+    background-color: #B8FF7F;
+    width: 300px;
+}
+
 .image-pointer-exit {
     cursor: default;
 }

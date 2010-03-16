@@ -13,9 +13,6 @@ import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 import org.swfupload.client.File;
-import org.swfupload.client.SWFUpload;
-import org.swfupload.client.UploadBuilder;
-import org.swfupload.client.event.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,11 +30,6 @@ public class EditInvestigationView extends VerticalPanel {
 
     private final InvestigationsServiceAsync rpcService;
     private final SymbaController symba;
-    private final String toNewStepImageUrl = "/images/toNewStep70w76h.png";
-    private final String toExistingStepImageUrl = "/images/toExistingStep70w52h.png";
-    private HashMap<String, Integer> fileIdToRow;
-    private int radioRowSelectedOnUpload;
-    private List<File> files = new ArrayList<File>();
 
     private final Button saveButton;
     private final Button setAsTemplateButton;
@@ -47,12 +39,10 @@ public class EditInvestigationView extends VerticalPanel {
     private final String addChildImageUrl;
     private final String copyStepImageUrl;
 
-    private SWFUpload buttonOne, buttonTwo;
-
     private FlexTable stepsTable;
     private final ReadWriteDetailsPanel readWriteDetailsPanel;
 
-    private Investigation investigation;
+    private final Investigation investigation;
     private boolean defaultHandlersSet;
 
     // This variable will change *whenever* an onClick for the radio Button occurs. As it may change while files
@@ -77,19 +67,26 @@ public class EditInvestigationView extends VerticalPanel {
     /**
      * Initialise all final and modifiable variables
      *
-     * @param symba      the controller panel for the entire interface
-     * @param rpcService the service to use to call the GWT server side
-     * @param contacts   the contacts that are to be passed to the main panel
+     * @param symba         the controller panel for the entire interface
+     * @param investigation the investigation assigned to this view.
+     * @param rpcService    the service to use to call the GWT server side
+     * @param contacts      the contacts that are to be passed to the main panel
      */
     public EditInvestigationView( SymbaController symba,
+                                  Investigation investigation,
                                   InvestigationsServiceAsync rpcService,
                                   HashMap<String, Contact> contacts ) {
 
         // initialise all final variables
         this.rpcService = rpcService;
         this.symba = symba;
-        fileIdToRow = new HashMap<String, Integer>();
-        radioRowSelectedOnUpload = -1;
+        if ( investigation != null ) {
+            this.investigation = investigation;
+        } else {
+            this.investigation = new Investigation();
+            this.investigation.createId();
+            this.investigation.getProvider().createId();
+        }
         readWriteDetailsPanel = new ReadWriteDetailsPanel( contacts, rpcService );
 
         if ( GWT.isScript() ) {
@@ -109,13 +106,12 @@ public class EditInvestigationView extends VerticalPanel {
         cancelButton = new Button( "Cancel" );
         addSubStepButton = new Button( "Add Top-Level Step" );
 
-        // clear / set to empty all modifiable variables except defaultHandlersSet
-        clearModifiable();
-
         // defaultHandlersSet should only be set to false in the constructor, and then true the first time
         // the handlers are loaded. Other than that, no modifications should be performed on this variable.
         // Therefore, it should not be included in clearModifiable()
         defaultHandlersSet = false;
+
+        displayInvestigation();
     }
 
     // todo
@@ -126,7 +122,7 @@ public class EditInvestigationView extends VerticalPanel {
     // initialising/clearing/resetting methods
     //
 
-    public void initEditInvestigationTable() {
+    public void initEditInvestigationView() {
 
         clearModifiable();
         setWidth( "100%" );
@@ -151,8 +147,6 @@ public class EditInvestigationView extends VerticalPanel {
         VerticalPanel protocolPanel = new VerticalPanel();
         protocolPanel.add( addStepPanel );
         protocolWrapper.setStyleName( "captionpanel-border" );
-        stepsTable.setCellSpacing( 0 );
-        stepsTable.setCellPadding( 0 );
         protocolPanel.add( stepsTable );
         protocolWrapper.add( protocolPanel );
 
@@ -160,21 +154,18 @@ public class EditInvestigationView extends VerticalPanel {
 
         add( menuPanel );
         add( readWriteDetailsPanel );
-        // Create the investigation summary view
-        setupMultipleFileUploader();
         add( protocolWrapper );
 
     }
 
     private void clearModifiable() {
-        investigation = new Investigation();
-        investigation.createId();
-        investigation.getProvider().createId();
         selectedRadioRow = -1;
 
         // cannot initialise a ReadableStepView until we have rows and columns
 
         stepsTable = new FlexTable();
+        stepsTable.setCellSpacing( 0 );
+        stepsTable.setCellPadding( 0 );
 
         for ( int iii = getWidgetCount() - 1; iii >= 0; iii-- ) {
             remove( iii );
@@ -248,26 +239,18 @@ public class EditInvestigationView extends VerticalPanel {
 
         cancelButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                if ( GWT.isScript() ) {
-                    buttonOne.setButtonDisabled( true );
-                    buttonOne.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
-                    buttonTwo.setButtonDisabled( true );
-                    buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
+                if ( investigation.getInvestigationTitle().length() > 0 ) {
+                    // no need to keep any file statuses at this point
+                    symba.showEastWidget(
+                            "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
+                                    "</strong> cancelled.</p>", symba.getEastWidgetDirections() );
+                } else {
+                    // no need to keep any file statuses at this point
+                    symba.showEastWidget(
+                            "<p>Creation of new investigation cancelled.</p>", symba.getEastWidgetDirections()
+                    );
                 }
-                if ( investigation != null ) {
-                    if ( investigation.getInvestigationTitle().length() > 0 ) {
-                        // no need to keep any file statuses at this point
-                        symba.showEastWidget(
-                                "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
-                                        "</strong> cancelled.</p>", symba.getEastWidgetDirections() );
-                    } else {
-                        // no need to keep any file statuses at this point
-                        symba.showEastWidget(
-                                "<p>Creation of new investigation cancelled.</p>", symba.getEastWidgetDirections()
-                        );
-                    }
-                }
-                clearModifiable();
+                symba.setCenterWidgetAsListExperiments();
             }
         } );
 
@@ -283,17 +266,10 @@ public class EditInvestigationView extends VerticalPanel {
                     }
 
                     public void onSuccess( ArrayList<InvestigationDetail> results ) {
-                        if ( GWT.isScript() ) {
-                            buttonOne.setButtonDisabled( true );
-                            buttonOne.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
-                            buttonTwo.setButtonDisabled( true );
-                            buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
-                        }
-                        clearModifiable();
                         symba.setInvestigationDetails( results );
                         // no need to keep any file statuses at this point
-                        symba.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>", ""
-                        );
+                        symba.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>", "" );
+                        symba.setCenterWidgetAsListExperiments();
                     }
                 } );
     }
@@ -310,11 +286,8 @@ public class EditInvestigationView extends VerticalPanel {
     // Methods which change the class variables or run RPC calls which modify server variables
     //
 
-    public void displayEmptyInvestigation() {
-        initEditInvestigationTable();
-        Investigation investigation = new Investigation();
-        investigation.createId();
-        investigation.getProvider().createId();
+    private void displayInvestigation() {
+        initEditInvestigationView();
 
         // we need the non-template settings here if a template was previously shown, and therefore buttons were
         // previously disabled. In such cases, we need to explicitly enable them.
@@ -325,52 +298,26 @@ public class EditInvestigationView extends VerticalPanel {
         addSubStepButton.setEnabled( true );
 
         readWriteDetailsPanel.createReadableDisplay( investigation );
-    }
 
-    public void displayInvestigation( String id ) {
+        if ( investigation.isTemplate() ) {
+            // disable buttons that allow modifications
+            saveButton.setEnabled( false );
+            setAsTemplateButton.setEnabled( false );
+            saveCopyAsTemplateButton.setEnabled( false );
+            addSubStepButton.setEnabled( false );
+        } else {
+            // we need the "else" here if a template was previously shown, and therefore buttons were
+            // previously disabled. We need to explicitly enable them.
+            saveButton.setEnabled( true );
+            setAsTemplateButton.setEnabled( true );
+            saveCopyAsTemplateButton.setEnabled( true );
+            addSubStepButton.setEnabled( true );
+        }
+        cancelButton.setEnabled( true );
 
-        // temporary message for the user
-        add( new Label( "Loading selected investigation. Please wait..." ) );
+//                symba.showEastWidget( "Running Display Data", symba.getEastWidgetDirections() );
 
-        rpcService.getInvestigation( id, new AsyncCallback<Investigation>() {
-            public void onSuccess( Investigation result ) {
-
-                // this init step will also remove the temporary message created outside this RPC call
-                initEditInvestigationTable();
-
-                investigation = result;
-                readWriteDetailsPanel.createReadableDisplay( investigation );
-
-                if ( investigation.isTemplate() ) {
-                    // disable buttons that allow modifications
-                    saveButton.setEnabled( false );
-                    setAsTemplateButton.setEnabled( false );
-                    saveCopyAsTemplateButton.setEnabled( false );
-                    addSubStepButton.setEnabled( false );
-                } else {
-                    // we need the "else" here if a template was previously shown, and therefore buttons were
-                    // previously disabled. We need to explicitly enable them.
-                    saveButton.setEnabled( true );
-                    setAsTemplateButton.setEnabled( true );
-                    saveCopyAsTemplateButton.setEnabled( true );
-                    addSubStepButton.setEnabled( true );
-                }
-                cancelButton.setEnabled( true );
-
-                displaySteps();
-            }
-
-            public void onFailure( Throwable caught ) {
-                Window.alert( "Error retrieving investigation" );
-            }
-        } );
-
-    }
-
-    private void displaySteps() {
-        //todo replace with RPC call that will retrieve summary details only
-
-        displayData( investigation.getExperiments() );
+        displayData();
     }
 
     /**
@@ -384,18 +331,10 @@ public class EditInvestigationView extends VerticalPanel {
     public int displayData( List<ExperimentStepHolder> data,
                             Integer rowValue,
                             Integer depth ) {
-        if ( GWT.isScript() ) {
-            // when radio buttons are added again, none are selected, so disable the upload buttons: only add file upload
-            // features if in scripting mode (i.e. not development mode).
-            buttonOne.setButtonDisabled( true );
-            buttonOne.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
-            buttonTwo.setButtonDisabled( true );
-            buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
-        }
 
         for ( ExperimentStepHolder holder : data ) {
 //            System.err
-//                    .println( "Printing Row " + rowValue + " (" + depth + holder.getCurrent().getTitle() + ")" );
+//                    .println( "Printing Row " + rowValue + " (" + depth + " " + holder.getCurrent().getTitle() + ")" );
             holder.setStepId( rowValue );
 
             addRowActions( rowValue );
@@ -406,11 +345,18 @@ public class EditInvestigationView extends VerticalPanel {
                 i++;
             }
 
-            ClickHandler myEditableHandler = new makeEditableHandler( rowValue,
-                    depth + ActionType.SELECT.getValue() + 1 );
-            ReadableStepView readableStepView = new ReadableStepView(
-                    holder.getCurrent().getTitle(),
-                    holder.getCurrent().getFileNames(), holder.getCurrent().getParameters(), myEditableHandler );
+            ReadableStepView readableStepView;
+            if ( !investigation.isTemplate() ) {
+                ClickHandler myHandler = new makeEditableHandler( rowValue,
+                        depth + ActionType.SELECT.getValue() + 1 );
+                readableStepView = new ReadableStepView(
+                        holder.getCurrent().getTitle(),
+                        holder.getCurrent().getFileNames(), holder.getCurrent().getParameters(), myHandler );
+            } else {
+                readableStepView = new ReadableStepView(
+                        holder.getCurrent().getTitle(),
+                        holder.getCurrent().getFileNames(), holder.getCurrent().getParameters() );
+            }
             stepsTable.setWidget( rowValue, depth + ActionType.SELECT.getValue() + 1, readableStepView );
 
             // make just this cell a different style if it has been modified
@@ -433,17 +379,16 @@ public class EditInvestigationView extends VerticalPanel {
                 rowValue = displayData( holder.getCurrent().getChildren(), rowValue, depth + 1 );
             }
         }
+
         return rowValue;
     }
 
     /**
      * clears the existing display of experiment steps and starts re-writing from the beginning.
-     *
-     * @param data the data to display
      */
-    public void displayData( List<ExperimentStepHolder> data ) {
+    public void displayData() {
         stepsTable.removeAllRows();
-        displayData( data, 0, 0 );
+        displayData( investigation.getExperiments(), 0, 0 );
     }
 
     public void assignFileToStep( File file,
@@ -466,7 +411,6 @@ public class EditInvestigationView extends VerticalPanel {
 
         Image addChildImage = new Image();
         addChildImage.setUrl( addChildImageUrl );
-//        addChildImage.addStyleName( "size30x30" );
         addChildImage.setTitle( "Add Sub-Step" );
         addChildImage.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
@@ -474,10 +418,11 @@ public class EditInvestigationView extends VerticalPanel {
             }
         } );
         stepsTable.setWidget( rowValue, ActionType.ADD.getValue(), addChildImage );
+        stepsTable.getCellFormatter().setHeight( rowValue, ActionType.ADD.getValue(), "30px" );
+        stepsTable.getCellFormatter().setWidth( rowValue, ActionType.ADD.getValue(), "30px" );
 
         Image copyStepImage = new Image();
         copyStepImage.setUrl( copyStepImageUrl );
-//        copyStepImage.addStyleName( "size30x15" );
         copyStepImage.setTitle( "Copy Step" );
         copyStepImage.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
@@ -485,6 +430,8 @@ public class EditInvestigationView extends VerticalPanel {
             }
         } );
         stepsTable.setWidget( rowValue, ActionType.COPY.getValue(), copyStepImage );
+        stepsTable.getCellFormatter().setHeight( rowValue, ActionType.ADD.getValue(), "30px" );
+        stepsTable.getCellFormatter().setWidth( rowValue, ActionType.ADD.getValue(), "15px" );
 
         RadioButton radio = new RadioButton( "fileSelector" );
 
@@ -494,13 +441,6 @@ public class EditInvestigationView extends VerticalPanel {
                 HTMLTable.Cell cell = stepsTable.getCellForEvent( clickEvent );
                 selectedRadioRow = cell.getRowIndex();
 
-                if ( GWT.isScript() ) {
-                    // don't add file upload functionality if not in scripting mode (i.e. in development mode)
-                    buttonOne.setButtonDisabled( false );
-                    buttonOne.setButtonCursor( SWFUpload.ButtonCursor.HAND.getValue() );
-                    buttonTwo.setButtonDisabled( false );
-                    buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.HAND.getValue() );
-                }
             }
         } );
         stepsTable.setWidget( rowValue, ActionType.SELECT.getValue(), radio );
@@ -511,17 +451,17 @@ public class EditInvestigationView extends VerticalPanel {
         //todo allow multiple addition of steps
         if ( selectedRow >= ActionType.ADD.getValue() ) {
             investigation.addExperimentStep( selectedRow );
-            displayData( investigation.getExperiments() );
+            displayData();
         } else if ( selectedRow == ActionType.UNDEFINED.getValue() ) {
             investigation.addExperimentStep();
-            displayData( investigation.getExperiments() );
+            displayData();
         } // do nothing if ActionType.IGNORE.getValue() : we should ignore such clicks.
     }
 
     private void doCopyStep( int selectedRow ) {
         if ( selectedRow >= ActionType.ADD.getValue() ) {
             investigation.deepExperimentCopy( selectedRow );
-            displayData( investigation.getExperiments() );
+            displayData();
         } // do nothing if ActionType.IGNORE.getValue() or ActionType.UNDEFINED.getValue() : we should ignore such clicks.
 
     }
@@ -548,17 +488,11 @@ public class EditInvestigationView extends VerticalPanel {
         // todo ensure Identifier has changed before this step, if necessary
         rpcService.updateInvestigation( investigation, new AsyncCallback<ArrayList<InvestigationDetail>>() {
             public void onSuccess( ArrayList<InvestigationDetail> updatedDetails ) {
-                if ( GWT.isScript() ) {
-                    buttonOne.setButtonDisabled( true );
-                    buttonOne.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
-                    buttonTwo.setButtonDisabled( true );
-                    buttonTwo.setButtonCursor( SWFUpload.ButtonCursor.ARROW.getValue() );
-                }
                 final String title = investigation.getInvestigationTitle();
                 final String id = investigation.getId();
-                clearModifiable();
                 symba.setInvestigationDetails( updatedDetails );
                 symba.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
+                symba.setCenterWidgetAsListExperiments();
 
                 if ( saveType == SaveType.SET_COPY_AS_TEMPLATE ) {
                     rpcService.copyInvestigation( id,
@@ -617,294 +551,14 @@ public class EditInvestigationView extends VerticalPanel {
                 }
             } );
 
+            popup.show();
             EditableStepView editableStepView = new EditableStepView(
                     ( ReadableStepView ) stepsTable.getWidget( row, column ), popup, stepsTable, investigation, row,
                     column, this );
             popup.add( editableStepView );
-            popup.show();
+            editableStepView.getStepTitle().setFocus( true );
 
         }
     }
 
-    private void setupMultipleFileUploader() {
-        String moduleBase = GWT.getModuleBaseURL();
-        String moduleName = GWT.getModuleName();
-        String baseApp = moduleBase.substring( 0, moduleBase.lastIndexOf( moduleName ) );
-        String url = baseApp + "upload";
-
-//        northHtml.setHTML( "SyMBA upload service is running on " + url );
-
-        // Determine if the demo is being viewed in Hosted mode, if so display a
-        // warning. This is because Flash to JavaScript communications does not work
-        // correctly in hosted mode.
-        if ( !GWT.isScript() ) {
-            HTML warning = new HTML();
-            warning.addStyleName( "note" );
-            warning.setHTML( "NIS: Not in scripting mode. You have to deploy the app to an application server! (" +
-                    url + ")" );
-            warning.setTitle( "Not in scripting mode. You have to deploy the app to an application server! (" +
-                    url + ")" );
-            add( warning );
-            return;
-        }
-
-        HorizontalPanel tempPanel = new HorizontalPanel();
-        HTML bt = new HTML( "<span id=\"buttonOne-button\" />" );
-        tempPanel.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
-        tempPanel.setSpacing( 20 );
-        tempPanel.add( bt );
-        HTML bt2 = new HTML( "<span id=\"uploadToNewStep-button\" />" );
-        tempPanel.add( bt2 );
-        add( tempPanel );
-
-        setupExistingStepBuilder( baseApp, url );
-        setupNewStepBuilder( baseApp, url );
-
-    }
-
-    private void setupNewStepBuilder( String baseApp,
-                                      String url ) {
-
-        final UploadBuilder builder = new UploadBuilder();
-        // builder.setDebug(true);
-        builder.setHTTPSuccessCodes( 200, 201 );
-        builder.setFileTypes(
-                "*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.mp4;*.mov;*.m4v;*.aac;*.mp3;*.wav;*.png;*.jpg;*.jpeg;*.gif;*.svg;*.txt;*.doc;*.xls;*.odt" );
-        builder.setFileTypesDescription( "Images, Video & Text" );
-
-        builder.setButtonPlaceholderID( "uploadToNewStep-button" );
-        builder.setButtonImageURL( baseApp + toNewStepImageUrl );
-//        builder.setButtonText( "Each file is added to a copy of the selected step" );
-        builder.setButtonDisabled( true );
-        builder.setButtonCursor( SWFUpload.ButtonCursor.ARROW );
-        builder.setButtonWidth( 70 );
-        builder.setButtonHeight( 76 );
-        builder.setButtonAction( SWFUpload.ButtonAction.SELECT_FILES );
-
-        builder.setUploadProgressHandler( new UploadProgressHandler() {
-
-            public void onUploadProgress( UploadProgressEvent e ) {
-                // ensure the east widget is visible using any current values
-                symba.showEastWidget();
-                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
-                        .setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
-                                e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) +
-                                        "%" ) );
-                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                        .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer yellow" );
-            }
-        } );
-
-        builder.setUploadSuccessHandler( new UploadSuccessHandler() {
-            public void onUploadSuccess( UploadSuccessEvent e ) {
-                symba.showEastWidget();
-                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                        .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
-
-            }
-        } );
-
-        builder.setUploadErrorHandler( new UploadErrorHandler() {
-            public void onUploadError( UploadErrorEvent e ) {
-                String message = e.getMessage();
-                if ( message == null || message.trim().length() == 0 ) {
-                    message = "buttonOne failed";
-                }
-                ( ( HTML ) symba.getEastWidget() ).setHTML(
-                        ( ( HTML ) symba.getEastWidget() ).getText() + "<br />Upload error: " + e.getFile().getId() +
-                                ", " + e.getFile().getName() + " / " + message );
-                removeFile( e.getFile().getId() );
-                if ( files.size() > 0 ) {
-                    String id = files.get( 0 ).getId();
-                    symba.showEastWidget();
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
-                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
-                    buttonTwo.startUpload( id );
-                }
-            }
-        } );
-
-        builder.setUploadURL( url );
-
-        builder.setUploadCompleteHandler( new UploadCompleteHandler() {
-            public void onUploadComplete( UploadCompleteEvent e ) {
-                File f = e.getFile();
-                removeFile( f.getId() );
-                if ( files.size() > 0 ) {
-                    String id = files.get( 0 ).getId();
-                    symba.showEastWidget();
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
-                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
-                    buttonTwo.startUpload( id );
-                }
-            }
-        } );
-
-        builder.setFileQueuedHandler( new FileQueuedHandler() {
-            public void onFileQueued( FileQueuedEvent event ) {
-                files.add( event.getFile() );
-            }
-        } );
-
-        builder.setFileDialogCompleteHandler( new FileDialogCompleteHandler() {
-            public void onFileDialogComplete( FileDialogCompleteEvent e ) {
-//                ((FlexTable) symba.getSouthWidget()).setHTML( wrapInFileQueueStyle( "", "files = " + files.size() ) );
-                if ( files.size() > 0 ) {
-                    // reset table variables
-                    symba.showEastWidget();
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().removeAllRows();
-                    fileIdToRow = new HashMap<String, Integer>();
-                    int fileIdToRowCount = 0;
-                    // fill in fileIdToRow
-                    for ( File file : files ) {
-                        fileIdToRow.put( file.getId(), fileIdToRowCount++ );
-                    }
-                    // next, set the value in the appropriate table row.
-                    String id = files.get( 0 ).getId();
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
-                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() + ": 0%" ) );
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
-                    buttonTwo.startUpload( id );
-                }
-            }
-        } );
-        buttonTwo = builder.build();
-
-    }
-
-    private void setupExistingStepBuilder( String baseApp,
-                                           String url ) {
-        final UploadBuilder builder = new UploadBuilder();
-        // builder.setDebug(true);
-        builder.setHTTPSuccessCodes( 200, 201 );
-        builder.setFileTypes(
-                "*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.mp4;*.mov;*.m4v;*.aac;*.mp3;*.wav;*.png;*.jpg;*.jpeg;*.gif;*.svg;*.txt;*.doc;*.xls;*.odt" );
-        builder.setFileTypesDescription( "Images, Video & Text" );
-
-        builder.setButtonPlaceholderID( "buttonOne-button" );
-        builder.setButtonImageURL( baseApp + toExistingStepImageUrl );
-//        builder.setButtonText( "All files are added to the selected step" );
-        builder.setButtonDisabled( true );
-        builder.setButtonCursor( SWFUpload.ButtonCursor.ARROW );
-        builder.setButtonWidth( 70 );
-        builder.setButtonHeight( 52 );
-        builder.setButtonAction( SWFUpload.ButtonAction.SELECT_FILES );
-
-        builder.setUploadProgressHandler( new UploadProgressHandler() {
-
-            public void onUploadProgress( UploadProgressEvent e ) {
-                symba.showEastWidget();
-                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
-                        .setWidget( fileIdToRow.get( e.getFile().getId() ), 0, new HTML(
-                                e.getFile().getName() + ": " + ( ( e.getBytesComplete() / e.getBytesTotal() ) * 100 ) +
-                                        "%" ) );
-                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                        .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer yellow" );
-            }
-        } );
-
-        builder.setUploadSuccessHandler( new UploadSuccessHandler() {
-            public void onUploadSuccess( UploadSuccessEvent e ) {
-                symba.showEastWidget();
-                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                        .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer blue" );
-
-                // now assign this file to the appropriate experimental step
-                ( ( EditInvestigationView ) symba.getCenterWidget() )
-                        .assignFileToStep( e.getFile(), radioRowSelectedOnUpload );
-            }
-        } );
-
-        builder.setUploadErrorHandler( new UploadErrorHandler() {
-            public void onUploadError( UploadErrorEvent e ) {
-                symba.showEastWidget();
-                ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                        .addStyleName( fileIdToRow.get( e.getFile().getId() ), 0, "progressContainer red" );
-                String message = e.getMessage();
-                if ( message == null || message.trim().length() == 0 ) {
-                    message = "buttonOne failed";
-                }
-                ( ( HTML ) symba.getEastWidget() ).setHTML(
-                        ( ( HTML ) symba.getEastWidget() ).getText() + "<br />Upload error: " + e.getFile().getId() +
-                                ", " + e.getFile().getName() + " / " + message );
-                removeFile( e.getFile().getId() );
-                if ( files.size() > 0 ) {
-                    String id = files.get( 0 ).getId();
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
-                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
-                    buttonOne.startUpload( id );
-                }
-            }
-        } );
-
-        builder.setUploadURL( url );
-
-        builder.setUploadCompleteHandler( new UploadCompleteHandler() {
-            public void onUploadComplete( UploadCompleteEvent e ) {
-                File f = e.getFile();
-                removeFile( f.getId() );
-                if ( files.size() > 0 ) {
-                    String id = files.get( 0 ).getId();
-                    symba.showEastWidget();
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
-                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() ) );
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
-                    buttonOne.startUpload( id );
-                }
-            }
-        } );
-
-        builder.setFileQueuedHandler( new FileQueuedHandler() {
-            public void onFileQueued( FileQueuedEvent event ) {
-                files.add( event.getFile() );
-            }
-        } );
-
-        builder.setDialogStartHandler( new DialogStartHandler() {
-            public void onDialogStart() {
-                radioRowSelectedOnUpload = ( ( EditInvestigationView ) symba.getCenterWidget() ).getSelectedRadioRow();
-            }
-        } );
-
-        builder.setFileDialogCompleteHandler( new FileDialogCompleteHandler() {
-            public void onFileDialogComplete( FileDialogCompleteEvent e ) {
-                if ( files.size() > 0 ) {
-                    symba.showEastWidget();
-                    // reset table variables
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().removeAllRows();
-                    fileIdToRow = new HashMap<String, Integer>();
-                    int fileIdToRowCount = 0;
-                    // fill in fileIdToRow
-                    for ( File file : files ) {
-                        fileIdToRow.put( file.getId(), fileIdToRowCount++ );
-                    }
-                    // next, set the value in the appropriate table row.
-                    String id = files.get( 0 ).getId();
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus()
-                            .setWidget( fileIdToRow.get( id ), 0, new HTML( files.get( 0 ).getName() + ": 0%" ) );
-                    ( ( HelpPanel ) symba.getEastWidget() ).getFileStatus().getCellFormatter()
-                            .addStyleName( fileIdToRow.get( id ), 0, "progressContainer yellow" );
-                    buttonOne.startUpload( id );
-                }
-            }
-        } );
-        buttonOne = builder.build();
-
-    }
-
-    private void removeFile( String id ) {
-        for ( File ff : files ) {
-            if ( ff.getId().equals( id ) ) {
-                files.remove( ff );
-            }
-        }
-    }
 }

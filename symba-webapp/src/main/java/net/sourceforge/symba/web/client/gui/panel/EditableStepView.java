@@ -29,12 +29,22 @@ public class EditableStepView extends VerticalPanel {
                              int column,
                              final ClickHandler myEditableHandler,
                              final boolean completed ) {
+
+        setSpacing( 5 );
+
         this.myEditableHandler = myEditableHandler;
 
         this.editableRow = row;
         this.editableColumn = column;
+        HorizontalPanel hPanel = new HorizontalPanel();
+        hPanel.setSpacing( 5 );
         stepTitle = new TextBox();
         stepTitle.setText( readableView.getStepTitle() );
+        final Label legend = new Label( "Title of Step: " );
+        legend.addStyleName( "textbox-legend" );
+        hPanel.add( legend );
+        hPanel.add( stepTitle );
+
 
         fileNames = readableView.getFileNames();
         parameterTable = new EditableStepParameterTable( readableView.getParameterTable().getParameters() );
@@ -50,7 +60,9 @@ public class EditableStepView extends VerticalPanel {
         parameterContentPanel.add( parameterTable );
         parameterContentPanel.add( addNewParameterLabel );
 
-        // add all handlers
+        //
+        // All handlers
+        //
         addNewParameterLabel.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
                 parameterTable.addNewParameter();
@@ -59,41 +71,54 @@ public class EditableStepView extends VerticalPanel {
 
         saveStepButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
-
-                // save the text in the parameters text boxes
-                if ( !getParameterTable().savePanelValues( completed ) ) {
-                    return;
-                }
-
-                Object[] values = investigation
-                        .setExperimentStepInfo( editableRow, stepTitle.getText(),
-                                getParameterTable().getParameters() );
-
-                // Set style based on change, then send the stepTitle to setReadOnly.
-                Boolean modified = false;
-                if ( values.length == 2 && values[0] != null && values[1] != null &&
-                        ( ( String ) values[0] ).length() > 0 ) {
-                    modified = ( Boolean ) values[1];
-                }
-                // todo this style is currently only be applied to one cell until the entire table is redrawn, e.g. from an added step
-                if ( modified ) {
-                    tableToAddTo.getCellFormatter().addStyleName( editableRow, editableColumn, "cell-modified" );
-                } else {
-                    tableToAddTo.getCellFormatter()
-                            .removeStyleName( editableRow, editableColumn, "cell-modified" );
-
-                }
-                setReadOnly( tableToAddTo );
-                container.hide();
-
+                saveStep( completed, investigation, tableToAddTo, container );
             }
         } );
 
+        stepTitle.addKeyPressHandler( new KeyPressHandler() {
+            public void onKeyPress( KeyPressEvent event ) {
+                if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
+                    saveStep( completed, investigation, tableToAddTo, container );
+                }
+            }
+        } );
 
-        add( stepTitle );
+        add( hPanel );
         add( new HTML( getFileNamesString() ) );
         add( parameterCaptionPanel );
         add( saveStepButton );
+    }
+
+    private void saveStep( boolean completed,
+                           Investigation investigation,
+                           FlexTable tableToAddTo,
+                           PopupPanel container ) {
+        // save the text in the parameters text boxes
+        if ( !getParameterTable().savePanelValues( completed ) ) {
+            return;
+        }
+
+        Object[] values = investigation
+                .setExperimentStepInfo( editableRow, stepTitle.getText(),
+                        getParameterTable().getParameters() );
+
+        // Set style based on change, then send the stepTitle to setReadOnly.
+        Boolean modified = false;
+        if ( values.length == 2 && values[0] != null && values[1] != null &&
+                ( ( String ) values[0] ).length() > 0 ) {
+            modified = ( Boolean ) values[1];
+        }
+        // todo this style is currently only be applied to one cell until the entire table is redrawn, e.g. from an added step
+        if ( modified ) {
+            tableToAddTo.getCellFormatter().addStyleName( editableRow, editableColumn, "cell-modified" );
+        } else {
+            tableToAddTo.getCellFormatter()
+                    .removeStyleName( editableRow, editableColumn, "cell-modified" );
+
+        }
+        setReadOnly( tableToAddTo );
+        container.hide();
+
     }
 
 
@@ -153,14 +178,32 @@ public class EditableStepView extends VerticalPanel {
             parameterRowCount = 0;
 
             for ( ExperimentParameter parameter : parameters ) {
-                addSingleParameterPanel( parameter );
+                addSingleParameterRow( parameter );
             }
         }
 
-        private void addSingleParameterPanel( ExperimentParameter parameter ) {
-            SingleParameterPanel panel = new SingleParameterPanel( parameterRowCount++, parameter );
+        private void addSingleParameterRow( ExperimentParameter parameter ) {
+            final SingleParameterPanel panel = new SingleParameterPanel( parameterRowCount, parameter );
             parameterPanels.add( panel );
             setWidget( parameterRowCount, 0, panel );
+
+            final Button removeButton = new Button( "X" );
+            removeButton.addClickHandler( new ClickHandler() {
+                public void onClick( ClickEvent event ) {
+                    // for some reason removeRow(parameterRowCount) doesn't remove the row, so widgets need to be
+                    // removed separately
+                    remove( panel );
+                    remove( removeButton );
+                    parameterPanels.remove( panel );
+                }
+            } );
+
+            setWidget( parameterRowCount, 1, removeButton );
+
+            panel.getSubject().setFocus( true );
+
+            parameterRowCount++;
+
         }
 
         public ArrayList<ExperimentParameter> getParameters() {
@@ -247,7 +290,7 @@ public class EditableStepView extends VerticalPanel {
         }
 
         public void addNewParameter() {
-            addSingleParameterPanel( new ExperimentParameter() );
+            addSingleParameterRow( new ExperimentParameter() );
         }
 
         // An internal panel contains the step stepTitle
@@ -259,7 +302,7 @@ public class EditableStepView extends VerticalPanel {
             private ToolTip measurementTip;
             private VerticalPanel radioPanel;
 
-            public SingleParameterPanel( int counter,
+            public SingleParameterPanel( final int counter,
                                          final ExperimentParameter parameter ) {
                 setBorderWidth( 0 );
                 setSpacing( 0 );

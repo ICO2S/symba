@@ -41,6 +41,7 @@ public class SymbaController extends DockPanel {
         this.rpcService = rpcService;
 
         setWidth( "100%" );
+        setSpacing( 10 );
 
         // the center widget starts out as a HomePanel, but will change
         HomePanel home = new HomePanel();

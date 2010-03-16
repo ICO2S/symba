@@ -1,6 +1,5 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
-import net.sourceforge.fuge.util.generated.*;
 import net.sourceforge.fuge.util.generated.AtomicValue;
 import net.sourceforge.fuge.util.generated.Audit;
 import net.sourceforge.fuge.util.generated.AuditCollection;
@@ -147,20 +146,23 @@ public class FugeConverter {
 
         addProtocols( allProtocol, allOntology, topProtocol, 0, person, inv.getExperiments() );
 
+        // link the top protocol to the collection
+        allProtocol.getProtocol().add( factory.createGenericProtocol( topProtocol ) );
+
     }
 
     private void addProtocols( ProtocolCollection allProtocol,
                                OntologyCollection allOntology,
-                               GenericProtocol currentProtocol,
+                               GenericProtocol parentProtocol,
                                int ordinal,
                                Person person,
-                               final ArrayList<ExperimentStepHolder> holders ) {
+                               final ArrayList<ExperimentStepHolder> childrenHolder ) {
 
         // now we need a Generic Protocol for each further experiment step, then add that step to the
         // top protocol as a Generic Action.
         // Also, we will need to add GenericProtocolApplication objects for each item with a file name.
-        for ( ExperimentStepHolder holder : holders ) {
-            ExperimentStep child = holder.getCurrent();
+        for ( ExperimentStepHolder childHolder : childrenHolder ) {
+            ExperimentStep child = childHolder.getCurrent();
             System.err.println( "child.getTitle(): " + child.getTitle() );
             // create basic protocol
             GenericProtocol childProtocol = createGenericProtocol( child.getTitle() );
@@ -177,14 +179,11 @@ public class FugeConverter {
             }
 
             // add the protocol as an action on the top protocol
-            createGenericAction( currentProtocol, childProtocol, ordinal++ );
+            createGenericAction( parentProtocol, childProtocol, ordinal++ );
         }
-
-        // link the top protocol to the collection
-        allProtocol.getProtocol().add( factory.createGenericProtocol( currentProtocol ) );
     }
 
-    private void createGenericAction( GenericProtocol topProtocol,
+    private void createGenericAction( GenericProtocol parentProtocol,
                                       GenericProtocol childProtocol,
                                       int ordinal ) {
         GenericAction action = new GenericAction();
@@ -193,7 +192,7 @@ public class FugeConverter {
         action.setName( childProtocol.getName() );
         action.setIdentifier( createRandom() );
         action.setEndurantRef( createRandom() );
-        topProtocol.getAction().add( factory.createGenericAction( action ) );
+        parentProtocol.getAction().add( factory.createGenericAction( action ) );
     }
 
     private void createAndAddGenericParameter( OntologyCollection allOntology,

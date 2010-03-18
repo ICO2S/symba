@@ -4,6 +4,7 @@ import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
+import net.sourceforge.symba.web.shared.Material;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -15,6 +16,9 @@ import java.util.HashMap;
 public class MemoryStorageHelper extends StorageHelper {
 
     private static final Contact ALICE = new Contact( "23456", "Alice", "Smith", "alice.jones@example.com" );
+    private static final Contact BOB = new Contact( "013265", "Bob", "Reynolds", "bob.reynolds@example.com" );
+    private static final Contact ZACH = new Contact( "9561046", "Zach", "Peters", "zach.peters@example.com" );
+    private static final Material CULTURE = new Material( "ABC23456", "Cell Culture 17", "An example cell culture." );
 
 
     /**
@@ -33,17 +37,28 @@ public class MemoryStorageHelper extends StorageHelper {
     @NotNull
     public HashMap<String, Contact> fetchAllContacts() {
         getContacts().put( ALICE.getId(), ALICE );
-        Contact contact = new Contact( "013265", "Bob", "Reynolds", "bob.reynolds@example.com" );
-        getContacts().put( contact.getId(), contact );
-        contact = new Contact( "9561046", "Zach", "Peters", "zach.peters@example.com" );
-        getContacts().put( contact.getId(), contact );
+        getContacts().put( BOB.getId(), BOB );
+        getContacts().put( ZACH.getId(), ZACH );
         return getContacts();
+    }
+
+    @NotNull
+    @Override
+    public HashMap<String, Material> fetchAllMaterials() {
+        getMaterials().put( CULTURE.getId(), CULTURE );
+        return getMaterials();
     }
 
     @NotNull
     public HashMap<String, Contact> addContact( @NotNull Contact contact ) {
         getContacts().put( contact.getId(), contact );
         return getContacts();
+    }
+
+    @NotNull
+    public HashMap<String, Material> addMaterial( @NotNull Material material ) {
+        getMaterials().put( material.getId(), material );
+        return getMaterials();
     }
 
     @NotNull
@@ -83,4 +98,5 @@ public class MemoryStorageHelper extends StorageHelper {
         getInvestigations().remove( id );
         return getInvestigationDetails();
     }
+
 }

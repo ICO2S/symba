@@ -6,14 +6,14 @@ import net.sourceforge.symba.web.client.gui.panel.InitialDownloadPopup;
 import net.sourceforge.symba.web.client.gui.panel.SymbaController;
 
 public class DownloadClickHandler implements ClickHandler {
-    final SymbaController dock;
+    final SymbaController controller;
 
-    public DownloadClickHandler( SymbaController dock ) {
-        this.dock = dock;
+    public DownloadClickHandler( SymbaController controller ) {
+        this.controller = controller;
     }
 
     public void onClick( ClickEvent event ) {
-        InitialDownloadPopup panel = new InitialDownloadPopup( dock );
+        InitialDownloadPopup panel = new InitialDownloadPopup( controller );
         panel.show();
     }
 }

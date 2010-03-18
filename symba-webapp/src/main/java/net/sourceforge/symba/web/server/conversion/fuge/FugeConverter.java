@@ -254,6 +254,8 @@ public class FugeConverter {
         term.setEndurantRef( createRandom() );
         term.setName( objectValue );
         // todo allow real ontology terms and have their term accession specified
+        // todo change to create a "proper" tuple using OI dataProperty value and datatype for boolean and number
+        // todo change to create a "proper" tuple using OI objectProperty value for words/phrases
         term.setTerm( objectValue );
         allOntology.getOntologyTerm().add( factory.createOntologyIndividual( term ) );
 

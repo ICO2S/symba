@@ -5,6 +5,7 @@ import net.sourceforge.symba.web.server.StorageHelper;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
+import net.sourceforge.symba.web.shared.Material;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -47,7 +48,18 @@ public class DatabaseStorageHelper extends StorageHelper {
     }
 
     @NotNull
+    @Override
+    public HashMap<String, Material> fetchAllMaterials() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @NotNull
     public HashMap<String, Contact> addContact( Contact contact ) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @NotNull
+    public HashMap<String, Material> addMaterial( Material material ) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

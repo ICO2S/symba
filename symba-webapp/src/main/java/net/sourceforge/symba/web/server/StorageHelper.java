@@ -3,6 +3,7 @@ package net.sourceforge.symba.web.server;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
+import net.sourceforge.symba.web.shared.Material;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -19,9 +20,14 @@ public abstract class StorageHelper {
     // in the database which are not yet part of any investigation.
     private HashMap<String, Contact> contacts;
 
+    // The Materials are more than just those listed in the investigations: there may well be materials
+    // in the database which are not yet part of any investigation.
+    private HashMap<String, Material> materials;
+
     protected StorageHelper() {
         investigations = new HashMap<String, Investigation>();
         contacts = new HashMap<String, Contact>();
+        materials = new HashMap<String, Material>();
     }
 
     @NotNull
@@ -32,6 +38,11 @@ public abstract class StorageHelper {
     @NotNull
     public HashMap<String, Contact> getContacts() {
         return contacts;
+    }
+
+    @NotNull
+    public HashMap<String, Material> getMaterials() {
+        return materials;
     }
 
     /**
@@ -46,7 +57,13 @@ public abstract class StorageHelper {
     public abstract HashMap<String, Contact> fetchAllContacts();
 
     @NotNull
+    public abstract HashMap<String, Material> fetchAllMaterials();
+
+    @NotNull
     public abstract HashMap<String, Contact> addContact( Contact contact );
+
+    @NotNull
+    public abstract HashMap<String, Material> addMaterial( Material material );
 
     @NotNull
     public abstract Investigation add( @NotNull Investigation investigation );
@@ -71,5 +88,4 @@ public abstract class StorageHelper {
 
         return investigationDetails;
     }
-
 }

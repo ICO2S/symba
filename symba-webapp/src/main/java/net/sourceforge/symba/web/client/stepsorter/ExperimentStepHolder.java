@@ -1,6 +1,7 @@
 package net.sourceforge.symba.web.client.stepsorter;
 
 import net.sourceforge.symba.web.client.gui.InputValidator;
+import net.sourceforge.symba.web.shared.Material;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class ExperimentStepHolder implements Serializable {
     private int stepId;
     private boolean isModified;
 
+    @SuppressWarnings( "unused" )
     public ExperimentStepHolder() {
         this.original = new ExperimentStep();
         this.current = new ExperimentStep( this.original );
@@ -23,9 +25,9 @@ public class ExperimentStepHolder implements Serializable {
         this.isModified = false;
     }
 
-    public ExperimentStepHolder( ExperimentStep current ) {
-        this.current = current;
-        this.original = new ExperimentStep( current );
+    public ExperimentStepHolder( ExperimentStep step ) {
+        this.original = new ExperimentStep( step );
+        this.current = step;
         this.stepId = 0; // will be re-written later in the view
         this.isModified = false;
     }
@@ -117,12 +119,16 @@ public class ExperimentStepHolder implements Serializable {
      * @param selectedRow the row whose title is to be changed
      * @param title       the new title
      * @param parameters  the new parameters (existing ones will be overwritten)
+     * @param inputs      the new input materials to set the step to (these materials completely re-write existing)
+     * @param outputs     the new output materials to set the step to (these materials completely re-write existing)
      * @return the new title value in [0], and true if new, false if matches original, in [1] - this is important,
      *         as it isn't necessarily the same as the title parameter
      */
     public Object[] setInfoAtStepId( int selectedRow,
                                      String title,
-                                     ArrayList<ExperimentParameter> parameters ) {
+                                     ArrayList<ExperimentParameter> parameters,
+                                     ArrayList<Material> inputs,
+                                     ArrayList<Material> outputs ) {
         Object[] values = new Object[2];
 
         if ( stepId == selectedRow ) {
@@ -150,6 +156,17 @@ public class ExperimentStepHolder implements Serializable {
                 }
             }
 
+            if ( current.getInputMaterials() != inputs ) {
+                setModified( true );
+                current.getInputMaterials().clear();
+                current.getInputMaterials().addAll( inputs );
+            }
+            if ( current.getOutputMaterials() != outputs ) {
+                setModified( true );
+                current.getOutputMaterials().clear();
+                current.getOutputMaterials().addAll( outputs );
+            }
+
             values[0] = current.getTitle();
             values[1] = isModified();
             return values;
@@ -157,7 +174,7 @@ public class ExperimentStepHolder implements Serializable {
 
         if ( !current.isLeaf() ) {
             for ( ExperimentStepHolder holder : current.getChildren() ) {
-                Object[] returnedValues = holder.setInfoAtStepId( selectedRow, title, parameters );
+                Object[] returnedValues = holder.setInfoAtStepId( selectedRow, title, parameters, inputs, outputs );
                 if ( returnedValues.length == 2 && returnedValues[0] != null && returnedValues[1] != null ) {
                     setModified( ( Boolean ) returnedValues[1] );
                     return returnedValues;

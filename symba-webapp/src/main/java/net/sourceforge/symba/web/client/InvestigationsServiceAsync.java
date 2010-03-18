@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
+import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,12 @@ public interface InvestigationsServiceAsync {
     void addContact( Contact contact,
                      AsyncCallback<HashMap<String, Contact>> async );
 
+    void addMaterial( Material material,
+                      AsyncCallback<HashMap<String, Material>> async );
+
     void getMetadata( String id,
                       AsyncCallback<String> async );
+
+    void getAllMaterials( AsyncCallback<HashMap<String, Material>> async );
 }
 

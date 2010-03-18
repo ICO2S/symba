@@ -14,7 +14,6 @@ import java.util.ArrayList;
  * Investigation and InvestigationDetail (a summary of what's in Investigation) are used instead on
  * the client side.
  */
-@SuppressWarnings( "serial" )
 public class Investigation implements Serializable {
 
     private boolean template, completed;
@@ -76,14 +75,18 @@ public class Investigation implements Serializable {
      * @param selectedRow the row in the view that is to get a new title - will match the holder's stepId.
      * @param title       the new title to set the step to (this may be empty, but will be dealt with appropriately)
      * @param parameters  the new parameters to set the step to (these parameters completely re-write existing ones)
+     * @param inputs      the new input materials to set the step to (these materials completely re-write existing)
+     * @param outputs     the new output materials to set the step to (these materials completely re-write existing)
      * @return the new title at [0] and the modified value at [1]. Will be empty array if no matches found
      */
     public Object[] setExperimentStepInfo( int selectedRow,
                                            String title,
-                                           ArrayList<ExperimentParameter> parameters ) {
+                                           ArrayList<ExperimentParameter> parameters,
+                                           ArrayList<Material> inputs,
+                                           ArrayList<Material> outputs ) {
 
         for ( ExperimentStepHolder holder : experiments ) {
-            Object[] values = holder.setInfoAtStepId( selectedRow, title, parameters );
+            Object[] values = holder.setInfoAtStepId( selectedRow, title, parameters, inputs, outputs );
             if ( values.length == 2 && values[0] != null && values[1] != null &&
                     ( ( String ) values[0] ).length() > 0 ) {
                 // the title was found and set appropriately.

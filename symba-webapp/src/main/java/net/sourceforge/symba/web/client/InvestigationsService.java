@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
+import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,10 @@ public interface InvestigationsService extends RemoteService {
     HashMap<String, Contact> getAllContacts();
 
     HashMap<String, Contact> addContact( Contact contact );
+
+    HashMap<String, Material> getAllMaterials();
+
+    HashMap<String, Material> addMaterial( Material material );
 
     String getMetadata(String id);
 }

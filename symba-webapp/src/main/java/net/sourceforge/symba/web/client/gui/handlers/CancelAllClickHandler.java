@@ -6,19 +6,19 @@ import com.google.gwt.user.client.ui.Widget;
 import net.sourceforge.symba.web.client.gui.panel.SymbaController;
 
 public class CancelAllClickHandler implements ClickHandler {
-    private final SymbaController dock;
+    private final SymbaController controller;
     private final Widget replacement;
 
-    public CancelAllClickHandler( SymbaController dock,
+    public CancelAllClickHandler( SymbaController controller,
                                   Widget replacement ) {
-        this.dock = dock;
+        this.controller = controller;
         this.replacement = replacement;
     }
 
     public void onClick( ClickEvent event ) {
         // todo add "did not modify" statement at top of new page
         // return to home page, removing the help panel from view
-        dock.setCenterWidget( replacement );
-        dock.hideEastWidget();
+        controller.setCenterWidget( replacement );
+        controller.hideEastWidget();
     }
 }

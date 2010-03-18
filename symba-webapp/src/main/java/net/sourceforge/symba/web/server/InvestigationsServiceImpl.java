@@ -7,6 +7,7 @@ import net.sourceforge.symba.web.server.conversion.fuge.FugeConverter;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
+import net.sourceforge.symba.web.shared.Material;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -31,6 +32,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         // todo make the fetching smarter as might not be great retrieving the entire database here!
         helper.fetchAll();
         helper.fetchAllContacts();
+        helper.fetchAllMaterials();
     }
 
     public Investigation addInvestigation( Investigation investigation ) {
@@ -75,6 +77,14 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
 
     public HashMap<String, Contact> addContact( Contact contact ) {
         return helper.addContact( contact );
+    }
+
+    public HashMap<String, Material> getAllMaterials() {
+        return helper.getMaterials();
+    }
+
+    public HashMap<String, Material> addMaterial( Material material ) {
+        return helper.addMaterial( material );
     }
 
     public String getMetadata( String id ) {

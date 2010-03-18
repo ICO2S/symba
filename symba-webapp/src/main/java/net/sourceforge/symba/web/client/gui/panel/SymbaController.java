@@ -9,6 +9,7 @@ import net.sourceforge.symba.web.client.gui.SummariseInvestigationView;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
+import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,8 +23,11 @@ public class SymbaController extends DockPanel {
     private final HelpPanel eastWidget;
     private boolean eastSet;
 
-    // Store all current contacts in a central location so all other panels have access to it.
-    private HashMap<String, Contact> contacts;
+    // Store all current storedContacts in a central location so all other panels have access to it.
+    private HashMap<String, Contact> storedContacts;
+
+    // Store all current storedContacts in a central location so all other panels have access to it.
+    private HashMap<String, Material> storedMaterials;
 
     // Store all current investigations in a central location so all other panels have access to it.
     private ArrayList<InvestigationDetail> investigationDetails;
@@ -57,16 +61,8 @@ public class SymbaController extends DockPanel {
         add( southWidget, DockPanel.SOUTH );
         add( centerWidget, DockPanel.CENTER );
 
-        contacts = new HashMap<String, Contact>();
-        rpcService.getAllContacts( new AsyncCallback<HashMap<String, Contact>>() {
-            public void onFailure( Throwable caught ) {
-                Window.alert( "Failed to retrieve up-to-date contacts." );
-            }
-
-            public void onSuccess( HashMap<String, Contact> result ) {
-                contacts = result;
-            }
-        } );
+        updateStoredContacts();
+        updateStoredMaterials();
 
         rpcService.getInvestigationDetails( new AsyncCallback<ArrayList<InvestigationDetail>>() {
             public void onSuccess( ArrayList<InvestigationDetail> result ) {
@@ -105,7 +101,7 @@ public class SymbaController extends DockPanel {
         Investigation investigation = new Investigation();
         investigation.createId();
         investigation.getProvider().createId();
-        EditInvestigationView view = new EditInvestigationView( this, investigation, rpcService, contacts );
+        EditInvestigationView view = new EditInvestigationView( this, investigation );
         setCenterWidget( view );
         showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
                 "Do not upload more files until the files you have selected have completed.</em>" );
@@ -118,8 +114,7 @@ public class SymbaController extends DockPanel {
             }
 
             public void onSuccess( Investigation result ) {
-                EditInvestigationView view = new EditInvestigationView( SymbaController.this, result, rpcService,
-                        contacts );
+                EditInvestigationView view = new EditInvestigationView( SymbaController.this, result );
                 setCenterWidget( view );
                 showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
                         "Do not upload more files until the files you have selected have completed.</em>" );
@@ -193,5 +188,52 @@ public class SymbaController extends DockPanel {
         investigateView.setInvestigationDetails( getInvestigationDetails() );
         setCenterWidget( investigateView );
 
+    }
+
+    public HashMap<String, Contact> getStoredContacts() {
+        return storedContacts;
+    }
+
+    public HashMap<String, Material> getStoredMaterials() {
+        return storedMaterials;
+    }
+
+    public HashMap<String, Contact> updateStoredContacts() {
+
+        storedContacts = new HashMap<String, Contact>();
+        rpcService.getAllContacts( new AsyncCallback<HashMap<String, Contact>>() {
+            public void onFailure( Throwable caught ) {
+                Window.alert( "Failed to retrieve up-to-date contacts." );
+            }
+
+            public void onSuccess( HashMap<String, Contact> result ) {
+                storedContacts = result;
+            }
+        } );
+        return storedContacts;
+    }
+
+    public HashMap<String, Material> updateStoredMaterials() {
+
+        storedMaterials = new HashMap<String, Material>();
+        rpcService.getAllMaterials( new AsyncCallback<HashMap<String, Material>>() {
+            public void onFailure( Throwable caught ) {
+                Window.alert( "Failed to retrieve up-to-date materials." );
+            }
+
+            public void onSuccess( HashMap<String, Material> result ) {
+                storedMaterials = result;
+            }
+        } );
+
+        return storedMaterials;
+    }
+
+    public void setStoredMaterials( HashMap<String, Material> materials ) {
+        storedMaterials = new HashMap<String, Material>( materials );
+    }
+
+    public void setStoredContacts( HashMap<String, Contact> contacts ) {
+        storedContacts = new HashMap<String, Contact>( contacts );
     }
 }

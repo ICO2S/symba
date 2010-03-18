@@ -8,17 +8,14 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.gui.panel.*;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
-import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 import org.swfupload.client.File;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class EditInvestigationView extends VerticalPanel {
@@ -30,7 +27,6 @@ public class EditInvestigationView extends VerticalPanel {
         SAVE_ONLY, SET_AS_TEMPLATE, SET_COPY_AS_TEMPLATE
     }
 
-    private final InvestigationsServiceAsync rpcService;
     private final SymbaController controller;
 
     private final CheckBox completedCheckBox;
@@ -71,18 +67,14 @@ public class EditInvestigationView extends VerticalPanel {
      *
      * @param symbaController       the symbaController panel for the entire interface
      * @param selectedInvestigation the investigation assigned to this view.
-     * @param rpc                   the service to use to call the GWT server side
-     * @param contacts              the contacts that are to be passed to the main panel
      */
     public EditInvestigationView( SymbaController symbaController,
-                                  Investigation selectedInvestigation,
-                                  InvestigationsServiceAsync rpc,
-                                  HashMap<String, Contact> contacts ) {
+                                  Investigation selectedInvestigation ) {
 
         setWidth( "100%" );
 
-        this.rpcService = rpc;
         this.controller = symbaController;
+
         if ( selectedInvestigation != null ) {
             investigation = selectedInvestigation;
         } else {
@@ -129,7 +121,7 @@ public class EditInvestigationView extends VerticalPanel {
         //
         // prepare the top part of the page, where the details of the investigation are displayed
         //
-        investigationDetailsPanel = new InvestigationDetailsPanel( contacts, rpc );
+        investigationDetailsPanel = new InvestigationDetailsPanel( controller );
         investigationDetailsPanel.createReadableDisplay( investigation );
 
         //
@@ -290,7 +282,7 @@ public class EditInvestigationView extends VerticalPanel {
 
     private void setAsTemplate( String id,
                                 final String title ) {
-        rpcService.setInvestigationAsTemplate( id,
+        controller.getRpcService().setInvestigationAsTemplate( id,
                 new AsyncCallback<ArrayList<InvestigationDetail>>() {
                     public void onFailure( Throwable throwable ) {
                         Window.alert( "Saving of Investigation " + title +
@@ -346,15 +338,15 @@ public class EditInvestigationView extends VerticalPanel {
 
             ReadableStepView readableStepView;
             if ( !investigation.isReadOnly() ) {
-                ClickHandler myHandler = new makeEditableHandler( rowValue, depth + ActionType.SELECT.getValue() + 1,
+                ClickHandler myHandler = new MakeEditableHandler( rowValue, depth + ActionType.SELECT.getValue() + 1,
                         investigation.isCompleted() );
-                readableStepView = new ReadableStepView(
-                        holder.getCurrent().getTitle(),
-                        holder.getCurrent().getFileNames(), holder.getCurrent().getParameters(), myHandler );
+                readableStepView = new ReadableStepView( holder.getCurrent().getTitle(),
+                        holder.getCurrent().getFileNames(), holder.getCurrent().getParameters(),
+                        holder.getCurrent().getInputMaterials(), holder.getCurrent().getOutputMaterials(), myHandler );
             } else {
-                readableStepView = new ReadableStepView(
-                        holder.getCurrent().getTitle(),
-                        holder.getCurrent().getFileNames(), holder.getCurrent().getParameters() );
+                readableStepView = new ReadableStepView( holder.getCurrent().getTitle(),
+                        holder.getCurrent().getFileNames(), holder.getCurrent().getParameters(),
+                        holder.getCurrent().getInputMaterials(), holder.getCurrent().getOutputMaterials() );
             }
             stepsTable.setWidget( rowValue, depth + ActionType.SELECT.getValue() + 1, readableStepView );
 
@@ -486,50 +478,52 @@ public class EditInvestigationView extends VerticalPanel {
         // the "completed" flag was saved as we went along, so nothing extra to do here.
 
         // todo ensure Identifier has changed before this step, if necessary
-        rpcService.updateInvestigation( investigation, new AsyncCallback<ArrayList<InvestigationDetail>>() {
-            public void onSuccess( ArrayList<InvestigationDetail> updatedDetails ) {
-                final String title = investigation.getInvestigationTitle();
-                final String id = investigation.getId();
-                controller.setInvestigationDetails( updatedDetails );
-                controller.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
-                controller.setCenterWidgetAsListExperiments();
+        controller.getRpcService()
+                .updateInvestigation( investigation, new AsyncCallback<ArrayList<InvestigationDetail>>() {
+                    public void onSuccess( ArrayList<InvestigationDetail> updatedDetails ) {
+                        final String title = investigation.getInvestigationTitle();
+                        final String id = investigation.getId();
+                        controller.setInvestigationDetails( updatedDetails );
+                        controller.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
+                        controller.setCenterWidgetAsListExperiments();
 
-                if ( saveType == SaveType.SET_COPY_AS_TEMPLATE ) {
-                    rpcService.copyInvestigation( id,
-                            new AsyncCallback<InvestigationDetail>() {
-                                public void onSuccess( InvestigationDetail result ) {
-                                    setAsTemplate( result.getId(), result.getInvestigationTitle() );
-                                }
+                        if ( saveType == SaveType.SET_COPY_AS_TEMPLATE ) {
+                            controller.getRpcService().copyInvestigation( id,
+                                    new AsyncCallback<InvestigationDetail>() {
+                                        public void onSuccess( InvestigationDetail result ) {
+                                            setAsTemplate( result.getId(), result.getInvestigationTitle() );
+                                        }
 
-                                public void onFailure( Throwable caught ) {
-                                    Window.alert(
-                                            "Error copying Investigation " + title + ": no template created." +
-                                                    Arrays.toString( caught.getStackTrace() ) );
-                                }
-                            } );
+                                        public void onFailure( Throwable caught ) {
+                                            Window.alert(
+                                                    "Error copying Investigation " + title + ": no template created." +
+                                                            Arrays.toString( caught.getStackTrace() ) );
+                                        }
+                                    } );
 
-                } else if ( saveType == SaveType.SET_AS_TEMPLATE ) {
-                    setAsTemplate( id, title );
-                }
-            }
+                        } else if ( saveType == SaveType.SET_AS_TEMPLATE ) {
+                            setAsTemplate( id, title );
+                        }
+                    }
 
-            public void onFailure( Throwable caught ) {
-                String savedTitle = "unknown title";
-                if ( investigation.getInvestigationTitle() != null &&
-                        investigation.getInvestigationTitle().length() > 0 ) {
-                    savedTitle = investigation.getInvestigationTitle();
-                }
-                Window.alert( "Error updating investigation " + savedTitle + " stack trace: " + caught.toString() );
-                caught.printStackTrace( System.err );
-            }
-        } );
+                    public void onFailure( Throwable caught ) {
+                        String savedTitle = "unknown title";
+                        if ( investigation.getInvestigationTitle() != null &&
+                                investigation.getInvestigationTitle().length() > 0 ) {
+                            savedTitle = investigation.getInvestigationTitle();
+                        }
+                        Window.alert(
+                                "Error updating investigation " + savedTitle + " stack trace: " + caught.toString() );
+                        caught.printStackTrace( System.err );
+                    }
+                } );
     }
 
-    private class makeEditableHandler implements ClickHandler {
+    private class MakeEditableHandler implements ClickHandler {
         private int row, column;
         private boolean completed;
 
-        public makeEditableHandler( int row,
+        public MakeEditableHandler( int row,
                                     int column,
                                     boolean completed ) {
             this.row = row;
@@ -554,7 +548,7 @@ public class EditInvestigationView extends VerticalPanel {
             } );
 
             popup.show();
-            EditableStepView editableStepView = new EditableStepView(
+            EditableStepView editableStepView = new EditableStepView( controller,
                     ( ReadableStepView ) stepsTable.getWidget( row, column ), popup, stepsTable, investigation, row,
                     column, this, completed );
             popup.add( editableStepView );

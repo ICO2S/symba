@@ -3,12 +3,9 @@ package net.sourceforge.symba.web.client.gui.panel;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
-
-import java.util.HashMap;
 
 public class InvestigationDetailsPanel extends VerticalPanel {
 
@@ -20,11 +17,11 @@ public class InvestigationDetailsPanel extends VerticalPanel {
     private final HorizontalPanel investigationTitlePanel;
     private final HorizontalPanel contactPanel;
 
-    private final HashMap<String, Contact> contacts;
-    private final InvestigationsServiceAsync rpcService;
+    private final SymbaController controller;
 
-    public InvestigationDetailsPanel( HashMap<String, Contact> allContacts,
-                                  InvestigationsServiceAsync rpcService ) {
+    public InvestigationDetailsPanel( SymbaController controller ) {
+
+        this.controller = controller;
 
         investigationIdBox = new TextBox();
         investigationTitleBox = new TextBox();
@@ -34,9 +31,6 @@ public class InvestigationDetailsPanel extends VerticalPanel {
         investigationTitlePanel = new HorizontalPanel();
         contactPanel = new HorizontalPanel();
 
-        this.rpcService = rpcService;
-
-        contacts = allContacts;
         populateNameListBox();
 
         setWidth( "100%" );
@@ -66,7 +60,8 @@ public class InvestigationDetailsPanel extends VerticalPanel {
 
                 // When the value changes, update the other contact details
                 setLinkedProviderInformation(
-                        contacts.get( fullNameBox.getValue( fullNameBox.getSelectedIndex() ) ).getEmailAddress() );
+                        InvestigationDetailsPanel.this.controller.getStoredContacts()
+                                .get( fullNameBox.getValue( fullNameBox.getSelectedIndex() ) ).getEmailAddress() );
             }
         } );
 
@@ -77,9 +72,9 @@ public class InvestigationDetailsPanel extends VerticalPanel {
         fullNameBox.clear();
 
         // populate the fullNameBox with initial set of contacts
-        for ( String key : contacts.keySet() ) {
+        for ( String key : controller.getStoredContacts().keySet() ) {
             // todo sort alphabetically
-            fullNameBox.addItem( contacts.get( key ).getFullName(), key );
+            fullNameBox.addItem( controller.getStoredContacts().get( key ).getFullName(), key );
         }
     }
 
@@ -179,7 +174,7 @@ public class InvestigationDetailsPanel extends VerticalPanel {
             contactPanel.add( label );
         } else {
             contactPanel.add( fullNameBox );
-            emailAddress = contacts.get( fullNameBox.getValue( 0 ) ).getEmailAddress();
+            emailAddress = controller.getStoredContacts().get( fullNameBox.getValue( 0 ) ).getEmailAddress();
         }
 
         if ( !readOnly ) {
@@ -209,7 +204,7 @@ public class InvestigationDetailsPanel extends VerticalPanel {
     }
 
     private void startContactPopupPanel() {
-        ContactPopup panel = new ContactPopup( contacts, this, rpcService );
+        ContactPopup panel = new ContactPopup( controller, this );
         panel.show();
     }
 
@@ -270,7 +265,7 @@ public class InvestigationDetailsPanel extends VerticalPanel {
                 }
             }
         }
-        Contact chosen = contacts.get( selected );
+        Contact chosen = controller.getStoredContacts().get( selected );
         if ( chosen != null ) {
             investigation.getProvider().setId( chosen.getId() );
             investigation.getProvider().setFirstName( chosen.getFirstName() );

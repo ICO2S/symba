@@ -1,6 +1,7 @@
 package net.sourceforge.symba.web.client.stepsorter;
 
 import com.google.gwt.user.client.Random;
+import net.sourceforge.symba.web.shared.Material;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ public class ExperimentStep implements Serializable {
     private String databaseId;
     private String title;
     private ArrayList<ExperimentParameter> parameters;
+    private ArrayList<Material> inputMaterials;
+    private ArrayList<Material> outputMaterials;
     private ArrayList<String> fileNames;
 
     // todo parameters etc. go here
@@ -26,19 +29,25 @@ public class ExperimentStep implements Serializable {
         this.fileNames = new ArrayList<String>();
         this.children = new ArrayList<ExperimentStepHolder>();
         this.parameters = new ArrayList<ExperimentParameter>();
+        this.inputMaterials = new ArrayList<Material>();
+        this.outputMaterials = new ArrayList<Material>();
     }
 
     public ExperimentStep( String databaseId,
                            String title,
                            ArrayList<String> fileNames,
                            ArrayList<ExperimentStepHolder> children,
-                           ArrayList<ExperimentParameter> parameters ) {
+                           ArrayList<ExperimentParameter> parameters,
+                           ArrayList<Material> inputMaterials,
+                           ArrayList<Material> outputMaterials ) {
 
         this.databaseId = databaseId;
         this.title = title;
         this.fileNames = fileNames;
         this.children = children;
         this.parameters = parameters;
+        this.inputMaterials = inputMaterials;
+        this.outputMaterials = outputMaterials;
     }
 
     /**
@@ -51,7 +60,9 @@ public class ExperimentStep implements Serializable {
     public ExperimentStep( ExperimentStep step ) {
         this( step.getDatabaseId(), step.getTitle(), new ArrayList<String>( step.getFileNames() ),
                 new ArrayList<ExperimentStepHolder>( step.getChildren() ),
-                new ArrayList<ExperimentParameter>( step.getParameters() ) );
+                new ArrayList<ExperimentParameter>( step.getParameters() ),
+                new ArrayList<Material>( step.getInputMaterials() ),
+                new ArrayList<Material>( step.getOutputMaterials() ) );
     }
 
     public String getDatabaseId() {
@@ -76,6 +87,14 @@ public class ExperimentStep implements Serializable {
 
     public ArrayList<ExperimentParameter> getParameters() {
         return parameters;
+    }
+
+    public ArrayList<Material> getInputMaterials() {
+        return inputMaterials;
+    }
+
+    public ArrayList<Material> getOutputMaterials() {
+        return outputMaterials;
     }
 
     public ArrayList<String> getFileNames() {

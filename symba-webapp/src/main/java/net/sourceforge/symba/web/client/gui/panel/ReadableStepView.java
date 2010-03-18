@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
+import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
 
@@ -15,27 +16,34 @@ public class ReadableStepView extends VerticalPanel {
     private String stepTitle;
     private ArrayList<String> fileNames;
     private ReadableStepParameterTable parameterTable;
+    private ReadableStepMaterialTable inputMaterialTable, outputMaterialTable;
 
 
-    public ReadableStepView(
-            String stepTitle,
-            ArrayList<String> fileNames,
-            ArrayList<ExperimentParameter> parameters ) {
+    public ReadableStepView( String stepTitle,
+                             ArrayList<String> fileNames,
+                             ArrayList<ExperimentParameter> parameters,
+                             ArrayList<Material> inputs,
+                             ArrayList<Material> outputs ) {
 
         parameterTable = new ReadableStepParameterTable( parameters );
+        inputMaterialTable = new ReadableStepMaterialTable( inputs, "input" );
+        outputMaterialTable = new ReadableStepMaterialTable( outputs, "output" );
 
         this.stepTitle = stepTitle;
         this.fileNames = fileNames;
         setupView();
     }
 
-    public ReadableStepView(
-            String stepTitle,
-            ArrayList<String> fileNames,
-            ArrayList<ExperimentParameter> parameters,
-            ClickHandler myEditableHandler ) {
+    public ReadableStepView( String stepTitle,
+                             ArrayList<String> fileNames,
+                             ArrayList<ExperimentParameter> parameters,
+                             ArrayList<Material> inputs,
+                             ArrayList<Material> outputs,
+                             ClickHandler myEditableHandler ) {
 
         parameterTable = new ReadableStepParameterTable( parameters, myEditableHandler );
+        inputMaterialTable = new ReadableStepMaterialTable( inputs, "input", myEditableHandler );
+        outputMaterialTable = new ReadableStepMaterialTable( outputs, "output", myEditableHandler );
 
         this.stepTitle = stepTitle;
         this.fileNames = fileNames;
@@ -81,6 +89,8 @@ public class ReadableStepView extends VerticalPanel {
         }
 
         add( parameterTable );
+        add( inputMaterialTable );
+        add( outputMaterialTable );
     }
 
     public String getStepTitle() {
@@ -89,6 +99,14 @@ public class ReadableStepView extends VerticalPanel {
 
     public ReadableStepParameterTable getParameterTable() {
         return parameterTable;
+    }
+
+    public ReadableStepMaterialTable getInputMaterialTable() {
+        return inputMaterialTable;
+    }
+
+    public ReadableStepMaterialTable getOutputMaterialTable() {
+        return outputMaterialTable;
     }
 
     public ArrayList<String> getFileNames() {
@@ -114,82 +132,147 @@ public class ReadableStepView extends VerticalPanel {
     }
 
 
-    public class ReadableStepParameterTable extends FlexTable {
-        // each row is plain text
-        private ArrayList<ExperimentParameter> parameters;
-        private int rowCount;
-
-        private ReadableStepParameterTable( ArrayList<ExperimentParameter> parameters ) {
-            this( parameters, null );
+    public class ReadableStepParameterTable extends CollapsibleTable {
+        private ReadableStepParameterTable( ArrayList list ) {
+            super( list, "parameter" );
         }
 
-        private ReadableStepParameterTable( ArrayList<ExperimentParameter> parameters,
+        private ReadableStepParameterTable( ArrayList list,
                                             final ClickHandler myEditableHandler ) {
-            rowCount = 1; // start at 1, as 0 is reserved for the summary of the parameters
-            this.parameters = parameters;
+            super( list, "parameter", myEditableHandler );
+        }
+
+        @Override
+        protected void displayList( ClickHandler myEditableHandler ) {
+
+            for ( Object item : getList() ) {
+                ExperimentParameter parameter = ( ExperimentParameter ) item;
+                Label label = new Label(
+                        parameter.getSubject() + " : " + parameter.getPredicate() + " : " +
+                                parameter.getObjectValue() + " : " + parameter.getUnit() );
+                setWidget( getListedRowCount(), 0, label );
+                if ( myEditableHandler != null ) {
+                    label.addClickHandler( myEditableHandler );
+                    label.addStyleName( "clickable-text" );
+                }
+                incrementListedRowCount();
+            }
+        }
+        
+    }
+
+    public class ReadableStepMaterialTable extends CollapsibleTable {
+        private ReadableStepMaterialTable( ArrayList list,
+                                           String listType ) {
+            super( list, listType );
+        }
+
+        private ReadableStepMaterialTable( ArrayList list,
+                                           String listType,
+                                           final ClickHandler myEditableHandler ) {
+            super( list, listType, myEditableHandler );
+        }
+
+        @Override
+        protected void displayList( ClickHandler myEditableHandler ) {
+            for ( Object item : getList() ) {
+                Material material = ( Material ) item;
+                String desc = material.getDescription();
+                if ( desc.length() > 20 ) {
+                    desc = desc.substring( 0, 20 ) + "...";
+                }
+                Label label = new Label( material.getName() + " : " + desc );
+                setWidget( getListedRowCount(), 0, label );
+                if ( myEditableHandler != null ) {
+                    label.addClickHandler( myEditableHandler );
+                    label.addStyleName( "clickable-text" );
+                }
+                incrementListedRowCount();
+            }
+        }
+
+    }
+
+    private abstract class CollapsibleTable extends FlexTable {
+        // each row is plain text
+        private ArrayList list;
+        private int listedRowCount;
+        private String listType;
+
+        private CollapsibleTable( ArrayList list,
+                                  String listType ) {
+            this( list, listType, null );
+        }
+
+        private CollapsibleTable( ArrayList list,
+                                  String listType,
+                                  final ClickHandler myEditableHandler ) {
+            this.listType = listType;
+            listedRowCount = 1; // start at 1, as 0 is reserved for the summary of the parameters
+            this.list = list;
 
             HorizontalPanel hPanel = new HorizontalPanel();
             hPanel.setSpacing( 5 );
-            final Label parameterSummaryLabel = new Label( displayParameterCount() );
+            final Label summaryLabel = new Label( displayCount() );
             final Label actionLabel = new Label( "(expand)" );
             actionLabel.addStyleName( "clickable-text" );
             actionLabel.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     if ( actionLabel.getText().equals( "(expand)" ) ) {
                         actionLabel.setText( "(collapse)" );
-                        displayParameters( myEditableHandler );
+                        displayList( myEditableHandler );
                     } else {
                         actionLabel.setText( "(expand)" );
-                        hideParameters();
+                        hideList();
                     }
                 }
             } );
             if ( myEditableHandler != null ) {
-                parameterSummaryLabel.addClickHandler( myEditableHandler );
-                parameterSummaryLabel.addStyleName( "clickable-text" );
+                summaryLabel.addClickHandler( myEditableHandler );
+                summaryLabel.addStyleName( "clickable-text" );
             }
 
-            if ( parameters.size() > 0 ) {
-                hPanel.add( parameterSummaryLabel );
+            if ( list.size() > 0 ) {
+                hPanel.add( summaryLabel );
                 hPanel.add( actionLabel );
                 setWidget( 0, 0, hPanel );
             }
 
         }
 
-        private void hideParameters() {
-            if ( parameters.size() > 0 ) {
+        protected abstract void displayList( ClickHandler myEditableHandler );
+
+        protected void hideList() {
+            if ( list.size() > 0 ) {
                 for ( int iii = getRowCount(); iii > 1; iii-- ) {
                     remove( getWidget( iii - 1, 0 ) );
                 }
             }
         }
 
-        private void displayParameters( ClickHandler myEditableHandler ) {
-
-            for ( ExperimentParameter parameter : this.parameters ) {
-                Label label = new Label(
-                        parameter.getSubject() + " : " + parameter.getPredicate() + " : " +
-                                parameter.getObjectValue() + " : " + parameter.getUnit() );
-                setWidget( rowCount++, 0, label );
-                if ( myEditableHandler != null ) {
-                    label.addClickHandler( myEditableHandler );
-                    label.addStyleName( "clickable-text" );
-                }
-            }
+        protected String getListType() {
+            return listType;
         }
 
-        private String displayParameterCount() {
-            if ( parameters.size() == 1 ) {
-                return "1 parameter ";
-            } else if ( parameters.size() > 1 ) {
-                return parameters.size() + " parameters";
+        protected int getListedRowCount() {
+            return listedRowCount;
+        }
+
+        protected void incrementListedRowCount() {
+            listedRowCount++;
+        }
+
+        public String displayCount() {
+            if ( getList().size() == 1 ) {
+                return "1 " + getListType();
+            } else if ( getList().size() > 1 ) {
+                return getList().size() + " " + getListType() + "s";
             }
             return "";
         }
 
-        public ArrayList<ExperimentParameter> getParameters() {
-            return parameters;
+        public ArrayList getList() {
+            return list;
         }
     }
 }

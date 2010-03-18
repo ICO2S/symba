@@ -7,14 +7,14 @@ import net.sourceforge.symba.web.client.gui.panel.SymbaController;
 
 
 public class AddExperimentClickHandler implements ClickHandler {
-    final SymbaController dock;
+    final SymbaController controller;
 
-    public AddExperimentClickHandler( SymbaController dock ) {
-        this.dock = dock;
+    public AddExperimentClickHandler( SymbaController controller ) {
+        this.controller = controller;
     }
 
     public void onClick( ClickEvent event ) {
-        NewInvestigationPopup panel = new NewInvestigationPopup( dock );
+        NewInvestigationPopup panel = new NewInvestigationPopup( controller );
         panel.show();
     }
 }

@@ -7,31 +7,32 @@ import net.sourceforge.symba.web.client.gui.SummariseInvestigationView;
 import net.sourceforge.symba.web.client.gui.panel.SymbaController;
 
 public class ListExperimentsClickHandler implements ClickHandler {
-    private final SymbaController symba;
+    private final SymbaController controller;
     private final PopupPanel popup;
 
-    public ListExperimentsClickHandler( SymbaController symba ) {
-        this.symba = symba;
+    public ListExperimentsClickHandler( SymbaController controller ) {
+        this.controller = controller;
         this.popup = null;
     }
 
     /**
      * If a popup is passed, then we should also hide the popup on completion of the click handling.
      *
-     * @param symba the controller panel
-     * @param popup the popup to hide
+     * @param controller the controller panel
+     * @param popup      the popup to hide
      */
-    public ListExperimentsClickHandler( SymbaController symba,
+    public ListExperimentsClickHandler( SymbaController controller,
                                         PopupPanel popup ) {
-        this.symba = symba;
+        this.controller = controller;
         this.popup = popup;
     }
 
     public void onClick( ClickEvent event ) {
-        SummariseInvestigationView investigateView = new SummariseInvestigationView( symba, SummariseInvestigationView.ViewType.EXTENDED );
-        investigateView.setInvestigationDetails( symba.getInvestigationDetails() );
-        symba.setCenterWidget( investigateView );
-        symba.hideEastWidget();
+        SummariseInvestigationView investigateView = new SummariseInvestigationView( controller,
+                SummariseInvestigationView.ViewType.EXTENDED );
+        investigateView.setInvestigationDetails( controller.getInvestigationDetails() );
+        controller.setCenterWidget( investigateView );
+        controller.hideEastWidget();
         if ( popup != null ) {
             popup.hide();
         }

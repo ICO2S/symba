@@ -4,7 +4,6 @@ import com.google.gwt.user.client.Random;
 
 import java.io.Serializable;
 
-@SuppressWarnings( "serial" )
 public class Contact implements Serializable {
     private String id;
     private String firstName;

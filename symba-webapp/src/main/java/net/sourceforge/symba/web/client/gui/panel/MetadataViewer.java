@@ -6,15 +6,15 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MetadataViewer extends VerticalPanel {
-    private SymbaController symba;
+    private SymbaController controller;
 
-    public MetadataViewer( SymbaController symba ) {
+    public MetadataViewer( SymbaController controller ) {
         super();
-        this.symba = symba;
+        this.controller = controller;
     }
 
     public void display( String investigationId ) {
-        symba.getRpcService().getMetadata( investigationId, new AsyncCallback<String>() {
+        controller.getRpcService().getMetadata( investigationId, new AsyncCallback<String>() {
             public void onFailure( Throwable caught ) {
                 Window.alert( "Failed to retrieve metadata for Investigation: " + caught.getMessage() );
             }
@@ -23,7 +23,7 @@ public class MetadataViewer extends VerticalPanel {
                 String filtered = result.replaceAll(">", "&gt;" ).replaceAll("<", "&lt;");
                 HTML metadata = new HTML( filtered );
                 metadata.addStyleName( "metadata-style" );
-                symba.setCenterWidget( metadata );
+                controller.setCenterWidget( metadata );
             }
         } );
 

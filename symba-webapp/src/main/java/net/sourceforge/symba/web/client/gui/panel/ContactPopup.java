@@ -15,34 +15,31 @@ import java.util.HashMap;
 
 public class ContactPopup extends PopupPanel {
 
-    public ContactPopup( HashMap<String, Contact> contacts,
-                              final InvestigationDetailsPanel callingPanel,
-                              InvestigationsServiceAsync rpcService ) {
+    public ContactPopup( final SymbaController controller,
+                         final InvestigationDetailsPanel callingPanel ) {
         super( true ); // set auto-hide property
 
-        setWidget( new AddContactPanel( contacts, callingPanel, rpcService ) );
+        setWidget( new AddContactPanel( controller, callingPanel ) );
 
         // set the position to the center of the window
         setPopupPositionAndShow( new PopupPanel.PositionCallback() {
             public void setPosition( int offsetWidth,
                                      int offsetHeight ) {
-                int left = (Window.getClientWidth() - offsetWidth) / 2;
-                int top = (Window.getClientHeight() - offsetHeight) / 2;
+                int left = ( Window.getClientWidth() - offsetWidth ) / 2;
+                int top = ( Window.getClientHeight() - offsetHeight ) / 2;
                 setPopupPosition( left, top );
             }
         } );
-        
+
     }
 
     private class AddContactPanel extends VerticalPanel {
         private static final String SAVE_TEXT = "Save Contact";
-        private final InvestigationsServiceAsync rpcService;
+        private SymbaController controller;
 
-        public AddContactPanel( final HashMap<String, Contact> contacts,
-                                final InvestigationDetailsPanel callingPanel,
-                                InvestigationsServiceAsync rpcService ) {
-
-            this.rpcService = rpcService;
+        public AddContactPanel( final SymbaController controller,
+                                final InvestigationDetailsPanel callingPanel ) {
+            this.controller = controller;
 
             HorizontalPanel first = new HorizontalPanel();
             HorizontalPanel last = new HorizontalPanel();
@@ -71,7 +68,7 @@ public class ContactPopup extends PopupPanel {
             add( email );
             add( save );
 
-            add( new Label( "(Click outside the box to cancel and close.)" ) );            
+            add( new Label( "(Click outside the box to cancel and close.)" ) );
 
             // all handlers
 
@@ -95,13 +92,13 @@ public class ContactPopup extends PopupPanel {
 
             saveButton.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
-                    doSave( contacts, callingPanel, firstBox, lastBox, emailBox.getText() );
+                    doSave( controller, callingPanel, firstBox, lastBox, emailBox.getText() );
                 }
             } );
 
         }
 
-        private String doSave( final HashMap<String, Contact> contacts,
+        private String doSave( final SymbaController controller,
                                final InvestigationDetailsPanel callingPanel,
                                TextBox first,
                                TextBox last,
@@ -130,8 +127,8 @@ public class ContactPopup extends PopupPanel {
             contact.setEmailAddress( email );
 
             // basic validation: check that the full name isn't already in the contact list
-            for ( String key : contacts.keySet() ) {
-                if ( contacts.get( key ).getFullName().equals( contact.getFullName() ) ) {
+            for ( Contact storedContact : controller.getStoredContacts().values() ) {
+                if ( storedContact.getFullName().equals( contact.getFullName() ) ) {
                     Window.alert( "You may not use the name of an existing contact to create a new contact" );
                     InputValidator.setWarning( first );
                     InputValidator.setWarning( last );
@@ -139,14 +136,13 @@ public class ContactPopup extends PopupPanel {
                 }
             }
 
-            rpcService.addContact( contact, new AsyncCallback<HashMap<String, Contact>>() {
+            controller.getRpcService().addContact( contact, new AsyncCallback<HashMap<String, Contact>>() {
                 public void onFailure( Throwable caught ) {
                     Window.alert( "Failed to store contact: " + contact.getFullName() + "\n" + caught.getMessage() );
                 }
 
                 public void onSuccess( HashMap<String, Contact> result ) {
-                    contacts.clear();
-                    contacts.putAll( result );
+                    controller.setStoredContacts( result );
                     callingPanel.populateNameListBox();
                     callingPanel
                             .setupProviderNameDetailPanel( contact.getFullName(), contact.getEmailAddress(), false );

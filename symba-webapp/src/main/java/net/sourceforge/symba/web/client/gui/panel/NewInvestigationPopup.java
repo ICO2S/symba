@@ -10,9 +10,9 @@ import net.sourceforge.symba.web.client.gui.handlers.ListExperimentsClickHandler
 
 public class NewInvestigationPopup extends PopupPanel {
 
-    public NewInvestigationPopup( final SymbaController symba ) {
+    public NewInvestigationPopup( final SymbaController controller ) {
         super( true ); // set auto-hide property
-        setWidget( new ChoicesPanel( symba, this ) );
+        setWidget( new ChoicesPanel( controller, this ) );
 
         // set the position to the center of the window
         setPopupPositionAndShow( new PopupPanel.PositionCallback() {

@@ -12,7 +12,6 @@ import java.io.Serializable;
  * A limited version of Investigation, with just a minimal amount of data for a "summary" view without
  * having to pass huge objects around
  */
-@SuppressWarnings( "serial" )
 public class InvestigationDetail implements Serializable {
     private boolean template, completed;
     private String id;
@@ -40,14 +39,6 @@ public class InvestigationDetail implements Serializable {
 
     public boolean isTemplate() {
         return template;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public boolean isReadOnly() {
-        return template || completed;
     }
 
     public String getId() { return id; }

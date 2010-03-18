@@ -3,12 +3,11 @@ package net.sourceforge.symba.web.client.gui.panel;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.gui.SummariseInvestigationView;
-import net.sourceforge.symba.web.client.gui.handlers.ListExperimentsClickHandler;
 
 public class InitialDownloadPopup extends PopupPanel {
-    public InitialDownloadPopup( SymbaController dock ) {
+    public InitialDownloadPopup( SymbaController controller ) {
         super( true ); // set auto-hide property
-        setWidget( new ChoicesPanel( dock, this ) );
+        setWidget( new ChoicesPanel( controller, this ) );
 
         // set the position to the center of the window
         setPopupPositionAndShow( new PopupPanel.PositionCallback() {

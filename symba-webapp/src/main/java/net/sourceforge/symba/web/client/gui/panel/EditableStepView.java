@@ -7,8 +7,10 @@ import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.client.gui.handlers.ToolTip;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 import net.sourceforge.symba.web.shared.Investigation;
+import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class holds all information for the current placement of the editable step, and for the values and
@@ -20,8 +22,10 @@ public class EditableStepView extends VerticalPanel {
     private ArrayList<String> fileNames;
     private EditableStepParameterTable parameterTable;
     private ClickHandler myEditableHandler;
+    private MaterialListPanel inputMaterialPanel, outputMaterialPanel;
 
-    public EditableStepView( ReadableStepView readableView,
+    public EditableStepView( final SymbaController controller,
+                             ReadableStepView readableView,
                              final PopupPanel container,
                              final FlexTable tableToAddTo,
                              final Investigation investigation,
@@ -29,13 +33,12 @@ public class EditableStepView extends VerticalPanel {
                              int column,
                              final ClickHandler myEditableHandler,
                              final boolean completed ) {
-
         setSpacing( 5 );
 
         this.myEditableHandler = myEditableHandler;
-
         this.editableRow = row;
         this.editableColumn = column;
+
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.setSpacing( 5 );
         stepTitle = new TextBox();
@@ -47,7 +50,11 @@ public class EditableStepView extends VerticalPanel {
 
 
         fileNames = readableView.getFileNames();
-        parameterTable = new EditableStepParameterTable( readableView.getParameterTable().getParameters() );
+        parameterTable = new EditableStepParameterTable( readableView.getParameterTable().getList() );
+        inputMaterialPanel = new MaterialListPanel( controller, "input",
+                readableView.getInputMaterialTable().getList() );
+        outputMaterialPanel = new MaterialListPanel( controller, "output",
+                readableView.getOutputMaterialTable().getList() );
         Label addNewParameterLabel = new Label( "Add Parameter" );
         addNewParameterLabel.addStyleName( "clickable-text" );
         Button saveStepButton = new Button( "Save This Step" );
@@ -60,6 +67,14 @@ public class EditableStepView extends VerticalPanel {
         parameterContentPanel.add( parameterTable );
         parameterContentPanel.add( addNewParameterLabel );
 
+        CaptionPanel inputMaterialCaptionPanel = new CaptionPanel( "Input Materials" );
+        inputMaterialCaptionPanel.setStyleName( "captionpanel-border" );
+        inputMaterialCaptionPanel.add( inputMaterialPanel );
+
+        CaptionPanel outputMaterialCaptionPanel = new CaptionPanel( "Output Materials" );
+        outputMaterialCaptionPanel.setStyleName( "captionpanel-border" );
+        outputMaterialCaptionPanel.add( outputMaterialPanel );
+
         //
         // All handlers
         //
@@ -71,26 +86,30 @@ public class EditableStepView extends VerticalPanel {
 
         saveStepButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
-                saveStep( completed, investigation, tableToAddTo, container );
+                saveStep( completed, investigation, controller.getStoredMaterials(), tableToAddTo, container );
             }
         } );
 
         stepTitle.addKeyPressHandler( new KeyPressHandler() {
             public void onKeyPress( KeyPressEvent event ) {
                 if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
-                    saveStep( completed, investigation, tableToAddTo, container );
+                    saveStep( completed, investigation, controller.getStoredMaterials(), tableToAddTo, container );
                 }
             }
         } );
 
+        // positioning
         add( hPanel );
         add( new HTML( getFileNamesString() ) );
         add( parameterCaptionPanel );
+        add( inputMaterialCaptionPanel );
+        add( outputMaterialCaptionPanel );
         add( saveStepButton );
     }
 
     private void saveStep( boolean completed,
                            Investigation investigation,
+                           final HashMap<String, Material> storedMaterials,
                            FlexTable tableToAddTo,
                            PopupPanel container ) {
         // save the text in the parameters text boxes
@@ -98,9 +117,26 @@ public class EditableStepView extends VerticalPanel {
             return;
         }
 
+        // If the materials have changed at all, save the selected materials: input and output
+        ArrayList<Material> inputs = inputMaterialPanel.getOriginallySelectedMaterials();
+        ArrayList<Material> outputs = outputMaterialPanel.getOriginallySelectedMaterials();
+
+        if ( inputMaterialPanel.hasVisibleList() ) {
+            inputs = new ArrayList<Material>();
+            for ( String id : inputMaterialPanel.getSelectedMaterialIds() ) {
+                inputs.add( storedMaterials.get( id ) );
+            }
+        }
+        if ( outputMaterialPanel.hasVisibleList() ) {
+            outputs = new ArrayList<Material>();
+            for ( String id : outputMaterialPanel.getSelectedMaterialIds() ) {
+                outputs.add( storedMaterials.get( id ) );
+            }
+        }
+
         Object[] values = investigation
                 .setExperimentStepInfo( editableRow, stepTitle.getText(),
-                        getParameterTable().getParameters() );
+                        getParameterTable().getParameters(), inputs, outputs );
 
         // Set style based on change, then send the stepTitle to setReadOnly.
         Boolean modified = false;
@@ -116,7 +152,7 @@ public class EditableStepView extends VerticalPanel {
                     .removeStyleName( editableRow, editableColumn, "cell-modified" );
 
         }
-        setReadOnly( tableToAddTo );
+        setReadOnly( tableToAddTo, inputs, outputs );
         container.hide();
 
     }
@@ -128,14 +164,18 @@ public class EditableStepView extends VerticalPanel {
      * <p/>
      *
      * @param tableToAddTo the table to add the widget to at the stored positions
+     * @param inputs       the recently-added input materials
+     * @param outputs      the recently-added output materials
      */
-    public void setReadOnly( FlexTable tableToAddTo ) {
+    public void setReadOnly( FlexTable tableToAddTo,
+                             ArrayList<Material> inputs,
+                             ArrayList<Material> outputs ) {
 
         // here, the modification to the experiment marked with "isModified" is inaccessible, so just check
         // that the value is different from what was in the
 
         ReadableStepView readable = new ReadableStepView( getStepTitle().getValue(), getFileNames(),
-                getParameterTable().getParameters(), myEditableHandler );
+                getParameterTable().getParameters(), inputs, outputs, myEditableHandler );
         tableToAddTo.setWidget( getEditableRow(), getEditableColumn(), readable );
     }
 

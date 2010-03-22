@@ -30,7 +30,7 @@ public class ListExperimentsClickHandler implements ClickHandler {
     public void onClick( ClickEvent event ) {
         SummariseInvestigationView investigateView = new SummariseInvestigationView( controller,
                 SummariseInvestigationView.ViewType.EXTENDED );
-        investigateView.setInvestigationDetails( controller.getInvestigationDetails() );
+        investigateView.setInvestigationDetails( controller.getStoredInvestigationDetails() );
         controller.setCenterWidget( investigateView );
         controller.hideEastWidget();
         if ( popup != null ) {

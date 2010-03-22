@@ -12,7 +12,6 @@ import net.sourceforge.symba.web.client.gui.panel.*;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
-import org.swfupload.client.File;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,11 +41,6 @@ public class EditInvestigationView extends VerticalPanel {
     private final InvestigationDetailsPanel investigationDetailsPanel;
 
     private final Investigation investigation;
-
-    // This variable will change *whenever* an onClick for the radio Button occurs. As it may change while files
-    // are being uploaded, the upload mechanism stores the value of this variable when the upload button is pressed.
-    // It is then sent back to this class when each file is ready to be associated with a step.
-    private int selectedRadioRow;
 
     private enum ActionType {
         ADD( 0 ), COPY( 1 ), SELECT( 2 ), UNDEFINED( -2 );
@@ -82,9 +76,6 @@ public class EditInvestigationView extends VerticalPanel {
             investigation.createId();
             investigation.getProvider().createId();
         }
-
-        // set global variables
-        selectedRadioRow = -1;
 
         //
         // prepare all buttons and checkboxes.
@@ -290,7 +281,7 @@ public class EditInvestigationView extends VerticalPanel {
                     }
 
                     public void onSuccess( ArrayList<InvestigationDetail> results ) {
-                        controller.setInvestigationDetails( results );
+                        controller.setStoredInvestigationDetails( results );
                         // no need to keep any file statuses at this point
                         controller.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>",
                                 "" );
@@ -302,10 +293,6 @@ public class EditInvestigationView extends VerticalPanel {
     //
     // un-modifying (e.g. getting) methods
     //
-
-    public int getSelectedRadioRow() {
-        return selectedRadioRow;
-    }
 
     //
     // Methods which change the class variables or run RPC calls which modify server variables
@@ -382,17 +369,6 @@ public class EditInvestigationView extends VerticalPanel {
         displayStepData( investigation.getExperiments(), 0, 0 );
     }
 
-    public void assignFileToStep( File file,
-                                  int radioRowSelectedOnUpload ) {
-        int depth = investigation.addExperimentFile( radioRowSelectedOnUpload, file );
-        int column = depth + ActionType.SELECT.getValue() + 1;
-        // add the action columns to the depth value
-        stepsTable.getCellFormatter()
-                .addStyleName( radioRowSelectedOnUpload, column, "cell-modified" );
-        stepsTable.setHTML( radioRowSelectedOnUpload, column,
-                stepsTable.getHTML( radioRowSelectedOnUpload, column ) + "<br/>" + file.getName() );
-    }
-
     /**
      * Adds the actions for each row.
      *
@@ -424,17 +400,17 @@ public class EditInvestigationView extends VerticalPanel {
         stepsTable.getCellFormatter().setHeight( rowValue, ActionType.COPY.getValue(), "30px" );
         stepsTable.getCellFormatter().setWidth( rowValue, ActionType.COPY.getValue(), "15px" );
 
-        RadioButton radio = new RadioButton( "fileSelector" );
+//        RadioButton radio = new RadioButton( "fileSelector" );
 
         // as long as at least one radio button is selected, then it's OK to have the upload button enabled.
-        radio.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent clickEvent ) {
-                HTMLTable.Cell cell = stepsTable.getCellForEvent( clickEvent );
-                selectedRadioRow = cell.getRowIndex();
-
-            }
-        } );
-        stepsTable.setWidget( rowValue, ActionType.SELECT.getValue(), radio );
+//        radio.addClickHandler( new ClickHandler() {
+//            public void onClick( ClickEvent clickEvent ) {
+//                HTMLTable.Cell cell = stepsTable.getCellForEvent( clickEvent );
+//                selectedRadioRow = cell.getRowIndex();
+//
+//            }
+//        } );
+//        stepsTable.setWidget( rowValue, ActionType.SELECT.getValue(), radio );
 
     }
 
@@ -483,7 +459,7 @@ public class EditInvestigationView extends VerticalPanel {
                     public void onSuccess( ArrayList<InvestigationDetail> updatedDetails ) {
                         final String title = investigation.getInvestigationTitle();
                         final String id = investigation.getId();
-                        controller.setInvestigationDetails( updatedDetails );
+                        controller.setStoredInvestigationDetails( updatedDetails );
                         controller.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
                         controller.setCenterWidgetAsListExperiments();
 
@@ -532,27 +508,9 @@ public class EditInvestigationView extends VerticalPanel {
         }
 
         public void onClick( ClickEvent clickEvent ) {
-            displayEditable();
-
-        }
-
-        public void displayEditable() {
-
-            final PopupPanel popup = new PopupPanel( true );
-            popup.setPopupPositionAndShow( new PopupPanel.PositionCallback() {
-                public void setPosition( int offsetWidth,
-                                         int offsetHeight ) {
-                    int top = ( Window.getClientHeight() - offsetHeight ) / 2;
-                    popup.setPopupPosition( 0, top );
-                }
-            } );
-
-            popup.show();
-            EditableStepView editableStepView = new EditableStepView( controller,
-                    ( ReadableStepView ) stepsTable.getWidget( row, column ), popup, stepsTable, investigation, row,
-                    column, this, completed );
-            popup.add( editableStepView );
-            editableStepView.getStepTitle().setFocus( true );
+            EditableStepView view = new EditableStepView( controller, ( ReadableStepView ) stepsTable.getWidget( row, column ), stepsTable,
+                    investigation, row, column, this, completed );
+            view.getStepTitle().setFocus( true );
 
         }
     }

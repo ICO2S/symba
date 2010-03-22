@@ -121,6 +121,7 @@ public class ExperimentStepHolder implements Serializable {
      * @param parameters  the new parameters (existing ones will be overwritten)
      * @param inputs      the new input materials to set the step to (these materials completely re-write existing)
      * @param outputs     the new output materials to set the step to (these materials completely re-write existing)
+     * @param fileNames   the new list of file names to associate with this step
      * @return the new title value in [0], and true if new, false if matches original, in [1] - this is important,
      *         as it isn't necessarily the same as the title parameter
      */
@@ -128,7 +129,8 @@ public class ExperimentStepHolder implements Serializable {
                                      String title,
                                      ArrayList<ExperimentParameter> parameters,
                                      ArrayList<Material> inputs,
-                                     ArrayList<Material> outputs ) {
+                                     ArrayList<Material> outputs,
+                                     ArrayList<String> fileNames ) {
         Object[] values = new Object[2];
 
         if ( stepId == selectedRow ) {
@@ -167,6 +169,8 @@ public class ExperimentStepHolder implements Serializable {
                 current.getOutputMaterials().addAll( outputs );
             }
 
+            current.setFileNames( fileNames );
+
             values[0] = current.getTitle();
             values[1] = isModified();
             return values;
@@ -174,7 +178,8 @@ public class ExperimentStepHolder implements Serializable {
 
         if ( !current.isLeaf() ) {
             for ( ExperimentStepHolder holder : current.getChildren() ) {
-                Object[] returnedValues = holder.setInfoAtStepId( selectedRow, title, parameters, inputs, outputs );
+                Object[] returnedValues = holder.setInfoAtStepId( selectedRow, title, parameters, inputs, outputs,
+                        fileNames );
                 if ( returnedValues.length == 2 && returnedValues[0] != null && returnedValues[1] != null ) {
                     setModified( ( Boolean ) returnedValues[1] );
                     return returnedValues;

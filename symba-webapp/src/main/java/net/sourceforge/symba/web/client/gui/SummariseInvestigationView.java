@@ -5,13 +5,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.gui.panel.MetadataViewer;
 import net.sourceforge.symba.web.client.gui.panel.SymbaController;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SummariseInvestigationView extends FlexTable {
     public static enum ViewType {
@@ -19,8 +17,7 @@ public class SummariseInvestigationView extends FlexTable {
     }
 
     private final ViewType viewType;
-    private final InvestigationsServiceAsync rpcService;
-    private final SymbaController symba;
+    private final SymbaController controller;
     private PopupPanel popup = null;
 
     private final Button copyButton;
@@ -28,7 +25,7 @@ public class SummariseInvestigationView extends FlexTable {
 
     private FlexTable investigationsTable;
     private ListBox investigationsListBox;
-    private List<InvestigationDetail> investigationDetails;
+    private ArrayList<InvestigationDetail> investigationDetails;
 
     /**
      * If a popup is passed, then we should also hide the popup on completion of the click handling.
@@ -44,10 +41,9 @@ public class SummariseInvestigationView extends FlexTable {
         this.popup = popup;
     }
 
-    public SummariseInvestigationView( SymbaController symba,
+    public SummariseInvestigationView( SymbaController controller,
                                        ViewType viewType ) {
-        this.symba = symba;
-        this.rpcService = this.symba.getRpcService();
+        this.controller = controller;
         this.viewType = viewType;
         copyButton = new Button( "Copy" );
         deleteButton = new Button( "Delete" );
@@ -98,9 +94,9 @@ public class SummariseInvestigationView extends FlexTable {
                 if ( selected == -1 ) {
                     selected = 0; // choose the first in the list if none have been selected yet
                 }
-                MetadataViewer viewer = new MetadataViewer( symba );
+                MetadataViewer viewer = new MetadataViewer( controller );
                 viewer.display( investigationsListBox.getValue( selected ) );
-                symba.hideEastWidget();
+                controller.hideEastWidget();
                 popup.hide();
             }
         } );
@@ -133,8 +129,16 @@ public class SummariseInvestigationView extends FlexTable {
 
         // todo only enabled and visible for Admins (once login enabled)
         deleteButton.addClickHandler( new ClickHandler() {
+//            final String title = investigationDetails.get( getSelectedRow() ).getInvestigationTitle();
+
             public void onClick( ClickEvent event ) {
-                deleteSelectedInvestigation();
+                boolean response = Window.confirm( "Are you sure you wish to delete this Investigation?" );
+                if ( response ) {
+                    deleteSelectedInvestigation();
+                } else {
+                    controller.showEastWidget(
+                            "<p>Deletion of Investigation cancelled.</p>", controller.getEastWidgetDirections() );
+                }
             }
         } );
 
@@ -156,7 +160,7 @@ public class SummariseInvestigationView extends FlexTable {
                 int selectedRow = getClickedRow( event );
 
                 if ( selectedRow >= 0 ) {
-                    symba.setCenterWidgetAsEditExperiment( investigationDetails.get( selectedRow ).getId() );
+                    controller.setCenterWidgetAsEditExperiment( investigationDetails.get( selectedRow ).getId() );
                 }
             }
         } );
@@ -166,17 +170,18 @@ public class SummariseInvestigationView extends FlexTable {
     private void copyInvestigation( final String id ) {
 
         // duplicate the single selected investigation
-        rpcService.copyInvestigation( id,
+        controller.getRpcService().copyInvestigation( id,
                 new AsyncCallback<InvestigationDetail>() {
                     public void onSuccess( InvestigationDetail result ) {
                         investigationDetails.add( result );
+                        controller.setStoredInvestigationDetails( investigationDetails );
                         // refresh the view of the list of details
                         sortInvestigationDetails();
                         setViewData();
                         // change the main display to the newly-copied investigation if we are in the
                         // minimal copy-only view
                         if ( viewType == ViewType.COPY_CHOSEN ) {
-                            symba.setCenterWidgetAsEditExperiment( result.getId() );
+                            controller.setCenterWidgetAsEditExperiment( result.getId() );
                         }
                         // if a popup was passed, then hide that popup upon successful completion.
                         if ( popup != null ) {
@@ -194,9 +199,10 @@ public class SummariseInvestigationView extends FlexTable {
         int selectedRow = getSelectedRow();
         String id = investigationDetails.get( selectedRow ).getId();
 
-        rpcService.deleteInvestigation( id, new AsyncCallback<ArrayList<InvestigationDetail>>() {
+        controller.getRpcService().deleteInvestigation( id, new AsyncCallback<ArrayList<InvestigationDetail>>() {
             public void onSuccess( ArrayList<InvestigationDetail> result ) {
                 investigationDetails = result;
+                controller.setStoredInvestigationDetails( result );
                 sortInvestigationDetails();
                 setViewData();
             }
@@ -303,7 +309,7 @@ public class SummariseInvestigationView extends FlexTable {
 
     public void setInvestigationDetails( ArrayList<InvestigationDetail> investigationDetails ) {
         this.investigationDetails = investigationDetails;
-        symba.setInvestigationDetails( investigationDetails );
+        controller.setStoredInvestigationDetails( investigationDetails );
         sortInvestigationDetails();
         setViewData();
     }

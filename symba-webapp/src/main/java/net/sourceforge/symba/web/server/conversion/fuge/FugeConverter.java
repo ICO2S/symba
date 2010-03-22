@@ -163,7 +163,6 @@ public class FugeConverter {
         // Also, we will need to add GenericProtocolApplication objects for each item with a file name.
         for ( ExperimentStepHolder childHolder : childrenHolder ) {
             ExperimentStep child = childHolder.getCurrent();
-            System.err.println( "child.getTitle(): " + child.getTitle() );
             // create basic protocol
             GenericProtocol childProtocol = createGenericProtocol( child.getTitle() );
             // add any parameters

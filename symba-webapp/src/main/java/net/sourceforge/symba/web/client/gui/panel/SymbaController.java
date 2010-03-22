@@ -30,7 +30,7 @@ public class SymbaController extends DockPanel {
     private HashMap<String, Material> storedMaterials;
 
     // Store all current investigations in a central location so all other panels have access to it.
-    private ArrayList<InvestigationDetail> investigationDetails;
+    private ArrayList<InvestigationDetail> storedInvestigationDetails;
 
     // The type of the Widget in the center panel might change
     private Widget centerWidget;
@@ -63,17 +63,7 @@ public class SymbaController extends DockPanel {
 
         updateStoredContacts();
         updateStoredMaterials();
-
-        rpcService.getInvestigationDetails( new AsyncCallback<ArrayList<InvestigationDetail>>() {
-            public void onSuccess( ArrayList<InvestigationDetail> result ) {
-                investigationDetails = result;
-            }
-
-            public void onFailure( Throwable caught ) {
-                Window.alert( "Error fetching investigation list: " + caught.getMessage() );
-            }
-        } );
-
+        updateStoredInvestigationDetails();
     }
 
     public Widget getEastWidget() {
@@ -104,7 +94,7 @@ public class SymbaController extends DockPanel {
         EditInvestigationView view = new EditInvestigationView( this, investigation );
         setCenterWidget( view );
         showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
-                "Do not upload more files until the files you have selected have completed.</em>" );
+                "Multiple files will be uploaded in sequence.</em>" );
     }
 
     public void setCenterWidgetAsEditExperiment( final String id ) {
@@ -117,7 +107,7 @@ public class SymbaController extends DockPanel {
                 EditInvestigationView view = new EditInvestigationView( SymbaController.this, result );
                 setCenterWidget( view );
                 showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
-                        "Do not upload more files until the files you have selected have completed.</em>" );
+                        "Multiple files will be uploaded in sequence.</em>" );
             }
         } );
     }
@@ -138,8 +128,7 @@ public class SymbaController extends DockPanel {
             add( eastWidget, DockPanel.EAST );
             // set default east panel width
             eastWidget.setWidth( DEFAULT_EAST_WIDTH );
-            eastSet = true;
-        }
+            eastSet = true;}
     }
 
     /**
@@ -170,14 +159,6 @@ public class SymbaController extends DockPanel {
         return eastWidget.getDirections();
     }
 
-    public ArrayList<InvestigationDetail> getInvestigationDetails() {
-        return investigationDetails;
-    }
-
-    public void setInvestigationDetails( ArrayList<InvestigationDetail> investigationDetails ) {
-        this.investigationDetails = investigationDetails;
-    }
-
     public InvestigationsServiceAsync getRpcService() {
         return rpcService;
     }
@@ -185,9 +166,13 @@ public class SymbaController extends DockPanel {
     public void setCenterWidgetAsListExperiments() {
         SummariseInvestigationView investigateView = new SummariseInvestigationView( this,
                 SummariseInvestigationView.ViewType.EXTENDED );
-        investigateView.setInvestigationDetails( getInvestigationDetails() );
+        investigateView.setInvestigationDetails( getStoredInvestigationDetails() );
         setCenterWidget( investigateView );
 
+    }
+
+    public ArrayList<InvestigationDetail> getStoredInvestigationDetails() {
+        return storedInvestigationDetails;
     }
 
     public HashMap<String, Contact> getStoredContacts() {
@@ -198,7 +183,7 @@ public class SymbaController extends DockPanel {
         return storedMaterials;
     }
 
-    public HashMap<String, Contact> updateStoredContacts() {
+    private HashMap<String, Contact> updateStoredContacts() {
 
         storedContacts = new HashMap<String, Contact>();
         rpcService.getAllContacts( new AsyncCallback<HashMap<String, Contact>>() {
@@ -213,7 +198,7 @@ public class SymbaController extends DockPanel {
         return storedContacts;
     }
 
-    public HashMap<String, Material> updateStoredMaterials() {
+    private HashMap<String, Material> updateStoredMaterials() {
 
         storedMaterials = new HashMap<String, Material>();
         rpcService.getAllMaterials( new AsyncCallback<HashMap<String, Material>>() {
@@ -229,6 +214,19 @@ public class SymbaController extends DockPanel {
         return storedMaterials;
     }
 
+    private void updateStoredInvestigationDetails() {
+        rpcService.getInvestigationDetails( new AsyncCallback<ArrayList<InvestigationDetail>>() {
+            public void onSuccess( ArrayList<InvestigationDetail> result ) {
+                storedInvestigationDetails = result;
+            }
+
+            public void onFailure( Throwable caught ) {
+                Window.alert( "Error fetching investigation list: " + caught.getMessage() );
+            }
+        } );
+
+    }
+
     public void setStoredMaterials( HashMap<String, Material> materials ) {
         storedMaterials = new HashMap<String, Material>( materials );
     }
@@ -236,4 +234,9 @@ public class SymbaController extends DockPanel {
     public void setStoredContacts( HashMap<String, Contact> contacts ) {
         storedContacts = new HashMap<String, Contact>( contacts );
     }
+
+    public void setStoredInvestigationDetails( ArrayList<InvestigationDetail> details ) {
+        storedInvestigationDetails = new ArrayList<InvestigationDetail>( details );
+    }
+
 }

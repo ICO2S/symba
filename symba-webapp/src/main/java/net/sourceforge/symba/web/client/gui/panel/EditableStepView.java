@@ -16,29 +16,46 @@ import java.util.HashMap;
  * This class holds all information for the current placement of the editable step, and for the values and
  * display structures present therein.
  */
-public class EditableStepView extends VerticalPanel {
+public class EditableStepView extends PopupPanel {
     private int editableRow, editableColumn;
     private TextBox stepTitle;
-    private ArrayList<String> fileNames;
     private EditableStepParameterTable parameterTable;
     private ClickHandler myEditableHandler;
     private MaterialListPanel inputMaterialPanel, outputMaterialPanel;
+//    private FileForm fileForm;
+    private GwtUploadFile fileForm;
+    private Investigation investigation;
 
     public EditableStepView( final SymbaController controller,
                              ReadableStepView readableView,
-                             final PopupPanel container,
                              final FlexTable tableToAddTo,
                              final Investigation investigation,
                              int row,
                              int column,
                              final ClickHandler myEditableHandler,
                              final boolean completed ) {
-        setSpacing( 5 );
+        super( false ); // turn auto-hide off
+        setPopupPositionAndShow( new PopupPanel.PositionCallback() {
+            public void setPosition( int offsetWidth,
+                                     int offsetHeight ) {
+                int top = ( Window.getClientHeight() - offsetHeight ) / 2;
+                setPopupPosition( 0, top );
+            }
+        } );
+
+
+        this.investigation = investigation;
+
+        VerticalPanel contents = new VerticalPanel();
+        contents.setSpacing( 5 );
 
         this.myEditableHandler = myEditableHandler;
         this.editableRow = row;
         this.editableColumn = column;
 
+        //
+        // step title
+        //
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.setSpacing( 5 );
         stepTitle = new TextBox();
@@ -48,17 +65,20 @@ public class EditableStepView extends VerticalPanel {
         hPanel.add( legend );
         hPanel.add( stepTitle );
 
+        //
+        // files
+        //
+        // we do not want to manipulate the calling set of files directly - those should
+        // only be changed upon saving of the step.
+        fileForm = new GwtUploadFile( new ArrayList<String>( readableView.getFileNames() ) );
+//        fileForm = new FileForm( readableView.getFileNames() );
 
-        fileNames = readableView.getFileNames();
+        //
+        // parameters
+        //
         parameterTable = new EditableStepParameterTable( readableView.getParameterTable().getList() );
-        inputMaterialPanel = new MaterialListPanel( controller, "input",
-                readableView.getInputMaterialTable().getList() );
-        outputMaterialPanel = new MaterialListPanel( controller, "output",
-                readableView.getOutputMaterialTable().getList() );
         Label addNewParameterLabel = new Label( "Add Parameter" );
         addNewParameterLabel.addStyleName( "clickable-text" );
-        Button saveStepButton = new Button( "Save This Step" );
-
         // a panel to separate out the parameter addition steps
         CaptionPanel parameterCaptionPanel = new CaptionPanel( "Parameters" );
         parameterCaptionPanel.setStyleName( "captionpanel-border" );
@@ -67,6 +87,14 @@ public class EditableStepView extends VerticalPanel {
         parameterContentPanel.add( parameterTable );
         parameterContentPanel.add( addNewParameterLabel );
 
+        //
+        // materials
+        //
+        inputMaterialPanel = new MaterialListPanel( controller, "input",
+                readableView.getInputMaterialTable().getList() );
+        outputMaterialPanel = new MaterialListPanel( controller, "output",
+                readableView.getOutputMaterialTable().getList() );
+
         CaptionPanel inputMaterialCaptionPanel = new CaptionPanel( "Input Materials" );
         inputMaterialCaptionPanel.setStyleName( "captionpanel-border" );
         inputMaterialCaptionPanel.add( inputMaterialPanel );
@@ -74,6 +102,15 @@ public class EditableStepView extends VerticalPanel {
         CaptionPanel outputMaterialCaptionPanel = new CaptionPanel( "Output Materials" );
         outputMaterialCaptionPanel.setStyleName( "captionpanel-border" );
         outputMaterialCaptionPanel.add( outputMaterialPanel );
+
+        //
+        // Buttons
+        //
+        Button saveStepButton = new Button( "Accept Changes" );
+        Button cancelStepButton = new Button( "Cancel Changes" );
+        HorizontalPanel actionButtonsPanel = new HorizontalPanel();
+        actionButtonsPanel.add( saveStepButton );
+        actionButtonsPanel.add( cancelStepButton );
 
         //
         // All handlers
@@ -86,32 +123,40 @@ public class EditableStepView extends VerticalPanel {
 
         saveStepButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
-                saveStep( completed, investigation, controller.getStoredMaterials(), tableToAddTo, container );
+                saveStep( completed, controller.getStoredMaterials(), tableToAddTo );
+            }
+        } );
+
+        cancelStepButton.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
+                hide();
             }
         } );
 
         stepTitle.addKeyPressHandler( new KeyPressHandler() {
             public void onKeyPress( KeyPressEvent event ) {
                 if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
-                    saveStep( completed, investigation, controller.getStoredMaterials(), tableToAddTo, container );
+                    saveStep( completed, controller.getStoredMaterials(), tableToAddTo );
                 }
             }
         } );
 
+        //
         // positioning
-        add( hPanel );
-        add( new HTML( getFileNamesString() ) );
-        add( parameterCaptionPanel );
-        add( inputMaterialCaptionPanel );
-        add( outputMaterialCaptionPanel );
-        add( saveStepButton );
+        //
+        contents.add( hPanel );
+        contents.add( fileForm );
+        contents.add( parameterCaptionPanel );
+        contents.add( inputMaterialCaptionPanel );
+        contents.add( outputMaterialCaptionPanel );
+        contents.add( actionButtonsPanel );
+        add( contents );
+        show();
     }
 
     private void saveStep( boolean completed,
-                           Investigation investigation,
                            final HashMap<String, Material> storedMaterials,
-                           FlexTable tableToAddTo,
-                           PopupPanel container ) {
+                           FlexTable tableToAddTo ) {
         // save the text in the parameters text boxes
         if ( !getParameterTable().savePanelValues( completed ) ) {
             return;
@@ -136,7 +181,7 @@ public class EditableStepView extends VerticalPanel {
 
         Object[] values = investigation
                 .setExperimentStepInfo( editableRow, stepTitle.getText(),
-                        getParameterTable().getParameters(), inputs, outputs );
+                        getParameterTable().getParameters(), inputs, outputs, fileForm.getFileNames() );
 
         // Set style based on change, then send the stepTitle to setReadOnly.
         Boolean modified = false;
@@ -153,7 +198,7 @@ public class EditableStepView extends VerticalPanel {
 
         }
         setReadOnly( tableToAddTo, inputs, outputs );
-        container.hide();
+        hide();
 
     }
 
@@ -174,7 +219,7 @@ public class EditableStepView extends VerticalPanel {
         // here, the modification to the experiment marked with "isModified" is inaccessible, so just check
         // that the value is different from what was in the
 
-        ReadableStepView readable = new ReadableStepView( getStepTitle().getValue(), getFileNames(),
+        ReadableStepView readable = new ReadableStepView( getStepTitle().getValue(), fileForm.getFileNames(),
                 getParameterTable().getParameters(), inputs, outputs, myEditableHandler );
         tableToAddTo.setWidget( getEditableRow(), getEditableColumn(), readable );
     }
@@ -191,18 +236,6 @@ public class EditableStepView extends VerticalPanel {
         return stepTitle;
     }
 
-    public ArrayList<String> getFileNames() {
-        return fileNames;
-    }
-
-    private String getFileNamesString() {
-        String value = "";
-        for ( String file : fileNames ) {
-            value = value + file + "; ";
-        }
-        return value;
-    }
-
     public EditableStepParameterTable getParameterTable() {
         return parameterTable;
     }
@@ -217,13 +250,18 @@ public class EditableStepView extends VerticalPanel {
             parameterPanels = new ArrayList<SingleParameterPanel>();
             parameterRowCount = 0;
 
+            boolean setFocusOnFirst = true;
             for ( ExperimentParameter parameter : parameters ) {
-                addSingleParameterRow( parameter );
+                addSingleParameterRow( parameter, setFocusOnFirst );
+                if ( setFocusOnFirst ) {
+                    setFocusOnFirst = false;
+                }
             }
         }
 
-        private void addSingleParameterRow( ExperimentParameter parameter ) {
-            final SingleParameterPanel panel = new SingleParameterPanel( parameterRowCount, parameter );
+        private void addSingleParameterRow( ExperimentParameter parameter,
+                                            boolean setFocus ) {
+            final SingleParameterPanel panel = new SingleParameterPanel( parameterRowCount, parameter, setFocus );
             parameterPanels.add( panel );
             setWidget( parameterRowCount, 0, panel );
 
@@ -330,7 +368,7 @@ public class EditableStepView extends VerticalPanel {
         }
 
         public void addNewParameter() {
-            addSingleParameterRow( new ExperimentParameter() );
+            addSingleParameterRow( new ExperimentParameter(), true );
         }
 
         // An internal panel contains the step stepTitle
@@ -343,7 +381,8 @@ public class EditableStepView extends VerticalPanel {
             private VerticalPanel radioPanel;
 
             public SingleParameterPanel( final int counter,
-                                         final ExperimentParameter parameter ) {
+                                         final ExperimentParameter parameter,
+                                         boolean focused ) {
                 setBorderWidth( 0 );
                 setSpacing( 0 );
                 setHorizontalAlignment( HorizontalPanel.ALIGN_LEFT );
@@ -369,6 +408,7 @@ public class EditableStepView extends VerticalPanel {
                 subject = new TextBox();
                 ParameterCaptionBox sPanel = new ParameterCaptionBox( "Parameter Name, e.g. Camera", subject,
                         parameter.getSubject(), true );
+                subject.setFocus( focused );
 
                 predicate = new TextBox();
                 ParameterCaptionBox pPanel = new ParameterCaptionBox( "Relationship, e.g. has brand", predicate,

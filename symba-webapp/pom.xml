@@ -35,15 +35,21 @@
             <artifactId>symba-db</artifactId>
             <version>8.09</version>
         </dependency>
+        <!-- GWT upload used under the Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0 -->
         <dependency>
-            <groupId>org.swfupload</groupId>
-            <artifactId>swfupload-gwt</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <groupId>gwtupload</groupId>
+            <artifactId>gwtupload</artifactId>
+            <version>0.5.7</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -164,12 +170,8 @@
     </build>
     <repositories>
         <repository>
-            <id>swfupload-gwt-snapshots</id>
-            <name>SWFUpload-GWT snapshot releases</name>
-            <url>http://swfupload-gwt.googlecode.com/svn/maven/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>gwtupload</id>
+            <url>http://gwtupload.googlecode.com/svn/mavenrepo/</url>
         </repository>
     </repositories>
 </project>

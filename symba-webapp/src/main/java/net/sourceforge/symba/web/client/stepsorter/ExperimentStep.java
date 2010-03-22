@@ -101,6 +101,10 @@ public class ExperimentStep implements Serializable {
         return fileNames;
     }
 
+    public void setFileNames( ArrayList<String> fileNames ) {
+        this.fileNames = fileNames;
+    }
+
     public ArrayList<ExperimentStepHolder> getChildren() {
         return children;
     }

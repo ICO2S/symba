@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import net.sourceforge.symba.web.client.gui.EditInvestigationView;
 import net.sourceforge.symba.web.client.gui.SummariseInvestigationView;
 import net.sourceforge.symba.web.client.gui.handlers.ListExperimentsClickHandler;
 
@@ -47,7 +46,7 @@ public class NewInvestigationPopup extends PopupPanel {
             HorizontalPanel existing = new HorizontalPanel();
             SummariseInvestigationView view = new SummariseInvestigationView( symba,
                     SummariseInvestigationView.ViewType.COPY_CHOSEN, parentPanel );
-            view.setInvestigationDetails( symba.getInvestigationDetails() );
+            view.setInvestigationDetails( symba.getStoredInvestigationDetails() );
             existing.add( view );
 
             add( existing );

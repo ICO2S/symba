@@ -4,7 +4,6 @@ import com.google.gwt.user.client.Random;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
-import org.swfupload.client.File;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -77,16 +76,18 @@ public class Investigation implements Serializable {
      * @param parameters  the new parameters to set the step to (these parameters completely re-write existing ones)
      * @param inputs      the new input materials to set the step to (these materials completely re-write existing)
      * @param outputs     the new output materials to set the step to (these materials completely re-write existing)
+     * @param fileNames   the names of the files for the step
      * @return the new title at [0] and the modified value at [1]. Will be empty array if no matches found
      */
     public Object[] setExperimentStepInfo( int selectedRow,
                                            String title,
                                            ArrayList<ExperimentParameter> parameters,
                                            ArrayList<Material> inputs,
-                                           ArrayList<Material> outputs ) {
+                                           ArrayList<Material> outputs,
+                                           ArrayList<String> fileNames ) {
 
         for ( ExperimentStepHolder holder : experiments ) {
-            Object[] values = holder.setInfoAtStepId( selectedRow, title, parameters, inputs, outputs );
+            Object[] values = holder.setInfoAtStepId( selectedRow, title, parameters, inputs, outputs, fileNames );
             if ( values.length == 2 && values[0] != null && values[1] != null &&
                     ( ( String ) values[0] ).length() > 0 ) {
                 // the title was found and set appropriately.
@@ -218,15 +219,17 @@ public class Investigation implements Serializable {
         }
     }
 
-    public int addExperimentFile( int selectedRow,
-                                  File file ) {
-        for ( ExperimentStepHolder holder : experiments ) {
-            int returnedDepth = holder.setFileAtStepId( selectedRow, 0, file.getName() );
-            if ( returnedDepth != -1 ) {
-                // the title was found and set appropriately.
-                return returnedDepth;
-            }
-        }
-        return -1;
-    }
+//    public int addExperimentFile( int selectedRow,
+//                                  File file ) {
+//        for ( ExperimentStepHolder holder : experiments ) {
+//            int returnedDepth = holder.setFileAtStepId( selectedRow, 0, file.getName() );
+//            if ( returnedDepth != -1 ) {
+//                // the title was found and set appropriately.
+//                return returnedDepth;
+//            }
+//        }
+//        return -1;
+//    }
+
+
 }

@@ -36,7 +36,7 @@ public class InitialDownloadPopup extends PopupPanel {
             HorizontalPanel existing = new HorizontalPanel();
             SummariseInvestigationView view = new SummariseInvestigationView( symba,
                     SummariseInvestigationView.ViewType.DISPLAY_CHOSEN_METADATA, parentPanel );
-            view.setInvestigationDetails( symba.getInvestigationDetails() );
+            view.setInvestigationDetails( symba.getStoredInvestigationDetails() );
             existing.add( view );
 
             add( existing );

@@ -1,5 +1,6 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
+import net.sourceforge.fuge.util.generated.ActionApplication;
 import net.sourceforge.fuge.util.generated.AtomicValue;
 import net.sourceforge.fuge.util.generated.Audit;
 import net.sourceforge.fuge.util.generated.AuditCollection;
@@ -7,17 +8,28 @@ import net.sourceforge.fuge.util.generated.AuditTrail;
 import net.sourceforge.fuge.util.generated.BooleanValue;
 import net.sourceforge.fuge.util.generated.ComplexValue;
 import net.sourceforge.fuge.util.generated.ContactRole;
+import net.sourceforge.fuge.util.generated.DataCollection;
+import net.sourceforge.fuge.util.generated.Description;
+import net.sourceforge.fuge.util.generated.Descriptions;
+import net.sourceforge.fuge.util.generated.ExternalData;
 import net.sourceforge.fuge.util.generated.FuGE;
 import net.sourceforge.fuge.util.generated.GenericAction;
+import net.sourceforge.fuge.util.generated.GenericMaterial;
 import net.sourceforge.fuge.util.generated.GenericParameter;
 import net.sourceforge.fuge.util.generated.GenericProtocol;
+import net.sourceforge.fuge.util.generated.GenericProtocolApplication;
 import net.sourceforge.fuge.util.generated.GenericSoftware;
 import net.sourceforge.fuge.util.generated.Identifiable;
+import net.sourceforge.fuge.util.generated.InputCompleteMaterials;
 import net.sourceforge.fuge.util.generated.InvestigationCollection;
+import net.sourceforge.fuge.util.generated.Material;
+import net.sourceforge.fuge.util.generated.MaterialCollection;
 import net.sourceforge.fuge.util.generated.ObjectFactory;
 import net.sourceforge.fuge.util.generated.OntologyCollection;
 import net.sourceforge.fuge.util.generated.OntologyIndividual;
 import net.sourceforge.fuge.util.generated.OntologyTerm;
+import net.sourceforge.fuge.util.generated.OutputData;
+import net.sourceforge.fuge.util.generated.OutputMaterials;
 import net.sourceforge.fuge.util.generated.Person;
 import net.sourceforge.fuge.util.generated.ProtocolCollection;
 import net.sourceforge.fuge.util.generated.Provider;
@@ -36,6 +48,7 @@ import javax.xml.namespace.QName;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * This is a simple class which creates a brand-new FuGE object for the given client-side Investigation object. It
@@ -100,6 +113,12 @@ public class FugeConverter {
         // create and add the investigation collection to the fuge object
         InvestigationCollection allInvestigation = new InvestigationCollection();
         fuge.setInvestigationCollection( allInvestigation );
+        // create and add the material collection to the fuge object
+        MaterialCollection allMaterial = new MaterialCollection();
+        fuge.setMaterialCollection( allMaterial );
+        // create and add the material collection to the fuge object
+        DataCollection allData = new DataCollection();
+        fuge.setDataCollection( allData );
         // create and add the protocol collection to the fuge object
         ProtocolCollection allProtocol = new ProtocolCollection();
         fuge.setProtocolCollection( allProtocol );
@@ -107,7 +126,10 @@ public class FugeConverter {
         OntologyCollection allOntology = new OntologyCollection();
         fuge.setOntologyCollection( allOntology );
 
+        // create a person who provides the investigation: the "owner"
         Person person = addPerson( allAudit, inv.getProvider() );
+
+        // create the investigation for this fuge object
         addInvestigation( allInvestigation, person, inv );
 
         // create the main features of the Fuge object itself
@@ -122,8 +144,14 @@ public class FugeConverter {
         // link the provider to the fuge object
         fuge.setProvider( provider );
 
-        // create all protocols
-        addAllProtocols( allProtocol, allOntology, person, inv );
+        // create all materials
+        addMaterials( allMaterial, inv.getExperiments() );
+
+        // create all external data items
+        HashMap<String, String> dataIdentifiers = addData( allData, person, inv.getExperiments() );
+
+        // create all protocols; also make protocol applications wherever there are materials or data
+        addAllProtocols( allProtocol, allOntology, dataIdentifiers, person, inv );
 
         // create an audit trail associated with the object
         addAuditTrail( fuge, person );
@@ -131,10 +159,99 @@ public class FugeConverter {
         return fuge;
     }
 
+    /**
+     * We don't add the user as a person in the audit trail for the Material, because this material was
+     * actually created elsewhere and is sitting in the "database" already - we're just linking to it within
+     * this particular Fuge object. This is similar to the way the Contact works. Of course, this class is a
+     * simplistic class that doesn't connect to any database, but this behaviour is mimicked here by
+     * retaining the provided Material id (and the "add" in the method name rather than the "create"). In the
+     * implementation for a database, this behaviour would need to be more complex.
+     *
+     * @param allMaterial    the collection to add the materials to
+     * @param childrenHolder the user interface object storing all of the materials to add to the fuge object
+     */
+    private void addMaterials( MaterialCollection allMaterial,
+                               ArrayList<ExperimentStepHolder> childrenHolder ) {
+        // the materials need to be added to the collection at this stage, but do not need to be linked
+        // to an experimental protocol application yet.
+
+        for ( ExperimentStepHolder childHolder : childrenHolder ) {
+            ExperimentStep child = childHolder.getCurrent();
+            for ( net.sourceforge.symba.web.shared.Material inputMaterial : child.getInputMaterials() ) {
+                // in the db implementation, this material would be pulled from the database rather than created here
+                boolean alreadyPresent = false;
+                for ( JAXBElement<? extends Material> jaxbElement : allMaterial.getMaterial() ) {
+                    if ( jaxbElement.getValue().getIdentifier().equals( inputMaterial.getId() ) ) {
+                        alreadyPresent = true;
+                        break;
+                    }
+                }
+                if ( !alreadyPresent ) {
+                    GenericMaterial fugeMaterial = createGenericMaterial( inputMaterial );
+                    allMaterial.getMaterial().add( factory.createGenericMaterial( fugeMaterial ) );
+                }
+            }
+
+            for ( net.sourceforge.symba.web.shared.Material outputMaterial : child.getOutputMaterials() ) {
+                // in the db implementation, this material would be pulled from the database rather than created here
+                boolean alreadyPresent = false;
+                for ( JAXBElement<? extends Material> jaxbElement : allMaterial.getMaterial() ) {
+                    if ( jaxbElement.getValue().getIdentifier().equals( outputMaterial.getId() ) ) {
+                        alreadyPresent = true;
+                        break;
+                    }
+                }
+                if ( !alreadyPresent ) {
+                    GenericMaterial fugeMaterial = createGenericMaterial( outputMaterial );
+                    allMaterial.getMaterial().add( factory.createGenericMaterial( fugeMaterial ) );
+                }
+            }
+
+            // run this method for all children of this protocol
+            if ( !child.isLeaf() ) {
+                addMaterials( allMaterial, child.getChildren() );
+            }
+        }
+    }
+
+    /**
+     * the external data files need to be added to the collection at this stage, but do not need to be linked
+     * to an experimental protocol application yet.
+     *
+     * @param allData        the collection to add the materials to
+     * @param person         the person who assigned the data items to this Fuge object
+     * @param childrenHolder the user interface object storing all of the materials to add to the fuge object
+     * @return a map linking the files with their new identifiers, for use when referencing these data objects
+     */
+    private HashMap<String, String> addData( DataCollection allData,
+                                             Person person,
+                                             ArrayList<ExperimentStepHolder> childrenHolder ) {
+
+        HashMap<String, String> dataIdentifiers = new HashMap<String, String>();
+
+        for ( ExperimentStepHolder childHolder : childrenHolder ) {
+            ExperimentStep child = childHolder.getCurrent();
+            for ( String inputData : child.getFileNames() ) {
+                // in the db implementation, this material would be pulled from the database rather than created here
+                ExternalData fugeData = createExternalData( inputData, person );
+                dataIdentifiers.put( inputData, fugeData.getIdentifier() );
+                allData.getData().add( factory.createExternalData( fugeData ) );
+            }
+
+            // run this method for all children of this protocol
+            if ( !child.isLeaf() ) {
+                dataIdentifiers = addData( allData, person, child.getChildren() );
+            }
+        }
+
+        return dataIdentifiers;
+    }
+
     private void addAllProtocols( ProtocolCollection allProtocol,
                                   OntologyCollection allOntology,
+                                  HashMap<String, String> dataIdentifiers,
                                   Person person,
-                                  final net.sourceforge.symba.web.shared.Investigation inv ) {
+                                  final Investigation inv ) {
 
 
         // create a top-level protocol for the name of the investigation, and add everything as an action
@@ -143,20 +260,25 @@ public class FugeConverter {
         // parsed out when viewing and downloading.
         GenericProtocol topProtocol = createGenericProtocol(
                 InputValidator.TOP_PROTOCOL + " " + inv.getInvestigationTitle() );
+        GenericProtocolApplication topGpa = createGenericProtocolApplication( topProtocol, person );
 
-        addProtocols( allProtocol, allOntology, topProtocol, 0, person, inv.getExperiments() );
+        addChildProtocols( allProtocol, allOntology, topProtocol, topGpa, 0, dataIdentifiers, person,
+                inv.getExperiments() );
 
-        // link the top protocol to the collection
+        // link the top protocol and its gpa to the collection
         allProtocol.getProtocol().add( factory.createGenericProtocol( topProtocol ) );
+        allProtocol.getProtocolApplication().add( factory.createGenericProtocolApplication( topGpa ) );
 
     }
 
-    private void addProtocols( ProtocolCollection allProtocol,
-                               OntologyCollection allOntology,
-                               GenericProtocol parentProtocol,
-                               int ordinal,
-                               Person person,
-                               final ArrayList<ExperimentStepHolder> childrenHolder ) {
+    private void addChildProtocols( ProtocolCollection allProtocol,
+                                    OntologyCollection allOntology,
+                                    GenericProtocol parentProtocol,
+                                    GenericProtocolApplication parentProtocolApplication,
+                                    int ordinal,
+                                    HashMap<String, String> dataIdentifiers,
+                                    Person person,
+                                    final ArrayList<ExperimentStepHolder> childrenHolder ) {
 
         // now we need a Generic Protocol for each further experiment step, then add that step to the
         // top protocol as a Generic Action.
@@ -172,27 +294,82 @@ public class FugeConverter {
             // link the protocol to the collection
             allProtocol.getProtocol().add( factory.createGenericProtocol( childProtocol ) );
 
+            // add the protocol as an action on the current parent protocol
+            GenericAction action = createGenericAction( childProtocol, ordinal++ );
+            parentProtocol.getAction().add( factory.createGenericAction( action ) );
+
+            // If there is a child step, it will definitely have a child GPA.
+            GenericProtocolApplication childGpa = createGenericProtocolApplication( childProtocol, person );
+            addInputOutputRefs( childGpa, child, dataIdentifiers );
+            parentProtocolApplication.getActionApplication().add( createActionApplication( action, childGpa, person ) );
+            allProtocol.getProtocolApplication().add( factory.createGenericProtocolApplication( childGpa ) );
+
             // run this method for all children of this protocol
             if ( !child.isLeaf() ) {
-                addProtocols( allProtocol, allOntology, childProtocol, 0, person, child.getChildren() );
+                addChildProtocols( allProtocol, allOntology, childProtocol, childGpa, 0, dataIdentifiers, person,
+                        child.getChildren() );
             }
 
-            // add the protocol as an action on the top protocol
-            createGenericAction( parentProtocol, childProtocol, ordinal++ );
         }
     }
 
-    private void createGenericAction( GenericProtocol parentProtocol,
-                                      GenericProtocol childProtocol,
-                                      int ordinal ) {
+    private void addInputOutputRefs( GenericProtocolApplication childGpa,
+                                     ExperimentStep child,
+                                     HashMap<String, String> dataIdentifiers ) {
+
+        for ( String file : child.getFileNames() ) {
+            OutputData od = new OutputData();
+            od.setDataRef( dataIdentifiers.get( file ) );
+            childGpa.getOutputData().add( od );
+        }
+
+        for ( net.sourceforge.symba.web.shared.Material m : child.getInputMaterials() ) {
+            InputCompleteMaterials icm = new InputCompleteMaterials();
+            icm.setMaterialRef( m.getId() );
+            childGpa.getInputCompleteMaterials().add( icm );
+        }
+
+        for ( net.sourceforge.symba.web.shared.Material m : child.getOutputMaterials() ) {
+            OutputMaterials om = new OutputMaterials();
+            om.setMaterialRef( m.getId() );
+            childGpa.getOutputMaterials().add( om );
+        }
+    }
+
+    private GenericAction createGenericAction( GenericProtocol childProtocol,
+                                               int ordinal ) {
         GenericAction action = new GenericAction();
         action.setActionOrdinal( ordinal );
         action.setProtocolRef( childProtocol.getIdentifier() );
         action.setName( childProtocol.getName() );
         action.setIdentifier( createRandom() );
         action.setEndurantRef( createRandom() );
-        parentProtocol.getAction().add( factory.createGenericAction( action ) );
+        return action;
     }
+
+    /**
+     * This method does not recurse through the children of the step variable. It just creates an appropriate
+     * AA for this step.
+     *
+     * @param associatedAction the action we're referencing
+     * @param childGpa         the child protocol application associated with this AA
+     * @param person           the person to give credit to for running the protocol.
+     * @return the new ActionApplication to add to the parent GPA
+     */
+    private ActionApplication createActionApplication( GenericAction associatedAction,
+                                                       GenericProtocolApplication childGpa,
+                                                       Person person ) {
+        ActionApplication aa = new ActionApplication();
+        aa.setIdentifier( createRandom() );
+        aa.setEndurantRef( createRandom() );
+        aa.setName( associatedAction.getName() );
+        aa.setActionRef( associatedAction.getIdentifier() );
+        aa.setProtocolApplicationRef( childGpa.getIdentifier() );
+        addAuditTrail( aa, person );
+
+        return aa;
+    }
+
 
     private void createAndAddGenericParameter( OntologyCollection allOntology,
                                                GenericProtocol protocol,
@@ -270,6 +447,48 @@ public class FugeConverter {
         return p;
     }
 
+    private GenericProtocolApplication createGenericProtocolApplication( GenericProtocol associatedProtocol,
+                                                                         Person person ) {
+        GenericProtocolApplication p = new GenericProtocolApplication();
+        p.setIdentifier( createRandom() );
+        p.setEndurantRef( createRandom() );
+        p.setName( associatedProtocol.getName() );
+        p.setProtocolRef( associatedProtocol.getIdentifier() );
+        addAuditTrail( p, person );
+
+        return p;
+    }
+
+    private GenericMaterial createGenericMaterial( net.sourceforge.symba.web.shared.Material inputMaterial ) {
+
+        GenericMaterial material = new GenericMaterial();
+        material.setIdentifier( inputMaterial.getId() );
+        material.setName( inputMaterial.getName() );
+
+        if ( inputMaterial.getDescription().length() > 0 ) {
+            Descriptions descriptions = new Descriptions();
+            Description description = new Description();
+            description.setText( inputMaterial.getDescription() );
+            descriptions.getDescription().add( description );
+            material.setDescriptions( descriptions );
+        }
+
+        return material;
+    }
+
+    private ExternalData createExternalData( String dataURI,
+                                             Person person ) {
+
+        ExternalData d = new ExternalData();
+        d.setIdentifier( createRandom() );
+        d.setEndurantRef( createRandom() );
+        d.setName( dataURI ); // just put the URI as the name as well as the location, to have something in the name
+        d.setLocation( dataURI );
+        addAuditTrail( d, person );
+
+        return d;
+    }
+
     /**
      * This is a "create" rather than an "add" because it will create a provider based on the person argument,
      * but will not add it to any fuge collection or fuge object.
@@ -314,7 +533,7 @@ public class FugeConverter {
 
     private net.sourceforge.fuge.util.generated.Investigation addInvestigation( InvestigationCollection allInvestigation,
                                                                                 Person person,
-                                                                                Investigation uiInvestigation ) {
+                                                                                net.sourceforge.symba.web.shared.Investigation uiInvestigation ) {
         // Convert the main features of the investigation. We are currently only allowing a single Investigation
         // object in the FuGE object per SyMBA investigation.
         net.sourceforge.fuge.util.generated.Investigation fugeInv = new net.sourceforge.fuge.util.generated.Investigation();
@@ -329,6 +548,17 @@ public class FugeConverter {
         return fugeInv;
     }
 
+    /**
+     * This person is actually created elsewhere and is sitting in the "database" already - we're just linking to it
+     * within this particular Fuge object. This is similar to the way the Material works. Of course, this class is a
+     * simplistic class that doesn't connect to any database, but this behaviour is mimicked here by
+     * retaining the provided Person id (and the "add" in the method name rather than the "create"). In the
+     * implementation for a database, this behaviour would need to be more complex.
+     *
+     * @param allAudit the collection to add the person to
+     * @param uiPerson the user interface object storing the contact to add to the fuge object
+     * @return the Fuge Person object
+     */
     private Person addPerson( AuditCollection allAudit,
                               Contact uiPerson ) {
         // create a fuge person

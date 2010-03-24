@@ -25,8 +25,8 @@ import java.util.List;
  * This is where annotations such as @Transactional will occur. In order for @Transactional to be effective,
  * the method that calls the transactional method MUST be external to this class.
  * <p/>
- * As objects which are lazy loading will only be populated within the transaction they were queried from, this is where
- * all setup, processing and modification of database objects to GWT server objects will occur.
+ * As objects which are lazily loaded will only be populated within the transaction they were queried from, this is
+ * where all setup, processing and modification of database objects to GWT server objects will occur.
  */
 public class ServerDatabaseController extends FugeDatabaseController {
 

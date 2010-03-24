@@ -88,4 +88,7 @@ public abstract class StorageHelper {
 
         return investigationDetails;
     }
+
+    @NotNull
+    public abstract String getMetadataString( @NotNull String id );
 }

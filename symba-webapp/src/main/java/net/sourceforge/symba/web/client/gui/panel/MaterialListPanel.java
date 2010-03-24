@@ -8,6 +8,7 @@ import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class MaterialListPanel extends HorizontalPanel {
@@ -84,7 +85,7 @@ public class MaterialListPanel extends HorizontalPanel {
         }
 
         private String doSave( final SymbaController controller,
-                               TextBox nameBox,
+                               final TextBox nameBox,
                                TextArea descriptionBox ) {
 
             String emptyValues = "";
@@ -120,7 +121,11 @@ public class MaterialListPanel extends HorizontalPanel {
 
                 public void onSuccess( HashMap<String, Material> result ) {
                     controller.setStoredMaterials( result );
+                    // pre-select the just-added material
+                    selector.getSelectedMaterials().add( material );
                     selector.showListBox();
+                    // clear any values
+                    nameBox.setText("");
                     setVisible( false );
                 }
             } );
@@ -184,8 +189,10 @@ public class MaterialListPanel extends HorizontalPanel {
 
         private void populateListBox() {
             expandedMaterialLabel.clear();
-            for ( Material material : controller.getStoredMaterials().values() ) {
+            // in order to sort, you can't have the information in a HashMap
+            for ( Material material : sortMaterials( controller.getStoredMaterials().values() ) ) {
                 expandedMaterialLabel.addItem( material.getName(), material.getId() );
+                // ensure all values selected earlier are automatically selected here
                 for ( Material selected : selectedMaterials ) {
                     if ( material.getId().equals( selected.getId() ) ) {
                         expandedMaterialLabel.setItemSelected( expandedMaterialLabel.getItemCount() - 1, true );
@@ -193,6 +200,21 @@ public class MaterialListPanel extends HorizontalPanel {
                     }
                 }
             }
+        }
+
+        private ArrayList<Material> sortMaterials( Collection<Material> collection ) {
+            ArrayList<Material> asList = new ArrayList<Material>( collection );
+            // sort by material name
+            for ( int iii = 0; iii < asList.size(); iii++ ) {
+                for ( int jjj = 0; jjj < asList.size() - 1; jjj++ ) {
+                    if ( asList.get( jjj ).getName().compareToIgnoreCase( asList.get( jjj + 1 ).getName() ) >= 0 ) {
+                        Material tmp = asList.get( jjj );
+                        asList.set( jjj, asList.get( jjj + 1 ) );
+                        asList.set( jjj + 1, tmp );
+                    }
+                }
+            }
+            return asList;
         }
 
         private String getMaterialsCount() {
@@ -203,6 +225,10 @@ public class MaterialListPanel extends HorizontalPanel {
             } else {
                 return selectedMaterials.size() + " " + materialType + " materials";
             }
+        }
+
+        public ArrayList<Material> getSelectedMaterials() {
+            return selectedMaterials;
         }
 
         public void showListBox() {

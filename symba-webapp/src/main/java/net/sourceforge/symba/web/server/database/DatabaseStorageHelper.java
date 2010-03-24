@@ -30,7 +30,7 @@ public class DatabaseStorageHelper extends StorageHelper {
     }
 
     public DatabaseStorageHelper() {
-        // retrieve investigations from the database
+        super();
         ApplicationContext ctxt = new ClassPathXmlApplicationContext( "spring-config.xml" );
 
         controller = ctxt.getBean( "serverDatabaseController", ServerDatabaseController.class );
@@ -39,6 +39,7 @@ public class DatabaseStorageHelper extends StorageHelper {
 
     @NotNull
     public HashMap<String, Investigation> fetchAll() {
+        // retrieve investigations from the database
         return controller.convertFugeToGwt();
     }
 
@@ -83,6 +84,12 @@ public class DatabaseStorageHelper extends StorageHelper {
 
     @NotNull
     public ArrayList<InvestigationDetail> delete( @NotNull String id ) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @NotNull
+    @Override
+    public String getMetadataString( @NotNull String id ) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

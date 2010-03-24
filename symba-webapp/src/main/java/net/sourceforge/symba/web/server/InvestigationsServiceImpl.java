@@ -88,7 +88,6 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
     }
 
     public String getMetadata( String id ) {
-        FugeConverter converter = new FugeConverter();
-        return converter.toFugeString( helper.getInvestigations().get( id ) );
+        return helper.getMetadataString( id );
     }
 }

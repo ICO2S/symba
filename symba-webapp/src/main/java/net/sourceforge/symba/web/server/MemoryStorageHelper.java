@@ -1,6 +1,7 @@
 package net.sourceforge.symba.web.server;
 
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
+import net.sourceforge.symba.web.server.conversion.fuge.FugeConverter;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
@@ -97,6 +98,13 @@ public class MemoryStorageHelper extends StorageHelper {
     public ArrayList<InvestigationDetail> delete( @NotNull String id ) {
         getInvestigations().remove( id );
         return getInvestigationDetails();
+    }
+
+    @NotNull
+    @Override
+    public String getMetadataString( @NotNull String id ) {
+        FugeConverter converter = new FugeConverter();
+        return converter.toFugeString( getInvestigations().get( id ) );
     }
 
 }

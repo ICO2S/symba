@@ -9,6 +9,7 @@ public class Material implements Serializable {
     private String id;
     private String name;
     private String description;
+    //todo add measurement, which can be used for input materials.
 
     public Material() {
         id = "";

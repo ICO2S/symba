@@ -1,12 +1,7 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
 import net.sourceforge.fuge.util.generated.ActionApplication;
-import net.sourceforge.fuge.util.generated.AtomicValue;
-import net.sourceforge.fuge.util.generated.Audit;
 import net.sourceforge.fuge.util.generated.AuditCollection;
-import net.sourceforge.fuge.util.generated.AuditTrail;
-import net.sourceforge.fuge.util.generated.BooleanValue;
-import net.sourceforge.fuge.util.generated.ComplexValue;
 import net.sourceforge.fuge.util.generated.ContactRole;
 import net.sourceforge.fuge.util.generated.DataCollection;
 import net.sourceforge.fuge.util.generated.Description;
@@ -15,28 +10,21 @@ import net.sourceforge.fuge.util.generated.ExternalData;
 import net.sourceforge.fuge.util.generated.FuGE;
 import net.sourceforge.fuge.util.generated.GenericAction;
 import net.sourceforge.fuge.util.generated.GenericMaterial;
-import net.sourceforge.fuge.util.generated.GenericParameter;
 import net.sourceforge.fuge.util.generated.GenericProtocol;
 import net.sourceforge.fuge.util.generated.GenericProtocolApplication;
 import net.sourceforge.fuge.util.generated.GenericSoftware;
-import net.sourceforge.fuge.util.generated.Identifiable;
 import net.sourceforge.fuge.util.generated.InputCompleteMaterials;
 import net.sourceforge.fuge.util.generated.InvestigationCollection;
 import net.sourceforge.fuge.util.generated.Material;
 import net.sourceforge.fuge.util.generated.MaterialCollection;
 import net.sourceforge.fuge.util.generated.ObjectFactory;
 import net.sourceforge.fuge.util.generated.OntologyCollection;
-import net.sourceforge.fuge.util.generated.OntologyIndividual;
-import net.sourceforge.fuge.util.generated.OntologyTerm;
 import net.sourceforge.fuge.util.generated.OutputData;
 import net.sourceforge.fuge.util.generated.OutputMaterials;
 import net.sourceforge.fuge.util.generated.Person;
 import net.sourceforge.fuge.util.generated.ProtocolCollection;
 import net.sourceforge.fuge.util.generated.Provider;
-import net.sourceforge.fuge.util.generated.Unit;
-import net.sourceforge.fuge.util.generated.Value;
 import net.sourceforge.symba.web.client.gui.InputValidator;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
@@ -47,14 +35,13 @@ import javax.xml.bind.*;
 import javax.xml.namespace.QName;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
  * This is a simple class which creates a brand-new FuGE object for the given client-side Investigation object. It
  * holds no connections to databases and performs no checks of pre-existing objects in any data storage locations.
  */
-public class FugeConverter {
+public class FugeCreator {
 
     private final ObjectFactory factory = new ObjectFactory();
 
@@ -64,9 +51,9 @@ public class FugeConverter {
         FuGE fuge = toFuge( inv );
         java.io.StringWriter sw = new StringWriter();
 
-        // create a JAXBContext capable of handling classes generated into the net.sourceforge.fuge.util.generated
-        // package
         try {
+            // create a JAXBContext capable of handling classes generated into the net.sourceforge.fuge.util.generated
+            // package
             JAXBContext jc = JAXBContext.newInstance( "net.sourceforge.fuge.util.generated" );
 
             // create a Marshaller
@@ -154,7 +141,7 @@ public class FugeConverter {
         addAllProtocols( allProtocol, allOntology, dataIdentifiers, person, inv );
 
         // create an audit trail associated with the object
-        addAuditTrail( fuge, person );
+        IdentifiableConverter.addAuditTrail( fuge, person );
 
         return fuge;
     }
@@ -233,6 +220,7 @@ public class FugeConverter {
             ExperimentStep child = childHolder.getCurrent();
             for ( String inputData : child.getFileNames() ) {
                 // in the db implementation, this material would be pulled from the database rather than created here
+                // todo set "name" to original filename plus easy-to-remember SyMBA filename
                 ExternalData fugeData = createExternalData( inputData, person );
                 dataIdentifiers.put( inputData, fugeData.getIdentifier() );
                 allData.getData().add( factory.createExternalData( fugeData ) );
@@ -258,9 +246,10 @@ public class FugeConverter {
         // relating to the other protocols. In order for the top-level protocol to be recognised easily as
         // the top one, add InputValidator.TOP_PROTOCOL to the name of the protocol. This will be
         // parsed out when viewing and downloading.
-        GenericProtocol topProtocol = createGenericProtocol(
+        GenericProtocol topProtocol = GenericProtocolConverter.toFuge( createRandom(), createRandom(),
                 InputValidator.TOP_PROTOCOL + " " + inv.getInvestigationTitle() );
-        GenericProtocolApplication topGpa = createGenericProtocolApplication( topProtocol, person );
+        GenericProtocolApplication topGpa = GenericProtocolApplicationConverter
+                .toFuge( createRandom(), createRandom(), topProtocol, person );
 
         addChildProtocols( allProtocol, allOntology, topProtocol, topGpa, 0, dataIdentifiers, person,
                 inv.getExperiments() );
@@ -286,21 +275,21 @@ public class FugeConverter {
         for ( ExperimentStepHolder childHolder : childrenHolder ) {
             ExperimentStep child = childHolder.getCurrent();
             // create basic protocol
-            GenericProtocol childProtocol = createGenericProtocol( child.getTitle() );
-            // add any parameters
-            for ( ExperimentParameter parameter : child.getParameters() ) {
-                createAndAddGenericParameter( allOntology, childProtocol, parameter );
-            }
+            GenericProtocol childProtocol = GenericProtocolConverter
+                    .toFuge( createRandom(), createRandom(), child.getTitle(), child.getParameters(), allOntology );
             // link the protocol to the collection
             allProtocol.getProtocol().add( factory.createGenericProtocol( childProtocol ) );
 
             // add the protocol as an action on the current parent protocol
-            GenericAction action = createGenericAction( childProtocol, ordinal++ );
+            GenericAction action = GenericActionConverter
+                    .toFuge( createRandom(), createRandom(), childProtocol.getName(), childProtocol.getIdentifier(),
+                            ordinal );
+
             parentProtocol.getAction().add( factory.createGenericAction( action ) );
 
-            // If there is a child step, it will definitely have a child GPA.
-            GenericProtocolApplication childGpa = createGenericProtocolApplication( childProtocol, person );
-            addInputOutputRefs( childGpa, child, dataIdentifiers );
+            // If there is a child step, it should definitely have a child GPA.
+            GenericProtocolApplication childGpa = GenericProtocolApplicationConverter
+                    .toFuge( createRandom(), createRandom(), child, dataIdentifiers, childProtocol, person );
             parentProtocolApplication.getActionApplication().add( createActionApplication( action, childGpa, person ) );
             allProtocol.getProtocolApplication().add( factory.createGenericProtocolApplication( childGpa ) );
 
@@ -311,40 +300,6 @@ public class FugeConverter {
             }
 
         }
-    }
-
-    private void addInputOutputRefs( GenericProtocolApplication childGpa,
-                                     ExperimentStep child,
-                                     HashMap<String, String> dataIdentifiers ) {
-
-        for ( String file : child.getFileNames() ) {
-            OutputData od = new OutputData();
-            od.setDataRef( dataIdentifiers.get( file ) );
-            childGpa.getOutputData().add( od );
-        }
-
-        for ( net.sourceforge.symba.web.shared.Material m : child.getInputMaterials() ) {
-            InputCompleteMaterials icm = new InputCompleteMaterials();
-            icm.setMaterialRef( m.getId() );
-            childGpa.getInputCompleteMaterials().add( icm );
-        }
-
-        for ( net.sourceforge.symba.web.shared.Material m : child.getOutputMaterials() ) {
-            OutputMaterials om = new OutputMaterials();
-            om.setMaterialRef( m.getId() );
-            childGpa.getOutputMaterials().add( om );
-        }
-    }
-
-    private GenericAction createGenericAction( GenericProtocol childProtocol,
-                                               int ordinal ) {
-        GenericAction action = new GenericAction();
-        action.setActionOrdinal( ordinal );
-        action.setProtocolRef( childProtocol.getIdentifier() );
-        action.setName( childProtocol.getName() );
-        action.setIdentifier( createRandom() );
-        action.setEndurantRef( createRandom() );
-        return action;
     }
 
     /**
@@ -365,98 +320,9 @@ public class FugeConverter {
         aa.setName( associatedAction.getName() );
         aa.setActionRef( associatedAction.getIdentifier() );
         aa.setProtocolApplicationRef( childGpa.getIdentifier() );
-        addAuditTrail( aa, person );
+        IdentifiableConverter.addAuditTrail( aa, person );
 
         return aa;
-    }
-
-
-    private void createAndAddGenericParameter( OntologyCollection allOntology,
-                                               GenericProtocol protocol,
-                                               ExperimentParameter parameter ) {
-        // todo extra validation of measurement type?
-        GenericParameter p = new GenericParameter();
-        p.setIdentifier( createRandom() );
-        p.setEndurantRef( createRandom() );
-        p.setName( parameter.getSubject() + " " + InputValidator.SUBJECT_PREDICATE_DIVIDER + " " +
-                parameter.getPredicate() );
-        if ( parameter.getMeasurementType() == InputValidator.MeasurementType.ATOMIC ) {
-            AtomicValue value = new AtomicValue();
-            value.setValue( parameter.getObjectValue() );
-            Unit unit = createUnit( allOntology, parameter.getUnit() );
-            value.setUnit( unit );
-            p.setMeasurement( factory.createAtomicValue( value ) );
-        } else if ( parameter.getMeasurementType() == InputValidator.MeasurementType.BOOLEAN ) {
-            BooleanValue value = new BooleanValue();
-            value.setValue( parameter.getObjectValue().equals( "true" ) );
-            Unit unit = createUnit( allOntology, parameter.getUnit() );
-            value.setUnit( unit );
-            p.setMeasurement( factory.createBooleanValue( value ) );
-        } else if ( parameter.getMeasurementType() == InputValidator.MeasurementType.COMPLEX ) {
-            ComplexValue value = new ComplexValue();
-            Value ontologyValue = new Value();
-            String ontoRef = createOrRetrieveOntologyTerm( allOntology, parameter.getObjectValue() );
-            ontologyValue.setOntologyTermRef( ontoRef );
-            value.setValue( ontologyValue );
-            Unit unit = createUnit( allOntology, parameter.getUnit() );
-            value.setUnit( unit );
-            p.setMeasurement( factory.createComplexValue( value ) );
-        }
-        protocol.getGenericParameter().add( p );
-    }
-
-    private Unit createUnit( OntologyCollection allOntology,
-                             String unitValue ) {
-        String termId = createOrRetrieveOntologyTerm( allOntology, unitValue );
-
-        Unit unit = new Unit();
-        unit.setOntologyTermRef( termId );
-        return unit;
-    }
-
-    private String createOrRetrieveOntologyTerm( OntologyCollection allOntology,
-                                                 String objectValue ) {
-        // find a matching term, if present, within this fuge object's ontology collection. If found,
-        // use that rather than creating a new ontology term
-        for ( JAXBElement<? extends OntologyTerm> jaxbElement : allOntology.getOntologyTerm() ) {
-            OntologyTerm term = jaxbElement.getValue();
-            if ( term instanceof OntologyIndividual && term.getTerm().equals( objectValue ) ) {
-                return term.getIdentifier();
-            }
-        }
-
-        OntologyIndividual term = new OntologyIndividual();
-        term.setIdentifier( createRandom() );
-        term.setEndurantRef( createRandom() );
-        term.setName( objectValue );
-        // todo allow real ontology terms and have their term accession specified
-        // todo change to create a "proper" tuple using OI dataProperty value and datatype for boolean and number
-        // todo change to create a "proper" tuple using OI objectProperty value for words/phrases
-        term.setTerm( objectValue );
-        allOntology.getOntologyTerm().add( factory.createOntologyIndividual( term ) );
-
-        return term.getIdentifier();
-    }
-
-    private GenericProtocol createGenericProtocol( String name ) {
-        GenericProtocol p = new GenericProtocol();
-        p.setIdentifier( createRandom() );
-        p.setEndurantRef( createRandom() );
-        p.setName( name );
-
-        return p;
-    }
-
-    private GenericProtocolApplication createGenericProtocolApplication( GenericProtocol associatedProtocol,
-                                                                         Person person ) {
-        GenericProtocolApplication p = new GenericProtocolApplication();
-        p.setIdentifier( createRandom() );
-        p.setEndurantRef( createRandom() );
-        p.setName( associatedProtocol.getName() );
-        p.setProtocolRef( associatedProtocol.getIdentifier() );
-        addAuditTrail( p, person );
-
-        return p;
     }
 
     private GenericMaterial createGenericMaterial( net.sourceforge.symba.web.shared.Material inputMaterial ) {
@@ -484,7 +350,7 @@ public class FugeConverter {
         d.setEndurantRef( createRandom() );
         d.setName( dataURI ); // just put the URI as the name as well as the location, to have something in the name
         d.setLocation( dataURI );
-        addAuditTrail( d, person );
+        IdentifiableConverter.addAuditTrail( d, person );
 
         return d;
     }
@@ -514,7 +380,7 @@ public class FugeConverter {
         // SyMBA to process their metadata
         provider.setSoftwareRef( symbaSoftware.getIdentifier() );
         // create an audit trail for the provider
-        addAuditTrail( provider, person );
+        IdentifiableConverter.addAuditTrail( provider, person );
         return provider;
     }
 
@@ -542,7 +408,7 @@ public class FugeConverter {
         fugeInv.setIdentifier( uiInvestigation.getId() );
         // todo hypothesis and conclusion
         // create an audit trail associated with the object
-        addAuditTrail( fugeInv, person );
+        IdentifiableConverter.addAuditTrail( fugeInv, person );
         // add to the investigation collection
         allInvestigation.getInvestigation().add( fugeInv );
         return fugeInv;
@@ -576,23 +442,9 @@ public class FugeConverter {
         return person;
     }
 
-    private void addAuditTrail( Identifiable type,
-                                Person person ) {
-        AuditTrail trail = new AuditTrail();
-        Audit item = new Audit();
-        item.setContactRef( person.getIdentifier() );
-        item.setDateItem( new Date() );
-        item.setAction( "CREATE" );
-        trail.getAudit().add( item );
-
-        type.setAuditTrail( trail );
-    }
-
     // todo replace with proper creation method, e.g. the connection to the LSID server
 
     private String createRandom() {
-
         return ( ( Double ) Math.random() ).toString();
-
     }
 }

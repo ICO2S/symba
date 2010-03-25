@@ -19,28 +19,16 @@ import java.util.HashMap;
  */
 public class DatabaseStorageHelper extends StorageHelper {
 
-    ServerDatabaseController controller;
-
-    @Autowired
-    private SymbaDao symbaDao;
-
-    @SuppressWarnings( { "UnusedDeclaration" } )
-    public void setSymbaDao( SymbaDao symbaDao ) {
-        this.symbaDao = symbaDao;
-    }
+    ServerDatabaseController databaseController;
 
     public DatabaseStorageHelper() {
         super();
-        ApplicationContext ctxt = new ClassPathXmlApplicationContext( "spring-config.xml" );
-
-        controller = ctxt.getBean( "serverDatabaseController", ServerDatabaseController.class );
-        
     }
 
     @NotNull
     public HashMap<String, Investigation> fetchAll() {
         // retrieve investigations from the database
-        return controller.convertFugeToGwt();
+        return databaseController.convertFugeToGwt();
     }
 
     @NotNull

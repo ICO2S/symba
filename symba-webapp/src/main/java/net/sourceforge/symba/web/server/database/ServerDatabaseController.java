@@ -6,14 +6,13 @@ import net.sourceforge.fuge.util.generated.Protocol;
 import net.sourceforge.fuge.util.generated.ProtocolCollection;
 import net.sourceforge.fuge.util.generated.ProtocolCollectionProtocolItem;
 import net.sourceforge.symba.database.controller.FugeDatabaseController;
-import net.sourceforge.symba.database.dao.SymbaDao;
 import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
+import net.sourceforge.symba.web.server.conversion.fuge.SymbaInvestigationCreator;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -30,80 +29,19 @@ import java.util.List;
  */
 public class ServerDatabaseController extends FugeDatabaseController {
 
-    @Autowired
-    private SymbaDao symbaDao;
-
-    @SuppressWarnings( { "UnusedDeclaration" } )
-    public void setSymbaDao( SymbaDao symbaDao ) {
-        this.symbaDao = symbaDao;
-        System.err.println( "Symba connector set." );
-    }
-
     @Transactional
     @NotNull
     public HashMap<String, Investigation> convertFugeToGwt() {
 
         HashMap<String, Investigation> investigations = new HashMap<String, Investigation>();
+        SymbaInvestigationCreator creator = new SymbaInvestigationCreator();
 
         List<FuGE> fugeList = symbaDao.fetchAllFuge();
         for ( FuGE fuge : fugeList ) {
-            // discover if the investigation is a template
-            boolean template = fuge.getName().contains( InputValidator.TEMPLATE );
-            // discover if the investigation is considered completed
-            boolean completed = fuge.getName().contains( InputValidator.COMPLETED_INVESTIGATION );
-
-            String investigationId = fuge.getInvestigationCollection().getInvestigation().get(0).getIdentifier();
-            String investigationName = fuge.getInvestigationCollection().getInvestigation().get(0).getName();
-            Investigation investigation = new Investigation( template, completed, investigationId, investigationName,
-                    initProvider( fuge ), new ArrayList<ExperimentStepHolder>() );
-//                    initProvider( fuge ), initExperiments( fuge.getProtocolCollection() ) );
-            investigations.put( investigation.getId(), investigation );
+            final Investigation uiInvestigation = creator.toSymbaInvestigation( fuge );
+            investigations.put( uiInvestigation.getId(), uiInvestigation );
         }
 
         return investigations;
     }
-
-    @NotNull
-    private Contact initProvider( @NotNull FuGE fuge ) {
-        for ( net.sourceforge.fuge.util.generated.AuditCollectionContactItem item : fuge
-                .getAuditCollection().getContactItems() ) {
-            if ( item.getItemValue() instanceof Person ) {
-                Person contact = ( Person ) item.getItemValue();
-                if ( contact.getIdentifier().equals( fuge.getProvider().getContactRole().getContactRef() ) ) {
-                    // match found to real contact value
-                    // todo "Name" is the value in FuGE, so change that within the Symba UI to match
-                    // todo allow people to have organisations.
-                    return new Contact( contact.getIdentifier(), contact.getFirstName(), contact.getLastName(),
-                            contact.getEmail() );
-                }
-            }
-        }
-        return new Contact();
-        // todo create server-side ID
-    }
-
-    private ArrayList<ExperimentStepHolder> initExperiments( ProtocolCollection protocolCollection ) {
-
-        ArrayList<ExperimentStepHolder> stepList = new ArrayList<ExperimentStepHolder>();
-
-        buildExperimentHierarchy( stepList, protocolCollection.getProtocolItems() );
-
-        return stepList;
-    }
-
-    private void buildExperimentHierarchy( ArrayList<ExperimentStepHolder> stepList,
-                                           List<ProtocolCollectionProtocolItem> pItems ) {
-        for ( ProtocolCollectionProtocolItem item : pItems ) {
-            Protocol protocol = item.getItemValue();
-            ExperimentStep step = new ExperimentStep();
-            ExperimentStepHolder holder = new ExperimentStepHolder( step );
-            // todo filenames via the associated protocol applications. Also, store pa identifier/name instead
-            // todo loading parameters from the protocol.
-            step.setDatabaseId( protocol.getIdentifier() );
-            step.setTitle( protocol.getName() );
-            // todo call recursively, adding child protocols
-            stepList.add( holder );
-        }
-    }
-
 }

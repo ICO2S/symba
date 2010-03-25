@@ -8,4 +8,5 @@
 
     <bean id="storageImplementation" class="net.sourceforge.symba.web.server.MemoryStorageHelper"/>
     <!--<bean id="storageImplementation" class="net.sourceforge.symba.web.server.database.DatabaseStorageHelper"/>-->
+    <!--<bean id="storageImplementation" class="net.sourceforge.symba.web.server.database.ExampleDatabaseStorageHelper"/>-->
 </beans>

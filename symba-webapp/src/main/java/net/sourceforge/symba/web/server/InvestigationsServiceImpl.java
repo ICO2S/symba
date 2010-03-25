@@ -3,7 +3,6 @@ package net.sourceforge.symba.web.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import net.sourceforge.symba.web.client.InvestigationsService;
 import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
-import net.sourceforge.symba.web.server.conversion.fuge.FugeConverter;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;

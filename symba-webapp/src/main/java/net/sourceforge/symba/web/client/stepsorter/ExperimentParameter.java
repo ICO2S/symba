@@ -23,7 +23,6 @@ public class ExperimentParameter implements Serializable {
         objectValue = "";
         unit = "";
         measurementType = InputValidator.MeasurementType.UNKNOWN;
-
         fullyWriteable = true;
     }
 
@@ -37,9 +36,7 @@ public class ExperimentParameter implements Serializable {
         this.objectValue = objectValue;
         this.unit = unit;
         this.measurementType = measurementType;
-
         fullyWriteable = true;
-
     }
 
     public String getSubject() {

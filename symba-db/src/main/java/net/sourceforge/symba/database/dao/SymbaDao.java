@@ -1,6 +1,7 @@
 package net.sourceforge.symba.database.dao;
 
 import net.sourceforge.fuge.util.generated.FuGE;
+import net.sourceforge.fuge.util.generated.Person;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -67,4 +68,6 @@ public interface SymbaDao {
      */
     public int countAllFuge();
 
+    @NotNull
+    public List<Person> fetchAllPeople();
 }

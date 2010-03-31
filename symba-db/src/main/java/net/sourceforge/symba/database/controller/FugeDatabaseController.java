@@ -1,9 +1,12 @@
 package net.sourceforge.symba.database.controller;
 
 import net.sourceforge.fuge.util.generated.FuGE;
+import net.sourceforge.fuge.util.generated.Person;
 import net.sourceforge.symba.database.dao.SymbaDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * This class provides the business logic for accessing the SymbaDao and all implementations of that class.
@@ -16,17 +19,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class FugeDatabaseController {
 
     @Autowired
-    private SymbaDao symbaDao;
-
-    @SuppressWarnings( { "UnusedDeclaration" } )
-    public void setSymbaDao( SymbaDao symbaDao ) {
-        this.symbaDao = symbaDao;
-        System.err.println( "Symba connector set." );
-    }
+    protected SymbaDao symbaDao;
 
     @Transactional( readOnly = false )
-    public boolean createOrAddFugeVersion( FuGE fuge ) {
+    public boolean createFuge( FuGE fuge ) {
         return symbaDao.addNewFugeEntry( fuge );
     }
 
+    @Transactional( readOnly = true )
+    public boolean isFugePresent( String fugeIdentifier ) {
+        return symbaDao.isFugePresent( fugeIdentifier );
+    }
+
+    @Transactional( readOnly = true )
+    public List<FuGE> fetchAll() {
+        return symbaDao.fetchAllFuge();
+    }
+
+    @Transactional( readOnly = true )
+    public List<Person> fetchAllPeople() {
+        return symbaDao.fetchAllPeople();
+    }
 }

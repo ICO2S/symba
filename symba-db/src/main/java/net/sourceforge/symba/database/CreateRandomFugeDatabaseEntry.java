@@ -15,7 +15,7 @@ public class CreateRandomFugeDatabaseEntry {
 
         ApplicationContext ctxt = new ClassPathXmlApplicationContext( "spring-config.xml" );
 
-        FugeDatabaseController controller = ctxt.getBean( "fugeDatabaseController", FugeDatabaseController.class );
+        FugeDatabaseController controller = ctxt.getBean( "dbBasics", FugeDatabaseController.class );
 
         String xmlFilename = "/tmp/fugeExample" + ( ( Double ) ( Math.random() * 100 ) ).intValue() + ".xml";
 
@@ -23,7 +23,7 @@ public class CreateRandomFugeDatabaseEntry {
 
         FuGE fuge = RandomXmlGenerator.generate( xmlFilename );
 
-        boolean response = controller.createOrAddFugeVersion( fuge );
+        boolean response = controller.createFuge( fuge );
 
         if ( response ) {
             System.out.println( "Fuge Entry " + fuge.getName() + " added to database" );

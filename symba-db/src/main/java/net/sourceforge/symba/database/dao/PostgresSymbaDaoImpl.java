@@ -1,6 +1,7 @@
 package net.sourceforge.symba.database.dao;
 
 import net.sourceforge.fuge.util.generated.FuGE;
+import net.sourceforge.fuge.util.generated.Person;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.EntityManager;
@@ -40,9 +41,9 @@ public class PostgresSymbaDaoImpl implements SymbaDao {
                 System.err.println( "Persisting a new Fuge object with id " + fugeId );
                 // todo set other default values, as you do elsewhere: audit, endurant, etc.
                 entityManager.persist( fuge );
-//            tick();
             }
-
+            // put this in the cache, as if someone is dealing directly with a particular investigation, they are more
+            // likely to request it again.
             fugeByFugeIdCache.put( fugeId, fuge );
         } else {
             System.out.print( "+" );
@@ -67,6 +68,8 @@ public class PostgresSymbaDaoImpl implements SymbaDao {
             return false;
         }
         entityManager.persist( fuge );
+        // put this in the cache, as if someone is dealing directly with a particular investigation, they are more
+        // likely to request it again.
         fugeByFugeIdCache.put( fuge.getIdentifier(), fuge );
 
         return true;
@@ -74,11 +77,17 @@ public class PostgresSymbaDaoImpl implements SymbaDao {
 
     @NotNull
     public List<FuGE> fetchAllFuge() {
+        // don't put them all in the hash, as this might be a very large number of entries.
         return entityManager.createNamedQuery( "allFuge" ).getResultList();
     }
 
     public int countAllFuge() {
         return ( Integer ) entityManager.createNamedQuery( "countAllFuge" ).getSingleResult();
+    }
+
+    @NotNull
+    public List<Person> fetchAllPeople() {
+        return entityManager.createNamedQuery( "allPeople" ).getResultList();
     }
 
 }

@@ -43,7 +43,7 @@ public class SimpleFugeEntriesDatabaseFiller {
         ApplicationContext ctxt = new ClassPathXmlApplicationContext( "spring-config.xml" );
 
         controller = ctxt
-                .getBean( "fugeDatabaseController", FugeDatabaseController.class );
+                .getBean( "dbBasics", FugeDatabaseController.class );
 
     }
 
@@ -60,7 +60,7 @@ public class SimpleFugeEntriesDatabaseFiller {
 
             FuGE fuge = generateSimpleExample( xmlFilename, schemaFilename, i );
 
-            controller.createOrAddFugeVersion( fuge );
+            controller.createFuge( fuge );
         }
     }
 

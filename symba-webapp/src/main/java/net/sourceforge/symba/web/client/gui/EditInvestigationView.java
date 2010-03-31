@@ -20,18 +20,20 @@ import java.util.List;
 public class EditInvestigationView extends VerticalPanel {
 
     // todo disable all functions on entire page until file uploads are complete
-    // todo refactor this class to make it easier to read
+
+    public static enum ViewType {
+        NEW_INVESTIGATION, EXISTING_INVESTIGATION
+    }
 
     private static enum SaveType {
-        SAVE_ONLY, SET_AS_TEMPLATE, SET_COPY_AS_TEMPLATE
+        SAVE_ONLY, SET_AS_TEMPLATE
     }
 
     private final SymbaController controller;
 
     private final CheckBox completedCheckBox;
+    private final CheckBox setAsTemplateCheckBox;
     private final Button saveButton;
-    private final Button setAsTemplateButton;
-    private final Button saveCopyAsTemplateButton;
     private final Button cancelButton;
     private final Button addSubStepButton;
     private final String addChildImageUrl;
@@ -61,11 +63,14 @@ public class EditInvestigationView extends VerticalPanel {
      *
      * @param symbaController       the symbaController panel for the entire interface
      * @param selectedInvestigation the investigation assigned to this view.
+     * @param viewType              whether the view is of a new or a pre-existing investigation
      */
     public EditInvestigationView( SymbaController symbaController,
-                                  Investigation selectedInvestigation ) {
+                                  Investigation selectedInvestigation,
+                                  ViewType viewType ) {
 
         setWidth( "100%" );
+        setSpacing( 5 );
 
         this.controller = symbaController;
 
@@ -75,36 +80,46 @@ public class EditInvestigationView extends VerticalPanel {
             investigation = new Investigation();
             investigation.createId();
             investigation.getProvider().createId();
+            viewType = ViewType.NEW_INVESTIGATION;
         }
 
         //
-        // prepare all buttons and checkboxes.
+        // prepare all buttons, labels and check boxes.
         //
-        completedCheckBox = new CheckBox(
-                "Check this box if your investigation is completely described. Checking this box " +
-                        "will disallow any further modifications to the investigation." );
+        Label overallTitle = new Label();
+        overallTitle.addStyleName( "header-title" );
+        if ( viewType == ViewType.NEW_INVESTIGATION ) {
+            overallTitle.setText( "Create New Investigation" );
+        } else {
+            overallTitle.setText( "View Existing Investigation" );
+        }
+        completedCheckBox = new CheckBox( "Freeze" );
+        // todo add help message to this
+        // "Check this box if your investigation is completely described. Checking this box will disallow any
+        // further modifications to the investigation."
         completedCheckBox.addStyleName( "note" );
         if ( this.investigation.isCompleted() ) {
             completedCheckBox.setValue( true );
             completedCheckBox.setEnabled( false ); // todo allow them to un-set the completed flag
         }
+        setAsTemplateCheckBox = new CheckBox( "Set As Template" );
+        setAsTemplateCheckBox.addStyleName( "note" );
+        if ( this.investigation.isTemplate() ) {
+            setAsTemplateCheckBox.setValue( true );
+        }
         saveButton = new Button( "Save and Finish" );
-        setAsTemplateButton = new Button( "Set As Template" );
-        saveCopyAsTemplateButton = new Button( "Save a Copy As Template" );
         cancelButton = new Button( "Cancel" );
         addSubStepButton = new Button( "Add Top-Level Step" );
         if ( investigation.isReadOnly() ) {
-            // disable buttons that allow modifications
+            // disable buttons and boxes that allow modifications
             saveButton.setEnabled( false );
-            setAsTemplateButton.setEnabled( false );
-            saveCopyAsTemplateButton.setEnabled( false );
+            setAsTemplateCheckBox.setEnabled( false );
             addSubStepButton.setEnabled( false );
         } else {
             // we need the "else" here if a template was previously shown, and therefore buttons were
             // previously disabled. We need to explicitly enable them.
             saveButton.setEnabled( true );
-            setAsTemplateButton.setEnabled( true );
-            saveCopyAsTemplateButton.setEnabled( true );
+            setAsTemplateCheckBox.setEnabled( true );
             addSubStepButton.setEnabled( true );
         }
         cancelButton.setEnabled( true );
@@ -146,8 +161,6 @@ public class EditInvestigationView extends VerticalPanel {
         menuPanel.setSpacing( 0 );
         menuPanel.setHorizontalAlignment( HorizontalPanel.ALIGN_LEFT );
         menuPanel.add( saveButton );
-        menuPanel.add( setAsTemplateButton );
-        menuPanel.add( saveCopyAsTemplateButton );
         menuPanel.add( cancelButton );
 
         HorizontalPanel addStepPanel = new HorizontalPanel();
@@ -169,14 +182,14 @@ public class EditInvestigationView extends VerticalPanel {
         //
         // Put everything together in one view.
         //
-        if ( !investigation.isTemplate() ) {
-            add( completedCheckBox );
-        }
+        add( overallTitle );
         add( menuPanel );
         add( investigationDetailsPanel );
         add( protocolWrapper );
-
-
+        if ( !investigation.isTemplate() ) {
+            add( completedCheckBox );
+        }
+        add( setAsTemplateCheckBox );
     }
 
     // todo
@@ -192,55 +205,38 @@ public class EditInvestigationView extends VerticalPanel {
         completedCheckBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
             public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
                 investigation.setCompleted( completedCheckBox.getValue() );
+                if ( completedCheckBox.getValue() ) {
+                    // if the completed box is checked, this cannot also be made into a template.
+                    // (The user must make a copy of the investigation first, which happens elsewhere.)
+                    investigation.setTemplate( false );
+                    setAsTemplateCheckBox.setValue( false );
+                    setAsTemplateCheckBox.setEnabled( false );
+                } else {
+                    // if the completed box is switched to false, then we can re-enable the template box
+                    setAsTemplateCheckBox.setEnabled( true );
+                }
+            }
+        } );
+
+        setAsTemplateCheckBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+            public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
+                investigation.setTemplate( setAsTemplateCheckBox.getValue() );
+                // if the template box is checked, this cannot also be marked as completed, as it makes no
+                // logical sense.
+                if ( setAsTemplateCheckBox.getValue() ) {
+                    investigation.setCompleted( false );
+                    completedCheckBox.setValue( false );
+                    completedCheckBox.setEnabled( false );
+                } else {
+                    // if the template box is switched to false, then we can re-enable the completed box
+                    completedCheckBox.setEnabled( true );
+                }
             }
         } );
 
         saveButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 doSave();
-            }
-        } );
-
-        setAsTemplateButton.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
-                // remove any files associated with this investigation, as templates don't have files.
-                // however, before doing this, check if the user really wants to make this a template, with all of
-                // its consequences.
-                // todo allow read-only investigations to be removed or modified by their owners only.
-                boolean response = Window.confirm(
-                        "Setting this Investigation as a template will first save its current state, and then remove " +
-                                "any links to files you may have " +
-                                "made. It will set this Investigation as read-only. The purpose of a template is for " +
-                                "it to be copied by you and other users, thus sharing common aspects of " +
-                                "Investigations. If, instead, you want a copy of this Investigation to be made a " +
-                                "template, cancel this request and choose \"Save A Copy As Template\". Are you sure " +
-                                "you wish to continue?" );
-                if ( response ) {
-                    doSave( SaveType.SET_AS_TEMPLATE );
-                } else {
-                    // no need to keep any file statuses at this point
-                    controller.showEastWidget( "<p>Saving as template cancelled.</p>" );
-                }
-            }
-        } );
-
-        saveCopyAsTemplateButton.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
-                // remove any files associated with this investigation, as templates don't have files.
-                // however, before doing this, check if the user really wants to make a copy of this a template
-                // todo allow read-only investigations to be removed or modified by their owners only.
-                boolean response = Window.confirm(
-                        "This will first save this Investigation, then make a copy of it, storing the copy as a" +
-                                "template. The purpose of a template is for " +
-                                "it to be copied by you and other users, thus sharing common aspects of " +
-                                "Investigations. Are you sure you wish to continue?" );
-                if ( response ) {
-                    doSave( SaveType.SET_COPY_AS_TEMPLATE );
-                } else {
-                    // no need to keep any file statuses at this point
-                    controller.showEastWidget( "<p>Saving a copy as a template cancelled.</p>" );
-                }
-
             }
         } );
 
@@ -277,7 +273,7 @@ public class EditInvestigationView extends VerticalPanel {
 
                     public void onSuccess( ArrayList<InvestigationDetail> results ) {
                         controller.setStoredInvestigationDetails( results );
-                        // no need to keep any file statuses at this point
+                        // no need to keep any directions at this point
                         controller.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>",
                                 "" );
                         controller.setCenterWidgetAsListExperiments();
@@ -429,7 +425,26 @@ public class EditInvestigationView extends VerticalPanel {
     }
 
     private void doSave() {
-        doSave( SaveType.SAVE_ONLY );
+
+        if ( setAsTemplateCheckBox.getValue() ) {
+            // remove any files associated with this investigation, as templates don't have files.
+            // however, before doing this, check if the user really wants to make this a template, with all of
+            // its consequences.
+            // todo allow read-only investigations to be removed or modified by their owners only.
+            boolean response = Window.confirm(
+                    "Setting this Investigation as a template will first save its current state, REMOVE " +
+                            "any links to files, and mark it as read-only. A template can then be copied " +
+                            "by you and other users, thus sharing common aspects of " +
+                            "Investigations. Are you sure you wish to continue?" );
+            if ( response ) {
+                doSave( SaveType.SET_AS_TEMPLATE );
+            } else {
+                // no need to keep any directions at this point
+                controller.showEastWidget( "<p>Saving as template cancelled.</p>" );
+            }
+        } else {
+            doSave( SaveType.SAVE_ONLY );
+        }
     }
 
     private void doSave( final SaveType saveType ) {
@@ -447,6 +462,7 @@ public class EditInvestigationView extends VerticalPanel {
 
         // the experiment steps were saved as we went along, so nothing extra to do here.
         // the "completed" flag was saved as we went along, so nothing extra to do here.
+        // the "template" flag was saved as we went along, so nothing extra to do here.
 
         // todo ensure Identifier has changed before this step, if necessary
         controller.getRpcService()
@@ -458,21 +474,7 @@ public class EditInvestigationView extends VerticalPanel {
                         controller.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
                         controller.setCenterWidgetAsListExperiments();
 
-                        if ( saveType == SaveType.SET_COPY_AS_TEMPLATE ) {
-                            controller.getRpcService().copyInvestigation( id,
-                                    new AsyncCallback<InvestigationDetail>() {
-                                        public void onSuccess( InvestigationDetail result ) {
-                                            setAsTemplate( result.getId(), result.getInvestigationTitle() );
-                                        }
-
-                                        public void onFailure( Throwable caught ) {
-                                            Window.alert(
-                                                    "Error copying Investigation " + title + ": no template created." +
-                                                            Arrays.toString( caught.getStackTrace() ) );
-                                        }
-                                    } );
-
-                        } else if ( saveType == SaveType.SET_AS_TEMPLATE ) {
+                        if ( saveType == SaveType.SET_AS_TEMPLATE ) {
                             setAsTemplate( id, title );
                         }
                     }

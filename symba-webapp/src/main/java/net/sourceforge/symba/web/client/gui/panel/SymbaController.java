@@ -88,7 +88,8 @@ public class SymbaController extends DockPanel {
         Investigation investigation = new Investigation();
         investigation.createId();
         investigation.getProvider().createId();
-        EditInvestigationView view = new EditInvestigationView( this, investigation );
+        EditInvestigationView view = new EditInvestigationView( this, investigation,
+                EditInvestigationView.ViewType.NEW_INVESTIGATION );
         setCenterWidget( view );
         showEastWidget( "", BASIC_EDITING_HELP );
     }
@@ -100,7 +101,8 @@ public class SymbaController extends DockPanel {
             }
 
             public void onSuccess( Investigation result ) {
-                EditInvestigationView view = new EditInvestigationView( SymbaController.this, result );
+                EditInvestigationView view = new EditInvestigationView( SymbaController.this, result,
+                        EditInvestigationView.ViewType.EXISTING_INVESTIGATION );
                 setCenterWidget( view );
                 showEastWidget( "", BASIC_EDITING_HELP );
             }

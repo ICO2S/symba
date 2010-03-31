@@ -17,8 +17,8 @@ public class CancelAllClickHandler implements ClickHandler {
 
     public void onClick( ClickEvent event ) {
         // todo add "did not modify" statement at top of new page
-        // return to home page, removing the help panel from view
         controller.setCenterWidget( replacement );
-        controller.hideEastWidget();
+        controller.showEastWidget("", "");
+        controller.showSymbaStatus();
     }
 }

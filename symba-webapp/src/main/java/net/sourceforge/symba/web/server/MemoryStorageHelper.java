@@ -1,12 +1,13 @@
 package net.sourceforge.symba.web.server;
 
-import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
+import net.sourceforge.symba.web.shared.ExperimentStepHolder;
 import net.sourceforge.symba.web.server.conversion.fuge.FugeCreator;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 import net.sourceforge.symba.web.shared.Material;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,22 +22,39 @@ public class MemoryStorageHelper extends StorageHelper {
     private static final Contact ZACH = new Contact( "9561046", "Zach", "Peters", "zach.peters@example.com" );
     private static final Material CULTURE = new Material( "ABC23456", "Cell Culture 17", "An example cell culture." );
 
+    @Override
+    public void setup( @NotNull ApplicationContext context ) {
+        // no need to do anything for this method for the MemoryStorageHelper
+    }
 
     /**
-     * Create just one example in-memory investigation to start out with in SyMBA.
+     * Resets the in-memory investigations to just one example to start out with in SyMBA, clearing any
+     * currently-existing investigations.
      *
+     * @param addExampleIfEmpty If there are no entries at all in the database, if this value is true then an example
+     *                          entry will be added.
      * @return the list of investigations to send to the client
      */
     @NotNull
-    public HashMap<String, Investigation> fetchAll() {
-        Investigation investigation = new Investigation( false, false, "12345", "My Example Investigation", ALICE,
-                new ArrayList<ExperimentStepHolder>() );
-        getInvestigations().put( investigation.getId(), investigation );
+    public HashMap<String, Investigation> fetchAll( boolean addExampleIfEmpty ) {
+        getInvestigations().clear();
+        if ( getInvestigations().isEmpty() && addExampleIfEmpty ) {
+            Investigation investigation = new Investigation( false, false, "12345", "My Example Investigation", ALICE,
+                    new ArrayList<ExperimentStepHolder>() );
+            add( investigation );
+        }
         return getInvestigations();
     }
 
+    /**
+     * Resets the in-memory Contacts to initially populate the SyMBA UI. This method also clears
+     * any currently-existing Contacts.
+     *
+     * @return the list of Contacts
+     */
     @NotNull
-    public HashMap<String, Contact> fetchAllContacts() {
+    public HashMap<String, Contact> fetchAllPeople() {
+        getContacts().clear();
         getContacts().put( ALICE.getId(), ALICE );
         getContacts().put( BOB.getId(), BOB );
         getContacts().put( ZACH.getId(), ZACH );
@@ -65,7 +83,9 @@ public class MemoryStorageHelper extends StorageHelper {
     @NotNull
     public Investigation add( @NotNull Investigation investigation ) {
 
-        investigation.setId( String.valueOf( getInvestigations().size() ) );
+        if ( investigation.getId().trim().equals( "" ) ) {
+            investigation.setId( String.valueOf( getInvestigations().size() ) );
+        }
         getInvestigations().put( investigation.getId(), investigation );
         return investigation;
 

@@ -12,11 +12,12 @@ import net.sourceforge.symba.web.shared.InvestigationDetail;
 import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class SymbaController extends DockPanel {
 
-    private static final String DEFAULT_EAST_WIDTH = "20em";
+    private static final String DEFAULT_EAST_WIDTH = "33%";
     private final InvestigationsServiceAsync rpcService;
 
     // the type of widget in the non-center panels will not change, though they may not always be visible.
@@ -34,6 +35,9 @@ public class SymbaController extends DockPanel {
 
     // The type of the Widget in the center panel might change
     private Widget centerWidget;
+    private static final String BASIC_EDITING_HELP = "<p>Upload files by clicking on the experimental step you wish" +
+            " to associate with those files. You can upload multiple files in sequence by clicking on the file " +
+            "\"Browse\" button multiple times.</p>";
 
     /**
      * Creates an dock panel with the default layout for the SyMBA pages.
@@ -54,24 +58,17 @@ public class SymbaController extends DockPanel {
         SymbaFooter southWidget = new SymbaFooter();
 
         eastWidget = new HelpPanel( this );
-        eastWidget.getFileStatus().addStyleName( "fieldset flash" );
         eastSet = false;
 
         add( northWidget, DockPanel.NORTH );
         add( southWidget, DockPanel.SOUTH );
         add( centerWidget, DockPanel.CENTER );
+        centerWidget.addStyleName( "center-style" );
+        showEastWidget();
 
         updateStoredContacts();
         updateStoredMaterials();
         updateStoredInvestigationDetails();
-    }
-
-    public Widget getEastWidget() {
-        return eastWidget;
-    }
-
-    public Widget getCenterWidget() {
-        return centerWidget;
     }
 
     /**
@@ -93,8 +90,7 @@ public class SymbaController extends DockPanel {
         investigation.getProvider().createId();
         EditInvestigationView view = new EditInvestigationView( this, investigation );
         setCenterWidget( view );
-        showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
-                "Multiple files will be uploaded in sequence.</em>" );
+        showEastWidget( "", BASIC_EDITING_HELP );
     }
 
     public void setCenterWidgetAsEditExperiment( final String id ) {
@@ -106,10 +102,13 @@ public class SymbaController extends DockPanel {
             public void onSuccess( Investigation result ) {
                 EditInvestigationView view = new EditInvestigationView( SymbaController.this, result );
                 setCenterWidget( view );
-                showEastWidget( "", "<em>You can only upload files once you have selected an experimental step." +
-                        "Multiple files will be uploaded in sequence.</em>" );
+                showEastWidget( "", BASIC_EDITING_HELP );
             }
         } );
+    }
+
+    public void showSymbaStatus() {
+        eastWidget.refreshApplicationStatus();
     }
 
     public void hideEastWidget() {
@@ -127,8 +126,20 @@ public class SymbaController extends DockPanel {
         if ( !eastSet ) {
             add( eastWidget, DockPanel.EAST );
             // set default east panel width
-            eastWidget.setWidth( DEFAULT_EAST_WIDTH );
-            eastSet = true;}
+            setCellWidth( eastWidget, DEFAULT_EAST_WIDTH );
+            eastWidget.addStyleName( "east-style" );
+            eastSet = true;
+        }
+    }
+
+    /**
+     * Only changes the setUserStatus() value in the east widget, leaving the directions unchanged.
+     *
+     * @param htmlStatus the html status to display in the East panel.
+     */
+    public void showEastWidget( String htmlStatus ) {
+        eastWidget.setUserStatus( htmlStatus );
+        showEastWidget();
     }
 
     /**
@@ -136,27 +147,24 @@ public class SymbaController extends DockPanel {
      * Then, if the east widget is not yet visible, make it visible.
      * <p/>
      * Please note that this is nothing more than a convenience method for the simple parts of the east
-     * widget. The fileStatus part of the current east widget is a flex table, and therefore, this method
-     * ignores that part. Access the FlexTable's methods directly via getEastWidget().getFileStatus()
+     * widget, but not for all parts of that widget.
      *
      * @param htmlStatus     the html status to display in the East panel.
      * @param htmlDirections the directions for symba at this point in time.
      */
     public void showEastWidget( String htmlStatus,
                                 String htmlDirections ) {
-        eastWidget.setStatus( htmlStatus );
-        eastWidget.setDirections( htmlDirections );
+        // as each set method shows its panel, whichever set method is called last will have its panel opened.
+        // Therefore, if either string is empty, set that one first. By default, display the directions last so that
+        // they show.
+        if ( htmlDirections.length() == 0 ) {
+            eastWidget.setDirections( htmlDirections );
+            eastWidget.setUserStatus( htmlStatus );
+        } else {
+            eastWidget.setUserStatus( htmlStatus );
+            eastWidget.setDirections( htmlDirections );
+        }
         showEastWidget();
-    }
-
-    /**
-     * This helper method allows you to access the current directions without having to know what class type
-     * is sitting in the East panel.
-     *
-     * @return the current directions (may be an empty string).
-     */
-    public String getEastWidgetDirections() {
-        return eastWidget.getDirections();
     }
 
     public InvestigationsServiceAsync getRpcService() {
@@ -218,10 +226,12 @@ public class SymbaController extends DockPanel {
         rpcService.getInvestigationDetails( new AsyncCallback<ArrayList<InvestigationDetail>>() {
             public void onSuccess( ArrayList<InvestigationDetail> result ) {
                 storedInvestigationDetails = result;
+                eastWidget.refreshApplicationStatus();
             }
 
             public void onFailure( Throwable caught ) {
-                Window.alert( "Error fetching investigation list: " + caught.getMessage() );
+                Window.alert( "Error fetching investigation list: " + caught.getMessage() +
+                        Arrays.toString( caught.getStackTrace() ) );
             }
         } );
 
@@ -238,5 +248,4 @@ public class SymbaController extends DockPanel {
     public void setStoredInvestigationDetails( ArrayList<InvestigationDetail> details ) {
         storedInvestigationDetails = new ArrayList<InvestigationDetail>( details );
     }
-
 }

@@ -2,7 +2,6 @@ package net.sourceforge.symba.web.client.gui.panel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.*;
-import net.sourceforge.symba.web.client.HistoryToken;
 
 /**
  * Class that represents the footer panel.
@@ -17,17 +16,8 @@ public class SymbaFooter extends VerticalPanel {
     private static final String CISBAN_LOGO = "/images/logo-small.jpg";
     private static final String CISBAN_TEXT = "CISBAN homepage";
     private static final String CISBAN_URL = "http://www.cisban.ac.uk";
+    private static final String CONTACT_EMAIL = "<a href='mailto:helpdesk@cisban.ac.uk'>Contact us</a>";
 
-    private static final String WHOAMI_TEXT = "Logins are currently disabled.";
-//    private static final String WHOAMI_TEXT = "You are currently logged in as ";
-
-    /* Help constants */
-    private static final String HELP_LINK = "View help";
-    private static final String HELP_TEXT = "If you have any comments or questions please "
-            + "<a href='mailto:helpdesk@cisban.ac.uk'>contact us</a>";
-
-    /* This label shows who is currently logged in */
-    private final Label whoAmI_;
 
     /**
      * Constructor for SymbaFooter class. This creates a footer that assumes the user hasn't logged in yet.
@@ -46,22 +36,18 @@ public class SymbaFooter extends VerticalPanel {
             prefix = baseApp;
         }
 
-        whoAmI_ = new Label( WHOAMI_TEXT );
-        Label help = new Label( HELP_LINK );
-//        final Hyperlink help = new Hyperlink( HELP_LINK, HistoryToken.HELP.toString() ); // todo help page
         final HTML contact = new HTML();
         final Anchor cisbanLogo = new Anchor( "<img border=\"0\" src=\"" + prefix + CISBAN_LOGO + "\">", true,
                 CISBAN_URL );
         cisbanLogo.setTitle( CISBAN_TEXT );
-        contact.setHTML( HELP_TEXT );
+        cisbanLogo.setHeight( "70" );
+        contact.setHTML( CONTACT_EMAIL );
 
         addStyleName( "footer-style" );
 
         // It only applies to widgets added after this property is set.
-        setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
+        setHorizontalAlignment( HasHorizontalAlignment.ALIGN_RIGHT );
 
-        add( help );
-        add( whoAmI_ );
         add( contact );
         add( cisbanLogo );
 

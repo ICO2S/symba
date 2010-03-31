@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import net.sourceforge.symba.web.client.gui.CollapsibleTable;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
+import net.sourceforge.symba.web.shared.ExperimentParameter;
 import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;

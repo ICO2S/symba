@@ -1,6 +1,5 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
-import net.sourceforge.fuge.util.generated.*;
 import net.sourceforge.fuge.util.generated.DataCollection;
 import net.sourceforge.fuge.util.generated.ExternalData;
 import net.sourceforge.fuge.util.generated.GenericMaterial;
@@ -11,7 +10,7 @@ import net.sourceforge.fuge.util.generated.MaterialCollection;
 import net.sourceforge.fuge.util.generated.OutputData;
 import net.sourceforge.fuge.util.generated.OutputMaterials;
 import net.sourceforge.fuge.util.generated.Person;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
+import net.sourceforge.symba.web.shared.ExperimentStep;
 import net.sourceforge.symba.web.shared.Material;
 
 import javax.xml.bind.JAXBElement;
@@ -37,7 +36,7 @@ public class GenericProtocolApplicationConverter {
                                                      GenericProtocol associatedProtocol,
                                                      Person person ) {
         GenericProtocolApplication gpa = new GenericProtocolApplication();
-        IdentifiableConverter.toFuge( gpa, identifier, endurant, associatedProtocol.getName() );
+        IdentifiableConverter.toFuge( gpa, associatedProtocol.getName(), identifier, endurant );
         gpa.setProtocolRef( associatedProtocol.getIdentifier() );
         IdentifiableConverter.addAuditTrail( gpa, person );
         return gpa;

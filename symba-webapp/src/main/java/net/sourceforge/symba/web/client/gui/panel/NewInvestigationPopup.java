@@ -27,9 +27,7 @@ public class NewInvestigationPopup extends PopupPanel {
     private class ChoicesPanel extends VerticalPanel {
         public ChoicesPanel( final SymbaController symba,
                              NewInvestigationPopup parentPanel ) {
-            add( new HTML( "<h2>Would you like to...</h2>" ) );
-
-            Label label = new Label( "...create a brand-new Investigation?" );
+            Label label = new Label( "Add New" );
             label.addStyleName( "clickable-text" );
             label.addStyleName( "pointer-select" );
             label.addClickHandler( new ClickHandler() {
@@ -42,18 +40,14 @@ public class NewInvestigationPopup extends PopupPanel {
 
             add( label );
 
-            add( new Label( "...make a copy of an existing Investigation?" ) );
-            HorizontalPanel existing = new HorizontalPanel();
             SummariseInvestigationView view = new SummariseInvestigationView( symba,
                     SummariseInvestigationView.ViewType.COPY_CHOSEN, parentPanel );
             view.setInvestigationDetails( symba.getStoredInvestigationDetails() );
-            existing.add( view );
 
-            add( existing );
+            add( view );
 
             Label moreInfo = new Label(
-                    "Click here if you wish to view more information about existing Investigations" +
-                            " without making a new Investigation." );
+                    "View Investigations" );
             moreInfo.addStyleName( "clickable-text" );
             moreInfo.addClickHandler( new ListExperimentsClickHandler( symba, parentPanel ) );
 

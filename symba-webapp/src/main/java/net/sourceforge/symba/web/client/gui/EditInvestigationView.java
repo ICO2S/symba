@@ -9,7 +9,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.gui.panel.*;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
+import net.sourceforge.symba.web.shared.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 
@@ -219,8 +219,7 @@ public class EditInvestigationView extends VerticalPanel {
                     doSave( SaveType.SET_AS_TEMPLATE );
                 } else {
                     // no need to keep any file statuses at this point
-                    controller.showEastWidget(
-                            "<p>Saving as template cancelled.</p>", controller.getEastWidgetDirections() );
+                    controller.showEastWidget( "<p>Saving as template cancelled.</p>" );
                 }
             }
         } );
@@ -239,8 +238,7 @@ public class EditInvestigationView extends VerticalPanel {
                     doSave( SaveType.SET_COPY_AS_TEMPLATE );
                 } else {
                     // no need to keep any file statuses at this point
-                    controller.showEastWidget( "<p>Saving a copy as a template cancelled.</p>",
-                            controller.getEastWidgetDirections() );
+                    controller.showEastWidget( "<p>Saving a copy as a template cancelled.</p>" );
                 }
 
             }
@@ -256,14 +254,11 @@ public class EditInvestigationView extends VerticalPanel {
             public void onClick( ClickEvent event ) {
                 if ( investigation.getInvestigationTitle().length() > 0 ) {
                     // no need to keep any file statuses at this point
-                    controller.showEastWidget(
-                            "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
-                                    "</strong> cancelled.</p>", controller.getEastWidgetDirections() );
+                    controller.showEastWidget( "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
+                            "</strong> cancelled.</p>" );
                 } else {
                     // no need to keep any file statuses at this point
-                    controller.showEastWidget(
-                            "<p>Creation of new investigation cancelled.</p>", controller.getEastWidgetDirections()
-                    );
+                    controller.showEastWidget( "<p>Creation of new investigation cancelled.</p>", "" );
                 }
                 controller.setCenterWidgetAsListExperiments();
             }
@@ -508,7 +503,8 @@ public class EditInvestigationView extends VerticalPanel {
         }
 
         public void onClick( ClickEvent clickEvent ) {
-            EditableStepView view = new EditableStepView( controller, ( ReadableStepView ) stepsTable.getWidget( row, column ), stepsTable,
+            EditableStepView view = new EditableStepView( controller,
+                    ( ReadableStepView ) stepsTable.getWidget( row, column ), stepsTable,
                     investigation, row, column, this, completed );
             view.getStepTitle().setFocus( true );
 

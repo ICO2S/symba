@@ -11,9 +11,9 @@ import javax.xml.bind.JAXBElement;
 public class OntologyIndividualConverter {
 
     public static String toFuge( String identifier,
-                                          String endurant,
-                                          String name,
-                                          OntologyCollection allOntology) {
+                                 String endurant,
+                                 String name,
+                                 OntologyCollection allOntology ) {
         final ObjectFactory factory = new ObjectFactory();
 
         // find a matching term, if present, within this fuge object's ontology collection. If found,
@@ -26,7 +26,7 @@ public class OntologyIndividualConverter {
         }
 
         OntologyIndividual term = new OntologyIndividual();
-        term = (OntologyIndividual) IdentifiableConverter.toFuge( term, identifier, endurant, name );
+        term = ( OntologyIndividual ) IdentifiableConverter.toFuge( term, name, identifier, endurant );
 
         // todo allow real ontology terms and have their term accession specified
         // todo change to create a "proper" tuple using OI dataProperty value and datatype for boolean and number

@@ -2,7 +2,7 @@ package net.sourceforge.symba.web.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import net.sourceforge.symba.web.client.InvestigationsService;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
+import net.sourceforge.symba.web.shared.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
@@ -23,14 +23,21 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         // TODO: Create a real UID on-the-fly for each contact
 
         // retrieve investigations from the database
-        ApplicationContext ctxt = new ClassPathXmlApplicationContext( "spring-config-web.xml" );
+        ApplicationContext context = new ClassPathXmlApplicationContext( "spring-config-web.xml" );
 
         // the spring config tells us which kind of helper to use.
-        helper = ctxt.getBean( "storageImplementation", StorageHelper.class );
+        helper = context.getBean( "storageImplementation", StorageHelper.class );
+
+        if ( !( helper instanceof MemoryStorageHelper ) ) {
+            // we need the extra database information if it is not a MemoryStorageHelper. This is a bit of a hack
+            // as the spring/jpa stuff doesn't work right in development mode.
+            context = new ClassPathXmlApplicationContext( "spring-config.xml", "spring-config-web.xml" );
+        }
 
         // todo make the fetching smarter as might not be great retrieving the entire database here!
-        helper.fetchAll();
-        helper.fetchAllContacts();
+        helper.setup( context );
+        helper.fetchAll( true );
+        helper.fetchAllPeople();
         helper.fetchAllMaterials();
     }
 

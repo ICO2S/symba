@@ -4,10 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.*;
-import net.sourceforge.symba.web.client.gui.handlers.AddExperimentClickHandler;
-import net.sourceforge.symba.web.client.gui.handlers.CancelAllClickHandler;
-import net.sourceforge.symba.web.client.gui.handlers.DownloadClickHandler;
-import net.sourceforge.symba.web.client.gui.handlers.ListExperimentsClickHandler;
+import net.sourceforge.symba.web.client.gui.handlers.*;
 
 public class SymbaHeader extends HorizontalPanel {
 
@@ -15,11 +12,12 @@ public class SymbaHeader extends HorizontalPanel {
     private static final String ADD_EXPERIMENT = "/images/plus.png";
     private static final String LIST_EXPERIMENT = "/images/article.png";
     private static final String DOWNLOAD_FILE = "/images/arrow_down.png";
+    private static final String GET_HELP = "/images/help.png";
 
     public SymbaHeader( SymbaController controller,
                         HomePanel home ) {
 
-        addStyleName( "header-style" );
+        setStyleName( "header-style" );
         setSpacing( 10 );
 
         String moduleBase = GWT.getModuleBaseURL();
@@ -91,6 +89,20 @@ public class SymbaHeader extends HorizontalPanel {
             }
         } );
         rightSide.add( downloadFileImage );
+
+        final Image helpFileImage = new Image( prefix + GET_HELP );
+        helpFileImage.setTitle( "Help" );
+        helpFileImage.addStyleName( "header-images" );
+        helpFileImage.addClickHandler( new HelpClickHandler( controller ) );
+        helpFileImage.addMouseOverHandler( new MouseOverHandler() {
+            public void onMouseOver( MouseOverEvent event ) {
+                helpFileImage.addStyleName( "pointer-select" );
+            }
+        } );
+        rightSide.add( helpFileImage );
+
+        LoginStatusPanel login = new LoginStatusPanel();
+        rightSide.add( login );
 
         add( rightSide );
 

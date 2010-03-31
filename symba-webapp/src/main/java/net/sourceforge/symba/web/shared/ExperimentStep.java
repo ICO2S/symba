@@ -1,7 +1,6 @@
-package net.sourceforge.symba.web.client.stepsorter;
+package net.sourceforge.symba.web.shared;
 
 import com.google.gwt.user.client.Random;
-import net.sourceforge.symba.web.shared.Material;
 
 import java.io.Serializable;
 import java.util.ArrayList;

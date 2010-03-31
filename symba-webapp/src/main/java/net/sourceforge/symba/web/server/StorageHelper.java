@@ -5,6 +5,7 @@ import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 import net.sourceforge.symba.web.shared.Material;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,8 @@ public abstract class StorageHelper {
         materials = new HashMap<String, Material>();
     }
 
+    public abstract void setup( @NotNull ApplicationContext context );
+
     @NotNull
     public HashMap<String, Investigation> getInvestigations() {
         return investigations;
@@ -48,13 +51,15 @@ public abstract class StorageHelper {
     /**
      * Get a list of the current investigations which are viewable and editable
      *
+     * @param addExampleIfEmpty If there are no entries at all in the database, if this value is true then an example
+     *                          entry should be added.
      * @return the list of current investigations
      */
     @NotNull
-    public abstract HashMap<String, Investigation> fetchAll();
+    public abstract HashMap<String, Investigation> fetchAll( boolean addExampleIfEmpty );
 
     @NotNull
-    public abstract HashMap<String, Contact> fetchAllContacts();
+    public abstract HashMap<String, Contact> fetchAllPeople();
 
     @NotNull
     public abstract HashMap<String, Material> fetchAllMaterials();

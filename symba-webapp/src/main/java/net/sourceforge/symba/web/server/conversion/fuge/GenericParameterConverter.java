@@ -1,6 +1,5 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
-import net.sourceforge.fuge.util.generated.*;
 import net.sourceforge.fuge.util.generated.AtomicValue;
 import net.sourceforge.fuge.util.generated.BooleanValue;
 import net.sourceforge.fuge.util.generated.ComplexValue;
@@ -11,7 +10,7 @@ import net.sourceforge.fuge.util.generated.OntologyIndividual;
 import net.sourceforge.fuge.util.generated.Unit;
 import net.sourceforge.fuge.util.generated.Value;
 import net.sourceforge.symba.web.client.gui.InputValidator;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
+import net.sourceforge.symba.web.shared.ExperimentParameter;
 
 import javax.xml.bind.JAXBElement;
 
@@ -39,7 +38,7 @@ public class GenericParameterConverter {
         GenericParameter parameter = new GenericParameter();
         String name = uiParameter.getSubject() + " " + InputValidator.SUBJECT_PREDICATE_DIVIDER + " " +
                 uiParameter.getPredicate();
-        parameter = ( GenericParameter ) IdentifiableConverter.toFuge( parameter, identifier, endurant, name );
+        parameter = ( GenericParameter ) IdentifiableConverter.toFuge( parameter, name, identifier, endurant );
 
         if ( uiParameter.getMeasurementType() == InputValidator.MeasurementType.ATOMIC ) {
             AtomicValue value = new AtomicValue();

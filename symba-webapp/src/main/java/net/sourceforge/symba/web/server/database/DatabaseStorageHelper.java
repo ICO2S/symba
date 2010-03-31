@@ -1,15 +1,13 @@
 package net.sourceforge.symba.web.server.database;
 
-import net.sourceforge.symba.database.dao.SymbaDao;
+import net.sourceforge.symba.database.controller.FugeDatabaseController;
 import net.sourceforge.symba.web.server.StorageHelper;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
 import net.sourceforge.symba.web.shared.Material;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,21 +17,45 @@ import java.util.HashMap;
  */
 public class DatabaseStorageHelper extends StorageHelper {
 
-    ServerDatabaseController databaseController;
+    Interface2DatabaseController interface2db;
+    FugeDatabaseController dbBasics;
 
-    public DatabaseStorageHelper() {
-        super();
+    @Override
+    public void setup( @NotNull ApplicationContext context ) {
+        interface2db = context
+                .getBean( "interface2db", Interface2DatabaseController.class );
+        dbBasics = context.getBean( "dbBasics", FugeDatabaseController.class );
+        System.err.println( "successfully created interface2db and dbBasics" );
+
     }
 
+    /**
+     * Retrieve all investigations from the database to initially populate the SyMBA UI. This method also clears
+     * any currently-existing investigations prior to retrieving the up-to-date list from the database.
+     *
+     * @param addExampleIfEmpty If there are no entries at all in the database, if this value is true then an example
+     *                          entry will be added.
+     * @return the list of investigations to send to the client
+     */
     @NotNull
-    public HashMap<String, Investigation> fetchAll() {
+    public HashMap<String, Investigation> fetchAll( boolean addExampleIfEmpty ) {
         // retrieve investigations from the database
-        return databaseController.convertFugeToGwt();
+        getInvestigations().clear();
+        getInvestigations().putAll( interface2db.convertFugeToSymbaUI( dbBasics, addExampleIfEmpty ) );
+        return getInvestigations();
     }
 
+    /**
+     * Retrieve all people from the database to initially populate the SyMBA UI. This method also clears
+     * any currently-existing people prior to retrieving the up-to-date list from the database.
+     *
+     * @return the list of people (converted to UI Contacts) to send to the client
+     */
     @NotNull
-    public HashMap<String, Contact> fetchAllContacts() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public HashMap<String, Contact> fetchAllPeople() {
+        getContacts().clear();
+        getContacts().putAll( interface2db.convertPersonToSymbaUI( dbBasics ) );
+        return getContacts();
     }
 
     @NotNull
@@ -80,4 +102,5 @@ public class DatabaseStorageHelper extends StorageHelper {
     public String getMetadataString( @NotNull String id ) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
 }

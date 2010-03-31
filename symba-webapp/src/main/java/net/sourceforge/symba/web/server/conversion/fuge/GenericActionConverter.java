@@ -1,7 +1,7 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
 import net.sourceforge.fuge.util.generated.GenericAction;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
+import net.sourceforge.symba.web.shared.ExperimentStep;
 
 /**
  * Helper class to ensure the conversions to and from FuGE are all in one place, to reduce error and confusion.
@@ -14,7 +14,7 @@ public class GenericActionConverter {
                                         String protocolRef,
                                         int ordinal ) {
         GenericAction action = new GenericAction();
-        action = ( GenericAction ) IdentifiableConverter.toFuge( action, identifier, endurant, name );
+        action = ( GenericAction ) IdentifiableConverter.toFuge( action, name, identifier, endurant );
         action.setActionOrdinal( ordinal );
         action.setProtocolRef( protocolRef );
 

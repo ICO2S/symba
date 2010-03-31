@@ -1,6 +1,7 @@
 /* Add some settings for all HTML objects in the application */
 .gwt-HTML {
     font-family: verdana, arial, helvetica, sans-serif;
+    font-weight: normal;
 }
 
 /* Add some settings for all Hyperlink objects in the application */
@@ -16,6 +17,19 @@
 /* Add some settings for all Label objects in the application */
 .gwt-Label {
     font-family: verdana, arial, helvetica, sans-serif;
+    font-weight: normal;
+}
+
+/* Override GWT's stack panel styles with setStyleName rather than addStyleName, in order to force the header for
+each stack to not have the google gradient. */
+.stackPanelItem {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-weight: bold;
+    background: #e3e8f3;
+    border: 1px solid black;
+    border-radius: 10px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
+    -moz-border-radius: 10px;
+    padding: 5px 3px 5px 10px;
 }
 
 .metadata-style {
@@ -92,6 +106,7 @@
 .clickable-text {
     color: green;
     text-decoration: underline;
+    cursor: pointer;
 }
 
 /* Change the following 2 styles to change the mouse looks when hovering over clickable images and when leaving those images */
@@ -108,9 +123,21 @@
     cursor: default;
 }
 
+.east-style {
+    border: solid 1px black;
+    border-radius: 10px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
+    -moz-border-radius: 10px;
+}
+
+.center-style {
+    border: solid 1px black;
+    border-radius: 10px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
+    -moz-border-radius: 10px;
+}
+
 /* Header styles */
 .header-style {
-    border: solid 1px black;
+    border: 4px double black;
     border-radius: 10px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
     -moz-border-radius: 10px;
     width: 100%;
@@ -121,7 +148,7 @@
 }
 
 .header-images {
-    height: 50px;
+    height: 70px;
     padding: 5px 5px 5px 5px;
     border: solid 1px black;
     border-radius: 10px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
@@ -142,39 +169,6 @@
     border-radius: 10px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
     -moz-border-radius: 10px;
     width: 100%;
-}
-
-/* The styles below modified from those found in http://demo.swfupload.org/v220/css/default.css */
-
-div.fieldset {
-    border: 1px solid #afe14c;
-    margin: 10px 0;
-    padding: 20px 10px;
-}
-
-div.fieldset span.legend {
-    position: relative;
-    background-color: #FFF;
-    padding: 3px;
-    top: -30px;
-    font: 14px Arial, Helvetica, sans-serif; /*font: 700 14px Arial, Helvetica, sans-serif;*/
-    color: #73b304;
-}
-
-div.flash {
-    width: 375px;
-    margin: 10px 5px;
-    border-color: #D9E4FF;
-    border-radius: 5px;
-
-}
-
-.progressContainer {
-    margin: 5px;
-    padding: 4px;
-    border: solid 1px #E8E8E8;
-    background-color: #F7F7F7;
-    overflow: hidden;
 }
 
 /* Error */

@@ -32,7 +32,6 @@ public class ListExperimentsClickHandler implements ClickHandler {
                 SummariseInvestigationView.ViewType.EXTENDED );
         investigateView.setInvestigationDetails( controller.getStoredInvestigationDetails() );
         controller.setCenterWidget( investigateView );
-        controller.hideEastWidget();
         if ( popup != null ) {
             popup.hide();
         }

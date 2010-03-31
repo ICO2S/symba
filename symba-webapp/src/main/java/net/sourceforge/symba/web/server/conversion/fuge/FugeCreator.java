@@ -13,20 +13,17 @@ import net.sourceforge.fuge.util.generated.GenericMaterial;
 import net.sourceforge.fuge.util.generated.GenericProtocol;
 import net.sourceforge.fuge.util.generated.GenericProtocolApplication;
 import net.sourceforge.fuge.util.generated.GenericSoftware;
-import net.sourceforge.fuge.util.generated.InputCompleteMaterials;
 import net.sourceforge.fuge.util.generated.InvestigationCollection;
 import net.sourceforge.fuge.util.generated.Material;
 import net.sourceforge.fuge.util.generated.MaterialCollection;
 import net.sourceforge.fuge.util.generated.ObjectFactory;
 import net.sourceforge.fuge.util.generated.OntologyCollection;
-import net.sourceforge.fuge.util.generated.OutputData;
-import net.sourceforge.fuge.util.generated.OutputMaterials;
 import net.sourceforge.fuge.util.generated.Person;
 import net.sourceforge.fuge.util.generated.ProtocolCollection;
 import net.sourceforge.fuge.util.generated.Provider;
 import net.sourceforge.symba.web.client.gui.InputValidator;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
+import net.sourceforge.symba.web.shared.ExperimentStep;
+import net.sourceforge.symba.web.shared.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import org.jetbrains.annotations.NotNull;
@@ -329,6 +326,7 @@ public class FugeCreator {
 
         GenericMaterial material = new GenericMaterial();
         material.setIdentifier( inputMaterial.getId() );
+        material.setEndurantRef( createRandom() );
         material.setName( inputMaterial.getName() );
 
         if ( inputMaterial.getDescription().length() > 0 ) {

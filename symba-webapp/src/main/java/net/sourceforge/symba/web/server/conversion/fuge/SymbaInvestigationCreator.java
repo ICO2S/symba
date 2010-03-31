@@ -1,6 +1,5 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
-import net.sourceforge.fuge.util.generated.*;
 import net.sourceforge.fuge.util.generated.ActionApplication;
 import net.sourceforge.fuge.util.generated.FuGE;
 import net.sourceforge.fuge.util.generated.GenericAction;
@@ -10,8 +9,8 @@ import net.sourceforge.fuge.util.generated.Person;
 import net.sourceforge.fuge.util.generated.Protocol;
 import net.sourceforge.fuge.util.generated.ProtocolApplication;
 import net.sourceforge.symba.web.client.gui.InputValidator;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentStepHolder;
+import net.sourceforge.symba.web.shared.ExperimentStep;
+import net.sourceforge.symba.web.shared.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import org.jetbrains.annotations.NotNull;

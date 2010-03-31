@@ -5,7 +5,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.client.gui.handlers.ToolTip;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
+import net.sourceforge.symba.web.shared.ExperimentParameter;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.Material;
 

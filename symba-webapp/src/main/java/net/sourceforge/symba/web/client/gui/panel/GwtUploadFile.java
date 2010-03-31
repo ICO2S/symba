@@ -8,7 +8,6 @@ import gwtupload.client.IUploader;
 import gwtupload.client.MultiUploader;
 import gwtupload.client.PreloadedImage;
 import net.sourceforge.symba.web.client.gui.CollapsibleTable;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
 
 import java.util.ArrayList;
 

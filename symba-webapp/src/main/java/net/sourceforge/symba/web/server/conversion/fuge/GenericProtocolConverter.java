@@ -3,8 +3,8 @@ package net.sourceforge.symba.web.server.conversion.fuge;
 import net.sourceforge.fuge.util.generated.GenericParameter;
 import net.sourceforge.fuge.util.generated.GenericProtocol;
 import net.sourceforge.fuge.util.generated.OntologyCollection;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentParameter;
-import net.sourceforge.symba.web.client.stepsorter.ExperimentStep;
+import net.sourceforge.symba.web.shared.ExperimentParameter;
+import net.sourceforge.symba.web.shared.ExperimentStep;
 
 import java.util.ArrayList;
 
@@ -25,7 +25,7 @@ public class GenericProtocolConverter {
                                           String endurant,
                                           String name ) {
         GenericProtocol protocol = new GenericProtocol();
-        protocol = ( GenericProtocol ) IdentifiableConverter.toFuge( protocol, identifier, endurant, name );
+        protocol = ( GenericProtocol ) IdentifiableConverter.toFuge( protocol, name, identifier, endurant );
         return protocol;
     }
 

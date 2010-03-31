@@ -1,4 +1,4 @@
-package net.sourceforge.symba.web.client.stepsorter;
+package net.sourceforge.symba.web.shared;
 
 import net.sourceforge.symba.web.client.gui.InputValidator;
 

@@ -157,6 +157,11 @@
         </jaxb:bindings>
         <jaxb:bindings node="xsd:complexType[@name='FuGE.common.audit.PersonType']">
             <jaxb:class name="Person"/>
+            <hj:entity>
+                <orm:named-query name="allPeople">
+                    <orm:query>select p from net.sourceforge.fuge.util.generated.Person p</orm:query>
+                </orm:named-query>
+            </hj:entity>
         </jaxb:bindings>
         <jaxb:bindings node="xsd:complexType[@name='FuGE.common.audit.SecurityAccessType']">
             <jaxb:class name="SecurityAccess"/>

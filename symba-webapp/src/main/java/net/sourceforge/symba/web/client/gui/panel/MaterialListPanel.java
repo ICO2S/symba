@@ -1,5 +1,6 @@
 package net.sourceforge.symba.web.client.gui.panel;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -12,13 +13,20 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class MaterialListPanel extends HorizontalPanel {
+    private final ViewType viewType;
+
+    public static enum ViewType {
+        ASSIGN_TO_EXPERIMENT, CREATE_ONLY
+    }
 
     private static final String SAVE_TEXT = "Save New Material";
     private final SelectorPanel selector;
 
     public MaterialListPanel( SymbaController controller,
                               String materialType,
-                              ArrayList<Material> selectedMaterials ) {
+                              ArrayList<Material> selectedMaterials,
+                              ViewType viewType ) {
+        this.viewType = viewType;
 
         CreatorPanel creator = new CreatorPanel( controller );
         selector = new SelectorPanel( creator, controller, selectedMaterials, materialType );
@@ -35,7 +43,7 @@ public class MaterialListPanel extends HorizontalPanel {
     }
 
     public boolean hasVisibleList() {
-        return selector.expandedMaterialLabel.isVisible();
+        return selector.expandedMaterialBox.isVisible();
     }
 
     public ArrayList<Material> getOriginallySelectedMaterials() {
@@ -125,7 +133,7 @@ public class MaterialListPanel extends HorizontalPanel {
                     selector.getSelectedMaterials().add( material );
                     selector.showListBox();
                     // clear any values
-                    nameBox.setText("");
+                    nameBox.setText( "" );
                     setVisible( false );
                 }
             } );
@@ -135,8 +143,12 @@ public class MaterialListPanel extends HorizontalPanel {
     }
 
     private class SelectorPanel extends VerticalPanel {
+
+        private static final String ADD_ICON = "/images/plus.png";
+        private static final String COPY_ICON = "/images/new_window-word.png";
+
         private final Label countLabel;
-        private final ListBox expandedMaterialLabel;
+        private final ListBox expandedMaterialBox;
         private final ArrayList<Material> selectedMaterials;
         private final String materialType;
         private final SymbaController controller;
@@ -150,20 +162,37 @@ public class MaterialListPanel extends HorizontalPanel {
             this.selectedMaterials = selectedMaterials;
             this.materialType = materialType;
 
+            String moduleBase = GWT.getModuleBaseURL();
+            String moduleName = GWT.getModuleName();
+            String baseApp = moduleBase.substring( 0, moduleBase.lastIndexOf( moduleName ) );
+
+            // you need slightly different URLs when in development mode (specifically, no prefix at all).
+            String prefix = "";
+            if ( GWT.isScript() ) {
+                prefix = baseApp;
+            }
+
             // start with a basic view where they can just see the number of materials
             HorizontalPanel hPanel = new HorizontalPanel();
             hPanel.setSpacing( 5 );
             countLabel = new Label( getMaterialsCount() );
-            Label createLabel = new Label( "Create Material" );
+            Image createImage = new Image( prefix + ADD_ICON );
+            Image copyImage = new Image( prefix + COPY_ICON );
             hPanel.add( countLabel );
-            hPanel.add( createLabel );
+            hPanel.add( createImage );
+            hPanel.add( copyImage );
 
-            expandedMaterialLabel = new ListBox( true ); // set as a multiple select box
-            expandedMaterialLabel.setVisibleItemCount( 5 );
+            if ( viewType == ViewType.ASSIGN_TO_EXPERIMENT ) {
+                expandedMaterialBox = new ListBox( true ); // set as a multiple select box
+            } else {
+                expandedMaterialBox = new ListBox( false ); // set as a single select box when creating new materials
+            }
+            expandedMaterialBox.setVisibleItemCount( 5 );
 
             // styles
             countLabel.addStyleName( "clickable-text" );
-            createLabel.addStyleName( "clickable-text" );
+            createImage.addStyleName( "within-step-images" );
+            copyImage.addStyleName( "within-step-images" );
 
             // handlers
             countLabel.addClickHandler( new ClickHandler() {
@@ -174,7 +203,7 @@ public class MaterialListPanel extends HorizontalPanel {
                 }
             } );
 
-            createLabel.addClickHandler( new ClickHandler() {
+            createImage.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     creator.setVisible( true );
                 }
@@ -182,20 +211,20 @@ public class MaterialListPanel extends HorizontalPanel {
 
             // positioning
             add( hPanel );
-            add( expandedMaterialLabel );
-            expandedMaterialLabel.setVisible( false );
+            add( expandedMaterialBox );
+            expandedMaterialBox.setVisible( false );
 
         }
 
         private void populateListBox() {
-            expandedMaterialLabel.clear();
+            expandedMaterialBox.clear();
             // in order to sort, you can't have the information in a HashMap
             for ( Material material : sortMaterials( controller.getStoredMaterials().values() ) ) {
-                expandedMaterialLabel.addItem( material.getName(), material.getId() );
+                expandedMaterialBox.addItem( material.getName(), material.getId() );
                 // ensure all values selected earlier are automatically selected here
                 for ( Material selected : selectedMaterials ) {
                     if ( material.getId().equals( selected.getId() ) ) {
-                        expandedMaterialLabel.setItemSelected( expandedMaterialLabel.getItemCount() - 1, true );
+                        expandedMaterialBox.setItemSelected( expandedMaterialBox.getItemCount() - 1, true );
                         break;
                     }
                 }
@@ -233,15 +262,15 @@ public class MaterialListPanel extends HorizontalPanel {
 
         public void showListBox() {
             populateListBox(); // refresh with any new data
-            expandedMaterialLabel.setVisible( true );
+            expandedMaterialBox.setVisible( true );
         }
 
         public ArrayList<String> getSelectedMaterialIds() {
             ArrayList<String> ids = new ArrayList<String>();
 
-            for ( int iii = 0; iii < expandedMaterialLabel.getItemCount(); iii++ ) {
-                if ( expandedMaterialLabel.isItemSelected( iii ) ) {
-                    ids.add( expandedMaterialLabel.getValue( iii ) );
+            for ( int iii = 0; iii < expandedMaterialBox.getItemCount(); iii++ ) {
+                if ( expandedMaterialBox.isItemSelected( iii ) ) {
+                    ids.add( expandedMaterialBox.getValue( iii ) );
                 }
             }
             return ids;

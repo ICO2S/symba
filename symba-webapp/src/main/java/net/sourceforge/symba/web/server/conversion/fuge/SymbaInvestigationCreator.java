@@ -29,7 +29,11 @@ public class SymbaInvestigationCreator {
 
         String investigationId = fuge.getInvestigationCollection().getInvestigation().get( 0 ).getIdentifier();
         String investigationName = fuge.getInvestigationCollection().getInvestigation().get( 0 ).getName();
-        return new Investigation( template, completed, investigationId, investigationName,
+        String hyp = fuge.getInvestigationCollection().getInvestigation().get( 0 ).getHypothesis().getDescription()
+                .getText();
+        String conclusion = fuge.getInvestigationCollection().getInvestigation().get( 0 ).getHypothesis()
+                .getDescription().getText();
+        return new Investigation( template, completed, investigationId, investigationName, hyp, conclusion,
                 initProvider( fuge ), initExperiments( fuge ) );
 
     }

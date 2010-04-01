@@ -166,7 +166,7 @@ public class EditInvestigationView extends VerticalPanel {
         // prepare the bottom part of the page, where the experimental steps are displayed.
         //
         stepsTable = new FlexTable();
-        stepsTable.setCellSpacing( 0 );
+        stepsTable.setCellSpacing( 5 );
         stepsTable.setCellPadding( 0 );
         displayStepData();
 

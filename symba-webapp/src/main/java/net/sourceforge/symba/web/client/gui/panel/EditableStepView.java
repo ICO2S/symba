@@ -91,9 +91,9 @@ public class EditableStepView extends PopupPanel {
         // materials
         //
         inputMaterialPanel = new MaterialListPanel( controller, "input",
-                readableView.getInputMaterialTable().getList() );
+                readableView.getInputMaterialTable().getList(), MaterialListPanel.ViewType.ASSIGN_TO_EXPERIMENT );
         outputMaterialPanel = new MaterialListPanel( controller, "output",
-                readableView.getOutputMaterialTable().getList() );
+                readableView.getOutputMaterialTable().getList(), MaterialListPanel.ViewType.ASSIGN_TO_EXPERIMENT );
 
         CaptionPanel inputMaterialCaptionPanel = new CaptionPanel( "Input Materials" );
         inputMaterialCaptionPanel.setStyleName( "captionpanel-border" );

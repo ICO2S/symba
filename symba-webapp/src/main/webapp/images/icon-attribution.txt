@@ -1,2 +1,2 @@
-arrow_down.svg, article.svg, plus.svg : by http://somerandomdude.com/projects/iconic/, licensed under http://creativecommons.org/licenses/by-sa/3.0/us/
+arrow_down.svg, article.svg, new_window.svg, plus.svg : by http://somerandomdude.com/projects/iconic/, licensed under http://creativecommons.org/licenses/by-sa/3.0/us/
 68-paperclip.png : by http://glyphish.com/, licensed under http://creativecommons.org/licenses/by/3.0/us/

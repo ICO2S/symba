@@ -16,6 +16,8 @@ public class Investigation implements Serializable {
 
     private String id;
     private String investigationTitle;
+    private String hypothesis;
+    private String conclusion;
     private Contact provider;
 
     // todo private ArrayList<Contact> otherContacts; 
@@ -28,6 +30,8 @@ public class Investigation implements Serializable {
         this.completed = false;
         this.id = "0";
         this.investigationTitle = "";
+        this.hypothesis = "";
+        this.conclusion = "";
         this.provider = new Contact();
         this.experiments = new ArrayList<ExperimentStepHolder>();
         // todo why doesn't the below work? It ends up with provider being null!
@@ -38,15 +42,18 @@ public class Investigation implements Serializable {
                           boolean completed,
                           String id,
                           String investigationTitle,
+                          String hypothesis,
+                          String conclusion,
                           Contact provider,
                           ArrayList<ExperimentStepHolder> experiments ) {
         this.template = template;
         this.completed = completed;
         this.id = id;
         this.investigationTitle = investigationTitle;
+        this.hypothesis = hypothesis;
+        this.conclusion = conclusion;
         this.provider = provider;
         this.experiments = experiments;
-
     }
 
     /**
@@ -56,7 +63,7 @@ public class Investigation implements Serializable {
      */
     public Investigation( Investigation investigation ) {
         this( investigation.isTemplate(), investigation.isCompleted(), investigation.getId(),
-                investigation.getInvestigationTitle(), investigation.getProvider(), investigation.getExperiments() );
+                investigation.getInvestigationTitle(), investigation.getHypothesis(), investigation.getConclusion(), investigation.getProvider(), investigation.getExperiments() );
     }
 
     public void createId() {
@@ -168,6 +175,22 @@ public class Investigation implements Serializable {
 
     public void setInvestigationTitle( String investigationTitle ) {
         this.investigationTitle = investigationTitle;
+    }
+
+    public String getHypothesis() {
+        return hypothesis;
+    }
+
+    public void setHypothesis( String hypothesis ) {
+        this.hypothesis = hypothesis;
+    }
+
+    public String getConclusion() {
+        return conclusion;
+    }
+
+    public void setConclusion( String conclusion ) {
+        this.conclusion = conclusion;
     }
 
     public Contact getProvider() {

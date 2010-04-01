@@ -25,6 +25,10 @@ public class EditInvestigationView extends VerticalPanel {
         NEW_INVESTIGATION, EXISTING_INVESTIGATION
     }
 
+    public static final String INVESTIGATION_EXPLANATION = "An <strong>investigation</strong> consists of one or " +
+            "more experiments. Investigations are containers for all experiments that relate to a " +
+            "<strong>single</strong> hypothesis and conclusion.";
+
     private static enum SaveType {
         SAVE_ONLY, SET_AS_TEMPLATE
     }
@@ -34,6 +38,7 @@ public class EditInvestigationView extends VerticalPanel {
     private final CheckBox completedCheckBox;
     private final CheckBox setAsTemplateCheckBox;
     private final Button saveButton;
+    private final Button saveAndFinishButton;
     private final Button cancelButton;
     private final Button addSubStepButton;
     private final String addChildImageUrl;
@@ -87,12 +92,14 @@ public class EditInvestigationView extends VerticalPanel {
         // prepare all buttons, labels and check boxes.
         //
         Label overallTitle = new Label();
+        HTML explanation = new HTML( INVESTIGATION_EXPLANATION );
         overallTitle.addStyleName( "header-title" );
         if ( viewType == ViewType.NEW_INVESTIGATION ) {
             overallTitle.setText( "Create New Investigation" );
         } else {
             overallTitle.setText( "View Existing Investigation" );
         }
+
         completedCheckBox = new CheckBox( "Freeze" );
         // todo add help message to this
         // "Check this box if your investigation is completely described. Checking this box will disallow any
@@ -107,20 +114,30 @@ public class EditInvestigationView extends VerticalPanel {
         if ( this.investigation.isTemplate() ) {
             setAsTemplateCheckBox.setValue( true );
         }
-        saveButton = new Button( "Save and Finish" );
+
+        HorizontalPanel savePanel = new HorizontalPanel();
+        saveButton = new Button( "Save" );
+        saveAndFinishButton = new Button( "Save and Finish" );
+        savePanel.add( saveButton );
+        savePanel.add( saveAndFinishButton );
+
         cancelButton = new Button( "Cancel" );
         addSubStepButton = new Button( "Add Top-Level Step" );
         if ( investigation.isReadOnly() ) {
             // disable buttons and boxes that allow modifications
             saveButton.setEnabled( false );
-            setAsTemplateCheckBox.setEnabled( false );
+            saveAndFinishButton.setEnabled( false );
             addSubStepButton.setEnabled( false );
+            setAsTemplateCheckBox.setEnabled( false );
+            completedCheckBox.setEnabled( false );
         } else {
             // we need the "else" here if a template was previously shown, and therefore buttons were
             // previously disabled. We need to explicitly enable them.
             saveButton.setEnabled( true );
-            setAsTemplateCheckBox.setEnabled( true );
+            saveAndFinishButton.setEnabled( true );
             addSubStepButton.setEnabled( true );
+            setAsTemplateCheckBox.setEnabled( true );
+            completedCheckBox.setEnabled( true );
         }
         cancelButton.setEnabled( true );
 
@@ -157,10 +174,9 @@ public class EditInvestigationView extends VerticalPanel {
         // Prepare all container panels
         //
         HorizontalPanel menuPanel = new HorizontalPanel();
-        menuPanel.setBorderWidth( 0 );
-        menuPanel.setSpacing( 0 );
+        menuPanel.setSpacing( 10 );
         menuPanel.setHorizontalAlignment( HorizontalPanel.ALIGN_LEFT );
-        menuPanel.add( saveButton );
+        menuPanel.add( savePanel );
         menuPanel.add( cancelButton );
 
         HorizontalPanel addStepPanel = new HorizontalPanel();
@@ -183,13 +199,14 @@ public class EditInvestigationView extends VerticalPanel {
         // Put everything together in one view.
         //
         add( overallTitle );
-        add( menuPanel );
+        add( explanation );
         add( investigationDetailsPanel );
         add( protocolWrapper );
         if ( !investigation.isTemplate() ) {
             add( completedCheckBox );
         }
         add( setAsTemplateCheckBox );
+        add( menuPanel );
     }
 
     // todo
@@ -234,9 +251,15 @@ public class EditInvestigationView extends VerticalPanel {
             }
         } );
 
+        saveAndFinishButton.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
+                doSave( true );
+            }
+        } );
+
         saveButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                doSave();
+                doSave( false );
             }
         } );
 
@@ -250,11 +273,11 @@ public class EditInvestigationView extends VerticalPanel {
             public void onClick( ClickEvent event ) {
                 if ( investigation.getInvestigationTitle().length() > 0 ) {
                     // no need to keep any file statuses at this point
-                    controller.showEastWidget( "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
+                    controller.setEastWidgetUserStatus( "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
                             "</strong> cancelled.</p>" );
                 } else {
                     // no need to keep any file statuses at this point
-                    controller.showEastWidget( "<p>Creation of new investigation cancelled.</p>", "" );
+                    controller.setEastWidgetUserStatus( "<p>Creation of new investigation cancelled.</p>" );
                 }
                 controller.setCenterWidgetAsListExperiments();
             }
@@ -262,21 +285,29 @@ public class EditInvestigationView extends VerticalPanel {
 
     }
 
-    private void setAsTemplate( String id,
-                                final String title ) {
+    private void setAsTemplate( final String id,
+                                final String title,
+                                final boolean finish ) {
         controller.getRpcService().setInvestigationAsTemplate( id,
                 new AsyncCallback<ArrayList<InvestigationDetail>>() {
                     public void onFailure( Throwable throwable ) {
                         Window.alert( "Saving of Investigation " + title +
                                 " as a template failed: " + Arrays.toString( throwable.getStackTrace() ) );
+                        controller
+                                .setEastWidgetUserStatus( "<p><strong>Saving of Investigation " + title +
+                                "as a template failed.</p>" );
                     }
 
                     public void onSuccess( ArrayList<InvestigationDetail> results ) {
                         controller.setStoredInvestigationDetails( results );
                         // no need to keep any directions at this point
-                        controller.showEastWidget( "<p><strong>" + title + "</strong> has been set as a template.</p>",
-                                "" );
-                        controller.setCenterWidgetAsListExperiments();
+                        if ( finish ) {
+                            controller.setCenterWidgetAsListExperiments();
+                        } else {
+                            controller.setCenterWidgetAsEditExperiment( id );
+                        }
+                        controller
+                                .setEastWidgetUserStatus( "<p><strong>" + title + "</strong> has been set as a template.</p>" );
                     }
                 } );
     }
@@ -424,7 +455,7 @@ public class EditInvestigationView extends VerticalPanel {
 
     }
 
-    private void doSave() {
+    private void doSave( boolean finish ) {
 
         if ( setAsTemplateCheckBox.getValue() ) {
             // remove any files associated with this investigation, as templates don't have files.
@@ -437,17 +468,18 @@ public class EditInvestigationView extends VerticalPanel {
                             "by you and other users, thus sharing common aspects of " +
                             "Investigations. Are you sure you wish to continue?" );
             if ( response ) {
-                doSave( SaveType.SET_AS_TEMPLATE );
+                doSave( SaveType.SET_AS_TEMPLATE, finish );
             } else {
                 // no need to keep any directions at this point
-                controller.showEastWidget( "<p>Saving as template cancelled.</p>" );
+                controller.setEastWidgetUserStatus( "<p>Saving as template cancelled.</p>" );
             }
         } else {
-            doSave( SaveType.SAVE_ONLY );
+            doSave( SaveType.SAVE_ONLY, finish );
         }
     }
 
-    private void doSave( final SaveType saveType ) {
+    private void doSave( final SaveType saveType,
+                         final boolean finish ) {
 
         String emptyValues = investigationDetailsPanel.makeErrorMessages();
         if ( emptyValues.length() > 1 ) {
@@ -455,8 +487,6 @@ public class EditInvestigationView extends VerticalPanel {
             return;
         }
 
-        // only change those values that have been modified, which in this simple case will just be those
-        // with text boxes rather than simple labels.
         investigationDetailsPanel.updateModifiedDetails( investigation );
         investigation.setAllModified( false );
 
@@ -471,11 +501,16 @@ public class EditInvestigationView extends VerticalPanel {
                         final String title = investigation.getInvestigationTitle();
                         final String id = investigation.getId();
                         controller.setStoredInvestigationDetails( updatedDetails );
-                        controller.showEastWidget( "<p><strong>" + title + "</strong> saved.</p>", "" );
-                        controller.setCenterWidgetAsListExperiments();
+                        if ( finish ) {
+                            controller.setCenterWidgetAsListExperiments();
+                            controller.setEastWidgetUserStatus( "<p><strong>" + title + "</strong> saved.</p>" );
+                        } else {
+                            controller.setCenterWidgetAsEditExperiment( id );
+                            controller.setEastWidgetUserStatus( "<p>Saving <strong>" + title + "</strong>...</p>" );
+                        }
 
                         if ( saveType == SaveType.SET_AS_TEMPLATE ) {
-                            setAsTemplate( id, title );
+                            setAsTemplate( id, title, finish );
                         }
                     }
 

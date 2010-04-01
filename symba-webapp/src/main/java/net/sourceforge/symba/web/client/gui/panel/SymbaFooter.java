@@ -26,6 +26,8 @@ public class SymbaFooter extends VerticalPanel {
     public SymbaFooter() {
         super();
 
+        setSpacing( 5 );
+
         String moduleBase = GWT.getModuleBaseURL();
         String moduleName = GWT.getModuleName();
         String baseApp = moduleBase.substring( 0, moduleBase.lastIndexOf( moduleName ) );

@@ -55,8 +55,9 @@ public class SummariseInvestigationView extends FlexTable {
             makeListBox();
         } else if ( viewType == ViewType.EXTENDED ) {
             makeExpandedTable();
-            controller.showEastWidget( "", "<p>Click on an Investigation to edit or view. Click on the radio button " +
-                    "next to an Investigation to select an Investigation to copy, then click the \"Copy\" button.</p>" );
+            controller.setEastWidgetDirections( "<p>Click on an Investigation to edit or view. Click on the " +
+                    "radio button next to an Investigation to select an Investigation to copy, then click " +
+                    "the \"Copy\" button.</p>" );
         } else if ( viewType == ViewType.DISPLAY_CHOSEN_METADATA ) {
             makeMetadataListBox();
         }
@@ -138,7 +139,7 @@ public class SummariseInvestigationView extends FlexTable {
                 if ( response ) {
                     deleteSelectedInvestigation();
                 } else {
-                    controller.showEastWidget( "<p>Deletion of Investigation cancelled.</p>" );
+                    controller.setEastWidgetUserStatus( "<p>Deletion of Investigation cancelled.</p>" );
                 }
             }
         } );

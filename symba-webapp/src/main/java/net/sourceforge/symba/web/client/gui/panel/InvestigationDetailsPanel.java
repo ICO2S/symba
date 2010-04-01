@@ -9,12 +9,14 @@ import net.sourceforge.symba.web.shared.Investigation;
 
 public class InvestigationDetailsPanel extends VerticalPanel {
 
-    private final TextBox investigationIdBox;
     private final TextBox investigationTitleBox;
-    private final TextBox providerIdBox;
+    private final TextArea hypothesisBox;
+    private final TextArea conclusionBox;
     private final ListBox fullNameBox;
 
     private final HorizontalPanel investigationTitlePanel;
+    private final HorizontalPanel hypothesisPanel;
+    private final HorizontalPanel conclusionPanel;
     private final HorizontalPanel contactPanel;
 
     private final SymbaController controller;
@@ -23,45 +25,27 @@ public class InvestigationDetailsPanel extends VerticalPanel {
 
         this.controller = controller;
 
-        investigationIdBox = new TextBox();
         investigationTitleBox = new TextBox();
-        providerIdBox = new TextBox();
+        hypothesisBox = new TextArea();
+        hypothesisBox.setCharacterWidth( 40 );
+        hypothesisBox.setVisibleLines( 4 );
+        conclusionBox = new TextArea();
+        conclusionBox.setCharacterWidth( 40 );
+        conclusionBox.setVisibleLines( 4 );
         fullNameBox = new ListBox();
 
         investigationTitlePanel = new HorizontalPanel();
+        hypothesisPanel = new HorizontalPanel();
+        conclusionPanel = new HorizontalPanel();
         contactPanel = new HorizontalPanel();
 
         populateNameListBox();
 
         setWidth( "100%" );
 
-        investigationIdBox.addBlurHandler( new BlurHandler() {
-            public void onBlur( BlurEvent blurEvent ) {
-                InputValidator.nonEmptyTextBoxStyle( investigationIdBox );
-            }
-        } );
-
         investigationTitleBox.addBlurHandler( new BlurHandler() {
             public void onBlur( BlurEvent blurEvent ) {
                 InputValidator.nonEmptyTextBoxStyle( investigationTitleBox );
-            }
-        } );
-
-        providerIdBox.addBlurHandler( new BlurHandler() {
-            public void onBlur( BlurEvent blurEvent ) {
-                InputValidator.nonEmptyTextBoxStyle( providerIdBox );
-            }
-        } );
-
-        fullNameBox.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
-                // the change handler will only be called if the ListBox is present, which only happens if it is
-                // not a template investigation.
-
-                // When the value changes, update the other contact details
-                setLinkedProviderInformation(
-                        InvestigationDetailsPanel.this.controller.getStoredContacts()
-                                .get( fullNameBox.getValue( fullNameBox.getSelectedIndex() ) ).getEmailAddress() );
             }
         } );
 
@@ -74,15 +58,22 @@ public class InvestigationDetailsPanel extends VerticalPanel {
         // populate the fullNameBox with initial set of contacts
         for ( String key : controller.getStoredContacts().keySet() ) {
             // todo sort alphabetically
-            fullNameBox.addItem( controller.getStoredContacts().get( key ).getFullName(), key );
+            fullNameBox.addItem( contactDisplayView( controller.getStoredContacts().get( key ).getFullName(),
+                    controller.getStoredContacts().get( key ).getEmailAddress() ), key );
         }
     }
 
+    private String contactDisplayView( String fullName,
+                                       String emailAddress ) {
+        if ( emailAddress != null && emailAddress.length() > 0 ) {
+            return fullName + " (" + emailAddress + ")";
+        } else {
+            return fullName;
+        }
+
+    }
+
     /**
-     * Although we store first and last name separately, we use a GWT Oracle to ensure that, if it's already in
-     * the database, the correct contact is chosen. Therefore it's only when creating an editable display
-     * that the first and last names are shown separately.
-     * <p/>
      * todo middle initial
      *
      * @param investigation the investigation to display. May be empty, but will not be null
@@ -92,6 +83,12 @@ public class InvestigationDetailsPanel extends VerticalPanel {
         setupDetailPanel( investigationTitlePanel, investigationTitleBox, "Investigation Title: ",
                 investigation.getInvestigationTitle(), investigation.isReadOnly() );
         add( investigationTitlePanel );
+        setupDetailPanel( hypothesisPanel, hypothesisBox, "Investigation Hypothesis: ",
+                investigation.getHypothesis(), investigation.isReadOnly() );
+        add( hypothesisPanel );
+        setupDetailPanel( conclusionPanel, conclusionBox, "Investigation Conclusion(s): ",
+                investigation.getConclusion(), investigation.isReadOnly() );
+        add( conclusionPanel );
 
         setupProviderNameDetailPanel( investigation.getProvider().getFullName(),
                 investigation.getProvider().getEmailAddress(), investigation.isReadOnly() );
@@ -100,7 +97,7 @@ public class InvestigationDetailsPanel extends VerticalPanel {
     }
 
     private void setupDetailPanel( final HorizontalPanel panel,
-                                   final TextBox box,
+                                   final TextBoxBase box,
                                    String legend,
                                    String value,
                                    boolean readOnly ) {
@@ -138,7 +135,7 @@ public class InvestigationDetailsPanel extends VerticalPanel {
     }
 
     public void setupProviderNameDetailPanel( final String fullNameValue,
-                                              String emailAddress,
+                                              final String emailAddress,
                                               boolean readOnly ) {
 
         // clear the contact panel.
@@ -147,34 +144,33 @@ public class InvestigationDetailsPanel extends VerticalPanel {
         }
         contactPanel.setSpacing( 5 );
 
-        Label legendLabel = new Label( "Name: " );
+        Label legendLabel = new Label( "Data Owner: " );
         legendLabel.addStyleName( "textbox-legend" );
         contactPanel.add( legendLabel );
 
         // if there is no contact at all yet for this investigation, just start with the list box. Otherwise, start
         // with a read-only string.
         if ( fullNameValue != null && fullNameValue.length() > 0 ) {
-            // add the read-only text
             // the read-only label for the full name
-            final Label label = new Label();
-            label.setText( fullNameValue );
+            final Label label = new Label( contactDisplayView( fullNameValue, emailAddress ) );
 
             if ( !readOnly ) {
-                // add the behaviour to switch to a listbox when the read-only text is clicked on
+                // add the behaviour to switch to a ListBox when the read-only text is clicked on
                 label.addStyleName( "clickable-text" );
                 label.addClickHandler( new ClickHandler() {
                     public void onClick( ClickEvent clickEvent ) {
                         contactPanel.remove( 1 ); // remove read-only label
                         // start with a list box pre-filled with the existing full name.
                         contactPanel.insert( fullNameBox, 1 );
-                        fullNameBox.setItemSelected( getIndexForItem( fullNameValue ), true );
+                        fullNameBox
+                                .setItemSelected( getIndexForItem( contactDisplayView( fullNameValue, emailAddress ) ),
+                                        true );
                     }
                 } );
             }
             contactPanel.add( label );
         } else {
             contactPanel.add( fullNameBox );
-            emailAddress = controller.getStoredContacts().get( fullNameBox.getValue( 0 ) ).getEmailAddress();
         }
 
         if ( !readOnly ) {
@@ -188,10 +184,6 @@ public class InvestigationDetailsPanel extends VerticalPanel {
                 }
             } );
         }
-
-        // add associated read-only email information last
-        setLinkedProviderInformation( emailAddress );
-
     }
 
     private int getIndexForItem( String fullNameValue ) {
@@ -208,33 +200,10 @@ public class InvestigationDetailsPanel extends VerticalPanel {
         panel.show();
     }
 
-    private void setLinkedProviderInformation( String emailAddress ) {
-
-        String legend = "Email address: ";
-
-        if ( contactPanel.getWidgetCount() >= 2 ) {
-            int lastIndex = contactPanel.getWidgetCount() - 1;
-            for ( int iii = lastIndex; iii >= 0; iii-- ) {
-                Widget widget = contactPanel.getWidget( iii );
-                if ( widget instanceof Label && ( ( Label ) widget ).getText().equals( legend ) ) {
-                    contactPanel.remove( iii + 1 );
-                    contactPanel.remove( iii );
-                    break;
-
-                }
-            }
-        }
-
-        Label legendLabel = new Label( legend );
-        legendLabel.addStyleName( "textbox-legend" );
-        contactPanel.add( legendLabel );
-        contactPanel.add( new Label( emailAddress ) );
-    }
-
     public String makeErrorMessages() {
 
-        // there must be a nonzero value in every non-contact field (the contact behaviour is dealt with elsewhere, in
-        // the ContactPopup. Check each one, returning if any are empty
+        // there must be a nonzero value in the title (the contact behaviour is dealt with elsewhere, in
+        // the ContactPopup. Return a message if empty
         String emptyValues = "\n";
         if ( investigationTitlePanel.getWidget( 1 ) instanceof TextBox &&
                 investigationTitleBox.getText().length() == 0 ) {
@@ -248,6 +217,12 @@ public class InvestigationDetailsPanel extends VerticalPanel {
         if ( investigationTitlePanel.getWidget( 1 ) instanceof TextBox &&
                 investigationTitleBox.getText().length() > 0 ) {
             investigation.setInvestigationTitle( investigationTitleBox.getText() );
+        }
+        if ( hypothesisPanel.getWidget( 1 ) instanceof TextBox && hypothesisBox.getText().length() > 0 ) {
+            investigation.setHypothesis( hypothesisBox.getText() );
+        }
+        if ( conclusionPanel.getWidget( 1 ) instanceof TextBox && conclusionBox.getText().length() > 0 ) {
+            investigation.setConclusion( conclusionBox.getText() );
         }
         // Assign the provider to the contact whose ID is in the getValue() of the ListBox's getSelectedIndex().
         // Otherwise, it is a read-only label. Unless it is a new contact, this label will already have been stored

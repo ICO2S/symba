@@ -39,7 +39,8 @@ public class MemoryStorageHelper extends StorageHelper {
     public HashMap<String, Investigation> fetchAll( boolean addExampleIfEmpty ) {
         getInvestigations().clear();
         if ( getInvestigations().isEmpty() && addExampleIfEmpty ) {
-            Investigation investigation = new Investigation( false, false, "12345", "My Example Investigation", ALICE,
+            Investigation investigation = new Investigation( false, false, "12345", "My Example Investigation",
+                    "Some hypothesis", "Conclusion 1. Conclusion 2.", ALICE,
                     new ArrayList<ExperimentStepHolder>() );
             add( investigation );
         }

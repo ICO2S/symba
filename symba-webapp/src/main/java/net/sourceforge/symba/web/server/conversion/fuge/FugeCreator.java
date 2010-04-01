@@ -1,7 +1,9 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
+import net.sourceforge.fuge.util.generated.*;
 import net.sourceforge.fuge.util.generated.ActionApplication;
 import net.sourceforge.fuge.util.generated.AuditCollection;
+import net.sourceforge.fuge.util.generated.Conclusion;
 import net.sourceforge.fuge.util.generated.ContactRole;
 import net.sourceforge.fuge.util.generated.DataCollection;
 import net.sourceforge.fuge.util.generated.Description;
@@ -13,6 +15,7 @@ import net.sourceforge.fuge.util.generated.GenericMaterial;
 import net.sourceforge.fuge.util.generated.GenericProtocol;
 import net.sourceforge.fuge.util.generated.GenericProtocolApplication;
 import net.sourceforge.fuge.util.generated.GenericSoftware;
+import net.sourceforge.fuge.util.generated.Hypothesis;
 import net.sourceforge.fuge.util.generated.InvestigationCollection;
 import net.sourceforge.fuge.util.generated.Material;
 import net.sourceforge.fuge.util.generated.MaterialCollection;
@@ -404,7 +407,19 @@ public class FugeCreator {
         fugeInv.setName( uiInvestigation.getInvestigationTitle() );
         fugeInv.setEndurantRef( createRandom() );
         fugeInv.setIdentifier( uiInvestigation.getId() );
-        // todo hypothesis and conclusion
+
+        Hypothesis h = new Hypothesis();
+        Description d = new Description();
+        d.setText( uiInvestigation.getHypothesis() );
+        h.setDescription( d );
+        fugeInv.setHypothesis( h );
+
+        Conclusion c = new Conclusion();
+        Description d2 = new Description();
+        d2.setText( uiInvestigation.getConclusion() );
+        c.setDescription( d2 );
+        fugeInv.setConclusion( c );
+
         // create an audit trail associated with the object
         IdentifiableConverter.addAuditTrail( fugeInv, person );
         // add to the investigation collection

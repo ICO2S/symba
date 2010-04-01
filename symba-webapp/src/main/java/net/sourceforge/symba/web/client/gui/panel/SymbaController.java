@@ -104,7 +104,8 @@ public class SymbaController extends DockPanel {
                 EditInvestigationView view = new EditInvestigationView( SymbaController.this, result,
                         EditInvestigationView.ViewType.EXISTING_INVESTIGATION );
                 setCenterWidget( view );
-                showEastWidget( "", BASIC_EDITING_HELP );
+                showEastWidget( "<p>Display of Investigation <strong>" + result.getInvestigationTitle() +
+                        "</strong> complete.</p>", BASIC_EDITING_HELP );
             }
         } );
     }
@@ -122,7 +123,7 @@ public class SymbaController extends DockPanel {
 
     /**
      * Unlike the version of showEastWidget() which accepts arguments, this method will assume all values
-     * for the components of the east widget are set, and this method simply ensures that the widget is visible.
+     * for the components of the east widget are set, and simply ensures that the widget is visible.
      */
     public void showEastWidget() {
         if ( !eastSet ) {
@@ -139,8 +140,18 @@ public class SymbaController extends DockPanel {
      *
      * @param htmlStatus the html status to display in the East panel.
      */
-    public void showEastWidget( String htmlStatus ) {
+    public void setEastWidgetUserStatus( String htmlStatus ) {
         eastWidget.setUserStatus( htmlStatus );
+        showEastWidget();
+    }
+
+    /**
+     * Only changes the setDirections() value in the east widget, leaving the user status unchanged.
+     *
+     * @param htmlDirections the directions to display in the East panel.
+     */
+    public void setEastWidgetDirections( String htmlDirections ) {
+        eastWidget.setDirections( htmlDirections );
         showEastWidget();
     }
 

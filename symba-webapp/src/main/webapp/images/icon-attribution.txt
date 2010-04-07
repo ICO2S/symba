@@ -1,2 +1,3 @@
 arrow_down.svg, article.svg, new_window.svg, plus.svg : by http://somerandomdude.com/projects/iconic/, licensed under http://creativecommons.org/licenses/by-sa/3.0/us/
+clear.svg is equivalent to plus.svg rotated by 45 degrees.
 68-paperclip.png : by http://glyphish.com/, licensed under http://creativecommons.org/licenses/by/3.0/us/

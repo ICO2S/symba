@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public abstract class CollapsibleTable extends FlexTable {
     // each row is plain text
-    private ArrayList list;
+    private ArrayList<String> list;
     private String listType;
     private final Label summaryLabel;
     HorizontalPanel summaryPanel;

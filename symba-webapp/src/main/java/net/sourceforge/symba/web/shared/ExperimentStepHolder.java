@@ -4,6 +4,7 @@ import net.sourceforge.symba.web.client.gui.InputValidator;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Rather than storing the ExperimentSteps directly, store a Holder which contains the step, plus extra metadata
@@ -120,16 +121,16 @@ public class ExperimentStepHolder implements Serializable {
      * @param parameters  the new parameters (existing ones will be overwritten)
      * @param inputs      the new input materials to set the step to (these materials completely re-write existing)
      * @param outputs     the new output materials to set the step to (these materials completely re-write existing)
-     * @param fileNames   the new list of file names to associate with this step
-     * @return the new title value in [0], and true if new, false if matches original, in [1] - this is important,
-     *         as it isn't necessarily the same as the title parameter
+     * @param fileInfo    the new file name and file description for this step
+     * @return the new title value in [0]; and true if anything is new in this step, false if everything matches the
+     *         original, in [1] - this is important, as it isn't necessarily the same as the title parameter
      */
     public Object[] setInfoAtStepId( int selectedRow,
                                      String title,
                                      ArrayList<ExperimentParameter> parameters,
                                      ArrayList<Material> inputs,
                                      ArrayList<Material> outputs,
-                                     ArrayList<String> fileNames ) {
+                                     HashMap<String, String> fileInfo ) {
         Object[] values = new Object[2];
 
         if ( stepId == selectedRow ) {
@@ -159,6 +160,7 @@ public class ExperimentStepHolder implements Serializable {
 
             if ( current.getInputMaterials() != inputs ) {
                 setModified( true );
+                System.err.println( "Set modified to true due to a input material modification" );
                 current.getInputMaterials().clear();
                 current.getInputMaterials().addAll( inputs );
             }
@@ -167,8 +169,10 @@ public class ExperimentStepHolder implements Serializable {
                 current.getOutputMaterials().clear();
                 current.getOutputMaterials().addAll( outputs );
             }
-
-            current.setFileNames( fileNames );
+            if ( current.getFileInfo() != fileInfo ) {
+                setModified( true );
+                current.setFileInfo( fileInfo );
+            }
 
             values[0] = current.getTitle();
             values[1] = isModified();
@@ -178,7 +182,7 @@ public class ExperimentStepHolder implements Serializable {
         if ( !current.isLeaf() ) {
             for ( ExperimentStepHolder holder : current.getChildren() ) {
                 Object[] returnedValues = holder.setInfoAtStepId( selectedRow, title, parameters, inputs, outputs,
-                        fileNames );
+                        fileInfo );
                 if ( returnedValues.length == 2 && returnedValues[0] != null && returnedValues[1] != null ) {
                     setModified( ( Boolean ) returnedValues[1] );
                     return returnedValues;
@@ -241,10 +245,11 @@ public class ExperimentStepHolder implements Serializable {
 
     public int setFileAtStepId( int selectedRow,
                                 int depth,
-                                String fileName ) {
+                                String fileName,
+                                String fileDescription ) {
         if ( stepId == selectedRow ) {
             if ( fileName != null && fileName.length() > 0 ) {
-                current.getFileNames().add( fileName );
+                current.getFileInfo().put( fileName, fileDescription );
                 setModified( true );
             }
             return depth;
@@ -252,7 +257,7 @@ public class ExperimentStepHolder implements Serializable {
 
         if ( !current.isLeaf() ) {
             for ( ExperimentStepHolder holder : current.getChildren() ) {
-                int returnedDepth = holder.setFileAtStepId( selectedRow, depth + 1, fileName );
+                int returnedDepth = holder.setFileAtStepId( selectedRow, depth + 1, fileName, fileDescription );
                 if ( returnedDepth != -1 ) {
                     setModified( true );
                     return returnedDepth;
@@ -263,8 +268,8 @@ public class ExperimentStepHolder implements Serializable {
     }
 
     public void clearFileAssociations() {
-        current.getFileNames().clear();
-        original.getFileNames().clear();
+        current.getFileInfo().clear();
+        original.getFileInfo().clear();
         if ( !current.isLeaf() ) {
             for ( ExperimentStepHolder holder : current.getChildren() ) {
                 holder.clearFileAssociations();

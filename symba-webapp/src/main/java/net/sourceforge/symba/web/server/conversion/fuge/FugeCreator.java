@@ -1,6 +1,5 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
-import net.sourceforge.fuge.util.generated.*;
 import net.sourceforge.fuge.util.generated.ActionApplication;
 import net.sourceforge.fuge.util.generated.AuditCollection;
 import net.sourceforge.fuge.util.generated.Conclusion;
@@ -218,11 +217,18 @@ public class FugeCreator {
 
         for ( ExperimentStepHolder childHolder : childrenHolder ) {
             ExperimentStep child = childHolder.getCurrent();
-            for ( String inputData : child.getFileNames() ) {
+            for ( String inputDataName : child.getFileInfo().keySet() ) {
                 // in the db implementation, this material would be pulled from the database rather than created here
                 // todo set "name" to original filename plus easy-to-remember SyMBA filename
-                ExternalData fugeData = createExternalData( inputData, person );
-                dataIdentifiers.put( inputData, fugeData.getIdentifier() );
+                ExternalData fugeData = createExternalData( inputDataName, person );
+                if ( child.getFileInfo().get( inputDataName ).length() > 0 ) {
+                    Description d = new Description();
+                    d.setText( child.getFileInfo().get( inputDataName ) );
+                    Descriptions ds = new Descriptions();
+                    ds.getDescription().add( d );
+                    fugeData.setDescriptions( ds );
+                }
+                dataIdentifiers.put( inputDataName, fugeData.getIdentifier() );
                 allData.getData().add( factory.createExternalData( fugeData ) );
             }
 

@@ -350,11 +350,11 @@ public class EditInvestigationView extends VerticalPanel {
                 ClickHandler myHandler = new MakeEditableHandler( rowValue, depth + ActionType.SELECT.getValue() + 1,
                         investigation.isCompleted() );
                 readableStepView = new ReadableStepView( holder.getCurrent().getTitle(),
-                        holder.getCurrent().getFileNames(), holder.getCurrent().getParameters(),
+                        holder.getCurrent().getFileInfo(), holder.getCurrent().getParameters(),
                         holder.getCurrent().getInputMaterials(), holder.getCurrent().getOutputMaterials(), myHandler );
             } else {
                 readableStepView = new ReadableStepView( holder.getCurrent().getTitle(),
-                        holder.getCurrent().getFileNames(), holder.getCurrent().getParameters(),
+                        holder.getCurrent().getFileInfo(), holder.getCurrent().getParameters(),
                         holder.getCurrent().getInputMaterials(), holder.getCurrent().getOutputMaterials() );
             }
             stepsTable.setWidget( rowValue, depth + ActionType.SELECT.getValue() + 1, readableStepView );

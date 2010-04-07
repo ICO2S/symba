@@ -10,17 +10,18 @@ import net.sourceforge.symba.web.shared.ExperimentParameter;
 import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class ReadableStepView extends VerticalPanel {
     private String stepTitle;
-    private ArrayList<String> fileNames;
+    private HashMap<String, String> fileInfo;
     private ReadableStepParameterTable parameterTable;
     private ReadableStepMaterialTable inputMaterialTable, outputMaterialTable;
 
 
     public ReadableStepView( String stepTitle,
-                             ArrayList<String> fileNames,
+                             HashMap<String, String> fileInfo,
                              ArrayList<ExperimentParameter> parameters,
                              ArrayList<Material> inputs,
                              ArrayList<Material> outputs ) {
@@ -30,12 +31,12 @@ public class ReadableStepView extends VerticalPanel {
         outputMaterialTable = new ReadableStepMaterialTable( outputs, "output" );
 
         this.stepTitle = stepTitle;
-        this.fileNames = fileNames;
+        this.fileInfo = fileInfo;
         setupView();
     }
 
     public ReadableStepView( String stepTitle,
-                             ArrayList<String> fileNames,
+                             HashMap<String, String> fileInfo,
                              ArrayList<ExperimentParameter> parameters,
                              ArrayList<Material> inputs,
                              ArrayList<Material> outputs,
@@ -46,7 +47,7 @@ public class ReadableStepView extends VerticalPanel {
         outputMaterialTable = new ReadableStepMaterialTable( outputs, "output", myEditableHandler );
 
         this.stepTitle = stepTitle;
-        this.fileNames = fileNames;
+        this.fileInfo = fileInfo;
         setupView( myEditableHandler );
     }
 
@@ -82,7 +83,7 @@ public class ReadableStepView extends VerticalPanel {
             fileLabel.addStyleName( "clickable-text" );
         }
 
-        if ( fileNames.size() > 0 ) {
+        if ( fileInfo.size() > 0 ) {
             hPanel.add( fileLabel );
             hPanel.add( actionLabel );
             add( hPanel );
@@ -109,23 +110,32 @@ public class ReadableStepView extends VerticalPanel {
         return outputMaterialTable;
     }
 
-    public ArrayList<String> getFileNames() {
-        return fileNames;
+    public HashMap<String, String> getFileInfo() {
+        return fileInfo;
     }
 
     public String displayFileNames() {
-        String text = "";
-        for ( String file : fileNames ) {
-            text = text + file + "; ";
+        StringBuffer text = new StringBuffer();
+        boolean addNewline = false;
+        for ( String file : fileInfo.keySet() ) {
+            if ( !addNewline ) {
+                addNewline = true;
+            } else {
+                text.append( ";\n" );
+            }
+            text.append( file );
+            if ( fileInfo.get( file ).length() > 0 ) {
+                text.append( " (" ).append( fileInfo.get( file ) ).append( ")" );
+            }
         }
-        return text;
+        return text.toString();
     }
 
     private String displayFileNameCount() {
-        if ( fileNames.size() == 1 ) {
+        if ( fileInfo.size() == 1 ) {
             return "1 data file ";
-        } else if ( fileNames.size() > 1 ) {
-            return fileNames.size() + " data files ";
+        } else if ( fileInfo.size() > 1 ) {
+            return fileInfo.size() + " data files ";
         }
 
         return "";
@@ -158,7 +168,7 @@ public class ReadableStepView extends VerticalPanel {
                 }
             }
         }
-        
+
     }
 
     public class ReadableStepMaterialTable extends CollapsibleTable {

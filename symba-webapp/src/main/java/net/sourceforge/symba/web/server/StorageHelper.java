@@ -67,6 +67,14 @@ public abstract class StorageHelper {
     @NotNull
     public abstract HashMap<String, Contact> addContact( Contact contact );
 
+    /**
+     * This method must be able to deal with instances where the incoming material ID is identical to one of the
+     * already-present IDs. In such cases, it should update the existing material in a way appropriate to that
+     * implementation of the StorageHelper. In the case of a versioned database, for example, it must create a new
+     * version of the existing material.
+     * @param material the material to add or update
+     * @return the new set of materials
+     */
     @NotNull
     public abstract HashMap<String, Material> addMaterial( Material material );
 

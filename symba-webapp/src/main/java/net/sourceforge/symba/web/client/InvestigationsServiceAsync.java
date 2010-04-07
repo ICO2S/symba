@@ -36,7 +36,7 @@ public interface InvestigationsServiceAsync {
     void addContact( Contact contact,
                      AsyncCallback<HashMap<String, Contact>> async );
 
-    void addMaterial( Material material,
+    void addOrUpdateMaterial( Material material,
                       AsyncCallback<HashMap<String, Material>> async );
 
     void getMetadata( String id,

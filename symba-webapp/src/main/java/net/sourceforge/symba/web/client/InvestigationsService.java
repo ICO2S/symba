@@ -33,7 +33,7 @@ public interface InvestigationsService extends RemoteService {
 
     HashMap<String, Material> getAllMaterials();
 
-    HashMap<String, Material> addMaterial( Material material );
+    HashMap<String, Material> addOrUpdateMaterial( Material material );
 
-    String getMetadata(String id);
+    String getMetadata( String id );
 }

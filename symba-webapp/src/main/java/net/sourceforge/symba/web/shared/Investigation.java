@@ -4,6 +4,7 @@ import com.google.gwt.user.client.Random;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * The JAXB-created XML code for FuGE cannot be used within the client-side GWT code. Therefore,
@@ -63,7 +64,8 @@ public class Investigation implements Serializable {
      */
     public Investigation( Investigation investigation ) {
         this( investigation.isTemplate(), investigation.isCompleted(), investigation.getId(),
-                investigation.getInvestigationTitle(), investigation.getHypothesis(), investigation.getConclusion(), investigation.getProvider(), investigation.getExperiments() );
+                investigation.getInvestigationTitle(), investigation.getHypothesis(), investigation.getConclusion(),
+                investigation.getProvider(), investigation.getExperiments() );
     }
 
     public void createId() {
@@ -80,18 +82,19 @@ public class Investigation implements Serializable {
      * @param parameters  the new parameters to set the step to (these parameters completely re-write existing ones)
      * @param inputs      the new input materials to set the step to (these materials completely re-write existing)
      * @param outputs     the new output materials to set the step to (these materials completely re-write existing)
-     * @param fileNames   the names of the files for the step
-     * @return the new title at [0] and the modified value at [1]. Will be empty array if no matches found
+     * @param fileInfo    the names and descriptions of the files for the step
+     * @return the new title at [0] and presence of modification (true/false) at [1]. Will be empty array if no
+     *         matches found
      */
     public Object[] setExperimentStepInfo( int selectedRow,
                                            String title,
                                            ArrayList<ExperimentParameter> parameters,
                                            ArrayList<Material> inputs,
                                            ArrayList<Material> outputs,
-                                           ArrayList<String> fileNames ) {
+                                           HashMap<String, String> fileInfo ) {
 
         for ( ExperimentStepHolder holder : experiments ) {
-            Object[] values = holder.setInfoAtStepId( selectedRow, title, parameters, inputs, outputs, fileNames );
+            Object[] values = holder.setInfoAtStepId( selectedRow, title, parameters, inputs, outputs, fileInfo );
             if ( values.length == 2 && values[0] != null && values[1] != null &&
                     ( ( String ) values[0] ).length() > 0 ) {
                 // the title was found and set appropriately.

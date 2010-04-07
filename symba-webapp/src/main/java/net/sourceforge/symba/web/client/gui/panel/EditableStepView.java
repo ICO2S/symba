@@ -23,7 +23,7 @@ public class EditableStepView extends PopupPanel {
     private ClickHandler myEditableHandler;
     private MaterialListPanel inputMaterialPanel, outputMaterialPanel;
 //    private FileForm fileForm;
-    private GwtUploadFile fileForm;
+//    private GwtUploadFile fileForm;
     private Investigation investigation;
 
     public EditableStepView( final SymbaController controller,
@@ -70,8 +70,12 @@ public class EditableStepView extends PopupPanel {
         //
         // we do not want to manipulate the calling set of files directly - those should
         // only be changed upon saving of the step.
-        fileForm = new GwtUploadFile( new ArrayList<String>( readableView.getFileNames() ) );
-//        fileForm = new FileForm( readableView.getFileNames() );
+        CaptionPanel outputDataCaptionPanel = new CaptionPanel( "Output Data" );
+        outputDataCaptionPanel.setStyleName( "captionpanel-border" );
+        final GwtUploadFile fileForm = new GwtUploadFile( readableView.getFileInfo() );
+        fileForm.setTitle( "Output Data" );
+        outputDataCaptionPanel.add( fileForm );
+//        fileForm = new FileForm( readableView.getFileInfo() );
 
         //
         // parameters
@@ -123,7 +127,7 @@ public class EditableStepView extends PopupPanel {
 
         saveStepButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
-                saveStep( completed, controller.getStoredMaterials(), tableToAddTo );
+                saveStep( completed, controller.getStoredMaterials(), fileForm, tableToAddTo );
             }
         } );
 
@@ -136,7 +140,7 @@ public class EditableStepView extends PopupPanel {
         stepTitle.addKeyPressHandler( new KeyPressHandler() {
             public void onKeyPress( KeyPressEvent event ) {
                 if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
-                    saveStep( completed, controller.getStoredMaterials(), tableToAddTo );
+                    saveStep( completed, controller.getStoredMaterials(), fileForm, tableToAddTo );
                 }
             }
         } );
@@ -145,7 +149,7 @@ public class EditableStepView extends PopupPanel {
         // positioning
         //
         contents.add( hPanel );
-        contents.add( fileForm );
+        contents.add( outputDataCaptionPanel );
         contents.add( parameterCaptionPanel );
         contents.add( inputMaterialCaptionPanel );
         contents.add( outputMaterialCaptionPanel );
@@ -156,6 +160,7 @@ public class EditableStepView extends PopupPanel {
 
     private void saveStep( boolean completed,
                            final HashMap<String, Material> storedMaterials,
+                           GwtUploadFile fileForm,
                            FlexTable tableToAddTo ) {
         // save the text in the parameters text boxes
         if ( !getParameterTable().savePanelValues( completed ) ) {
@@ -181,7 +186,7 @@ public class EditableStepView extends PopupPanel {
 
         Object[] values = investigation
                 .setExperimentStepInfo( editableRow, stepTitle.getText(),
-                        getParameterTable().getParameters(), inputs, outputs, fileForm.getFileNames() );
+                        getParameterTable().getParameters(), inputs, outputs, fileForm.getFileInfo() );
 
         // Set style based on change, then send the stepTitle to setReadOnly.
         Boolean modified = false;
@@ -197,7 +202,7 @@ public class EditableStepView extends PopupPanel {
                     .removeStyleName( editableRow, editableColumn, "cell-modified" );
 
         }
-        setReadOnly( tableToAddTo, inputs, outputs );
+        setReadOnly( tableToAddTo, inputs, outputs, fileForm );
         hide();
 
     }
@@ -211,15 +216,17 @@ public class EditableStepView extends PopupPanel {
      * @param tableToAddTo the table to add the widget to at the stored positions
      * @param inputs       the recently-added input materials
      * @param outputs      the recently-added output materials
+     * @param fileForm     the form containing the new files for this step
      */
     public void setReadOnly( FlexTable tableToAddTo,
                              ArrayList<Material> inputs,
-                             ArrayList<Material> outputs ) {
+                             ArrayList<Material> outputs,
+                             GwtUploadFile fileForm ) {
 
         // here, the modification to the experiment marked with "isModified" is inaccessible, so just check
         // that the value is different from what was in the
 
-        ReadableStepView readable = new ReadableStepView( getStepTitle().getValue(), fileForm.getFileNames(),
+        ReadableStepView readable = new ReadableStepView( getStepTitle().getValue(), fileForm.getFileInfo(),
                 getParameterTable().getParameters(), inputs, outputs, myEditableHandler );
         tableToAddTo.setWidget( getEditableRow(), getEditableColumn(), readable );
     }

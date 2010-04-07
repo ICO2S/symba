@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.gui.InputValidator;
+import net.sourceforge.symba.web.client.gui.SetupTitledText;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 
@@ -80,13 +81,13 @@ public class InvestigationDetailsPanel extends VerticalPanel {
      */
     public void createReadableDisplay( Investigation investigation ) {
 
-        setupDetailPanel( investigationTitlePanel, investigationTitleBox, "Investigation Title: ",
+        SetupTitledText.set( investigationTitlePanel, investigationTitleBox, "Investigation Title: ",
                 investigation.getInvestigationTitle(), investigation.isReadOnly() );
         add( investigationTitlePanel );
-        setupDetailPanel( hypothesisPanel, hypothesisBox, "Investigation Hypothesis: ",
+        SetupTitledText.set( hypothesisPanel, hypothesisBox, "Investigation Hypothesis: ",
                 investigation.getHypothesis(), investigation.isReadOnly() );
         add( hypothesisPanel );
-        setupDetailPanel( conclusionPanel, conclusionBox, "Investigation Conclusion(s): ",
+        SetupTitledText.set( conclusionPanel, conclusionBox, "Investigation Conclusion(s): ",
                 investigation.getConclusion(), investigation.isReadOnly() );
         add( conclusionPanel );
 
@@ -94,44 +95,6 @@ public class InvestigationDetailsPanel extends VerticalPanel {
                 investigation.getProvider().getEmailAddress(), investigation.isReadOnly() );
         add( contactPanel );
 
-    }
-
-    private void setupDetailPanel( final HorizontalPanel panel,
-                                   final TextBoxBase box,
-                                   String legend,
-                                   String value,
-                                   boolean readOnly ) {
-
-        // clear the panel.
-        for ( int iii = panel.getWidgetCount(); iii > 0; iii-- ) {
-            panel.remove( iii - 1 );
-        }
-
-        panel.setSpacing( 5 );
-        Label legendLabel = new Label( legend );
-        legendLabel.addStyleName( "textbox-legend" );
-        panel.add( legendLabel );
-
-        if ( value != null && value.length() > 0 ) {
-            final Label label = new Label();
-            label.setText( value );
-            if ( !readOnly ) {
-                label.addStyleName( "clickable-text" );
-                label.addClickHandler( new ClickHandler() {
-                    public void onClick( ClickEvent clickEvent ) {
-                        panel.remove( 1 ); // remove existing label widget
-                        box.setText( label.getText() );
-                        panel.add( box ); // add the write widget
-                        box.setFocus( true );
-                    }
-                } );
-            }
-            panel.add( label );
-        } else {
-            // there is no value at all yet for the investigation detail. Put in empty box
-            box.setText( "" );
-            panel.add( box ); // add the write widget
-        }
     }
 
     public void setupProviderNameDetailPanel( final String fullNameValue,

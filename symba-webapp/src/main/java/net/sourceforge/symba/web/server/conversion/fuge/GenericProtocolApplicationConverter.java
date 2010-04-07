@@ -61,7 +61,7 @@ public class GenericProtocolApplicationConverter {
                                                      Person person ) {
         GenericProtocolApplication gpa = toFuge( identifier, endurant, associatedProtocol, person );
 
-        for ( String file : step.getFileNames() ) {
+        for ( String file : step.getFileInfo().keySet() ) {
             OutputData od = new OutputData();
             od.setDataRef( dataIdentifiers.get( file ) );
             gpa.getOutputData().add( od );
@@ -91,7 +91,12 @@ public class GenericProtocolApplicationConverter {
             ExternalData ed = getExternalData( od.getDataRef(), allData );
             if ( ed != null ) {
                 // todo sort out naming of name and location
-                step.getFileNames().add( ed.getLocation() );
+                String d = "";
+                if ( !ed.getDescriptions().getDescription().isEmpty() &&
+                        ed.getDescriptions().getDescription().get( 0 ).getText().length() > 0 ) {
+                    d = ed.getDescriptions().getDescription().get( 0 ).getText();
+                }
+                step.getFileInfo().put( ed.getLocation(), d );
             }
         }
         for ( InputCompleteMaterials icm : gpa.getInputCompleteMaterials() ) {

@@ -1,5 +1,7 @@
 package net.sourceforge.symba.web.client.gui.panel;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
@@ -8,28 +10,27 @@ import gwtupload.client.IUploader;
 import gwtupload.client.MultiUploader;
 import gwtupload.client.PreloadedImage;
 import net.sourceforge.symba.web.client.gui.CollapsibleTable;
+import net.sourceforge.symba.web.client.gui.SetupTitledText;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GwtUploadFile extends VerticalPanel {
 
     // A panel where the thumbnails of uploaded images will be shown
     private FlowPanel panelImages = new FlowPanel();
 
-    private final ArrayList<String> fileNames;
+    // the key is the file name, and the value is the file description.
+    private final HashMap<String, String> fileInfo;
 
-    public GwtUploadFile( ArrayList<String> fileNames ) {
+    public GwtUploadFile( HashMap<String, String> fileInfo ) {
 
         //
         // Initial instantiation of all objects in this panel.
         //
-        this.fileNames = fileNames;
+        this.fileInfo = new HashMap<String, String>( fileInfo );
         final MultiUploader defaultUploader = new MultiUploader();
-        OriginalFileDisplay originalFileDisplay = new OriginalFileDisplay( this.fileNames, new ClickHandler() {
-            public void onClick( ClickEvent event ) {
-                // do nothing - we just need to pass something to ensure that the display is changeable.
-            }
-        } );
+        OriginalFileDisplay originalFileDisplay = new OriginalFileDisplay( this.fileInfo );
 
         //
         // handlers
@@ -48,7 +49,20 @@ public class GwtUploadFile extends VerticalPanel {
             public void onFinish( IUploader uploader ) {
                 if ( uploader.getStatus() == IUploadStatus.Status.SUCCESS ) {
                     new PreloadedImage( uploader.fileUrl(), showImage );
-                    GwtUploadFile.this.fileNames.add( defaultUploader.getFileName() );
+                    GwtUploadFile.this.fileInfo.put( defaultUploader.getFileName(), "" );
+                    HorizontalPanel hp = new HorizontalPanel();
+                    final TextArea area = new TextArea();
+                    area.setCharacterWidth( 40 );
+                    area.setVisibleLines( 4 );
+                    SetupTitledText.set( hp, area, defaultUploader.getFileName(), "", false );
+                    add( hp );
+
+                    area.addBlurHandler( new BlurHandler() {
+                        public void onBlur( BlurEvent event ) {
+                            // override original value in the HashMap
+                            GwtUploadFile.this.fileInfo.put( defaultUploader.getFileName(), area.getText() );
+                        }
+                    } );
                 }
             }
         };
@@ -62,23 +76,28 @@ public class GwtUploadFile extends VerticalPanel {
         add( panelImages );
     }
 
+    public HashMap<String, String> getFileInfo() {
 
-    public ArrayList<String> getFileNames() {
-        return fileNames;
+        return fileInfo;
     }
 
     private class OriginalFileDisplay extends CollapsibleTable {
-        private OriginalFileDisplay( ArrayList list ) {
-            super( list, "original file" );
-        }
+        private final HashMap<String, String> info;
 
-        private OriginalFileDisplay( ArrayList list,
-                                     final ClickHandler myEditableHandler ) {
-            super( list, "original file", myEditableHandler );
+        private OriginalFileDisplay( HashMap<String, String> info ) {
+            super( new ArrayList<String>( info.keySet() ), "original file", new ClickHandler() {
+                public void onClick( ClickEvent event ) {
+                    // deliberately leave this empty, as we are going to provide our own click handling in this class
+                }
+            } );
+            this.info = info;
         }
 
         @Override
         protected void displayList( ClickHandler myEditableHandler ) {
+
+            // myEditableHandler is ignored in this version of the method.
+            // Instead, this is assumed to be editable, as this class is only used in an editable situation.
 
             for ( final Object item : getList() ) {
                 final int currentRow = getRowCount();
@@ -87,24 +106,43 @@ public class GwtUploadFile extends VerticalPanel {
                 // display object instantiation
                 //
 
-                final Label label = new Label( ( String ) item );
+                final String fileName = ( String ) item;
+                StringBuffer value = new StringBuffer( fileName );
+                if ( info.get( fileName ).length() > 0 ) {
+                    value.append( " (Description: " ).append( info.get( fileName ) ).append( ")" );
+                }
+                final Label label = new Label( value.toString() );
                 final Button deleteButton = new Button( "X" );
 
                 //
                 // styles
                 //
-                if ( myEditableHandler != null ) {
-                    label.addClickHandler( myEditableHandler );
-                    label.addStyleName( "clickable-text" );
-                }
+                label.addClickHandler( new ClickHandler() {
+                    public void onClick( ClickEvent event ) {
+                        remove( label );
+                        // allow modification of the file description
+                        HorizontalPanel hp = new HorizontalPanel();
+                        final TextArea area = new TextArea();
+                        area.setCharacterWidth( 40 );
+                        area.setVisibleLines( 4 );
+                        SetupTitledText.set( hp, area, fileName, info.get( fileName ), false );
+                        setWidget( currentRow, 0, hp );
+
+                        area.addBlurHandler( new BlurHandler() {
+                            public void onBlur( BlurEvent event ) {
+                                // override original value in the HashMap
+                                GwtUploadFile.this.fileInfo.put( fileName, area.getText() );
+                            }
+                        } );
+                    }
+                } );
+                label.addStyleName( "clickable-text" );
 
                 //
                 // positioning
                 //
                 setWidget( currentRow, 0, label );
-                if ( myEditableHandler != null ) {
-                    setWidget( currentRow, 1, deleteButton );
-                }
+                setWidget( currentRow, 1, deleteButton );
 
                 //
                 // handlers

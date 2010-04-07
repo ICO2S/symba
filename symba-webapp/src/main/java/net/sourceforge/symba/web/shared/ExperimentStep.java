@@ -4,6 +4,7 @@ import com.google.gwt.user.client.Random;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * The "component" interface of a whole-part design pattern, allowing changeable and arbitrarily-deep levels
@@ -16,7 +17,7 @@ public class ExperimentStep implements Serializable {
     private ArrayList<ExperimentParameter> parameters;
     private ArrayList<Material> inputMaterials;
     private ArrayList<Material> outputMaterials;
-    private ArrayList<String> fileNames;
+    private HashMap<String,String> fileInfo;
 
     // todo parameters etc. go here
 
@@ -25,7 +26,7 @@ public class ExperimentStep implements Serializable {
     public ExperimentStep() {
         this.databaseId = "0"; // todo proper identification creation here or in createDatabaseId
         this.title = "Empty Experiment Step";
-        this.fileNames = new ArrayList<String>();
+        this.fileInfo = new HashMap<String, String>();
         this.children = new ArrayList<ExperimentStepHolder>();
         this.parameters = new ArrayList<ExperimentParameter>();
         this.inputMaterials = new ArrayList<Material>();
@@ -34,7 +35,7 @@ public class ExperimentStep implements Serializable {
 
     public ExperimentStep( String databaseId,
                            String title,
-                           ArrayList<String> fileNames,
+                           HashMap<String, String> fileInfo,
                            ArrayList<ExperimentStepHolder> children,
                            ArrayList<ExperimentParameter> parameters,
                            ArrayList<Material> inputMaterials,
@@ -42,7 +43,7 @@ public class ExperimentStep implements Serializable {
 
         this.databaseId = databaseId;
         this.title = title;
-        this.fileNames = fileNames;
+        this.fileInfo = fileInfo;
         this.children = children;
         this.parameters = parameters;
         this.inputMaterials = inputMaterials;
@@ -57,7 +58,7 @@ public class ExperimentStep implements Serializable {
      * @param step the step to copy.
      */
     public ExperimentStep( ExperimentStep step ) {
-        this( step.getDatabaseId(), step.getTitle(), new ArrayList<String>( step.getFileNames() ),
+        this( step.getDatabaseId(), step.getTitle(), new HashMap<String, String>( step.getFileInfo() ),
                 new ArrayList<ExperimentStepHolder>( step.getChildren() ),
                 new ArrayList<ExperimentParameter>( step.getParameters() ),
                 new ArrayList<Material>( step.getInputMaterials() ),
@@ -96,12 +97,12 @@ public class ExperimentStep implements Serializable {
         return outputMaterials;
     }
 
-    public ArrayList<String> getFileNames() {
-        return fileNames;
+    public HashMap<String, String> getFileInfo() {
+        return fileInfo;
     }
 
-    public void setFileNames( ArrayList<String> fileNames ) {
-        this.fileNames = fileNames;
+    public void setFileInfo( HashMap<String, String> fileInfo ) {
+        this.fileInfo = fileInfo;
     }
 
     public ArrayList<ExperimentStepHolder> getChildren() {

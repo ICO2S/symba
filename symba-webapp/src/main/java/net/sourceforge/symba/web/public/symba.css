@@ -191,7 +191,7 @@ each stack to not have the google gradient. */
 }
 
 .within-step-images {
-    height: 30px;
+    height: 20px;
     padding: 3px 3px 3px 3px;
     border: solid 1px black;
     border-radius: 5px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */

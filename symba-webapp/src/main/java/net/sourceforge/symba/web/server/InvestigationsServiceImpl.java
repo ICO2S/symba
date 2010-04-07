@@ -89,7 +89,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         return helper.getMaterials();
     }
 
-    public HashMap<String, Material> addMaterial( Material material ) {
+    public HashMap<String, Material> addOrUpdateMaterial( Material material ) {
         return helper.addMaterial( material );
     }
 

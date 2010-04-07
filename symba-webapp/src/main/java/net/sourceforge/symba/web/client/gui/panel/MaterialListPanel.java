@@ -2,6 +2,7 @@ package net.sourceforge.symba.web.client.gui.panel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -53,13 +54,19 @@ public class MaterialListPanel extends HorizontalPanel {
 
     private class CreatorPanel extends VerticalPanel {
 
+        private final TextBox nameBox;
+        private final TextArea descriptionBox;
+        private String originalId;
+
         public CreatorPanel( final SymbaController controller ) {
+
+            originalId = "";
 
             HorizontalPanel name = new HorizontalPanel();
             HorizontalPanel description = new HorizontalPanel();
 
-            final TextBox nameBox = new TextBox();
-            final TextArea descriptionBox = new TextArea();
+            nameBox = new TextBox();
+            descriptionBox = new TextArea();
             descriptionBox.setCharacterWidth( 30 );
             descriptionBox.setVisibleLines( 5 );
 
@@ -81,7 +88,7 @@ public class MaterialListPanel extends HorizontalPanel {
 
             saveButton.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
-                    doSave( controller, nameBox, descriptionBox );
+                    doSave( controller, originalId, nameBox, descriptionBox );
                 }
             } );
 
@@ -92,7 +99,14 @@ public class MaterialListPanel extends HorizontalPanel {
 
         }
 
+        private void editMaterial( final Material material ) {
+            originalId = material.getId();
+            nameBox.setText( material.getName() );
+            descriptionBox.setText( material.getDescription() );
+        }
+
         private String doSave( final SymbaController controller,
+                               String originalId,
                                final TextBox nameBox,
                                TextArea descriptionBox ) {
 
@@ -107,45 +121,87 @@ public class MaterialListPanel extends HorizontalPanel {
 
             // otherwise, it's OK to save the material
             final Material material = new Material();
-            material.createId();
+            if ( originalId.length() == 0 ) {
+                material.createId();
+            } else {
+                material.setId( originalId );
+            }
             material.setName( nameBox.getText().trim() );
             if ( descriptionBox.getText().trim().length() > 0 ) {
                 material.setDescription( descriptionBox.getText().trim() );
             }
 
+            if ( isValidMaterial( material, originalId, controller ) ) {
+                if ( originalId.length() == 0 ) {
+                    controller.getRpcService()
+                            .addOrUpdateMaterial( material, new AsyncCallback<HashMap<String, Material>>() {
+                                public void onFailure( Throwable caught ) {
+                                    Window.alert(
+                                            "Failed to store material: " + material.getName() + "\n" +
+                                                    caught.getMessage() );
+                                }
+
+                                public void onSuccess( HashMap<String, Material> result ) {
+                                    controller.setStoredMaterials( result );
+                                    selector.getSelectedMaterials().add( material );
+                                    selector.showListBox();
+                                    // clear any values
+                                    nameBox.setText( "" );
+                                    setVisible( false );
+                                }
+                            } );
+                } else {
+                    controller.getRpcService()
+                            .addOrUpdateMaterial( material, new AsyncCallback<HashMap<String, Material>>() {
+                                public void onFailure( Throwable caught ) {
+                                    Window.alert( "Failed to update material: " + material.getName() + "\n" +
+                                            caught.getMessage() );
+                                }
+
+                                public void onSuccess( HashMap<String, Material> result ) {
+                                    controller.setStoredMaterials( result );
+                                    // remove the original material from the selected list, if present
+                                    for ( Material current : selector.getSelectedMaterials() ) {
+                                        if ( current.getId().equals( material.getId() ) ) {
+                                            selector.getSelectedMaterials().remove( current );
+                                            break;
+                                        }
+                                    }
+                                    selector.getSelectedMaterials().add( material );
+                                    selector.showListBox();
+                                    // clear any values
+                                    nameBox.setText( "" );
+                                    setVisible( false );
+                                }
+                            } );
+                }
+                return material.getId();
+            } else {
+                InputValidator.setWarning( nameBox );
+                return "";
+            }
+        }
+
+        private boolean isValidMaterial( Material material,
+                                         String originalId,
+                                         SymbaController controller ) {
             // basic validation: check that the name isn't already in the list
             for ( Material storedMaterial : controller.getStoredMaterials().values() ) {
-                if ( storedMaterial.getName().equals( material.getName() ) ) {
+                if ( storedMaterial.getName().equals( material.getName() ) &&
+                        !storedMaterial.getId().equals( originalId ) ) {
                     Window.alert( "You may not use the name of an existing material to create a new material" );
-                    InputValidator.setWarning( nameBox );
-                    return "";
+                    return false;
                 }
             }
-
-            controller.getRpcService().addMaterial( material, new AsyncCallback<HashMap<String, Material>>() {
-                public void onFailure( Throwable caught ) {
-                    Window.alert( "Failed to store material: " + material.getName() + "\n" + caught.getMessage() );
-                }
-
-                public void onSuccess( HashMap<String, Material> result ) {
-                    controller.setStoredMaterials( result );
-                    // pre-select the just-added material
-                    selector.getSelectedMaterials().add( material );
-                    selector.showListBox();
-                    // clear any values
-                    nameBox.setText( "" );
-                    setVisible( false );
-                }
-            } );
-
-            return material.getId();
+            return true;
         }
     }
 
     private class SelectorPanel extends VerticalPanel {
 
-        private static final String ADD_ICON = "/images/plus.png";
-        private static final String COPY_ICON = "/images/new_window-word.png";
+        private static final String ADD_ICON = "/images/plus-noword.png";
+        private static final String COPY_ICON = "/images/new_window.png";
+        private static final String CLEAR_ICON = "/images/clear.png";
 
         private final Label countLabel;
         private final ListBox expandedMaterialBox;
@@ -154,7 +210,7 @@ public class MaterialListPanel extends HorizontalPanel {
         private final SymbaController controller;
 
         private SelectorPanel( final CreatorPanel creator,
-                               SymbaController controller,
+                               final SymbaController controller,
                                ArrayList<Material> selectedMaterials,
                                String materialType ) {
             // by using the controller here rather than its materials, we'll catch any updates to its materials
@@ -177,10 +233,15 @@ public class MaterialListPanel extends HorizontalPanel {
             hPanel.setSpacing( 5 );
             countLabel = new Label( getMaterialsCount() );
             Image createImage = new Image( prefix + ADD_ICON );
+            createImage.setTitle( "Create New Material" );
             Image copyImage = new Image( prefix + COPY_ICON );
+            copyImage.setTitle( "Copy Material" );
+            Image clearImage = new Image( prefix + CLEAR_ICON );
+            clearImage.setTitle( "Clear Selected Materials" );
             hPanel.add( countLabel );
             hPanel.add( createImage );
             hPanel.add( copyImage );
+            hPanel.add( clearImage );
 
             if ( viewType == ViewType.ASSIGN_TO_EXPERIMENT ) {
                 expandedMaterialBox = new ListBox( true ); // set as a multiple select box
@@ -193,6 +254,7 @@ public class MaterialListPanel extends HorizontalPanel {
             countLabel.addStyleName( "clickable-text" );
             createImage.addStyleName( "within-step-images" );
             copyImage.addStyleName( "within-step-images" );
+            clearImage.addStyleName( "within-step-images" );
 
             // handlers
             countLabel.addClickHandler( new ClickHandler() {
@@ -206,6 +268,74 @@ public class MaterialListPanel extends HorizontalPanel {
             createImage.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     creator.setVisible( true );
+                }
+            } );
+
+            copyImage.addClickHandler( new ClickHandler() {
+                public void onClick( ClickEvent event ) {
+                    // if the set of clickable materials isn't visible yet, make it visible.
+                    if ( !expandedMaterialBox.isVisible() ) {
+                        showListBox();
+                    } else {
+                        // If a single material has been chosen, then allow it to be copied and put into the
+                        // creator panel.
+                        if ( getSelectedMaterialIds().size() == 1 ) {
+                            Material original = controller.getStoredMaterials()
+                                    .get( getSelectedMaterialIds().get( 0 ) );
+                            final Material copy = new Material( "",
+                                    original.getName() + " " +
+                                            ( Integer.toString( Random.nextInt() ).substring( 1, 4 ) ),
+                                    original.getDescription() );
+                            copy.createId();
+                            controller.getRpcService()
+                                    .addOrUpdateMaterial( copy, new AsyncCallback<HashMap<String, Material>>() {
+                                        public void onFailure( Throwable caught ) {
+                                            Window.alert( "Failed to store material: " + copy.getName() + "\n" +
+                                                    caught.getMessage() );
+                                        }
+
+                                        public void onSuccess( HashMap<String, Material> result ) {
+                                            controller.setStoredMaterials( result );
+                                            selector.getSelectedMaterials().add( copy );
+                                            selector.showListBox();
+                                        }
+                                    } );
+                        } else {
+                            // if >1 material (or no materials) has been chosen, force the user to just select one
+                            Window.alert( "Please choose exactly one material to copy." );
+                        }
+                    }
+                }
+            } );
+
+            clearImage.addClickHandler( new ClickHandler() {
+                public void onClick( ClickEvent event ) {
+                    if ( getSelectedMaterialIds().isEmpty() ) {
+                        return;
+                    }
+                    boolean result = true;
+                    if ( viewType == ViewType.ASSIGN_TO_EXPERIMENT ) {
+                        result = Window
+                                .confirm(
+                                        "Are you sure you wish to drop all materials from this experimental step?" );
+                    }
+                    if ( result ) {
+                        selector.getSelectedMaterials().clear();
+                        selector.showListBox();
+                        creator.setVisible( false );
+                    }
+                }
+            } );
+
+            expandedMaterialBox.addClickHandler( new ClickHandler() {
+                public void onClick( ClickEvent event ) {
+                    // if there is just one selected item, display the information about that item in the
+                    // creator panel. This allows edits of existing items.
+                    if ( getSelectedMaterialIds().size() == 1 ) {
+                        creator.setVisible( true );
+                        creator.editMaterial(
+                                controller.getStoredMaterials().get( getSelectedMaterialIds().get( 0 ) ) );
+                    }
                 }
             } );
 

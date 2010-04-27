@@ -200,6 +200,10 @@ public class Investigation implements Serializable {
         return provider;
     }
 
+    public void setProvider( Contact provider ) {
+        this.provider = provider;
+    }
+
     public ArrayList<ExperimentStepHolder> getExperiments() {
         return experiments;
     }

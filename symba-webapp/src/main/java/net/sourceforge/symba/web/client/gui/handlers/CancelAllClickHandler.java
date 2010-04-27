@@ -17,8 +17,6 @@ public class CancelAllClickHandler implements ClickHandler {
 
     public void onClick( ClickEvent event ) {
         // todo add "did not modify" statement at top of new page
-        controller.setCenterWidget( replacement );
-        controller.showEastWidget("", "");
-        controller.showSymbaStatus();
+        controller.cancelAll();
     }
 }

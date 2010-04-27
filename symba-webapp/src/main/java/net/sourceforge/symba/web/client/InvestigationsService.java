@@ -23,7 +23,7 @@ public interface InvestigationsService extends RemoteService {
 
     ArrayList<InvestigationDetail> updateInvestigation( Investigation investigation );
 
-    InvestigationDetail copyInvestigation( String id );
+    InvestigationDetail copyInvestigation( String id, String contactId );
 
     ArrayList<InvestigationDetail> setInvestigationAsTemplate( String id );
 

@@ -88,7 +88,8 @@ public class DatabaseStorageHelper extends StorageHelper {
     }
 
     @NotNull
-    public InvestigationDetail copy( @NotNull String id ) {
+    public InvestigationDetail copy( @NotNull String id,
+                                     @NotNull String contactId ) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

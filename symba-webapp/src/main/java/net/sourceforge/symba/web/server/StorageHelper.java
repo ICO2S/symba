@@ -1,9 +1,6 @@
 package net.sourceforge.symba.web.server;
 
-import net.sourceforge.symba.web.shared.Contact;
-import net.sourceforge.symba.web.shared.Investigation;
-import net.sourceforge.symba.web.shared.InvestigationDetail;
-import net.sourceforge.symba.web.shared.Material;
+import net.sourceforge.symba.web.shared.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 
@@ -14,6 +11,8 @@ import java.util.HashMap;
  * interface to allow more than one way of storing data within SyMBA
  */
 public abstract class StorageHelper {
+
+    private User currentUser;
 
     private HashMap<String, Investigation> investigations;
 
@@ -26,12 +25,17 @@ public abstract class StorageHelper {
     private HashMap<String, Material> materials;
 
     protected StorageHelper() {
+        currentUser = new User();
         investigations = new HashMap<String, Investigation>();
         contacts = new HashMap<String, Contact>();
         materials = new HashMap<String, Material>();
     }
 
     public abstract void setup( @NotNull ApplicationContext context );
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
 
     @NotNull
     public HashMap<String, Investigation> getInvestigations() {
@@ -72,6 +76,7 @@ public abstract class StorageHelper {
      * already-present IDs. In such cases, it should update the existing material in a way appropriate to that
      * implementation of the StorageHelper. In the case of a versioned database, for example, it must create a new
      * version of the existing material.
+     *
      * @param material the material to add or update
      * @return the new set of materials
      */
@@ -85,7 +90,8 @@ public abstract class StorageHelper {
     public abstract ArrayList<InvestigationDetail> update( @NotNull Investigation investigation );
 
     @NotNull
-    public abstract InvestigationDetail copy( @NotNull String id );
+    public abstract InvestigationDetail copy( @NotNull String id,
+                                              @NotNull String contactId );
 
     @NotNull
     public abstract ArrayList<InvestigationDetail> delete( @NotNull String id );

@@ -9,10 +9,12 @@ import net.sourceforge.symba.web.client.gui.panel.SymbaController;
 public class ListExperimentsClickHandler implements ClickHandler {
     private final SymbaController controller;
     private final PopupPanel popup;
+    private boolean isActive;
 
     public ListExperimentsClickHandler( SymbaController controller ) {
         this.controller = controller;
         this.popup = null;
+        isActive = true;
     }
 
     /**
@@ -25,16 +27,27 @@ public class ListExperimentsClickHandler implements ClickHandler {
                                         PopupPanel popup ) {
         this.controller = controller;
         this.popup = popup;
+        isActive = true;
     }
 
     public void onClick( ClickEvent event ) {
-        SummariseInvestigationView investigateView = new SummariseInvestigationView( controller,
-                SummariseInvestigationView.ViewType.EXTENDED );
-        investigateView.setInvestigationDetails( controller.getStoredInvestigationDetails() );
-        controller.setCenterWidget( investigateView );
-        if ( popup != null ) {
-            popup.hide();
+        if ( isActive ) {
+            SummariseInvestigationView investigateView = new SummariseInvestigationView( controller,
+                    SummariseInvestigationView.ViewType.EXTENDED );
+            investigateView.setInvestigationDetails( controller.getStoredInvestigationDetails() );
+            controller.setCenterWidget( investigateView );
+            if ( popup != null ) {
+                popup.hide();
+            }
         }
-
     }
+
+    public void disable() {
+        isActive = false;
+    }
+
+    public void enable() {
+        isActive = true;
+    }
+
 }

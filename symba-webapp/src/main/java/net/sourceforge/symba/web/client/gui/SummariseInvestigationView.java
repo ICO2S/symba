@@ -169,10 +169,10 @@ public class SummariseInvestigationView extends FlexTable {
 
     }
 
-    private void copyInvestigation( final String id ) {
+    private void copyInvestigation( final String id) {
 
         // duplicate the single selected investigation
-        controller.getRpcService().copyInvestigation( id,
+        controller.getRpcService().copyInvestigation( id, controller.getUser().getId(),
                 new AsyncCallback<InvestigationDetail>() {
                     public void onSuccess( InvestigationDetail result ) {
                         investigationDetails.add( result );

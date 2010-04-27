@@ -7,7 +7,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.shared.Contact;
 
@@ -16,7 +15,7 @@ import java.util.HashMap;
 public class ContactPopup extends PopupPanel {
 
     public ContactPopup( final SymbaController controller,
-                         final InvestigationDetailsPanel callingPanel ) {
+                         final ContactView callingPanel ) {
         super( true ); // set auto-hide property
 
         setWidget( new AddContactPanel( controller, callingPanel ) );
@@ -35,11 +34,9 @@ public class ContactPopup extends PopupPanel {
 
     private class AddContactPanel extends VerticalPanel {
         private static final String SAVE_TEXT = "Save Contact";
-        private SymbaController controller;
 
         public AddContactPanel( final SymbaController controller,
-                                final InvestigationDetailsPanel callingPanel ) {
-            this.controller = controller;
+                                final ContactView callingPanel ) {
 
             HorizontalPanel first = new HorizontalPanel();
             HorizontalPanel last = new HorizontalPanel();
@@ -99,7 +96,7 @@ public class ContactPopup extends PopupPanel {
         }
 
         private String doSave( final SymbaController controller,
-                               final InvestigationDetailsPanel callingPanel,
+                               final ContactView callingPanel,
                                TextBox first,
                                TextBox last,
                                String email ) {
@@ -143,9 +140,15 @@ public class ContactPopup extends PopupPanel {
 
                 public void onSuccess( HashMap<String, Contact> result ) {
                     controller.setStoredContacts( result );
-                    callingPanel.populateNameListBox();
-                    callingPanel
-                            .setupProviderNameDetailPanel( contact.getFullName(), contact.getEmailAddress(), false );
+                    if ( callingPanel.getType() == ContactView.ViewType.LOGIN ) {
+                        // also set the user for the session
+                        controller.setUser( result.get( contact.getId() ) );
+                        callingPanel.populateNameListBox();
+                        callingPanel.setupNameDetailPanel( contact.getFullName(), contact.getEmailAddress(), true );
+                    } else {
+                        callingPanel.populateNameListBox();
+                        callingPanel.setupNameDetailPanel( contact.getFullName(), contact.getEmailAddress(), false );
+                    }
                     hide();
                 }
             } );

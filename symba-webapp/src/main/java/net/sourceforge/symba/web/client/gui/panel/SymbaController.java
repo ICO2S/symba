@@ -23,6 +23,12 @@ public class SymbaController extends DockPanel {
     // the type of widget in the non-center panels will not change, though they may not always be visible.
     private final HelpPanel eastWidget;
     private boolean eastSet;
+    
+    private final SymbaHeader northWidget;
+    private final HomePanel homePanel;
+
+    // Who the user is logged in as
+    private Contact user;
 
     // Store all current storedContacts in a central location so all other panels have access to it.
     private HashMap<String, Contact> storedContacts;
@@ -48,13 +54,19 @@ public class SymbaController extends DockPanel {
 
         this.rpcService = rpcService;
 
+        updateStoredContacts();
+        updateStoredMaterials();
+        updateStoredInvestigationDetails();
+
         setWidth( "100%" );
         setSpacing( 10 );
 
+        user = new Contact();
+
         // the center widget starts out as a HomePanel, but will change
-        HomePanel home = new HomePanel();
-        centerWidget = home;
-        SymbaHeader northWidget = new SymbaHeader( this, home );
+        homePanel = new HomePanel(this);
+        centerWidget = homePanel;
+        northWidget = new SymbaHeader( this, homePanel );
         SymbaFooter southWidget = new SymbaFooter();
 
         eastWidget = new HelpPanel( this );
@@ -65,10 +77,31 @@ public class SymbaController extends DockPanel {
         add( centerWidget, DockPanel.CENTER );
         centerWidget.addStyleName( "center-style" );
         showEastWidget();
+    }
 
-        updateStoredContacts();
-        updateStoredMaterials();
-        updateStoredInvestigationDetails();
+    public Contact getUser() {
+        return user;
+    }
+
+    /**
+     * Set the user for this session to be the one provided as an argument
+     * @param user the user logged into this session
+     */
+    public void setUser( Contact user ) {
+        this.user = user;
+        northWidget.enableActions();
+        eastWidget.enableActions();
+    }
+
+    /**
+     * Removes any current user assigned to this session
+     */
+    public void unsetUser() {
+        this.user = new Contact();
+        northWidget.disableActions();
+        eastWidget.disableActions();
+        homePanel.getLogin().populateNameListBox();
+        homePanel.getLogin().setupNameDetailPanel( "", "", false );
     }
 
     /**
@@ -204,7 +237,7 @@ public class SymbaController extends DockPanel {
         return storedMaterials;
     }
 
-    private HashMap<String, Contact> updateStoredContacts() {
+    private void updateStoredContacts() {
 
         storedContacts = new HashMap<String, Contact>();
         rpcService.getAllContacts( new AsyncCallback<HashMap<String, Contact>>() {
@@ -214,12 +247,12 @@ public class SymbaController extends DockPanel {
 
             public void onSuccess( HashMap<String, Contact> result ) {
                 storedContacts = result;
+                homePanel.getLogin().populateNameListBox();
             }
         } );
-        return storedContacts;
     }
 
-    private HashMap<String, Material> updateStoredMaterials() {
+    private void updateStoredMaterials() {
 
         storedMaterials = new HashMap<String, Material>();
         rpcService.getAllMaterials( new AsyncCallback<HashMap<String, Material>>() {
@@ -231,8 +264,6 @@ public class SymbaController extends DockPanel {
                 storedMaterials = result;
             }
         } );
-
-        return storedMaterials;
     }
 
     private void updateStoredInvestigationDetails() {
@@ -260,5 +291,11 @@ public class SymbaController extends DockPanel {
 
     public void setStoredInvestigationDetails( ArrayList<InvestigationDetail> details ) {
         storedInvestigationDetails = new ArrayList<InvestigationDetail>( details );
+    }
+
+    public void cancelAll() {
+        setCenterWidget( homePanel );
+        showEastWidget("", "");
+        showSymbaStatus();
     }
 }

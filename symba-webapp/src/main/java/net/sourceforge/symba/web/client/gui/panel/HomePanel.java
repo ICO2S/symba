@@ -4,8 +4,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class HomePanel extends HorizontalPanel {
+
+    private final ContactView login;
 
     private static final String HOME_ICON = "/images/lion.jpg";
     private static final HTML HOME_TEXT = new HTML(
@@ -16,7 +19,7 @@ public class HomePanel extends HorizontalPanel {
                     "and metadata, while providing convenient manual and computational access for " +
                     "<strong>standards-compliant publication, sharing and analysis</strong>.</p>" );
 
-    public HomePanel() {
+    public HomePanel( SymbaController controller ) {
         String moduleBase = GWT.getModuleBaseURL();
         String moduleName = GWT.getModuleName();
         String baseApp = moduleBase.substring( 0, moduleBase.lastIndexOf( moduleName ) );
@@ -28,8 +31,19 @@ public class HomePanel extends HorizontalPanel {
 
         setSpacing( 10 );
 
+        login = new ContactView( controller, ContactView.ViewType.LOGIN );
+        login.populateNameListBox();
+
+        VerticalPanel textPanel = new VerticalPanel();
+        textPanel.add( login );
+        textPanel.add( HOME_TEXT );
+
         add( new Image( prefix + HOME_ICON ) );
-        add( HOME_TEXT );
+        add( textPanel );
+
     }
 
+    public ContactView getLogin() {
+        return login;
+    }
 }

@@ -25,7 +25,7 @@ public interface InvestigationsServiceAsync {
     public void updateInvestigation( Investigation investigation,
                                      AsyncCallback<ArrayList<InvestigationDetail>> callback );
 
-    public void copyInvestigation( String id,
+    public void copyInvestigation( String id, String contactId,
                                    AsyncCallback<InvestigationDetail> asyncCallback );
 
     void setInvestigationAsTemplate( String id,

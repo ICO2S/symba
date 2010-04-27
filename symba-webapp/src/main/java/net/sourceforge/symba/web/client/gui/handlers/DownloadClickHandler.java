@@ -7,13 +7,26 @@ import net.sourceforge.symba.web.client.gui.panel.SymbaController;
 
 public class DownloadClickHandler implements ClickHandler {
     final SymbaController controller;
+    private boolean isActive;
 
     public DownloadClickHandler( SymbaController controller ) {
         this.controller = controller;
+        isActive = true;
     }
 
     public void onClick( ClickEvent event ) {
-        InitialDownloadPopup panel = new InitialDownloadPopup( controller );
-        panel.show();
+        if ( isActive ) {
+            InitialDownloadPopup panel = new InitialDownloadPopup( controller );
+            panel.show();
+        }
     }
+
+    public void disable() {
+        isActive = false;
+    }
+
+    public void enable() {
+        isActive = true;
+    }
+
 }

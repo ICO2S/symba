@@ -101,11 +101,12 @@ public class MemoryStorageHelper extends StorageHelper {
     }
 
     @NotNull
-    public InvestigationDetail copy( @NotNull String id ) {
+    public InvestigationDetail copy( @NotNull String id,
+                                     @NotNull String contactId ) {
         Investigation copy = new Investigation( getInvestigations().get( id ) );
         copy.setId( ( int ) ( Math.random() * 1000 ) + copy.getId() ); //todo need a better way to make a new id
         copy.setInvestigationTitle( copy.getInvestigationTitle() + " " + ( int ) ( Math.random() * 1000 ) );
-
+        copy.setProvider( getContacts().get( contactId ) );
         // the original may be a template - unset the copy as a template
         copy.setTemplate( false );
         getInvestigations().put( copy.getId(), copy );

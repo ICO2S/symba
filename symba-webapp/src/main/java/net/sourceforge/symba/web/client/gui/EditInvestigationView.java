@@ -273,8 +273,9 @@ public class EditInvestigationView extends VerticalPanel {
             public void onClick( ClickEvent event ) {
                 if ( investigation.getInvestigationTitle().length() > 0 ) {
                     // no need to keep any file statuses at this point
-                    controller.setEastWidgetUserStatus( "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
-                            "</strong> cancelled.</p>" );
+                    controller.setEastWidgetUserStatus(
+                            "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
+                                    "</strong> cancelled.</p>" );
                 } else {
                     // no need to keep any file statuses at this point
                     controller.setEastWidgetUserStatus( "<p>Creation of new investigation cancelled.</p>" );
@@ -295,7 +296,7 @@ public class EditInvestigationView extends VerticalPanel {
                                 " as a template failed: " + Arrays.toString( throwable.getStackTrace() ) );
                         controller
                                 .setEastWidgetUserStatus( "<p><strong>Saving of Investigation " + title +
-                                "as a template failed.</p>" );
+                                        "as a template failed.</p>" );
                     }
 
                     public void onSuccess( ArrayList<InvestigationDetail> results ) {
@@ -307,7 +308,8 @@ public class EditInvestigationView extends VerticalPanel {
                             controller.setCenterWidgetAsEditExperiment( id );
                         }
                         controller
-                                .setEastWidgetUserStatus( "<p><strong>" + title + "</strong> has been set as a template.</p>" );
+                                .setEastWidgetUserStatus(
+                                        "<p><strong>" + title + "</strong> has been set as a template.</p>" );
                     }
                 } );
     }
@@ -468,26 +470,44 @@ public class EditInvestigationView extends VerticalPanel {
                             "by you and other users, thus sharing common aspects of " +
                             "Investigations. Are you sure you wish to continue?" );
             if ( response ) {
-                doSave( SaveType.SET_AS_TEMPLATE, finish );
+                if ( doSave( SaveType.SET_AS_TEMPLATE, finish ) ) {
+                    controller.setEastWidgetUserStatus( "<p>Saving as template successful.</p>" );
+                } else {
+                    controller.setEastWidgetUserStatus( "<p>Saving as template unsuccessful.</p>" );
+                }
             } else {
                 // no need to keep any directions at this point
                 controller.setEastWidgetUserStatus( "<p>Saving as template cancelled.</p>" );
             }
         } else {
-            doSave( SaveType.SAVE_ONLY, finish );
+            if ( doSave( SaveType.SAVE_ONLY, finish ) ) {
+                controller.setEastWidgetUserStatus( "<p>Saving successful.</p>" );
+            } else {
+                controller.setEastWidgetUserStatus( "<p>Saving unsuccessful.</p>" );
+            }
         }
     }
 
-    private void doSave( final SaveType saveType,
-                         final boolean finish ) {
+    /**
+     * @param saveType whether it is saved as a normal experiment or as a template
+     * @param finish   if true, then return the user to the list experiments page (Save and Finish). If false,
+     *                 the user wishes to continue editing.
+     * @return false if there was an error prior to attempting to load in the database (and therefore no attempt to save
+     *         in the database was made), true if the RPC call was run, irrespective of the final outcome of that RPC call.
+     */
+    private boolean doSave( final SaveType saveType,
+                            final boolean finish ) {
 
         String emptyValues = investigationDetailsPanel.makeErrorMessages();
         if ( emptyValues.length() > 1 ) {
             Window.alert( "Error updating the following fields: " + emptyValues );
-            return;
+            return false;
         }
 
-        investigationDetailsPanel.updateModifiedDetails( investigation );
+        if ( !investigationDetailsPanel.updateModifiedDetails( investigation ) ) {
+            // there was an error saving the investigation details. Return before we attempt to update in the database
+            return false;
+        }
         investigation.setAllModified( false );
 
         // the experiment steps were saved as we went along, so nothing extra to do here.
@@ -525,6 +545,7 @@ public class EditInvestigationView extends VerticalPanel {
                         caught.printStackTrace( System.err );
                     }
                 } );
+        return true;
     }
 
     private class MakeEditableHandler implements ClickHandler {

@@ -147,12 +147,17 @@ each stack to not have the google gradient. */
     height: 80px;
 }
 
-.header-images {
+.header-images, .header-images-opaque {
     height: 70px;
     padding: 5px 5px 5px 5px;
     border: solid 1px black;
     border-radius: 10px; /* border-radius is the CSS 3 standard, but many browsers only see -moz-border-radius */
     -moz-border-radius: 10px;
+}
+
+.header-images-opaque {
+    opacity: 0.4; /* FF */
+    filter: alpha(opacity=40); /* IE */
 }
 
 .header-title {

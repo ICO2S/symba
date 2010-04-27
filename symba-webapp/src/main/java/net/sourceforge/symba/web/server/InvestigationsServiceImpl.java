@@ -2,11 +2,7 @@ package net.sourceforge.symba.web.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import net.sourceforge.symba.web.client.InvestigationsService;
-import net.sourceforge.symba.web.shared.ExperimentStepHolder;
-import net.sourceforge.symba.web.shared.Contact;
-import net.sourceforge.symba.web.shared.Investigation;
-import net.sourceforge.symba.web.shared.InvestigationDetail;
-import net.sourceforge.symba.web.shared.Material;
+import net.sourceforge.symba.web.shared.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -41,6 +37,10 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         helper.fetchAllMaterials();
     }
 
+    public User getCurrentUser() {
+        return helper.getCurrentUser();
+    }
+
     public Investigation addInvestigation( Investigation investigation ) {
         return helper.add( investigation );
     }
@@ -61,8 +61,8 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         return helper.update( investigation );
     }
 
-    public InvestigationDetail copyInvestigation( String id ) {
-        return helper.copy( id );
+    public InvestigationDetail copyInvestigation( String id, String contactId ) {
+        return helper.copy( id, contactId );
     }
 
     public ArrayList<InvestigationDetail> setInvestigationAsTemplate( String id ) {

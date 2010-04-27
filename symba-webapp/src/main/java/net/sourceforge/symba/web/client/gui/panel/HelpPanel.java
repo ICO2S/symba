@@ -48,6 +48,13 @@ public class HelpPanel extends VerticalPanel {
         helpStackPanel.showApplicationStatus();
     }
 
+    public void enableActions() {
+        helpStackPanel.getApplicationStatus().enableAll();
+    }
+
+    public void disableActions() {
+        helpStackPanel.getApplicationStatus().disableAll();
+    }
 
     /**
      * This class provides a collapsible summary of all of the current help types for SyMBA.
@@ -66,7 +73,7 @@ public class HelpPanel extends VerticalPanel {
             setStyleName( "stackPanelItem" );
             setWidth( "100%" );
 
-            userActionStatus = new HTML("<p>This is where status messages about your data will be displayed.</p>");
+            userActionStatus = new HTML( "<p>This is where status messages about your data will be displayed.</p>" );
             directions = new HTML( "<p>This is where context-sensitive help messages will be displayed.</p>" );
             applicationStatus = new ApplicationStatusPanel( controller );
 
@@ -99,29 +106,37 @@ public class HelpPanel extends VerticalPanel {
         public void showApplicationStatus() {
             showStack( 2 );
         }
+
     }
 
     private class ApplicationStatusPanel extends VerticalPanel {
 
         private final Label numberOfInvestigations;
-        private SymbaController controller;
+        private final SymbaController controller;
+        private final ListExperimentsClickHandler listExpHandler;
 
         private ApplicationStatusPanel( SymbaController controller ) {
             super();
             setSpacing( 5 );
-            
+
             this.controller = controller;
 
             // components
             numberOfInvestigations = new Label();
-            Label refreshLabel = new Label("[Refresh SyMBA Status]");
+            Label refreshLabel = new Label( "[Refresh SyMBA Status]" );
 
             // styles
-            numberOfInvestigations.addStyleName( "clickable-text" );
+            if ( controller.getUser().getFullName().length() > 0 ) {
+                numberOfInvestigations.addStyleName( "clickable-text" );
+            }
             refreshLabel.addStyleName( "clickable-text" );
 
             // handlers
-            numberOfInvestigations.addClickHandler( new ListExperimentsClickHandler( controller ) );
+            listExpHandler = new ListExperimentsClickHandler( controller );
+            numberOfInvestigations.addClickHandler( listExpHandler );
+            if ( controller.getUser().getFullName().length() == 0 ) {
+                listExpHandler.disable();
+            }
             refreshLabel.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     refreshStatus();
@@ -135,7 +150,26 @@ public class HelpPanel extends VerticalPanel {
             refreshStatus();
         }
 
+        public void enableAll() {
+            numberOfInvestigations.addStyleName( "clickable-text" );
+            listExpHandler.enable();
+        }
+
+        public void disableAll() {
+            numberOfInvestigations.removeStyleName( "clickable-text" );
+            listExpHandler.disable();
+        }
+
         private void refreshStatus() {
+
+            // first, unset the clickable text if there is no user
+            if ( controller.getUser().getFullName().length() == 0 ) {
+                disableAll();
+            } else {
+                // ensure the correct style is in use by adding it with each refresh if there is a user
+                enableAll();
+            }
+
             // this may be null if the data has not yet been retrieved from the storage medium yet.
             if ( controller.getStoredInvestigationDetails() != null ) {
                 if ( controller.getStoredInvestigationDetails().size() == 1 ) {

@@ -83,7 +83,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         return helper.getContacts();
     }
 
-    public HashMap<String, Contact> addContact( Contact contact ) {
+    public HashMap<String, Contact> addOrUpdateContact( Contact contact ) {
         return helper.addContact( contact );
     }
 

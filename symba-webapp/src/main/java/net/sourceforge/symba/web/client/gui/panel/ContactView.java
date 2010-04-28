@@ -99,6 +99,17 @@ public class ContactView extends HorizontalPanel {
                 } );
             }
             add( label );
+            if ( type == ViewType.LOGIN ) {
+                // allow edits for the person you are logged in as
+                Label updateLabel = new Label( "(update user details)" );
+                updateLabel.addStyleName( "clickable-text" );
+                updateLabel.addClickHandler( new ClickHandler() {
+                    public void onClick( ClickEvent event ) {
+                        startContactPopupPanel( controller.getUser() );
+                    }
+                } );
+                add( updateLabel );
+            }
         } else {
             if ( type == ViewType.LOGIN ) {
                 legendLabel.setText( "Login as: " );
@@ -160,6 +171,12 @@ public class ContactView extends HorizontalPanel {
 
     private void startContactPopupPanel() {
         ContactPopup panel = new ContactPopup( controller, this );
+        panel.show();
+    }
+
+    private void startContactPopupPanel( Contact toUpdate ) {
+        ContactPopup panel = new ContactPopup( controller, this );
+        panel.populate( toUpdate );
         panel.show();
     }
 

@@ -160,10 +160,13 @@ public class SymbaHeader extends HorizontalPanel {
 
         if ( controller.getUser().getFullName().length() > 0 ) {
             ( ( Label ) loginStatus.getWidget( 0 ) ).setText( controller.getUser().getFullName() );
-            Label logoutLabel = new Label( "(Logout)" );
-            loginStatus.add( logoutLabel );
-            logoutLabel.addStyleName( "clickable-text" );
-            logoutLabel.addClickHandler( new LogoutClickHandler( controller ) );
+            if ( loginStatus.getWidgetCount() == 1 ) {
+                // the logout label is not present yet
+                Label logoutLabel = new Label( "(Logout)" );
+                loginStatus.add( logoutLabel );
+                logoutLabel.addStyleName( "clickable-text" );
+                logoutLabel.addClickHandler( new LogoutClickHandler( controller ) );
+            }
         } else {
             // there must be a user to enable the actions
             return;

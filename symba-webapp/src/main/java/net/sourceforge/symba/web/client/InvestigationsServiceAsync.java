@@ -34,7 +34,7 @@ public interface InvestigationsServiceAsync {
 
     void getAllContacts( AsyncCallback<HashMap<String, Contact>> async );
 
-    void addContact( Contact contact,
+    void addOrUpdateContact( Contact contact,
                      AsyncCallback<HashMap<String, Contact>> async );
 
     void addOrUpdateMaterial( Material material,

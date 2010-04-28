@@ -17,7 +17,7 @@
          Put the number of milliseconds to sleep in each block received in the server.
          false or 0, means don't use slow uploads. Good debug value is 200  -->
         <param-name>slowUploads</param-name>
-        <param-value>false</param-value>
+        <param-value>0</param-value>
     </context-param>
 
     <!-- http://code.google.com/p/gwtupload -->

@@ -14,11 +14,14 @@ import java.util.HashMap;
 
 public class ContactPopup extends PopupPanel {
 
+    private final AddContactPanel addContactPanel;
+
     public ContactPopup( final SymbaController controller,
                          final ContactView callingPanel ) {
         super( true ); // set auto-hide property
 
-        setWidget( new AddContactPanel( controller, callingPanel ) );
+        addContactPanel = new AddContactPanel( controller, callingPanel );
+        setWidget( addContactPanel );
 
         // set the position to the center of the window
         setPopupPositionAndShow( new PopupPanel.PositionCallback() {
@@ -32,22 +35,36 @@ public class ContactPopup extends PopupPanel {
 
     }
 
+    /**
+     * Populate the form with the information from this user. This makes the action an update rather than a new
+     * contact
+     *
+     * @param toUpdate the contact to update
+     */
+    public void populate( Contact toUpdate ) {
+        addContactPanel.populate( toUpdate );
+    }
+
     private class AddContactPanel extends VerticalPanel {
         private static final String SAVE_TEXT = "Save Contact";
+        private static final String UPDATE_TEXT = "Update Contact";
+        private final TextBox firstBox, lastBox, emailBox;
+        private final Button saveButton;
+        private String existingId;
 
         public AddContactPanel( final SymbaController controller,
                                 final ContactView callingPanel ) {
+
+            firstBox = new TextBox();
+            lastBox = new TextBox();
+            emailBox = new TextBox();
+            saveButton = new Button( SAVE_TEXT );
+            existingId = "";
 
             HorizontalPanel first = new HorizontalPanel();
             HorizontalPanel last = new HorizontalPanel();
             HorizontalPanel email = new HorizontalPanel();
             HorizontalPanel save = new HorizontalPanel();
-
-            final TextBox firstBox = new TextBox();
-            final TextBox lastBox = new TextBox();
-            final TextBox emailBox = new TextBox();
-
-            Button saveButton = new Button( SAVE_TEXT );
 
             first.add( new Label( "First Name: " ) );
             last.add( new Label( "Last Name: " ) );
@@ -118,22 +135,30 @@ public class ContactPopup extends PopupPanel {
 
             // otherwise, it's OK to save the contact
             final Contact contact = new Contact();
-            contact.createId();
+            if ( existingId.length() == 0 ) {
+                // do not create a new id - that's up to the implementation as to how to deal with it. Keeping
+                // the existing id is a marker that an earlier version existed.
+                contact.createId();
+            } else {
+                contact.setId( existingId );
+            }
             contact.setFirstName( first.getText().trim() );
             contact.setLastName( last.getText().trim() );
             contact.setEmailAddress( email );
 
-            // basic validation: check that the full name isn't already in the contact list
-            for ( Contact storedContact : controller.getStoredContacts().values() ) {
-                if ( storedContact.getFullName().equals( contact.getFullName() ) ) {
-                    Window.alert( "You may not use the name of an existing contact to create a new contact" );
-                    InputValidator.setWarning( first );
-                    InputValidator.setWarning( last );
-                    return "";
+            if ( existingId.length() == 0 ) {
+                // basic validation: check that the full name isn't already in the contact list
+                for ( Contact storedContact : controller.getStoredContacts().values() ) {
+                    if ( storedContact.getFullName().equals( contact.getFullName() ) ) {
+                        Window.alert( "You may not use the name of an existing contact to create a new contact" );
+                        InputValidator.setWarning( first );
+                        InputValidator.setWarning( last );
+                        return "";
+                    }
                 }
             }
 
-            controller.getRpcService().addContact( contact, new AsyncCallback<HashMap<String, Contact>>() {
+            controller.getRpcService().addOrUpdateContact( contact, new AsyncCallback<HashMap<String, Contact>>() {
                 public void onFailure( Throwable caught ) {
                     Window.alert( "Failed to store contact: " + contact.getFullName() + "\n" + caught.getMessage() );
                 }
@@ -154,6 +179,14 @@ public class ContactPopup extends PopupPanel {
             } );
 
             return contact.getId();
+        }
+
+        public void populate( Contact toUpdate ) {
+            existingId = toUpdate.getId();
+            firstBox.setText( toUpdate.getFirstName() );
+            lastBox.setText( toUpdate.getLastName() );
+            emailBox.setText( toUpdate.getEmailAddress() );
+            saveButton.setText( UPDATE_TEXT );
         }
     }
 }

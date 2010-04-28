@@ -30,7 +30,7 @@ public interface InvestigationsService extends RemoteService {
 
     HashMap<String, Contact> getAllContacts();
 
-    HashMap<String, Contact> addContact( Contact contact );
+    HashMap<String, Contact> addOrUpdateContact( Contact contact );
 
     HashMap<String, Material> getAllMaterials();
 

@@ -19,14 +19,13 @@ public class SymbaHeader extends HorizontalPanel {
     private final AddExperimentClickHandler addExpHandler;
     private final ListExperimentsClickHandler listExpHandler;
     private final DownloadClickHandler downloadHandler;
-    private final HorizontalPanel loginStatus;
+    private final VerticalPanel loginStatus;
     private SymbaController controller;
-    private HomePanel home;
 
     public SymbaHeader( SymbaController controller,
                         HomePanel home ) {
         this.controller = controller;
-        this.home = home;
+
         //
         // file setup
         //
@@ -54,8 +53,8 @@ public class SymbaHeader extends HorizontalPanel {
         downloadFileImage = new Image( prefix + DOWNLOAD_FILE );
         helpFileImage = new Image( prefix + GET_HELP );
 
-        loginStatus = new HorizontalPanel();
-        loginStatus.setSpacing( 5 );
+        loginStatus = new VerticalPanel();
+        loginStatus.setSpacing( 2 );
         Label nameStatus = new Label( NO_USER );
         loginStatus.add( nameStatus );
 

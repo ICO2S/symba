@@ -8,6 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 @SuppressWarnings( "serial" )
 public class InvestigationsServiceImpl extends RemoteServiceServlet implements
@@ -35,6 +36,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         helper.fetchAll( true );
         helper.fetchAllPeople();
         helper.fetchAllMaterials();
+        helper.fetchAllParameterSubjects();
     }
 
     public User getCurrentUser() {
@@ -95,5 +97,9 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
 
     public String getMetadata( String id ) {
         return helper.getMetadataString( id );
+    }
+
+    public HashSet<String> getParameterSubjects() {
+        return helper.getParameterSubjects();
     }
 }

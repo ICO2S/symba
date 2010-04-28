@@ -1,16 +1,13 @@
 package net.sourceforge.symba.web.server;
 
-import net.sourceforge.symba.web.shared.ExperimentStepHolder;
+import net.sourceforge.symba.web.shared.*;
 import net.sourceforge.symba.web.server.conversion.fuge.FugeCreator;
-import net.sourceforge.symba.web.shared.Contact;
-import net.sourceforge.symba.web.shared.Investigation;
-import net.sourceforge.symba.web.shared.InvestigationDetail;
-import net.sourceforge.symba.web.shared.Material;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * allows an in-memory only version of SyMBA to run.
@@ -28,21 +25,27 @@ public class MemoryStorageHelper extends StorageHelper {
     }
 
     /**
-     * Resets the in-memory investigations to just one example to start out with in SyMBA, clearing any
-     * currently-existing investigations.
+     * If addExampleIfEmpty is true, resets the in-memory investigations to just one example to start out with in
+     * SyMBA, clearing any currently-existing investigations.
      *
-     * @param addExampleIfEmpty If there are no entries at all in the database, if this value is true then an example
-     *                          entry will be added.
+     * @param addExampleIfEmpty If this value is true then example entries will be added.
      * @return the list of investigations to send to the client
      */
     @NotNull
     public HashMap<String, Investigation> fetchAll( boolean addExampleIfEmpty ) {
-        getInvestigations().clear();
-        if ( getInvestigations().isEmpty() && addExampleIfEmpty ) {
+        if ( addExampleIfEmpty ) {
+            getInvestigations().clear();
             Investigation investigation = new Investigation( false, false, "12345", "My Example Investigation",
                     "Some hypothesis", "Conclusion 1. Conclusion 2.", ALICE,
                     new ArrayList<ExperimentStepHolder>() );
             add( investigation );
+
+            Investigation basicMicroarrayTemplate = new Investigation( true, false, "1234567",
+                    "Example Multi-Strain Microarray Investigation",
+                    "Examination of the effect of certain conditions on yeast strains over time.", "", ALICE,
+                    makeTemplateMicroarraySteps() );
+
+            add( basicMicroarrayTemplate );
         }
         return getInvestigations();
     }
@@ -65,8 +68,21 @@ public class MemoryStorageHelper extends StorageHelper {
     @NotNull
     @Override
     public HashMap<String, Material> fetchAllMaterials() {
+        getMaterials().clear();
         getMaterials().put( CULTURE.getId(), CULTURE );
         return getMaterials();
+    }
+
+    @NotNull
+    @Override
+    public HashSet<String> fetchAllParameterSubjects() {
+        getParameterSubjects().clear();
+        for ( String key : getInvestigations().keySet() ) {
+            for ( ExperimentStepHolder holder : getInvestigations().get( key ).getExperiments() ) {
+                addSubjects( holder );
+            }
+        }
+        return getParameterSubjects();
     }
 
     @NotNull
@@ -129,4 +145,65 @@ public class MemoryStorageHelper extends StorageHelper {
         return creator.toFugeString( getInvestigations().get( id ) );
     }
 
+    private void addSubjects( ExperimentStepHolder holder ) {
+        for ( ExperimentParameter parameter : holder.getCurrent().getParameters() ) {
+            getParameterSubjects().add( parameter.getSubject() );
+        }
+        if ( !holder.getCurrent().isLeaf() ) {
+            for ( ExperimentStepHolder innerHolder : holder.getCurrent().getChildren() ) {
+                addSubjects( innerHolder );
+            }
+        }
+    }
+
+    private ArrayList<ExperimentStepHolder> makeTemplateMicroarraySteps() {
+        ArrayList<ExperimentStepHolder> templateSteps = new ArrayList<ExperimentStepHolder>();
+
+        ExperimentStepHolder top = new ExperimentStepHolder();
+        top.getCurrent().setTitle( "Experiment Run for Strain X" );
+        ExperimentParameter strain = new ExperimentParameter();
+        strain.setFullyWriteable( false );
+        strain.setSubject( "Strain" );
+        strain.setObjectValue( "hasIdentifier" );
+        top.getCurrent().getParameters().add( strain );
+
+        ExperimentStepHolder middle = new ExperimentStepHolder();
+        middle.getCurrent().setTitle( "Microarray Time Series Point X" );
+        ExperimentParameter time = new ExperimentParameter();
+        time.setFullyWriteable( false );
+        time.setSubject( "TimeAfterInoculation" );
+        time.setObjectValue( "is" );
+        time.setUnit( "minutes" );
+        ExperimentParameter temp = new ExperimentParameter();
+        temp.setFullyWriteable( false );
+        temp.setSubject( "InoculationTemperature" );
+        temp.setObjectValue( "is" );
+        temp.setUnit( "Celsius" );
+        middle.getCurrent().getParameters().add( time );
+        middle.getCurrent().getParameters().add( temp );
+
+        ExperimentStepHolder last = new ExperimentStepHolder();
+        last.getCurrent().setTitle( "Microarray Assay Repeat X" );
+        ExperimentParameter repeat = new ExperimentParameter();
+        repeat.setFullyWriteable( false );
+        repeat.setSubject( "RepeatNumber" );
+        repeat.setObjectValue( "is" );
+        ExperimentParameter brand = new ExperimentParameter();
+        brand.setFullyWriteable( false );
+        brand.setSubject( "MicroarrayChip" );
+        brand.setObjectValue( "hasBrand" );
+        ExperimentParameter model = new ExperimentParameter();
+        model.setFullyWriteable( false );
+        model.setSubject( "MicroarrayChip" );
+        model.setObjectValue( "hasModel" );
+        last.getCurrent().getParameters().add( repeat );
+        last.getCurrent().getParameters().add( brand );
+        last.getCurrent().getParameters().add( model );
+
+        middle.getCurrent().getChildren().add( last );
+        top.getCurrent().getChildren().add( middle );
+        templateSteps.add( top );
+
+        return templateSteps;
+    }
 }

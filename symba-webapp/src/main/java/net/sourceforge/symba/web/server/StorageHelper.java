@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * interface to allow more than one way of storing data within SyMBA
@@ -24,11 +25,15 @@ public abstract class StorageHelper {
     // in the database which are not yet part of any investigation.
     private HashMap<String, Material> materials;
 
+    // The current subjects used within parameters - used to do things like populate SuggestBoxes.
+    private HashSet<String> parameterSubjects;
+
     protected StorageHelper() {
         currentUser = new User();
         investigations = new HashMap<String, Investigation>();
         contacts = new HashMap<String, Contact>();
         materials = new HashMap<String, Material>();
+        parameterSubjects = new HashSet<String>();
     }
 
     public abstract void setup( @NotNull ApplicationContext context );
@@ -52,6 +57,12 @@ public abstract class StorageHelper {
         return materials;
     }
 
+    @NotNull
+    public HashSet<String> getParameterSubjects() {
+        return parameterSubjects;
+    }
+
+
     /**
      * Get a list of the current investigations which are viewable and editable
      *
@@ -67,6 +78,9 @@ public abstract class StorageHelper {
 
     @NotNull
     public abstract HashMap<String, Material> fetchAllMaterials();
+
+    @NotNull
+    public abstract HashSet<String> fetchAllParameterSubjects();
 
     @NotNull
     public abstract HashMap<String, Contact> addContact( Contact contact );
@@ -110,4 +124,5 @@ public abstract class StorageHelper {
 
     @NotNull
     public abstract String getMetadataString( @NotNull String id );
+
 }

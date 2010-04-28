@@ -1,6 +1,8 @@
 package net.sourceforge.symba.web.client.gui;
 
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -38,25 +40,33 @@ public class InputValidator implements Serializable {
         }
     }
 
+    public static void nonEmptySuggestBoxStyle( SuggestBox box ) {
+        if ( box.getText().trim().length() == 0 ) {
+            setWarning( box );
+        } else {
+            setAccepted( box );
+        }
+    }
+
     /**
-     * Use this method if you are sure that your text box is wrong
+     * Use this method if you are sure that your widget is wrong
      *
-     * @param box the box to check
+     * @param widget the widget that has been checked
      */
-    public static void setWarning( TextBox box ) {
-        box.removeStyleName( "textbox-accepted" );
-        box.addStyleName( "textbox-warning" );
+    public static void setWarning( Widget widget ) {
+        widget.removeStyleName( "textbox-accepted" );
+        widget.addStyleName( "textbox-warning" );
 
     }
 
     /**
-     * Use this method if you are sure that your text box is right
+     * Use this method if you are sure that your widget is right
      *
-     * @param box the box to check
+     * @param widget the widget that has been checked
      */
-    public static void setAccepted( TextBox box ) {
-        box.removeStyleName( "textbox-warning" );
-        box.addStyleName( "textbox-accepted" );
+    public static void setAccepted( Widget widget ) {
+        widget.removeStyleName( "textbox-warning" );
+        widget.addStyleName( "textbox-accepted" );
 
     }
 

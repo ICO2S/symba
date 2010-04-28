@@ -25,6 +25,7 @@ public class EditableStepView extends PopupPanel {
 //    private FileForm fileForm;
 //    private GwtUploadFile fileForm;
     private Investigation investigation;
+    private SymbaController controller;
 
     public EditableStepView( final SymbaController controller,
                              ReadableStepView readableView,
@@ -35,6 +36,8 @@ public class EditableStepView extends PopupPanel {
                              final ClickHandler myEditableHandler,
                              final boolean completed ) {
         super( false ); // turn auto-hide off
+        this.controller = controller;
+
         setPopupPositionAndShow( new PopupPanel.PositionCallback() {
             public void setPosition( int offsetWidth,
                                      int offsetHeight ) {
@@ -395,6 +398,7 @@ public class EditableStepView extends PopupPanel {
                 setHorizontalAlignment( HorizontalPanel.ALIGN_LEFT );
 
                 radioPanel = new VerticalPanel();
+                MultiWordSuggestOracle oracle = new MultiWordSuggestOracle();
 
                 measure = InputValidator.MeasurementType.UNKNOWN;
                 number = new RadioButton( "measurementGroup" + counter, "number" );
@@ -413,9 +417,11 @@ public class EditableStepView extends PopupPanel {
                 radioPanel.setVisible( false );
 
                 subject = new TextBox();
-                ParameterCaptionBox sPanel = new ParameterCaptionBox( "Parameter Name, e.g. Camera", subject,
-                        parameter.getSubject(), true );
-                subject.setFocus( focused );
+                SuggestBox subjectSuggest = new SuggestBox( oracle, subject );
+                oracle.addAll( controller.getStoredParameterSubjects() );
+                ParameterCaptionSuggestBox sPanel = new ParameterCaptionSuggestBox( "Parameter Name, e.g. Camera",
+                        subjectSuggest, parameter.getSubject(), true );
+                subjectSuggest.setFocus( focused );
 
                 predicate = new TextBox();
                 ParameterCaptionBox pPanel = new ParameterCaptionBox( "Relationship, e.g. has brand", predicate,
@@ -532,6 +538,26 @@ public class EditableStepView extends PopupPanel {
                         box.addBlurHandler( new BlurHandler() {
                             public void onBlur( BlurEvent event ) {
                                 InputValidator.nonEmptyTextBoxStyle( box );
+                            }
+                        } );
+                    }
+                }
+            }
+
+            private class ParameterCaptionSuggestBox extends CaptionPanel {
+                private ParameterCaptionSuggestBox( String captionText,
+                                                    final SuggestBox box,
+                                                    String boxText,
+                                                    boolean nonEmpty ) {
+                    super( captionText );
+                    addStyleName( "parameter-title" );
+                    addStyleName( "captionpanel-border" );
+                    box.setText( boxText );
+                    add( box );
+                    if ( nonEmpty ) {
+                        box.addKeyPressHandler( new KeyPressHandler() {
+                            public void onKeyPress( KeyPressEvent event ) {
+                                InputValidator.nonEmptySuggestBoxStyle( box );
                             }
                         } );
                     }

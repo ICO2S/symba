@@ -35,8 +35,8 @@ public class HomePanel extends HorizontalPanel {
         login.populateNameListBox();
 
         VerticalPanel textPanel = new VerticalPanel();
-        textPanel.add( login );
         textPanel.add( HOME_TEXT );
+        textPanel.add( login );
 
         add( new Image( prefix + HOME_ICON ) );
         add( textPanel );

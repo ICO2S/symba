@@ -9,6 +9,7 @@ import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 @RemoteServiceRelativePath( "investigationsService" )
 public interface InvestigationsService extends RemoteService {
@@ -36,4 +37,6 @@ public interface InvestigationsService extends RemoteService {
     HashMap<String, Material> addOrUpdateMaterial( Material material );
 
     String getMetadata( String id );
+
+    HashSet<String> getParameterSubjects();
 }

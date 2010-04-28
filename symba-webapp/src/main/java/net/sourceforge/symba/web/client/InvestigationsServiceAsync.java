@@ -8,6 +8,7 @@ import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public interface InvestigationsServiceAsync {
 
@@ -43,5 +44,7 @@ public interface InvestigationsServiceAsync {
                       AsyncCallback<String> async );
 
     void getAllMaterials( AsyncCallback<HashMap<String, Material>> async );
+
+    void getParameterSubjects( AsyncCallback<HashSet<String>> asyncCallback );
 }
 

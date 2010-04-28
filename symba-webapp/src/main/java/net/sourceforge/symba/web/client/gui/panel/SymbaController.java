@@ -14,6 +14,7 @@ import net.sourceforge.symba.web.shared.Material;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class SymbaController extends DockPanel {
 
@@ -30,14 +31,17 @@ public class SymbaController extends DockPanel {
     // Who the user is logged in as
     private Contact user;
 
-    // Store all current storedContacts in a central location so all other panels have access to it.
+    // Store all current storedContacts in a central location so all panels have access to it.
     private HashMap<String, Contact> storedContacts;
 
-    // Store all current storedContacts in a central location so all other panels have access to it.
+    // Store all current storedContacts in a central location so all panels have access to it.
     private HashMap<String, Material> storedMaterials;
 
-    // Store all current investigations in a central location so all other panels have access to it.
+    // Store all current investigations in a central location so all panels have access to it.
     private ArrayList<InvestigationDetail> storedInvestigationDetails;
+
+    // Store all current parameter subjects in a central location so all panels have access to it.
+    private HashSet<String> storedParameterSubjects;
 
     // The type of the Widget in the center panel might change
     private Widget centerWidget;
@@ -57,6 +61,7 @@ public class SymbaController extends DockPanel {
         updateStoredContacts();
         updateStoredMaterials();
         updateStoredInvestigationDetails();
+        updateStoredParameterSubjects();
 
         setWidth( "100%" );
         setSpacing( 10 );
@@ -237,6 +242,10 @@ public class SymbaController extends DockPanel {
         return storedMaterials;
     }
 
+    public HashSet<String> getStoredParameterSubjects() {
+        return storedParameterSubjects;
+    }
+
     private void updateStoredContacts() {
 
         storedContacts = new HashMap<String, Contact>();
@@ -278,7 +287,19 @@ public class SymbaController extends DockPanel {
                         Arrays.toString( caught.getStackTrace() ) );
             }
         } );
+    }
 
+    private void updateStoredParameterSubjects() {
+        rpcService.getParameterSubjects( new AsyncCallback<HashSet<String>>() {
+            public void onSuccess( HashSet<String> result ) {
+                storedParameterSubjects = result;
+            }
+
+            public void onFailure( Throwable caught ) {
+                Window.alert( "Error fetching parameter subjects: " + caught.getMessage() +
+                        Arrays.toString( caught.getStackTrace() ) );
+            }
+        } );
     }
 
     public void setStoredMaterials( HashMap<String, Material> materials ) {

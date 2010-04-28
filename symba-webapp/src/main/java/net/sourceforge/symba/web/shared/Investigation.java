@@ -234,7 +234,7 @@ public class Investigation implements Serializable {
             }
         }
         if ( step != null ) {
-            System.err.println( "copying at top level" );
+//            System.err.println( "copying at top level" );
             addExperimentStep( step );
         }
     }

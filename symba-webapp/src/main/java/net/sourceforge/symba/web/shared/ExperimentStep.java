@@ -17,7 +17,7 @@ public class ExperimentStep implements Serializable {
     private ArrayList<ExperimentParameter> parameters;
     private ArrayList<Material> inputMaterials;
     private ArrayList<Material> outputMaterials;
-    private HashMap<String,String> fileInfo;
+    private HashMap<String, String> fileInfo;
 
     // todo parameters etc. go here
 
@@ -158,6 +158,9 @@ public class ExperimentStep implements Serializable {
         ExperimentStep step = new ExperimentStep();
         step.createDatabaseId();
         step.setTitle( getTitle() );
+        step.getParameters().addAll( getParameters() );
+        step.getInputMaterials().addAll( getInputMaterials() );
+        step.getOutputMaterials().addAll( getOutputMaterials() );
         for ( ExperimentStepHolder holder : getChildren() ) {
             ExperimentStep newHolderCurrent = new ExperimentStep( holder.getCurrent() );
             newHolderCurrent.createDatabaseId();

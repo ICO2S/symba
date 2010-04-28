@@ -7,6 +7,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import net.sourceforge.symba.web.client.gui.InputValidator;
+import net.sourceforge.symba.web.client.gui.handlers.ActivateableClickHandler;
 import net.sourceforge.symba.web.shared.Material;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class MaterialListPanel extends HorizontalPanel {
     }
 
     private static final String SAVE_TEXT = "Save New Material";
+    private static final String SAVE_TEXT_UPDATE = "Update Material";
     private final SelectorPanel selector;
 
     public MaterialListPanel( SymbaController controller,
@@ -56,6 +58,7 @@ public class MaterialListPanel extends HorizontalPanel {
 
         private final TextBox nameBox;
         private final TextArea descriptionBox;
+        private final Button saveButton;
         private String originalId;
 
         public CreatorPanel( final SymbaController controller ) {
@@ -70,7 +73,7 @@ public class MaterialListPanel extends HorizontalPanel {
             descriptionBox.setCharacterWidth( 30 );
             descriptionBox.setVisibleLines( 5 );
 
-            Button saveButton = new Button( SAVE_TEXT );
+            saveButton = new Button( SAVE_TEXT );
 
             name.add( new Label( "Material Name: " ) );
             description.add( new Label( "Description: " ) );
@@ -100,6 +103,12 @@ public class MaterialListPanel extends HorizontalPanel {
         }
 
         private void editMaterial( final Material material ) {
+            if ( material.getName().length() > 0 ) {
+                // this is an update of a material rather than an addition of a new one
+                saveButton.setText( SAVE_TEXT_UPDATE );
+            } else {
+                saveButton.setText( SAVE_TEXT );
+            }
             originalId = material.getId();
             nameBox.setText( material.getName() );
             descriptionBox.setText( material.getDescription() );
@@ -145,6 +154,7 @@ public class MaterialListPanel extends HorizontalPanel {
                                     controller.setStoredMaterials( result );
                                     selector.getSelectedMaterials().add( material );
                                     selector.showListBox();
+                                    selector.countLabel.setText( selector.getMaterialsDisplayCount( true ) );
                                     // clear any values
                                     nameBox.setText( "" );
                                     setVisible( false );
@@ -203,17 +213,22 @@ public class MaterialListPanel extends HorizontalPanel {
         private static final String COPY_ICON = "/images/new_window.png";
         private static final String CLEAR_ICON = "/images/clear.png";
 
-        private final Label countLabel;
+        private final Label countLabel, expandedMaterialLabel;
         private final ListBox expandedMaterialBox;
         private final ArrayList<Material> selectedMaterials;
         private final String materialType;
+        private CreatorPanel creator;
         private final SymbaController controller;
 
         private SelectorPanel( final CreatorPanel creator,
                                final SymbaController controller,
                                ArrayList<Material> selectedMaterials,
                                String materialType ) {
-            // by using the controller here rather than its materials, we'll catch any updates to its materials
+            //
+            // instantiation
+            //
+
+            this.creator = creator;
             this.controller = controller;
             this.selectedMaterials = selectedMaterials;
             this.materialType = materialType;
@@ -231,117 +246,124 @@ public class MaterialListPanel extends HorizontalPanel {
             // start with a basic view where they can just see the number of materials
             HorizontalPanel hPanel = new HorizontalPanel();
             hPanel.setSpacing( 5 );
-            countLabel = new Label( getMaterialsCount() );
+            countLabel = new Label( getMaterialsDisplayCount( false ) );
             Image createImage = new Image( prefix + ADD_ICON );
             createImage.setTitle( "Create New Material" );
-            Image copyImage = new Image( prefix + COPY_ICON );
+            final Image copyImage = new Image( prefix + COPY_ICON );
             copyImage.setTitle( "Copy Material" );
-            Image clearImage = new Image( prefix + CLEAR_ICON );
+            final Image clearImage = new Image( prefix + CLEAR_ICON );
             clearImage.setTitle( "Clear Selected Materials" );
             hPanel.add( countLabel );
             hPanel.add( createImage );
             hPanel.add( copyImage );
             hPanel.add( clearImage );
 
+            VerticalPanel expandedMaterialPanel = new VerticalPanel();
+            expandedMaterialLabel = new Label( "Choose from:" );
             if ( viewType == ViewType.ASSIGN_TO_EXPERIMENT ) {
                 expandedMaterialBox = new ListBox( true ); // set as a multiple select box
             } else {
                 expandedMaterialBox = new ListBox( false ); // set as a single select box when creating new materials
             }
             expandedMaterialBox.setVisibleItemCount( 5 );
+            expandedMaterialPanel.add( expandedMaterialLabel );
+            expandedMaterialPanel.add( expandedMaterialBox );
 
+            //
             // styles
+            //
             countLabel.addStyleName( "clickable-text" );
             createImage.addStyleName( "within-step-images" );
             copyImage.addStyleName( "within-step-images" );
             clearImage.addStyleName( "within-step-images" );
 
+            //
             // handlers
+            //
+            final CopyMaterialHandler copyMaterialHandler = new CopyMaterialHandler();
+            copyImage.addClickHandler( copyMaterialHandler );
+            final ClearMaterialsHandler clearMaterialsHandler = new ClearMaterialsHandler();
+            clearMaterialsHandler.setAssociatedWidgets( copyImage, clearImage );
+            clearMaterialsHandler.setAssociatedHandlers( copyMaterialHandler );
+            clearImage.addClickHandler( clearMaterialsHandler );
+
             countLabel.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     // when clicked, present an extended view where the materials can be chosen.
                     // Keep that view open for the duration.
                     showListBox();
+                    if ( getSelectedMaterialIds().size() == 0 ) {
+                        // no selected materials means no copying or clearing
+                        copyImage.addStyleName( "images-opaque" );
+                        copyMaterialHandler.disable();
+                        clearImage.addStyleName( "images-opaque" );
+                        clearMaterialsHandler.disable();
+                    } else if ( getSelectedMaterialIds().size() > 1 ) {
+                        // >1 selected materials means no copying
+                        copyImage.addStyleName( "images-opaque" );
+                        copyMaterialHandler.disable();
+                        clearImage.removeStyleName( "images-opaque" );
+                        clearMaterialsHandler.enable();
+                    } else {
+                        // exactly 1 means you can do everything
+                        copyImage.removeStyleName( "images-opaque" );
+                        copyMaterialHandler.enable();
+                        clearImage.removeStyleName( "images-opaque" );
+                        clearMaterialsHandler.enable();
+                    }
                 }
             } );
 
             createImage.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     creator.setVisible( true );
-                }
-            } );
-
-            copyImage.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent event ) {
-                    // if the set of clickable materials isn't visible yet, make it visible.
-                    if ( !expandedMaterialBox.isVisible() ) {
-                        showListBox();
-                    } else {
-                        // If a single material has been chosen, then allow it to be copied and put into the
-                        // creator panel.
-                        if ( getSelectedMaterialIds().size() == 1 ) {
-                            Material original = controller.getStoredMaterials()
-                                    .get( getSelectedMaterialIds().get( 0 ) );
-                            final Material copy = new Material( "",
-                                    original.getName() + " " +
-                                            ( Integer.toString( Random.nextInt() ).substring( 1, 4 ) ),
-                                    original.getDescription() );
-                            copy.createId();
-                            controller.getRpcService()
-                                    .addOrUpdateMaterial( copy, new AsyncCallback<HashMap<String, Material>>() {
-                                        public void onFailure( Throwable caught ) {
-                                            Window.alert( "Failed to store material: " + copy.getName() + "\n" +
-                                                    caught.getMessage() );
-                                        }
-
-                                        public void onSuccess( HashMap<String, Material> result ) {
-                                            controller.setStoredMaterials( result );
-                                            selector.getSelectedMaterials().add( copy );
-                                            selector.showListBox();
-                                        }
-                                    } );
-                        } else {
-                            // if >1 material (or no materials) has been chosen, force the user to just select one
-                            Window.alert( "Please choose exactly one material to copy." );
-                        }
-                    }
-                }
-            } );
-
-            clearImage.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent event ) {
-                    if ( getSelectedMaterialIds().isEmpty() ) {
-                        return;
-                    }
-                    boolean result = true;
-                    if ( viewType == ViewType.ASSIGN_TO_EXPERIMENT ) {
-                        result = Window
-                                .confirm(
-                                        "Are you sure you wish to drop all materials from this experimental step?" );
-                    }
-                    if ( result ) {
-                        selector.getSelectedMaterials().clear();
-                        selector.showListBox();
-                        creator.setVisible( false );
-                    }
+                    creator.editMaterial( new Material() );
                 }
             } );
 
             expandedMaterialBox.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
+                    // update the countLabel, irrespective of size
+                    countLabel.setText( getMaterialsDisplayCount( true ) );
                     // if there is just one selected item, display the information about that item in the
-                    // creator panel. This allows edits of existing items.
+                    // creator panel. This allows edits of existing items. Also, allow access to the copy and
+                    // clear buttons
                     if ( getSelectedMaterialIds().size() == 1 ) {
                         creator.setVisible( true );
                         creator.editMaterial(
                                 controller.getStoredMaterials().get( getSelectedMaterialIds().get( 0 ) ) );
+                        copyMaterialHandler.enable();
+                        copyImage.removeStyleName( "images-opaque" );
+                        clearMaterialsHandler.enable();
+                        clearImage.removeStyleName( "images-opaque" );
+                    } else if ( getSelectedMaterialIds().size() > 1 ) {
+                        // Also, as long as there is at least one selected item, allow clearing but not copying,
+                        // and therefore ensure that the creator panel is not displayed
+                        copyMaterialHandler.disable();
+                        copyImage.addStyleName( "images-opaque" );
+                        clearMaterialsHandler.enable();
+                        clearImage.removeStyleName( "images-opaque" );
+                        creator.setVisible( false );
                     }
                 }
             } );
 
+            //
+            // conditional styles
+            //
+            // to begin with, there is no expandedMaterialLabel displayed, therefore no boxes except the
+            // add material are enabled.
+            copyImage.addStyleName( "images-opaque" );
+            copyMaterialHandler.disable();
+            clearImage.addStyleName( "images-opaque" );
+            clearMaterialsHandler.disable();
+
+            //
             // positioning
+            //
             add( hPanel );
-            add( expandedMaterialBox );
+            add( expandedMaterialPanel );
+            expandedMaterialLabel.setVisible( false );
             expandedMaterialBox.setVisible( false );
 
         }
@@ -376,13 +398,18 @@ public class MaterialListPanel extends HorizontalPanel {
             return asList;
         }
 
-        private String getMaterialsCount() {
-            if ( selectedMaterials.size() == 0 ) {
-                return "Start selecting " + materialType + " materials";
-            } else if ( selectedMaterials.size() == 1 ) {
+        private String getMaterialsDisplayCount( boolean currentlySelected ) {
+//            if ( selectedMaterials.size() == 0 ) {
+//                return "Start selecting " + materialType + " materials";
+            // } else
+            int number = selectedMaterials.size();
+            if ( currentlySelected ) {
+                number = getSelectedMaterialIds().size();
+            }
+            if ( number == 1 ) {
                 return "1 " + materialType + " material";
             } else {
-                return selectedMaterials.size() + " " + materialType + " materials";
+                return number + " " + materialType + " materials";
             }
         }
 
@@ -391,6 +418,7 @@ public class MaterialListPanel extends HorizontalPanel {
         }
 
         public void showListBox() {
+            expandedMaterialLabel.setVisible( true );
             populateListBox(); // refresh with any new data
             expandedMaterialBox.setVisible( true );
         }
@@ -404,6 +432,72 @@ public class MaterialListPanel extends HorizontalPanel {
                 }
             }
             return ids;
+        }
+
+        private class CopyMaterialHandler extends ActivateableClickHandler {
+
+            @Override
+            protected boolean runClickMethod( ClickEvent event ) {
+                // if the set of clickable materials isn't visible yet, make it visible.
+                if ( !expandedMaterialBox.isVisible() ) {
+                    showListBox();
+                } else {
+                    // If a single material has been chosen, then allow it to be copied and put into the
+                    // creator panel.
+                    if ( getSelectedMaterialIds().size() == 1 ) {
+                        Material original = controller.getStoredMaterials()
+                                .get( getSelectedMaterialIds().get( 0 ) );
+                        final Material copy = new Material( "",
+                                original.getName() + " " +
+                                        ( Integer.toString( Random.nextInt() ).substring( 1, 4 ) ),
+                                original.getDescription() );
+                        copy.createId();
+                        controller.getRpcService()
+                                .addOrUpdateMaterial( copy, new AsyncCallback<HashMap<String, Material>>() {
+                                    public void onFailure( Throwable caught ) {
+                                        Window.alert( "Failed to store material: " + copy.getName() + "\n" +
+                                                caught.getMessage() );
+                                    }
+
+                                    public void onSuccess( HashMap<String, Material> result ) {
+                                        controller.setStoredMaterials( result );
+                                        selector.getSelectedMaterials().add( copy );
+                                        creator.editMaterial( copy );
+                                        selector.showListBox();
+                                        selector.countLabel.setText( getMaterialsDisplayCount( false ) );
+                                    }
+                                } );
+                    } else {
+                        // if >1 material (or no materials) has been chosen, force the user to just select one
+                        Window.alert( "Please choose exactly one material to copy." );
+                    }
+                }
+                return true;
+            }
+        }
+
+        private class ClearMaterialsHandler extends ActivateableClickHandler {
+
+            @Override
+            protected boolean runClickMethod( ClickEvent event ) {
+                if ( getSelectedMaterialIds().isEmpty() ) {
+                    return true;
+                }
+                boolean result = true;
+                if ( viewType == ViewType.ASSIGN_TO_EXPERIMENT ) {
+                    result = Window.confirm( "Are you sure you wish to de-select all materials in the box?" );
+                }
+                if ( result ) {
+                    selector.getSelectedMaterials().clear();
+                    selector.showListBox();
+                    selector.countLabel.setText( getMaterialsDisplayCount( false ) );
+                    creator.setVisible( false );
+                    disable();
+                    return true;
+                } else {
+                    return false; // we are not de-selecting, so don't disable anything.
+                }
+            }
         }
     }
 }

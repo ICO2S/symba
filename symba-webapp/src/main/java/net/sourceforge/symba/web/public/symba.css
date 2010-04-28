@@ -67,8 +67,8 @@ each stack to not have the google gradient. */
 }
 
 .experiment-OddStep {
-    border: solid 1px forestgreen;
-    background-color: #EBFFEB;
+    border: solid 1px #90ee90;
+    background-color: #F0F0F0;
 }
 
 .captionpanel-border {
@@ -107,6 +107,11 @@ each stack to not have the google gradient. */
     color: green;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.images-opaque {
+    opacity: 0.4; /* FF */
+    filter: alpha(opacity=40); /* IE */
 }
 
 /* Change the following 2 styles to change the mouse looks when hovering over clickable images and when leaving those images */

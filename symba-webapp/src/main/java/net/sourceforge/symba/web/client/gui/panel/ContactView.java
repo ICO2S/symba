@@ -13,7 +13,8 @@ public class ContactView extends HorizontalPanel {
         LOGIN, WITHIN_INVESTIGATION
     }
 
-    public static final String ADD_TEXT = "(add new contact)";
+    public static final String ADD_TEXT = "(add new data owner)";
+    public static final String ADD_TEXT_LOGIN = "(add new user and log in)";
 
     private final SymbaController controller;
     private final ViewType type;
@@ -113,6 +114,9 @@ public class ContactView extends HorizontalPanel {
         if ( !readOnly ) {
             // provide the ability to add new contacts
             Label addContact = new Label( ADD_TEXT );
+            if ( type == ViewType.LOGIN ) {
+                addContact.setText( ADD_TEXT_LOGIN );
+            }
 
             if ( type == ViewType.WITHIN_INVESTIGATION ||
                     ( type == ViewType.LOGIN && ( fullNameValue == null || fullNameValue.length() == 0 ) ) ) {

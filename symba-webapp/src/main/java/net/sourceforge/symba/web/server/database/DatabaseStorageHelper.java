@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * allows a database version of SyMBA to run
@@ -61,7 +62,13 @@ public class DatabaseStorageHelper extends StorageHelper {
     @NotNull
     @Override
     public HashMap<String, Material> fetchAllMaterials() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return new HashMap<String, Material>(); 
+    }
+
+    @NotNull
+    @Override
+    public HashSet<String> fetchAllParameterSubjects() {
+        return new HashSet<String>();
     }
 
     @NotNull

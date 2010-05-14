@@ -30,6 +30,7 @@ public class GwtUploadFile extends VerticalPanel {
         //
         this.fileInfo = new HashMap<String, String>( fileInfo );
         final MultiUploader defaultUploader = new MultiUploader();
+        defaultUploader.avoidRepeatFiles( true );
         OriginalFileDisplay originalFileDisplay = new OriginalFileDisplay( this.fileInfo );
 
         //
@@ -50,11 +51,19 @@ public class GwtUploadFile extends VerticalPanel {
                 if ( uploader.getStatus() == IUploadStatus.Status.SUCCESS ) {
                     new PreloadedImage( uploader.fileUrl(), showImage );
                     GwtUploadFile.this.fileInfo.put( defaultUploader.getFileName(), "" );
-                    HorizontalPanel hp = new HorizontalPanel();
+                    final HorizontalPanel hp = new HorizontalPanel();
                     final TextArea area = new TextArea();
+                    final Button localDeleteButton = new Button( "X" );
+                    localDeleteButton.addClickHandler( new ClickHandler() {
+                        public void onClick( ClickEvent event ) {
+                            GwtUploadFile.this.fileInfo.remove(
+                                    defaultUploader.getFileName() ); // it is only this line where the file gets removed from the session
+                            remove( hp );
+                        }
+                    } );
                     area.setCharacterWidth( 40 );
                     area.setVisibleLines( 4 );
-                    SetupTitledText.set( hp, area, defaultUploader.getFileName(), "", false );
+                    SetupTitledText.set( hp, area, localDeleteButton, defaultUploader.getFileName(), "", false );
                     add( hp );
 
                     area.addBlurHandler( new BlurHandler() {
@@ -150,6 +159,8 @@ public class GwtUploadFile extends VerticalPanel {
                 deleteButton.addClickHandler( new ClickHandler() {
                     public void onClick( ClickEvent event ) {
                         getList().remove( item );
+                        info.remove(
+                                ( String ) item ); // it is only this line where the file gets removed from the session
                         remove( label );
                         remove( deleteButton );
                         removeRow( currentRow );

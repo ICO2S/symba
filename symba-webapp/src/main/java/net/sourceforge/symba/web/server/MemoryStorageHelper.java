@@ -164,7 +164,7 @@ public class MemoryStorageHelper extends StorageHelper {
         ExperimentParameter strain = new ExperimentParameter();
         strain.setFullyWriteable( false );
         strain.setSubject( "Strain" );
-        strain.setObjectValue( "hasIdentifier" );
+        strain.setPredicate( "hasIdentifier" );
         top.getCurrent().getParameters().add( strain );
 
         ExperimentStepHolder middle = new ExperimentStepHolder();
@@ -172,12 +172,12 @@ public class MemoryStorageHelper extends StorageHelper {
         ExperimentParameter time = new ExperimentParameter();
         time.setFullyWriteable( false );
         time.setSubject( "TimeAfterInoculation" );
-        time.setObjectValue( "is" );
+        time.setPredicate( "is" );
         time.setUnit( "minutes" );
         ExperimentParameter temp = new ExperimentParameter();
         temp.setFullyWriteable( false );
         temp.setSubject( "InoculationTemperature" );
-        temp.setObjectValue( "is" );
+        temp.setPredicate( "is" );
         temp.setUnit( "Celsius" );
         middle.getCurrent().getParameters().add( time );
         middle.getCurrent().getParameters().add( temp );
@@ -187,15 +187,15 @@ public class MemoryStorageHelper extends StorageHelper {
         ExperimentParameter repeat = new ExperimentParameter();
         repeat.setFullyWriteable( false );
         repeat.setSubject( "RepeatNumber" );
-        repeat.setObjectValue( "is" );
+        repeat.setPredicate( "is" );
         ExperimentParameter brand = new ExperimentParameter();
         brand.setFullyWriteable( false );
         brand.setSubject( "MicroarrayChip" );
-        brand.setObjectValue( "hasBrand" );
+        brand.setPredicate( "hasBrand" );
         ExperimentParameter model = new ExperimentParameter();
         model.setFullyWriteable( false );
         model.setSubject( "MicroarrayChip" );
-        model.setObjectValue( "hasModel" );
+        model.setPredicate( "hasModel" );
         last.getCurrent().getParameters().add( repeat );
         last.getCurrent().getParameters().add( brand );
         last.getCurrent().getParameters().add( model );

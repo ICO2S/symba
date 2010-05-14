@@ -9,10 +9,13 @@ import com.google.gwt.user.client.ui.Label;
 import java.util.ArrayList;
 
 public abstract class CollapsibleTable extends FlexTable {
+
+    public static final String ACTION_EXPAND = "(expand)";
+    public static final String ACTION_COLLAPSE = "(collapse)";
     // each row is plain text
     private ArrayList<String> list;
     private String listType;
-    private final Label summaryLabel;
+    private final Label summaryLabel, actionLabel;
     HorizontalPanel summaryPanel;
 
     public CollapsibleTable( ArrayList list,
@@ -28,16 +31,16 @@ public abstract class CollapsibleTable extends FlexTable {
 
         summaryPanel = new HorizontalPanel();
         summaryPanel.setSpacing( 5 );
+        actionLabel = new Label( ACTION_EXPAND );
         summaryLabel = new Label( displayCount() );
-        final Label actionLabel = new Label( "(expand)" );
         actionLabel.addStyleName( "clickable-text" );
         actionLabel.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                if ( actionLabel.getText().equals( "(expand)" ) ) {
-                    actionLabel.setText( "(collapse)" );
+                if ( actionLabel.getText().equals( ACTION_EXPAND ) ) {
+                    actionLabel.setText( ACTION_COLLAPSE );
                     displayList( myEditableHandler );
                 } else {
-                    actionLabel.setText( "(expand)" );
+                    actionLabel.setText( ACTION_EXPAND );
                     hideList();
                 }
             }
@@ -67,12 +70,23 @@ public abstract class CollapsibleTable extends FlexTable {
     }
 
     public String displayCount() {
+        String result;
         if ( getList().size() == 1 ) {
-            return "1 " + getListType();
+            result = "1 " + getListType();
+            if ( actionLabel.getText().length() == 0 ) {
+                actionLabel.setText( ACTION_EXPAND );
+            }
         } else if ( getList().size() > 1 ) {
-            return getList().size() + " " + getListType() + "s";
+            result = getList().size() + " " + getListType() + "s";
+            if ( actionLabel.getText().length() == 0 ) {
+                actionLabel.setText( ACTION_EXPAND );
+            }
+        } else {
+            // clear the collapse/expand action label
+            result = "";
+            actionLabel.setText( "" );
         }
-        return "";
+        return result;
     }
 
     public ArrayList getList() {

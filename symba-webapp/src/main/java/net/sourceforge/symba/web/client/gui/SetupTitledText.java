@@ -2,6 +2,7 @@ package net.sourceforge.symba.web.client.gui;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBoxBase;
@@ -9,16 +10,39 @@ import com.google.gwt.user.client.ui.TextBoxBase;
 public class SetupTitledText {
     public static void set( final HorizontalPanel panel,
                             final TextBoxBase box,
+                            final Button deleteButton,
                             String legend,
                             String value,
                             boolean readOnly ) {
 
+        clearPanel(panel);
+        panel.add( deleteButton );
+        setTitleAndArea(panel, box, legend, value, readOnly);
+    }
+
+    public static void set( final HorizontalPanel panel,
+                            final TextBoxBase box,
+                            String legend,
+                            String value,
+                            boolean readOnly ) {
+
+        clearPanel(panel);
+        setTitleAndArea(panel, box, legend, value, readOnly);
+    }
+
+    private static void clearPanel( HorizontalPanel panel ) {
         // clear the panel.
         for ( int iii = panel.getWidgetCount(); iii > 0; iii-- ) {
             panel.remove( iii - 1 );
         }
-
         panel.setSpacing( 5 );
+    }
+
+    private static void setTitleAndArea( final HorizontalPanel panel,
+                                         final TextBoxBase box,
+                                         String legend,
+                                         String value,
+                                         boolean readOnly ) {
         Label legendLabel = new Label( legend );
         legendLabel.addStyleName( "textbox-legend" );
         panel.add( legendLabel );

@@ -4,7 +4,7 @@ libraries, which may have a different type of license.
 
 SyMBA is a FuGE-based back- and front-end for the archival, storage and
 retrieval of high-throughput, multi-omics data.
-Copyright (C) 2007 jointly held by Allyson Lister, Olly Shaw, and their employers.
+Copyright (C) 2007 jointly held by Allyson Lister and her employers.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public

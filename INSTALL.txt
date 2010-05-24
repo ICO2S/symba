@@ -1,7 +1,7 @@
 Installation Instructions for the SyMBA
 --------------------------------------------
 
-There is a reasonable amount of setup of your environment to get it ready to create your own installation of SyMBA.
+There is a minimal amount of setup of your environment to get it ready for your own installation of SyMBA.
 These instructions are available on the SyMBA website, where you may view the HTML or download the PDF versions, at:
 
 http://symba.sourceforge.net/symba-books/installation/index.html

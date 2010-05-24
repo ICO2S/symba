@@ -143,6 +143,13 @@
             <scope>test</scope>
         </dependency>
 
+    <!-- JDOM is currently for the web.server.database.security package-->
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.1</version>
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>symba</finalName>

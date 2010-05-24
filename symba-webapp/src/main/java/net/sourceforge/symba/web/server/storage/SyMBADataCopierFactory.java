@@ -1,4 +1,4 @@
-package net.sourceforge.symba.webapp.util.storage;
+package net.sourceforge.symba.web.server.storage;
 
 /**
  * This file is part of SyMBA.

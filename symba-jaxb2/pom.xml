@@ -2,9 +2,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.sourceforge.symba</groupId>
+    <parent>
+        <groupId>${application.package}</groupId>
+        <artifactId>${application.id}</artifactId>
+        <version>${application.version}</version>
+    </parent>
+    <groupId>${application.package}</groupId>
     <artifactId>symba-jaxb2</artifactId>
-    <version>8.09</version>
+    <version>${application.version}</version>
     <packaging>jar</packaging>
     <name>SyMBA: Modified FuGE JAXB2 Code</name>
 
@@ -12,7 +17,7 @@
     <!--<parent>-->
     <!--<groupId>net.sourceforge.symba</groupId>-->
     <!--<artifactId>symba</artifactId>-->
-    <!--<version>8.09</version>-->
+    <!--<version>${application.version}</version>-->
     <!--</parent>-->
 
     <!-- This module is based on (and contains some code) the FuGE XSD project from http://fuge.sf.net -->
@@ -23,9 +28,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.sourceforge.symba</groupId>
+            <groupId>${application.package}</groupId>
             <artifactId>symba-lsid-ws-api</artifactId>
-            <version>8.09</version>
+            <version>${application.version}</version>
         </dependency>
 
         <dependency>
@@ -40,11 +45,11 @@
         </dependency>
 
         <!-- Test dependencies -->
-        <!--dependency>
+        <dependency>
               <groupId>junit</groupId>
               <artifactId>junit</artifactId>
-              <version>3.8.1</version>
-          </dependency-->
+              <version>3.8.2</version>
+          </dependency>
 
         <!-- Roundtrip -->
         <dependency>

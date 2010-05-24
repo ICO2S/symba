@@ -1,4 +1,4 @@
-package net.sourceforge.symba.webapp.util;
+package net.sourceforge.symba.web.server.conversion;
 
 /**
  * this is just a simple class for now, but kept as its own class in case more complex work needs to be done

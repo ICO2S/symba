@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.sourceforge.symba</groupId>
         <artifactId>symba</artifactId>
-        <version>8.09</version>
+        <version>${application.version}</version>
     </parent>
     <artifactId>symba-querying</artifactId>
     <packaging>jar</packaging>
@@ -14,12 +14,12 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>symba-mapping</artifactId>
-            <version>${pom.version}</version>
+            <version>${application.version}</version>
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>symba-jaxb2</artifactId>
-            <version>${pom.version}</version>
+            <version>${application.version}</version>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>

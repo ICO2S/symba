@@ -3,19 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!--<parent>-->
-    <!--<groupId>net.sourceforge.symba</groupId>-->
-    <!--<artifactId>symba</artifactId>-->
-    <!--<version>8.09</version>-->
-    <!--</parent>-->
-    <groupId>net.sourceforge.symba</groupId>
+    <parent>
+        <groupId>${application.package}</groupId>
+        <artifactId>${application.id}</artifactId>
+        <version>${application.version}</version>
+    </parent>
+    <groupId>${application.package}</groupId>
     <artifactId>symba-lsid-ws-api</artifactId>
-    <version>8.09</version>
+    <version>${application.version}</version>
     <packaging>jar</packaging>
     <name>SyMBA LSID webservices: Interfaces</name>
-    <properties>
-        <cxf.version>2.2.6</cxf.version>
-    </properties>
     <dependencies>
         <!-- CXF : when the war is built, cxf automatically is used to generate all wsdl files from the java -->
         <dependency>
@@ -49,18 +46,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>repo1.maven.org/maven2</id>
-            <name>Official Maven 2 Repository</name>
-            <url>http://repo1.maven.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>java.net</id>
-            <url>http://download.java.net/maven/1/</url>
-            <layout>legacy</layout>
-        </repository>
-    </repositories>
     <build>
         <!--<defaultGoal>compiler:compile</defaultGoal>-->
         <plugins>

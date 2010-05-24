@@ -2,9 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>net.sourceforge.symba</groupId>
-        <artifactId>symba</artifactId>
-        <version>8.09</version>
+        <groupId>${application.package}</groupId>
+        <artifactId>${application.id}</artifactId>
+        <version>${application.version}</version>
     </parent>
     <artifactId>symba-obiloader</artifactId>
     <packaging>jar</packaging>
@@ -13,7 +13,7 @@
         <dependency>
             <groupId>net.sourceforge.symba</groupId>
             <artifactId>symba-mapping</artifactId>
-            <version>${pom.version}</version>
+            <version>${application.version}</version>
         </dependency>
         <dependency>
             <groupId>owlapi</groupId>

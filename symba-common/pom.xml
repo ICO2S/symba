@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.sourceforge.symba</groupId>
         <artifactId>symba</artifactId>
-        <version>8.09</version>
+        <version>${application.version}</version>
     </parent>
     <artifactId>symba-common</artifactId>
     <packaging>jar</packaging>
@@ -14,7 +14,7 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>symba-mda</artifactId>
-            <version>${pom.version}</version>
+            <version>${application.version}</version>
             <type>pom</type>
             <scope>runtime</scope>
             <optional>true</optional>

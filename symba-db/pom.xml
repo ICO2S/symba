@@ -3,20 +3,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!--<parent>-->
-    <!--<groupId>net.sourceforge.symba</groupId>-->
-    <!--<artifactId>symba</artifactId>-->
-    <!--<version>8.09</version>-->
-    <!--</parent>-->
-    <groupId>net.sourceforge.symba</groupId>
+    <parent>
+        <groupId>${application.package}</groupId>
+        <artifactId>${application.id}</artifactId>
+        <version>${application.version}</version>
+    </parent>
+    <groupId>${application.package}</groupId>
+    <name>SyMBA Default Database Code</name>
     <artifactId>symba-db</artifactId>
-    <version>8.09</version>
+    <version>${application.version}</version>
 
     <dependencies>
         <dependency>
-            <groupId>net.sourceforge.symba</groupId>
+            <groupId>${application.package}</groupId>
             <artifactId>symba-jaxb2</artifactId>
-            <version>8.09</version>
+            <version>${application.version}</version>
         </dependency>
         <dependency>
             <groupId>postgresql</groupId>
@@ -43,7 +44,7 @@
             <version>5.1</version>
         </dependency>
         <dependency>
-            <groupId>aspectj</groupId>
+            <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>1.5.4</version>
         </dependency>

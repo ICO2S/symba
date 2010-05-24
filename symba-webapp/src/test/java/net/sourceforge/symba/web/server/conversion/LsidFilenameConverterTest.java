@@ -1,4 +1,4 @@
-package net.sourceforge.symba.webapp.util;
+package net.sourceforge.symba.web.server.conversion;
 
 import org.testng.annotations.Test;
 
@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 public class LsidFilenameConverterTest {
 
     // tests the convert method using the default colon replacement string
-    @Test( groups = { "webapp-helper" } )
+    @Test( groups = { "webapp" } )
     public void convertTest() {
 
         String lsid = "urn:lsid:cisban.cisbs.org:RawData:06ce5766-bb24-46e9-934a-ea68a56f4171";

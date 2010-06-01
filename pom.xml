@@ -206,6 +206,7 @@
         <module>symba-lsid-ws-resolver</module>
         <module>symba-lsid-ws-client</module>
         <module>symba-books</module>
+        <module>symba-db</module>
     </modules>
     <profiles>
         <profile>

@@ -34,7 +34,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
         // todo make the fetching smarter as might not be great retrieving the entire database here!
         helper.setup( context );
         helper.fetchAll( true );
-        helper.fetchAllPeople();
+        helper.fetchAllUsers();
         helper.fetchAllMaterials();
         helper.fetchAllParameterSubjects();
     }
@@ -80,7 +80,7 @@ public class InvestigationsServiceImpl extends RemoteServiceServlet implements
     }
 
     public HashMap<String, Contact> getAllContacts() {
-        return helper.getContacts();
+        return helper.getUsers();
     }
 
     public HashMap<String, Contact> addOrUpdateContact( Contact contact ) {

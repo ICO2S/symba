@@ -57,12 +57,12 @@ public class MemoryStorageHelper extends StorageHelper {
      * @return the list of Contacts
      */
     @NotNull
-    public HashMap<String, Contact> fetchAllPeople() {
-        getContacts().clear();
-        getContacts().put( ALICE.getId(), ALICE );
-        getContacts().put( BOB.getId(), BOB );
-        getContacts().put( ZACH.getId(), ZACH );
-        return getContacts();
+    public HashMap<String, Contact> fetchAllUsers() {
+        getUsers().clear();
+        getUsers().put( ALICE.getId(), ALICE );
+        getUsers().put( BOB.getId(), BOB );
+        getUsers().put( ZACH.getId(), ZACH );
+        return getUsers();
     }
 
     @NotNull
@@ -87,8 +87,8 @@ public class MemoryStorageHelper extends StorageHelper {
 
     @NotNull
     public HashMap<String, Contact> addContact( @NotNull Contact contact ) {
-        getContacts().put( contact.getId(), contact );
-        return getContacts();
+        getUsers().put( contact.getId(), contact );
+        return getUsers();
     }
 
     @NotNull
@@ -122,7 +122,7 @@ public class MemoryStorageHelper extends StorageHelper {
         Investigation copy = new Investigation( getInvestigations().get( id ) );
         copy.setId( ( int ) ( Math.random() * 1000 ) + copy.getId() ); //todo need a better way to make a new id
         copy.setInvestigationTitle( copy.getInvestigationTitle() + " " + ( int ) ( Math.random() * 1000 ) );
-        copy.setProvider( getContacts().get( contactId ) );
+        copy.setProvider( getUsers().get( contactId ) );
         // the original may be a template - unset the copy as a template
         copy.setTemplate( false );
         getInvestigations().put( copy.getId(), copy );

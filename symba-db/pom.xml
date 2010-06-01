@@ -8,8 +8,8 @@
         <artifactId>${application.id}</artifactId>
         <version>${application.version}</version>
     </parent>
+
     <groupId>${application.package}</groupId>
-    <name>SyMBA Default Database Code</name>
     <artifactId>symba-db</artifactId>
     <version>${application.version}</version>
 
@@ -65,5 +65,5 @@
             </plugins>
         </pluginManagement>
     </build>
-
+     
 </project>

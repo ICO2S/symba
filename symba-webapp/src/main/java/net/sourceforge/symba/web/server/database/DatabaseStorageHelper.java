@@ -53,10 +53,10 @@ public class DatabaseStorageHelper extends StorageHelper {
      * @return the list of people (converted to UI Contacts) to send to the client
      */
     @NotNull
-    public HashMap<String, Contact> fetchAllPeople() {
-        getContacts().clear();
-        getContacts().putAll( interface2db.convertPersonToSymbaUI( dbBasics ) );
-        return getContacts();
+    public HashMap<String, Contact> fetchAllUsers() {
+        getUsers().clear();
+        getUsers().putAll( interface2db.convertPersonToSymbaUI( dbBasics ) );
+        return getUsers();
     }
 
     @NotNull

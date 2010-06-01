@@ -17,9 +17,9 @@ public abstract class StorageHelper {
 
     private HashMap<String, Investigation> investigations;
 
-    // The Contacts are more than just those contacts listed in the investigations: there may well be contacts
-    // in the database which are not yet part of any investigation.
-    private HashMap<String, Contact> contacts;
+    // These are all possible users, which is not the same as all contacts listed in the investigations: there may
+    // well be users in the database which are not yet part of any investigation.
+    private HashMap<String, Contact> users;
 
     // The Materials are more than just those listed in the investigations: there may well be materials
     // in the database which are not yet part of any investigation.
@@ -31,7 +31,7 @@ public abstract class StorageHelper {
     protected StorageHelper() {
         currentUser = new User();
         investigations = new HashMap<String, Investigation>();
-        contacts = new HashMap<String, Contact>();
+        users = new HashMap<String, Contact>();
         materials = new HashMap<String, Material>();
         parameterSubjects = new HashSet<String>();
     }
@@ -48,8 +48,8 @@ public abstract class StorageHelper {
     }
 
     @NotNull
-    public HashMap<String, Contact> getContacts() {
-        return contacts;
+    public HashMap<String, Contact> getUsers() {
+        return users;
     }
 
     @NotNull
@@ -74,7 +74,7 @@ public abstract class StorageHelper {
     public abstract HashMap<String, Investigation> fetchAll( boolean addExampleIfEmpty );
 
     @NotNull
-    public abstract HashMap<String, Contact> fetchAllPeople();
+    public abstract HashMap<String, Contact> fetchAllUsers();
 
     @NotNull
     public abstract HashMap<String, Material> fetchAllMaterials();

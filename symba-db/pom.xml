@@ -22,13 +22,13 @@
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>8.4-701.jdbc4</version>
+            <version>${postgresql.driver.version}</version>
         </dependency>
         <!-- Hibernate Dependencies -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
+            <version>${hibernate.version}</version>
         </dependency>
 
         <!-- Spring dependencies for hyperjaxb3 -->
@@ -65,5 +65,5 @@
             </plugins>
         </pluginManagement>
     </build>
-     
+
 </project>

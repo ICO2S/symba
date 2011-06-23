@@ -1,6 +1,6 @@
 package net.sourceforge.symba.web.server.conversion;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * This file is part of SyMBA.
@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 public class LsidFilenameConverterTest {
 
     // tests the convert method using the default colon replacement string
-    @Test( groups = { "webapp" } )
+    @Test
     public void convertTest() {
 
         String lsid = "urn:lsid:cisban.cisbs.org:RawData:06ce5766-bb24-46e9-934a-ea68a56f4171";
@@ -25,8 +25,8 @@ public class LsidFilenameConverterTest {
 
         String result = LsidFilenameConverter.convert( lsid, colonReplacement );
 
-        assert ( result.equals( "urn__lsid__cisban.cisbs.org__RawData__06ce5766-bb24-46e9-934a-ea68a56f4171" ) ) :
-        "The LSID has not been converted properly, and is instead parse to " + result;
+        assert ( result.equals(
+                "urn__lsid__cisban.cisbs.org__RawData__06ce5766-bb24-46e9-934a-ea68a56f4171" ) ) : "The LSID has not been converted properly, and is instead parse to " + result;
     }
 
 }

@@ -1,10 +1,11 @@
  ---
- TestNG
+ JUnit
  ---
  Allyson Lister
  ---
- July 2008
+ June 2011
 
 
- This STK uses {{{http://testng.org/}TestNG}} for its test suite. Maven has an integrated test suite plugin called
- Surefire, which has {{{http://maven.apache.org/plugins/maven-surefire-plugin/testng.html}Testng support}}.
+ This STK uses JUnit for its test suite. Maven has an integrated test suite plugin called
+ Surefire, which has JUnit support. Unless disabled on the command line, any call to <<<mvn install>>>    j.
+ will automatically run all available tests

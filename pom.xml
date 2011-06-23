@@ -32,10 +32,13 @@
         <application.id>symba</application.id>
         <application.package>net.sourceforge.symba</application.package>
         <application.name>SyMBA: FuGE-Based Systems and Molecular Biology Data and Metadata Archive</application.name>
-        <application.version>10.05</application.version>
+        <application.version>11.06</application.version>
         <dataSource.name>jdbc/${application.id}</dataSource.name>
         <dataSource>java:comp/env/${dataSource.name}</dataSource>
         <cxf.version>2.2.6</cxf.version>
+        <hibernate.version>3.4.0.GA</hibernate.version>
+        <postgresql.driver.version>9.0-801.jdbc4</postgresql.driver.version>
+        <junit.version>4.8.2</junit.version>
     </properties>
 
     <issueManagement>
@@ -206,14 +209,10 @@
         <module>symba-lsid-ws-resolver</module>
         <module>symba-lsid-ws-client</module>
         <module>symba-books</module>
-        <module>symba-db</module>
     </modules>
     <profiles>
         <profile>
-            <id>local</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>production</id>
             <properties>
 
                 <!-- What follows are symba-specific variables that aren't present in the FuGE STK. Because
@@ -359,12 +358,9 @@
             </build>
         </profile>
         <profile>
-            <id>development</id>
+            <id>test</id>
             <activation>
-                <property>
-                    <name>env</name>
-                    <value>dev</value>
-                </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <net.sourceforge.symba.lsid.wsServer>bsu.ncl.ac.uk:8081</net.sourceforge.symba.lsid.wsServer>
@@ -374,129 +370,28 @@
                 </net.sourceforge.symba.webapp.softwareVersion>
                 <net.sourceforge.symba.webapp.security.driver>org.postgresql.Driver
                 </net.sourceforge.symba.webapp.security.driver>
-                <net.sourceforge.symba.webapp.security.url>jdbc:postgresql://localhost:5432/symba_security
+                <net.sourceforge.symba.webapp.security.url>jdbc:postgresql://localhost:5432/symba-security
                 </net.sourceforge.symba.webapp.security.url>
                 <net.sourceforge.symba.webapp.security.username>symba</net.sourceforge.symba.webapp.security.username>
                 <net.sourceforge.symba.webapp.security.password>symba</net.sourceforge.symba.webapp.security.password>
                 <net.sourceforge.symba.webapp.scp.hostname>localhost</net.sourceforge.symba.webapp.scp.hostname>
-                <net.sourceforge.symba.webapp.scp.directory>/your/directory/data/
+                <net.sourceforge.symba.webapp.scp.directory>/home/symba/filestore/
                 </net.sourceforge.symba.webapp.scp.directory>
-                <net.sourceforge.symba.webapp.scp.username>user</net.sourceforge.symba.webapp.scp.username>
-                <net.sourceforge.symba.webapp.scp.password>pass</net.sourceforge.symba.webapp.scp.password>
+                <net.sourceforge.symba.webapp.scp.username>symba</net.sourceforge.symba.webapp.scp.username>
+                <net.sourceforge.symba.webapp.scp.password>06JE9Rh0</net.sourceforge.symba.webapp.scp.password>
                 <net.sourceforge.symba.webapp.scp.remote.data.store.os>unix
                 </net.sourceforge.symba.webapp.scp.remote.data.store.os>
                 <net.sourceforge.symba.webapp.scp.lsid.colon.replacement></net.sourceforge.symba.webapp.scp.lsid.colon.replacement>
                 <net.sourceforge.fuge.addDbAuditTrail>true</net.sourceforge.fuge.addDbAuditTrail>
-                <jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/8.2-504.jdbc3/postgresql-8.2-504.jdbc3.jar
+                <jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/9.0-801.jdbc4/postgresql-9.0-801.jdbc4.jar
                 </jdbc.driver.jar>
                 <jdbc.driver>org.postgresql.Driver</jdbc.driver>
-                <jdbc.url>jdbc:postgresql://localhost:5432/symba</jdbc.url>
-                <jdbc.username>symba</jdbc.username>
-                <jdbc.password>symba</jdbc.password>
-                <jdbc.exception.sorter>org.jboss.resource.adapter.jdbc.vendor.DummyExceptionSorter</jdbc.exception.sorter>
-            </properties>
-        </profile>
-        <profile>
-            <id>validation</id>
-            <activation>
-                <property>
-                    <name>env</name>
-                    <value>val</value>
-                </property>
-            </activation>
-            <properties>
-                <jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/8.2-504.jdbc3/postgresql-8.2-504.jdbc3.jar
-                </jdbc.driver.jar>
-                <jdbc.driver>org.postgresql.Driver</jdbc.driver>
-                <jdbc.url>jdbc:postgresql://localhost:5432/testsymba</jdbc.url>
+                <jdbc.url>jdbc:postgresql://localhost:5432/symba-test</jdbc.url>
                 <jdbc.username>symba</jdbc.username>
                 <jdbc.password>symba</jdbc.password>
                 <jdbc.exception.sorter>org.jboss.resource.adapter.jdbc.vendor.DummyExceptionSorter
                 </jdbc.exception.sorter>
-
-                <net.sourceforge.symba.lsid.wsServer>bsu.ncl.ac.uk:8081</net.sourceforge.symba.lsid.wsServer>
-                <net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>
-                <net.sourceforge.symba.webapp.softwareName>${application.id}</net.sourceforge.symba.webapp.softwareName>
-                <net.sourceforge.symba.webapp.softwareVersion>${application.version}
-                </net.sourceforge.symba.webapp.softwareVersion>
-                <net.sourceforge.symba.webapp.security.driver>org.postgresql.Driver
-                </net.sourceforge.symba.webapp.security.driver>
-                <net.sourceforge.symba.webapp.security.url>jdbc:postgresql://localhost:5432/symba_security
-                </net.sourceforge.symba.webapp.security.url>
-                <net.sourceforge.symba.webapp.security.username>symba</net.sourceforge.symba.webapp.security.username>
-                <net.sourceforge.symba.webapp.security.password>symba</net.sourceforge.symba.webapp.security.password>
-                <net.sourceforge.symba.webapp.scp.hostname>localhost</net.sourceforge.symba.webapp.scp.hostname>
-                <net.sourceforge.symba.webapp.scp.directory>/your/directory/data/
-                </net.sourceforge.symba.webapp.scp.directory>
-                <net.sourceforge.symba.webapp.scp.username>user</net.sourceforge.symba.webapp.scp.username>
-                <net.sourceforge.symba.webapp.scp.password>pass</net.sourceforge.symba.webapp.scp.password>
-                <net.sourceforge.symba.webapp.scp.remote.data.store.os>unix
-                </net.sourceforge.symba.webapp.scp.remote.data.store.os>
-                <net.sourceforge.symba.webapp.scp.lsid.colon.replacement></net.sourceforge.symba.webapp.scp.lsid.colon.replacement>
-                <net.sourceforge.fuge.addDbAuditTrail>false</net.sourceforge.fuge.addDbAuditTrail>
             </properties>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <!-- Ensure that a recent version of surefire is being used -->
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <version>2.4</version>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
-            <id>production</id>
-            <activation>
-                <property>
-                    <name>env</name>
-                    <value>prod</value>
-                </property>
-            </activation>
-            <!--<properties>-->
-            <!--<jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/8.2-504.jdbc3/postgresql-8.2-504.jdbc3.jar-->
-            <!--</jdbc.driver.jar>-->
-            <!--<jdbc.driver>org.postgresql.Driver</jdbc.driver>-->
-            <!--<jdbc.url>jdbc:postgresql://localhost:5432/fuge</jdbc.url>-->
-            <!--<jdbc.username>user</jdbc.username>-->
-            <!--<jdbc.password>pass</jdbc.password>-->
-            <!--<jdbc.exception.sorter>org.jboss.resource.adapter.jdbc.vendor.DummyExceptionSorter</jdbc.exception.sorter>-->
-            <!--<net.sourceforge.symba.lsid.wsServer>bsu.ncl.ac.uk:8081</net.sourceforge.symba.lsid.wsServer>-->
-            <!--<net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>-->
-            <!--<net.sourceforge.symba.webapp.softwareName>${application.id}</net.sourceforge.symba.webapp.softwareName>-->
-            <!--<net.sourceforge.symba.webapp.softwareVersion>${application.version}</net.sourceforge.symba.webapp.softwareVersion>-->
-            <!--<net.sourceforge.symba.webapp.security.driver>org.postgresql.Driver-->
-            <!--</net.sourceforge.symba.webapp.security.driver>-->
-            <!--<net.sourceforge.symba.webapp.security.url>jdbc:postgresql://your.machine:5432/symba_security-->
-            <!--</net.sourceforge.symba.webapp.security.url>-->
-            <!--<net.sourceforge.symba.webapp.security.username>user</net.sourceforge.symba.webapp.security.username>-->
-            <!--<net.sourceforge.symba.webapp.security.password>pass</net.sourceforge.symba.webapp.security.password>-->
-            <!--<net.sourceforge.symba.webapp.scp.hostname>localhost</net.sourceforge.symba.webapp.scp.hostname>-->
-            <!--<net.sourceforge.symba.webapp.scp.directory>/your/directory/for/data/</net.sourceforge.symba.webapp.scp.directory>-->
-            <!--<net.sourceforge.symba.webapp.scp.username>user</net.sourceforge.symba.webapp.scp.username>-->
-            <!--<net.sourceforge.symba.webapp.scp.password>pass</net.sourceforge.symba.webapp.scp.password>-->
-            <!--<net.sourceforge.symba.webapp.scp.remote.data.store.os>unix-->
-            <!--</net.sourceforge.symba.webapp.scp.remote.data.store.os>-->
-            <!--<net.sourceforge.symba.webapp.scp.lsid.colon.replacement></net.sourceforge.symba.webapp.scp.lsid.colon.replacement>-->
-            <!--</properties>-->
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <!-- Only allow testing on the val and dev profiles so as not to test in your production database-->
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <version>2.4</version>
-                            <configuration>
-                                <skipTests>true</skipTests>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
         </profile>
     </profiles>
     <repositories>
@@ -531,8 +426,8 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>changes-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
                 <reportSets>
                     <reportSet>
                         <reports>

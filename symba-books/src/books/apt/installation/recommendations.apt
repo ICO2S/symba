@@ -17,13 +17,13 @@ Recommendations
   advantage that it has PostgreSQL and Maven 2.x in its package repository. During the Ubuntu server installation it
   even asks whether you want to install a database server.
 
-* Database Choice
+~~* Database Choice
 
-  We also recommend PostgreSQL or MySQL for the database choice, as these are the only two that have been tested with
-  this STK. Of these, PostgreSQL is the preferred choice as it is the one used by the main developer of this STK.
+~~  We also recommend PostgreSQL or MySQL for the database choice, as these are the only two that have been tested with
+~~  this STK. Of these, PostgreSQL is the preferred choice as it is the one used by the main developer of this STK.
 
-  These instructions were originally and loosely based on those found in the {{{credits.html}Credits Section}},
-  but have been modified to suit the needs of this latest version of the STK.
+~~  These instructions were originally and loosely based on those found in the {{{credits.html}Credits Section}},
+~~  but have been modified to suit the needs of this latest version of the STK.
 
 * Web Server
 

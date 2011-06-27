@@ -163,8 +163,8 @@
             <url>scp://localhost/tmp/website-test/</url>
         </site>
         <!--<site>-->
-        <!--<id>shell.sf.net</id>-->
-        <!--<url>scp://shell.sf.net/home/groups/s/sy/symba/htdocs/</url>-->
+        <!--<id>symba site deploy: access via shell.sf.net</id>-->
+        <!--<url>scp://shell.sf.net/home/project-web/symba/htdocs/</url>-->
         <!--</site>-->
 
         <!--

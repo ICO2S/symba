@@ -8,31 +8,27 @@
     <meta name="keyword"
           content="SyMBA, Systems Biology, Data Archive, CISBAN, FuGE, Computational Biology, Metadata"/>
     <body>
-        <section name="Current Release: 8.09">
 
-            <p>
-                This page describes technical details of SyMBA.
-            </p>
-
-            <p>
-                SyMBA is available to play with and test in a
-                <a href="http://symba.ncl.ac.uk">public sandbox version</a>.
-                Please note that the configuration at this url, while representing the current stable release, remains a
-                sandbox configuration, and any data you upload to the server may be viewed by SyMBA developers or may
-                be deleted at any time, without warning. As a sandbox implementation, it should not be used as a
-                permanent archive for any data. If you wish to have an archive to store your high-throughput data,
-                please
-                <a href="mailto:symba-devel@lists.sourceforge.net">contact us</a>
-                to see if we could collaborate in any way.
-            </p>
-        </section>
+        <p>
+            SyMBA is available to play with and test in a
+            <a href="http://symba.ncl.ac.uk">public sandbox version</a>.
+            Please note that the configuration at this url, while representing the current stable release, remains a
+            sandbox configuration, and any data you upload to the server may be viewed by SyMBA developers or may
+            be deleted at any time, without warning. As a sandbox implementation, it should not be used as a
+            permanent archive for any data. If you wish to have an archive to store your high-throughput data,
+            please
+            <a href="mailto:symba-devel@lists.sourceforge.net">contact us</a>
+            to see if we could collaborate in any way.
+        </p>
 
         <section name="Task Management">
             If you wish to provide feedback, or learn what is planned in the future for SyMBA, here is how you can
             do it:
             <ul>
                 <li>
-                    The <a href="mailto:symba-devel@lists.sourceforge.net">SyMBA Developers</a> mailing list.
+                    The
+                    <a href="mailto:symba-devel@lists.sourceforge.net">SyMBA Developers</a>
+                    mailing list.
                 </li>
                 <li>
                     The SourceForge tracker pages. Information on these pages can be found
@@ -40,7 +36,6 @@
                 </li>
             </ul>
         </section>
-
 
 
         <section name="References">
@@ -105,13 +100,13 @@
                 </p>
 
                 <!--<p>-->
-                    <!--Further, although we do have an LSID Resolution Service running via-->
-                    <!--<a href="http://metagenome.ncl.ac.uk:8081/authority">http://metagenome.ncl.ac.uk:8081/authority</a>-->
-                    <!--, and we do aim to ensure that object returned will always return the same thing, not every object-->
-                    <!--identified with an LSID can currently be resolved via this service. This is still within the-->
-                    <!--standard: if something resolves, it must always be to the same thing. However, you are free to test-->
-                    <!--the LSID server now. More information on contacting the LSID Resolution Service will be added-->
-                    <!--shortly, together with an example Java class.-->
+                <!--Further, although we do have an LSID Resolution Service running via-->
+                <!--<a href="http://metagenome.ncl.ac.uk:8081/authority">http://metagenome.ncl.ac.uk:8081/authority</a>-->
+                <!--, and we do aim to ensure that object returned will always return the same thing, not every object-->
+                <!--identified with an LSID can currently be resolved via this service. This is still within the-->
+                <!--standard: if something resolves, it must always be to the same thing. However, you are free to test-->
+                <!--the LSID server now. More information on contacting the LSID Resolution Service will be added-->
+                <!--shortly, together with an example Java class.-->
                 <!--</p>-->
             </subsection>
         </section>

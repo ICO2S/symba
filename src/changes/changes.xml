@@ -10,6 +10,34 @@
         <!--A new cool feature.-->
         <!--</action>-->
         <!--</release>-->
+        <release version="11.06" date="2011-06-27" description="Major upgrade to the User Interface">
+            <action dev="Allyson Lister" type="remove">
+                AndroMDA has been removed completely from the SyMBA system. This makes the entire application
+                easier to manage, compile and modify.
+            </action>
+            <action dev="Allyson Lister" type="remove">
+                JSPs have been completely removed from the SyMBA system. Their replacement, Google Web Toolkit,
+                provides a platform- and browser-independent way of providing clean, easy-to-implement web
+                applications.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                Hyperjaxb3 is now used to create a set of database and XML manipulation classes based on the
+                FuGE XSD rather than the old method of using the FuGE OM.
+            </action>
+            <action dev="Allyson Lister" type="add">
+                The Google Web Toolkit (GWT) is now used to run the web front-end of SyMBA.
+            </action>
+            <action dev="Allyson Lister" type="update">
+                The current version of SyMBA 2 shows a working front-end, but the database features have been
+                temporarily disabled. They are in the code, ready to be plugged-in, however. While we finish
+                modifications to the front end, we are keeping the application simple. Hyperjaxb3 is correctly
+                converting all data in the app to XML, and therefore it is just one simple extra step to take
+                when we are ready to start saving in the database.
+            </action>
+            <action dev="Allyson Lister" type="update">
+                The LSIDs are temporarily disabled in this version of SyMBA.
+            </action>
+        </release>
         <release version="8.09" date="2008-09-16"
                  description="Upgrade to FuGE Version 1">
             <action dev="Allyson Lister" type="add">

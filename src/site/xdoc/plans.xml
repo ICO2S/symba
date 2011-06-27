@@ -10,10 +10,8 @@
     <body>
         <section name="Planned Improvements to SyMBA">
             <p>
-                There is now a <a href="http://mygrid.ncl.ac.uk/symba">project management website for SyMBA</a>, which
-                has milestones and task lists. You can log-on with a read-only account with the username and password
-                both "symba-public". Please report any misuse of this account to the 
-                symba-devel.AT.lists.DOT.sourceforge.DOT.net
+                This page is now out of date, but kept for historical reasons. Please ignore, and use the
+                SyMBA <a href="issue-tracking.html">issue tracker</a> for any further issues.
             </p>
             <p>
                 The older, original task list is below. I'll keep marking the already-listed tasks when they are

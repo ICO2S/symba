@@ -11,7 +11,7 @@
         <section name="An Introduction to SyMBA">
             <p>
                 <i>This page summarizes the current status of the SyMBA. SyMBA is available for viewing and testing
-                    via the <a href="http://www.cisban.ac.uk/symba-sandbox">sandbox installation</a> we have set up,
+                    via the <a href="http://symba.ncl.ac.uk">sandbox installation</a> we have set up,
                     and is also available for download via SourceForge's Subversion repository. We welcome any comments or queries on
                     the system, which should be sent to
                     <a href="mailto:symba-devel@lists.sourceforge.net">symba-devel@lists.sourceforge.net</a>
@@ -149,18 +149,12 @@
                 </li>
             </ul>
         </section>
-        <section name="Status: September 2008: 8.09">
+        <section name="Status: June 2011: 11.06">
 
             <p>
-                <b>We are now fully upgraded to FuGE Version 1.</b> There are a couple of outstanding issues related
-                to session management that will get sorted in the next couple of weeks. 
-                There is now a general, all-purpose login to the sandbox (test) installation. The username is 'Anonymous'
-                and the pass is 'AnonymousPass'. Please feel free to use this account, and please send an email
-                to <a href="mailto:symba-devel@lists.sourceforge.net">the SyMBA developer's list</a> if something
-                is wrong with the account. However, if you want your own space, then please contact the same mailing
-                list to request it. For more information on the sandbox installation, please visit SyMBA's
-                <a href="details.html">technical documentation</a>
-                .
+                <b>We now use Google Web Toolkit and hyperjaxb3.</b> This has resulted in a much cleaner, simpler
+                application to use and to develop with. Please play with the sandbox installation of SyMBA 2, and see
+                what you think of the new user interface.
             </p>
         </section>
 
@@ -191,24 +185,16 @@
         <section name="External Resources Used">
             <ul>
                 <li>
-                    <a href="http://www.andromda.org">AndroMDA</a>
-                    3.2
-                </li>
-                <li>
-                    <a href="https://jaxb.dev.java.net/">JAXB</a>
-                    2.0
-                </li>
-                <li>
                     <a href="http://maven.apache.org/">Maven</a>
-                    2.0.7
+                    2.2.1
                 </li>
                 <li>
-                    <a href="http://www.hibernate.org/">Hibernate</a>
-                    3.0.5
+                    <a href="http://confluence.highsource.org/display/HJ3/Home">HyperJaxb3</a>
+                    0.5.5
                 </li>
                 <li>
-                    <a href="http://www.postgresql.org/">PostgreSQL</a>
-                    8.1-407
+                    <a href="http://code.google.com/webtoolkit/">Google Web Toolkit</a>
+                    2.3.0
                 </li>
             </ul>
 

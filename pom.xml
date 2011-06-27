@@ -160,7 +160,7 @@
     <distributionManagement>
         <site>
             <id>local-test</id>
-            <url>scp://localhost/media/share/website-test/</url>
+            <url>scp://localhost/tmp/website-test/</url>
         </site>
         <!--<site>-->
         <!--<id>shell.sf.net</id>-->
@@ -201,11 +201,6 @@
         </resources>
     </build>
     <modules>
-        <!--<module>symba-common</module>-->
-        <!--<module>symba-core</module>-->
-        <!--<module>symba-mapping</module>-->
-        <!--<module>symba-querying</module>-->
-
         <!--<module>symba-obiloader</module>-->
         <module>symba-jaxb2</module>
         <module>symba-db</module>

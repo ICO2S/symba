@@ -15,6 +15,21 @@
                 Status reports that are no longer current may be found here.
             </p>
 
+            <subsection name="Status: September 2008: 8.09">
+
+                <p>
+                    <b>We are now fully upgraded to FuGE Version 1.</b> There are a couple of outstanding issues related
+                    to session management that will get sorted in the next couple of weeks.
+                    There is now a general, all-purpose login to the sandbox (test) installation. The username is 'Anonymous'
+                    and the pass is 'AnonymousPass'. Please feel free to use this account, and please send an email
+                    to <a href="mailto:symba-devel@lists.sourceforge.net">the SyMBA developer's list</a> if something
+                    is wrong with the account. However, if you want your own space, then please contact the same mailing
+                    list to request it. For more information on the sandbox installation, please visit SyMBA's
+                    <a href="details.html">technical documentation</a>
+                    .
+                </p>
+            </subsection>
+
             <subsection name="Status: May 2008 Onwards: 8.05-SNAPSHOT">
 
                 <p>

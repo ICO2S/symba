@@ -16,11 +16,10 @@
 
             <p>
                 SyMBA is available to play with and test in a
-                <a href="http://www.cisban.ac.uk/symba-sandbox">public sandbox version</a>.
+                <a href="http://symba.ncl.ac.uk">public sandbox version</a>.
                 Please note that the configuration at this url, while representing the current stable release, remains a
                 sandbox configuration, and any data you upload to the server may be viewed by SyMBA developers or may
-                be deleted at any time, without warning. We will, however, try to send out warning emails prior to any
-                deletion of the database. As a sandbox implementation, it should not be used as a
+                be deleted at any time, without warning. As a sandbox implementation, it should not be used as a
                 permanent archive for any data. If you wish to have an archive to store your high-throughput data,
                 please
                 <a href="mailto:symba-devel@lists.sourceforge.net">contact us</a>
@@ -38,10 +37,6 @@
                 <li>
                     The SourceForge tracker pages. Information on these pages can be found
                     <a href="issue-tracking.html">on the issue tracking documentation page</a>.
-                </li>
-                <li>
-                    The <a href="http://mygrid.ncl.ac.uk/symba/">SyMBA Project Management</a> website. Username and
-                    password for read-only access are both 'symba-public'.
                 </li>
             </ul>
         </section>
@@ -82,11 +77,9 @@
             <subsection name="Logging In">
 
                 <p>
-                    There is now a general, all-purpose login to the sandbox (test) installation. The username is
-                    'Anonymous' and the pass is 'AnonymousPass'. Please feel free to use this account, and please send an
-                    email to <a href="mailto:symba-devel@lists.sourceforge.net">the SyMBA developer's list</a>
-                    if something is wrong with the account. However, if you want your own space, then please contact the
-                    same mailing list to request it.
+                    You can make use of any of the (example) users in the SyMBA sandbox, or create your own.
+                    They will only be stored for the lifetime of the application: when the application is
+                    restarted, all of your data, including user information, is cleared.
                 </p>
             </subsection>
 
@@ -111,15 +104,15 @@
                     with any comments or questions you may have.
                 </p>
 
-                <p>
-                    Further, although we do have an LSID Resolution Service running via
-                    <a href="http://metagenome.ncl.ac.uk:8081/authority">http://metagenome.ncl.ac.uk:8081/authority</a>
-                    , and we do aim to ensure that object returned will always return the same thing, not every object
-                    identified with an LSID can currently be resolved via this service. This is still within the
-                    standard: if something resolves, it must always be to the same thing. However, you are free to test
-                    the LSID server now. More information on contacting the LSID Resolution Service will be added
-                    shortly, together with an example Java class.
-                </p>
+                <!--<p>-->
+                    <!--Further, although we do have an LSID Resolution Service running via-->
+                    <!--<a href="http://metagenome.ncl.ac.uk:8081/authority">http://metagenome.ncl.ac.uk:8081/authority</a>-->
+                    <!--, and we do aim to ensure that object returned will always return the same thing, not every object-->
+                    <!--identified with an LSID can currently be resolved via this service. This is still within the-->
+                    <!--standard: if something resolves, it must always be to the same thing. However, you are free to test-->
+                    <!--the LSID server now. More information on contacting the LSID Resolution Service will be added-->
+                    <!--shortly, together with an example Java class.-->
+                <!--</p>-->
             </subsection>
         </section>
 

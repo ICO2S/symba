@@ -12,6 +12,7 @@
     <groupId>${application.package}</groupId>
     <artifactId>symba-db</artifactId>
     <version>${application.version}</version>
+    <name>SyMBA Database</name>
 
     <dependencies>
         <dependency>

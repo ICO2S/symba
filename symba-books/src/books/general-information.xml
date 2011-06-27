@@ -14,18 +14,18 @@
                 </section>
             </sections>
         </chapter>
-        <chapter>
-            <id>develop-template</id>
-            <title>Developing SyMBA Templates</title>
-            <sections>
-                <section>
-                    <id>create-protocols</id>
-                </section>
-                <section>
-                    <id>building-xml</id>
-                </section>
-            </sections>
-        </chapter>
+        <!--<chapter>-->
+            <!--<id>develop-template</id>-->
+            <!--<title>Developing SyMBA Templates</title>-->
+            <!--<sections>-->
+                <!--<section>-->
+                    <!--<id>create-protocols</id>-->
+                <!--</section>-->
+                <!--<section>-->
+                    <!--<id>building-xml</id>-->
+                <!--</section>-->
+            <!--</sections>-->
+        <!--</chapter>-->
         <chapter>
             <id>web-services</id>
             <title>Using SyMBA webservices</title>

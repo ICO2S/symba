@@ -14,13 +14,14 @@ Purpose of SyMBA
   Language (FuGE-ML) and associated Object Model (FuGE-OM) were created to facilitate the development and uptake
   of metadata standards. FuGE developers have also created a number of base Software ToolKits (STKs) that are
   good starting-points for further development of FuGE-based tools. Systems and Molecular Biology Data and Metadata
-  Archive (SyMBA) is based on the FuGE Version 1 Hibernate STK. SyMBA is based on the FuGE-OM and archives, stores,
+  Archive (SyMBA) is based on FuGE Version 1. SyMBA is based on the FuGE XSD and archives, stores,
   and retrieves raw high-throughput data. SyMBA integrates both
   multiple 'omics' data types and information about experiments in a single database.
 
   SyMBA is a flexible data repository specifically designed to address the requirements for primary data storage for
   projects requiring the storage of many different data types. The metadata database stores all information using
-  the FuGE-OM, and as such can integrate all metadata using the same structure, irrespective of associated data type.
+  the FuGE XSD and hyperjaxb3 to create a FuGE-structured database, and as such can integrate all metadata using
+  the same structure, irrespective of associated data type.
   It is one of the first database implementations of Version 1 of the FuGE-OM. SyMBA features a metadata database,
   general and expert user interfaces, and utilizes a Life Science
   Identifier resolution and assigning service to uniquely identify objects and provide programmatic access to the
@@ -40,7 +41,7 @@ Relation to the FuGE Toolkit Projects
     was based on a number of sources, including the Milestone 3 documentation of SyMBA itself.
 
     SyMBA utilizes Version 1.0 of the FuGE Standard. It provides a database and
-    persistence layer based on the FuGE Object Model (FuGE-OM), together with other helper classes. These are ideal for
+    persistence layer based on the FuGE XSD, together with other helper classes. These are ideal for
     community developers wishing to store their FuGE-related data in a more structured way than XML files provide, and
     as a foundation to build FuGE tools or a FuGE-based system.
 

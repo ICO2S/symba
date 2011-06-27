@@ -15,4 +15,4 @@ Using the Maven 2 exec:java Command
     How, then, can you ensure that you run these Java classes using the same classpath that was used to build
     SyMBA in the first place? The answer is to use Maven to run your classes, in the same way that you use Maven to
     build your project. You do this with the <<mvn exec:java>> plugin. Details of this plugin are available
-    from the {{http://mojo.codehaus.org/exec-maven-plugin/java-mojo.html}Developer's website}}.
+    from the {{{http://mojo.codehaus.org/exec-maven-plugin/java-mojo.html}Developer's website}}.

@@ -30,9 +30,9 @@
                 <section>
                     <id>maven</id>
                 </section>
-                <section>
-                    <id>uml</id>
-                </section>
+                <!--<section>-->
+                    <!--<id>uml</id>-->
+                <!--</section>-->
                 <!--<section>-->
                 <!--<id>database</id>-->
                 <!--</section>-->

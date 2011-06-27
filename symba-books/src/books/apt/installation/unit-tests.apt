@@ -13,20 +13,11 @@
  You should run the tests <after> re-running the Maven install command with the correct profile, thus ensuring that
  the database connection details are the right ones for the test setup.
 
- To run the tests, simply run these commands from the top-level trunk directory (the maven install command
- just shows you the appropriate install command for the test commands below it: you do not need to run it before
- each test, unless you have modified code outside of the module whose tests you are calling):
+ To run the tests, simply run <<<mvn install>>> from the top-level directory. The default profile is the test
+ profile, and all tests will be run during the install process. If you wish to skip tests, <<<mvn install -DskipTests>>>
+ can be used. If you wish to run a specific set of tests, then you can run just a single module at a time, e.g.
 
 +---+
-  mvn install -Denv=val -DskipTests
-  
-  mvn -f symba-mapping/pom.xml test -Denv=val
-  mvn -f symba-querying/pom.xml test -Denv=val
+  mvn -f symba-jaxb2/pom.xml test
 +---+
 
- All should pass except two (testSoftware2EquipmentLink and testSoftware2EquipmentLinkWithFlush), which are
- demonstrating a bug discovered within the auto-generated Hibernate and Spring code. Full details of this bug
- are available in the
- {{{http://galaxy.andromda.org/forum/viewtopic.php?t=5837}Andromda forums}}, and
- as soon as I have a fix, the unit tests should all pass.
- 

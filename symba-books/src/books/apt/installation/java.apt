@@ -11,7 +11,7 @@ Installing Sun Java 6 JDK
 
 * Install Sun J2SE Development Kit 6.0 (JDK 6.0)
 
-  Otherwise, if you are using earlier versions of Ubuntu, you can install Sun Java 6 simply with an
+  If you are using earlier versions of Ubuntu than Natty Narwhal, you can install Sun Java 6 simply with an
   apt-get command:
 
 +---+

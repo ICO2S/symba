@@ -10,6 +10,12 @@ Download and Install Maven 2.2.1 or Later
                 Download and install Maven 2.2.1 or later from this site:
                 {{{http://maven.apache.org/download.html}http://maven.apache.org/download.html}}
 
+                If you are using Ubuntu, you may install Maven with the following command:
++---+
+    sudo apt-get install maven2
++---+
+
+
 Maven Setup
 
                 Create a directory in your home directory called .m2 with a single file inside called

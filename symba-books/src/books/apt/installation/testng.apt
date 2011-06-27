@@ -7,5 +7,5 @@
 
 
  This STK uses JUnit for its test suite. Maven has an integrated test suite plugin called
- Surefire, which has JUnit support. Unless disabled on the command line, any call to <<<mvn install>>>    j.
+ Surefire, which has JUnit support. Unless disabled on the command line, any call to <<<mvn install>>>
  will automatically run all available tests

@@ -10,7 +10,7 @@ Recommendations
 * Operating Systems
 
   SyMBA can be installed on either Windows or Linux, but we highly recommend a
-  Linux system, specifically Ubuntu Gutsy Gibbon and higher.
+  Linux system, specifically Ubuntu.
 
   If you use Ubuntu, it is simple to apt-get the components required. Alternatively, you could create a Virtual
   Machine and install the latest Ubuntu Server (or Standard) release on it. Ubuntu has the

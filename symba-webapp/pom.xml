@@ -100,12 +100,6 @@
             <systemPath>${basedir}/../dpi/src/main/lib/ganymed-ssh2-build210.jar</systemPath>-->
         </dependency>
         <!--<dependency>-->
-        <!--<groupId>junit</groupId>-->
-        <!--<artifactId>junit</artifactId>-->
-        <!--<version>3.8.2</version>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
         <!--<groupId>javax.servlet</groupId>-->
         <!--<artifactId>jstl</artifactId>-->
         <!--<version>1.1.2</version>-->

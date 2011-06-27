@@ -127,6 +127,13 @@
     <!--
      mvn site:deploy : For SyMBA Developers only (You will need the correct permissions to be able to publish here.)
 
+     Please read the following concerning deploying to SourceForge:
+     http://maven.apache.org/plugins/maven-site-plugin/examples/site-deploy-to-sourceforge.net.html
+
+     Essentially, the above states that before running site:deploy you MUST run the following command in a separate
+     window, and leave it running when you run mvn site:deploy :
+     ssh -t <username>,<project name>@shell.sf.net create
+
      To prevent accidental copying, the shell.sf.net <site> element starts out commented out. Please ensure this remains
      the case when you are committing changes to SVN.
      mvn site:deploy JUST copies the already-generated site docs. If you make a change to any of the APT files, you

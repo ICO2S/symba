@@ -8,11 +8,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.sourceforge.symba</groupId>
-    <artifactId>symba</artifactId>
+    <groupId>${application.package}</groupId>
+    <artifactId>${application.id}</artifactId>
+    <version>${application.version}</version>
     <packaging>pom</packaging>
-    <version>8.09</version>
-    <name>SyMBA</name>
+    <name>${application.name}</name>
     <url>http://symba.sourceforge.net</url>
     <description>The Systems and Molecular Biology data Archive (SyMBA) Project. The Centre for Integrated Systems
         Biology of Ageing and Nutrition (CISBAN) has developed a Systems and Molecular Biology Data and Metadata Archive
@@ -27,6 +27,19 @@
         limited to use within CISBAN, and we encourage other groups with similar needs to install, evaluate, and
         contribute to the development of SyMBA.
     </description>
+
+    <properties>
+        <application.id>symba</application.id>
+        <application.package>net.sourceforge.symba</application.package>
+        <application.name>SyMBA: FuGE-Based Systems and Molecular Biology Data and Metadata Archive</application.name>
+        <application.version>11.06</application.version>
+        <dataSource.name>jdbc/${application.id}</dataSource.name>
+        <dataSource>java:comp/env/${dataSource.name}</dataSource>
+        <cxf.version>2.2.6</cxf.version>
+        <hibernate.version>3.4.0.GA</hibernate.version>
+        <postgresql.driver.version>9.0-801.jdbc4</postgresql.driver.version>
+        <junit.version>4.8.2</junit.version>
+    </properties>
 
     <issueManagement>
         <system>Tracker</system>
@@ -77,13 +90,24 @@
             <timezone>0</timezone>
         </developer>
         <developer>
+            <id>stahlblau</id>
+            <name>Morgan Taschuk</name>
+            <email>stahlblau@users.sourceforge.net</email>
+            <organization>CISBAN, Newcastle University</organization>
+            <organizationUrl>http://www.cisban.ac.uk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
             <id>fgibson_sf</id>
             <name>Frank Gibson</name>
             <email>fgibson_sf@users.sourceforge.net</email>
             <organization>CARMEN, Newcastle University</organization>
             <organizationUrl>http://www.carmen.org.uk</organizationUrl>
             <roles>
-                <role>Developer</role>
+                <role>Past Developer</role>
             </roles>
             <timezone>0</timezone>
         </developer>
@@ -94,7 +118,7 @@
             <organization>CISBAN, Newcastle University</organization>
             <organizationUrl>http://www.cisban.ac.uk</organizationUrl>
             <roles>
-                <role>Developer</role>
+                <role>Past Developer</role>
             </roles>
             <timezone>0</timezone>
         </developer>
@@ -102,6 +126,13 @@
 
     <!--
      mvn site:deploy : For SyMBA Developers only (You will need the correct permissions to be able to publish here.)
+
+     Please read the following concerning deploying to SourceForge:
+     http://maven.apache.org/plugins/maven-site-plugin/examples/site-deploy-to-sourceforge.net.html
+
+     Essentially, the above states that before running site:deploy you MUST run the following command in a separate
+     window, and leave it running when you run mvn site:deploy :
+     ssh -t <username>,<project name>@shell.sf.net create
 
      To prevent accidental copying, the shell.sf.net <site> element starts out commented out. Please ensure this remains
      the case when you are committing changes to SVN.
@@ -132,8 +163,8 @@
             <url>scp://localhost/media/share/website-test/</url>
         </site>
         <!--<site>-->
-            <!--<id>shell.sf.net</id>-->
-            <!--<url>scp://shell.sf.net/home/groups/s/sy/symba/htdocs/</url>-->
+        <!--<id>shell.sf.net</id>-->
+        <!--<url>scp://shell.sf.net/home/groups/s/sy/symba/htdocs/</url>-->
         <!--</site>-->
 
         <!--
@@ -159,314 +190,36 @@
         <name>CISBAN</name>
         <url>http://www.cisban.ac.uk</url>
     </organization>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.andromda.profiles.emf.uml2</groupId>
-                <artifactId>andromda-profile-common</artifactId>
-                <version>3.2</version>
-                <type>uml2</type>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.andromda</groupId>
-                <artifactId>andromda-core</artifactId>
-                <version>3.2</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>xml-apis</groupId>
-                        <artifactId>xml-apis</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>xerces</groupId>
-                        <artifactId>xercesImpl</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>xalan</groupId>
-                        <artifactId>xalan</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.andromda.translationlibraries</groupId>
-                <artifactId>andromda-ocl-translation-core</artifactId>
-                <version>3.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.andromda.translationlibraries</groupId>
-                <artifactId>andromda-ocl-validation-library</artifactId>
-                <version>3.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.andromda.cartridges</groupId>
-                <artifactId>andromda-spring-cartridge</artifactId>
-                <version>3.2</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.andromda.cartridges</groupId>
-                <artifactId>andromda-hibernate-cartridge</artifactId>
-                <version>3.2</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.andromda.cartridges</groupId>
-                <artifactId>andromda-java-cartridge</artifactId>
-                <version>3.2</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.andromda.translationlibraries</groupId>
-                <artifactId>andromda-ocl-query-library</artifactId>
-                <version>3.2</version>
-                <scope>runtime</scope>
-            </dependency>
-            <!-- This dependency provides the ability to implement your
-                 business logic in an interpreted manner during development on
-                 your local machine -->
-            <dependency>
-                <groupId>org.andromda</groupId>
-                <artifactId>andromda-script-wrappers</artifactId>
-                <version>3.2</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>1.7.0</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>3.2</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.3</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>jboss</groupId>
-                <artifactId>jboss-j2ee</artifactId>
-                <version>3.2.3</version>
-            </dependency>
-            <!-- Added exclusion and geronimo-spec to get jta to install without having to go to sun. -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate</artifactId>
-                <version>3.2.6.ga</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.transaction</groupId>
-                        <artifactId>jta</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>geronimo-spec</groupId>
-                <artifactId>geronimo-spec-jta</artifactId>
-                <version>1.0.1B-rc4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring</artifactId>
-                <version>2.0.4</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>servlet-api</artifactId>
-                        <groupId>javax.servlet</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>jta</artifactId>
-                        <groupId>javax.transaction</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>connector</artifactId>
-                        <groupId>javax.resource</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>xjavadoc</artifactId>
-                        <groupId>xdoclet</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>cos</artifactId>
-                        <groupId>com.servlets</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>jstl</artifactId>
-                        <groupId>javax.servlet</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>standard</artifactId>
-                        <groupId>taglibs</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>quartz</artifactId>
-                        <groupId>quartz</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>aopalliance</groupId>
-                <artifactId>aopalliance</artifactId>
-                <version>1.0</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.2</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+
     <build>
         <defaultGoal>install</defaultGoal>
         <resources>
-			<resource>
-        		<directory>src/main/resources</directory>
-        		<filtering>true</filtering>
-        	</resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
         </resources>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.andromda.maven.plugins</groupId>
-                    <artifactId>andromda-multi-source-plugin</artifactId>
-                    <version>3.2</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>add-source</goal>
-                            </goals>
-                            <configuration>
-                                <sourceDirectories>
-                                    <directory>target/src</directory>
-                                </sourceDirectories>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.jvnet.jaxb2.maven2</groupId>
-                    <artifactId>maven-jaxb2-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>generate</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.andromda.maven.plugins</groupId>
-                    <artifactId>andromda-maven-plugin</artifactId>
-                    <version>3.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.andromda.maven.plugins</groupId>
-                    <artifactId>andromdapp-maven-plugin</artifactId>
-                    <version>3.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.2</version>
-                </plugin>
-                <!-- Added by Allyson Lister 3 Jul 2007 to force java 1.5 to be used by mvn.
-                See http://galaxy.andromda.org/forum/viewtopic.php?t=2638 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.5</source>
-                        <target>1.5</target>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
     <modules>
-        <module>symba-mda</module>
-        <module>symba-common</module>
-        <module>symba-core</module>
+        <!--<module>symba-mda</module>-->
+        <!--<module>symba-common</module>-->
+        <!--<module>symba-core</module>-->
+        <!--<module>symba-mapping</module>-->
+        <!--<module>symba-querying</module>-->
+        <!--<module>symba-webapp-helper</module>-->
+        <!--<module>symba-obiloader</module>-->
+        <module>symba-jaxb2</module>
+        <module>symba-db</module>
+        <module>symba-webapp</module>
         <module>symba-lsid-ws-api</module>
         <module>symba-lsid-ws-assigner</module>
-        <module>symba-jaxb2</module>
-        <module>symba-mapping</module>
-        <module>symba-querying</module>
-        <module>symba-webapp-helper</module>
-        <module>symba-webapp</module>
         <module>symba-lsid-ws-resolver</module>
         <module>symba-lsid-ws-client</module>
-        <module>symba-obiloader</module>
         <module>symba-books</module>
     </modules>
-    <properties>
-        <!--
-            Change this to generate to the correct MDA database mappings,
-            For MySql use: MySQL
-            For Hypersonic use: HypersonicSql
-            For Oracle9i use: Oracle9i
-            For DB2 use: DB2
-            For Informix use: InformixDB
-            For MSSQL use: MSSQL
-            For Pointbase use: PointBase
-            For Postgres use: PostgreSQL
-            For Sybase use: Sybase
-            For SapDB use: SapDB
-            For Derby use: Derby
-        -->
-        <!-- Not currently used, as have specific PostgreSQL extensions. -->
-        <!--<sql.mappings>-->
-        <!--PostgreSQL-->
-        <!--</sql.mappings>-->
-        <!--
-            Change this for the appropriate database
-            For MySql use: org.hibernate.dialect.MySQLDialect
-            For MySql InnoDB use: org.hibernate.dialect.MySQLInnoDBDialect
-            For MySql MyISAM use: org.hibernate.dialect.MySQLMyISAMDialect
-            For Hypersonic use: org.hibernate.dialect.HSQLDialect
-            For Oracle any version use: org.hibernate.dialect.OracleDialect
-            For Oracle9i/10g use: org.hibernate.dialect.Oracle9Dialect
-            For DB2 use: org.hibernate.dialect.DB2Dialect
-            For Informix use: org.hibernate.dialect.InformixDialect
-            For MSSQL use: org.hibernate.dialect.SQLServerDialect
-            For Pointbase use: org.hibernate.dialect.PointbaseDialect
-            For Postgres use: org.hibernate.dialect.PostgreSQLDialect
-            For Sybase use: org.hibernate.dialect.SybaseDialect
-            For Sybase Anywhere use: org.hibernate.dialect.SybaseAnywhereDialect
-            For SapDB use: org.hibernate.dialect.SAPDBDialect
-            For Progress use: org.hibernate.dialect.ProgressDialect
-            For Derby use: org.hibernate.dialect.DerbyDialect
-        -->
-        <hibernate.dialect>
-            org.hibernate.dialect.PostgreSQLDialect
-        </hibernate.dialect>
-        <tomcat.home>${env.CATALINA_HOME}</tomcat.home>
-        <application.id>symba</application.id>
-        <application.package>net.sourceforge.symba</application.package>
-        <application.name>SyMBA: FuGE-Based Systems and Molecular Biology Data and Metadata Archive</application.name>
-        <application.version>8.09</application.version>
-        <dataSource.name>jdbc/${application.id}</dataSource.name>
-        <dataSource>java:comp/env/${dataSource.name}</dataSource>
-    </properties>
     <profiles>
         <profile>
-            <id>local</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>production</id>
             <properties>
 
                 <!-- What follows are symba-specific variables that aren't present in the FuGE STK. Because
@@ -478,16 +231,6 @@
                 <!-- The help email address for your group -->
                 <net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>
 
-                <!-- An optional status message to be displayed on the login screen only -->
-                <net.sourceforge.symba.webapp.status>
-                    April 2009. We are finished with the upgrade to FuGE Version 1. Please \
-                    be aware that some parts of the system may not be operating fully. Specifically, the ability to \
-                    copy metadata from a particular protocol run directly into a new loading of a protocol has \
-                    been temporarily disabled. However, we thought it best to  \
-                    allow you to play with the most up-to-date version of the software in the meantime. \
-                    PLEASE NOTE THAT THIS SYSTEM WORKS BEST IN FIREFOX. INTERNET EXPLORER CURRENTLY DOES NOT \
-                    PRINT OUT ALL OF THE TEXT CORRECTLY ON THESE PAGES. WE ARE WORKING ON THIS PROBLEM.
-                </net.sourceforge.symba.webapp.status>
                 <!-- If you wish to have your own login to the sandbox, please contact us. Otherwise, you may access \
                     with the general login "Anonymous" with pass "AnonymousPass". Please let us know if it seems anyone is \
                     misusing this login and we can reset the database. -->
@@ -495,7 +238,8 @@
                 <!-- The name and verison of this software: there are already reasonable defaults, so you don't need to
                 change this unless you want to -->
                 <net.sourceforge.symba.webapp.softwareName>SyMBA</net.sourceforge.symba.webapp.softwareName>
-                <net.sourceforge.symba.webapp.softwareVersion>${pom.version}</net.sourceforge.symba.webapp.softwareVersion>
+                <net.sourceforge.symba.webapp.softwareVersion>${application.version}
+                </net.sourceforge.symba.webapp.softwareVersion>
 
                 <!-- The class name for the jdbc driver for the SyMBA security database. Should be the same
                  as jdbc.driver variable above, unless you are using a completely different database for the
@@ -516,7 +260,8 @@
 
                 <!-- The full path to the actual directory where the files should reside. The data files will be put directly
                   into this directory.Currently, don't forget the trailing slash here. -->
-                <net.sourceforge.symba.webapp.scp.directory>/your/directory/data/</net.sourceforge.symba.webapp.scp.directory>
+                <net.sourceforge.symba.webapp.scp.directory>/your/directory/data/
+                </net.sourceforge.symba.webapp.scp.directory>
 
                 <!-- The username and password to use to connect to the remote machine where the data files are stored -->
                 <net.sourceforge.symba.webapp.scp.username>user</net.sourceforge.symba.webapp.scp.username>
@@ -600,39 +345,6 @@
                 <pluginManagement>
                     <plugins>
                         <plugin>
-                            <groupId>org.andromda.maven.plugins</groupId>
-                            <artifactId>andromdapp-maven-plugin</artifactId>
-                            <version>3.2</version>
-                            <!-- provides the injection of the script wrapper support into the class files (this should only
-                                 be done when developing locally), uncomment this executions element to enable
-                            <executions>
-                                <execution>
-                                    <id>instrument-scripts</id>
-                                    <goals>
-                                        <goal>instrument-scripts</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            -->
-                            <configuration>
-                                <scriptWrapper>org.andromda.scriptwrappers.GroovyScriptWrapper</scriptWrapper>
-                                <locations>
-                                    <location>
-                                        <rootPath>${pom.basedir}/src/main/java</rootPath>
-                                        <!-- adjust these to include or exclude specific files, by default
-                                             all files found in the rootPath are considered
-                                        <includes>
-                                            <include>relative/path/to/file/to/include/SomeClass.java</include>
-                                        </includes>
-                                        <excludes>
-                                            <exclude>relative/path/to/file/to/include/SomeClass.java</exclude>
-                                        </excludes>
-                                        -->
-                                    </location>
-                                </locations>
-                            </configuration>
-                        </plugin>
-                        <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
@@ -645,7 +357,7 @@
                             <artifactId>maven-surefire-plugin</artifactId>
                             <version>2.4</version>
                             <configuration>
-                                <skipTests>true</skipTests>
+                                <skipTests>false</skipTests>
                             </configuration>
                         </plugin>
                     </plugins>
@@ -653,186 +365,60 @@
             </build>
         </profile>
         <profile>
-            <id>development</id>
+            <id>test</id>
             <activation>
-                <property>
-                    <name>env</name>
-                    <value>dev</value>
-                </property>
-            </activation>
-            <!--<properties>-->
-            <!--<jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/8.2-504.jdbc3/postgresql-8.2-504.jdbc3.jar-->
-            <!--</jdbc.driver.jar>-->
-            <!--<jdbc.driver>org.postgresql.Driver</jdbc.driver>-->
-            <!--<jdbc.url>jdbc:postgresql://localhost:5432/fuge</jdbc.url>-->
-            <!--<jdbc.username>user</jdbc.username>-->
-            <!--<jdbc.password>pass</jdbc.password>-->
-            <!--<jdbc.exception.sorter>org.jboss.resource.adapter.jdbc.vendor.DummyExceptionSorter</jdbc.exception.sorter>-->
-            <!--<net.sourceforge.symba.lsid.wsServer>bsu.ncl.ac.uk:8081</net.sourceforge.symba.lsid.wsServer>-->
-            <!--<net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>-->
-            <!--<net.sourceforge.symba.webapp.softwareName>${pom.artifactId}</net.sourceforge.symba.webapp.softwareName>-->
-            <!--<net.sourceforge.symba.webapp.softwareVersion>${pom.version}</net.sourceforge.symba.webapp.softwareVersion>-->
-            <!--<net.sourceforge.symba.webapp.security.driver>org.postgresql.Driver-->
-            <!--</net.sourceforge.symba.webapp.security.driver>-->
-            <!--<net.sourceforge.symba.webapp.security.url>jdbc:postgresql://your.machine:5432/symba_security-->
-            <!--</net.sourceforge.symba.webapp.security.url>-->
-            <!--<net.sourceforge.symba.webapp.security.username>user</net.sourceforge.symba.webapp.security.username>-->
-            <!--<net.sourceforge.symba.webapp.security.password>pass</net.sourceforge.symba.webapp.security.password>-->
-            <!--<net.sourceforge.symba.webapp.scp.hostname>localhost</net.sourceforge.symba.webapp.scp.hostname>-->
-            <!--<net.sourceforge.symba.webapp.scp.directory>/your/directory/for/data/</net.sourceforge.symba.webapp.scp.directory>-->
-            <!--<net.sourceforge.symba.webapp.scp.username>user</net.sourceforge.symba.webapp.scp.username>-->
-            <!--<net.sourceforge.symba.webapp.scp.password>pass</net.sourceforge.symba.webapp.scp.password>-->
-            <!--<net.sourceforge.symba.webapp.scp.remote.data.store.os>unix-->
-            <!--</net.sourceforge.symba.webapp.scp.remote.data.store.os>-->
-            <!--<net.sourceforge.symba.webapp.scp.lsid.colon.replacement></net.sourceforge.symba.webapp.scp.lsid.colon.replacement>-->
-            <!--</properties>-->
-        </profile>
-        <profile>
-            <id>validation</id>
-            <activation>
-                <property>
-                    <name>env</name>
-                    <value>val</value>
-                </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/8.2-504.jdbc3/postgresql-8.2-504.jdbc3.jar
-                </jdbc.driver.jar>
-                <jdbc.driver>org.postgresql.Driver</jdbc.driver>
-                <jdbc.url>jdbc:postgresql://localhost:5432/testsymba</jdbc.url>
-                <jdbc.username>symba</jdbc.username>
-                <jdbc.password>symba</jdbc.password>
-                <jdbc.exception.sorter>org.jboss.resource.adapter.jdbc.vendor.DummyExceptionSorter
-                </jdbc.exception.sorter>
-
                 <net.sourceforge.symba.lsid.wsServer>bsu.ncl.ac.uk:8081</net.sourceforge.symba.lsid.wsServer>
                 <net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>
-                <net.sourceforge.symba.webapp.softwareName>${pom.artifactId}</net.sourceforge.symba.webapp.softwareName>
-                <net.sourceforge.symba.webapp.softwareVersion>${pom.version}</net.sourceforge.symba.webapp.softwareVersion>
+                <net.sourceforge.symba.webapp.softwareName>SyMBA</net.sourceforge.symba.webapp.softwareName>
+                <net.sourceforge.symba.webapp.softwareVersion>${application.version}
+                </net.sourceforge.symba.webapp.softwareVersion>
                 <net.sourceforge.symba.webapp.security.driver>org.postgresql.Driver
                 </net.sourceforge.symba.webapp.security.driver>
-                <net.sourceforge.symba.webapp.security.url>jdbc:postgresql://localhost:5432/symba_security
+                <net.sourceforge.symba.webapp.security.url>jdbc:postgresql://localhost:5432/symba-security
                 </net.sourceforge.symba.webapp.security.url>
                 <net.sourceforge.symba.webapp.security.username>symba</net.sourceforge.symba.webapp.security.username>
                 <net.sourceforge.symba.webapp.security.password>symba</net.sourceforge.symba.webapp.security.password>
                 <net.sourceforge.symba.webapp.scp.hostname>localhost</net.sourceforge.symba.webapp.scp.hostname>
-                <net.sourceforge.symba.webapp.scp.directory>/your/directory/data/</net.sourceforge.symba.webapp.scp.directory>
-                <net.sourceforge.symba.webapp.scp.username>user</net.sourceforge.symba.webapp.scp.username>
-                <net.sourceforge.symba.webapp.scp.password>pass</net.sourceforge.symba.webapp.scp.password>
+                <net.sourceforge.symba.webapp.scp.directory>/home/symba/filestore/
+                </net.sourceforge.symba.webapp.scp.directory>
+                <net.sourceforge.symba.webapp.scp.username>symba</net.sourceforge.symba.webapp.scp.username>
+                <net.sourceforge.symba.webapp.scp.password>06JE9Rh0</net.sourceforge.symba.webapp.scp.password>
                 <net.sourceforge.symba.webapp.scp.remote.data.store.os>unix
                 </net.sourceforge.symba.webapp.scp.remote.data.store.os>
                 <net.sourceforge.symba.webapp.scp.lsid.colon.replacement></net.sourceforge.symba.webapp.scp.lsid.colon.replacement>
-                <net.sourceforge.fuge.addDbAuditTrail>false</net.sourceforge.fuge.addDbAuditTrail>
+                <net.sourceforge.fuge.addDbAuditTrail>true</net.sourceforge.fuge.addDbAuditTrail>
+                <jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/9.0-801.jdbc4/postgresql-9.0-801.jdbc4.jar
+                </jdbc.driver.jar>
+                <jdbc.driver>org.postgresql.Driver</jdbc.driver>
+                <jdbc.url>jdbc:postgresql://localhost:5432/symba-test</jdbc.url>
+                <jdbc.username>symba</jdbc.username>
+                <jdbc.password>symba</jdbc.password>
+                <jdbc.exception.sorter>org.jboss.resource.adapter.jdbc.vendor.DummyExceptionSorter
+                </jdbc.exception.sorter>
             </properties>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <!-- Ensure that a recent version of surefire is being used -->
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <version>2.4</version>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
-            <id>production</id>
-            <activation>
-                <property>
-                    <name>env</name>
-                    <value>prod</value>
-                </property>
-            </activation>
-            <!--<properties>-->
-            <!--<jdbc.driver.jar>${env.M2_REPO}/postgresql/postgresql/8.2-504.jdbc3/postgresql-8.2-504.jdbc3.jar-->
-            <!--</jdbc.driver.jar>-->
-            <!--<jdbc.driver>org.postgresql.Driver</jdbc.driver>-->
-            <!--<jdbc.url>jdbc:postgresql://localhost:5432/fuge</jdbc.url>-->
-            <!--<jdbc.username>user</jdbc.username>-->
-            <!--<jdbc.password>pass</jdbc.password>-->
-            <!--<jdbc.exception.sorter>org.jboss.resource.adapter.jdbc.vendor.DummyExceptionSorter</jdbc.exception.sorter>-->
-            <!--<net.sourceforge.symba.lsid.wsServer>bsu.ncl.ac.uk:8081</net.sourceforge.symba.lsid.wsServer>-->
-            <!--<net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>-->
-            <!--<net.sourceforge.symba.webapp.softwareName>${pom.artifactId}</net.sourceforge.symba.webapp.softwareName>-->
-            <!--<net.sourceforge.symba.webapp.softwareVersion>${pom.version}</net.sourceforge.symba.webapp.softwareVersion>-->
-            <!--<net.sourceforge.symba.webapp.security.driver>org.postgresql.Driver-->
-            <!--</net.sourceforge.symba.webapp.security.driver>-->
-            <!--<net.sourceforge.symba.webapp.security.url>jdbc:postgresql://your.machine:5432/symba_security-->
-            <!--</net.sourceforge.symba.webapp.security.url>-->
-            <!--<net.sourceforge.symba.webapp.security.username>user</net.sourceforge.symba.webapp.security.username>-->
-            <!--<net.sourceforge.symba.webapp.security.password>pass</net.sourceforge.symba.webapp.security.password>-->
-            <!--<net.sourceforge.symba.webapp.scp.hostname>localhost</net.sourceforge.symba.webapp.scp.hostname>-->
-            <!--<net.sourceforge.symba.webapp.scp.directory>/your/directory/for/data/</net.sourceforge.symba.webapp.scp.directory>-->
-            <!--<net.sourceforge.symba.webapp.scp.username>user</net.sourceforge.symba.webapp.scp.username>-->
-            <!--<net.sourceforge.symba.webapp.scp.password>pass</net.sourceforge.symba.webapp.scp.password>-->
-            <!--<net.sourceforge.symba.webapp.scp.remote.data.store.os>unix-->
-            <!--</net.sourceforge.symba.webapp.scp.remote.data.store.os>-->
-            <!--<net.sourceforge.symba.webapp.scp.lsid.colon.replacement></net.sourceforge.symba.webapp.scp.lsid.colon.replacement>-->
-            <!--</properties>-->
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <!-- Only allow testing on the val and dev profiles so as not to test in your production database-->
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <version>2.4</version>
-                            <configuration>
-                                <skipTests>true</skipTests>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
         </profile>
     </profiles>
     <repositories>
         <repository>
-            <id>andromda</id>
-            <name>AndroMDA Repository</name>
-            <url>http://team.andromda.org/maven2</url>
-        </repository>
-        <repository>
             <id>maven2-repository.dev.java.net</id>
             <name>Java.net Maven 2 Repository</name>
             <url>http://download.java.net/maven/2</url>
         </repository>
-        <!--<repository>-->
-            <!--<id>maven-repository.dev.java.net</id>-->
-            <!--<name>Java.net Maven 1 Repository (legacy)</name>-->
-            <!--<url>http://download.java.net/maven/1</url>-->
-            <!--<layout>legacy</layout>-->
-        <!--</repository>-->
-        <!--<repository>
-         <id>carmen-snapshot</id>
-         <name>Carmen snapshot repository</name>
-         <url>http://carmen.ncl.ac.uk/maven/repo-snapshot</url>
-       </repository>-->
-       <repository>
-         <id>carmen</id>
-         <name>Carmen release repository</name>
-         <url>http://carmen.ncl.ac.uk/maven/repo</url>
-       </repository>
+        <repository>
+            <id>carmen</id>
+            <name>Carmen release repository</name>
+            <url>http://carmen.ncl.ac.uk/maven/repo</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
-            <id>andromda</id>
-            <name>AndroMDA Repository</name>
-            <url>http://team.andromda.org/maven2</url>
-        </pluginRepository>
-        <pluginRepository>
             <id>maven2-repository.dev.java.net</id>
             <name>Java.net Maven 2 Repository</name>
             <url>http://download.java.net/maven/2</url>
         </pluginRepository>
-        <!--<pluginRepository>-->
-            <!--<id>maven-repository.dev.java.net</id>-->
-            <!--<name>Java.net Maven 1 Repository (legacy)</name>-->
-            <!--<url>http://download.java.net/maven/1</url>-->
-            <!--<layout>legacy</layout>-->
-        <!--</pluginRepository>-->
     </pluginRepositories>
     <prerequisites>
         <maven>2.0.1</maven>
@@ -847,8 +433,8 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>changes-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -856,9 +442,9 @@
                         </reports>
                     </reportSet>
                 </reportSets>
-                <configuration>
-                    <issueLinkTemplate>http://sourceforge.net/support/tracker.php?aid=%ISSUE%</issueLinkTemplate>
-                </configuration>
+                <!--<configuration>-->
+                <!--<issueLinkTemplate>http://sourceforge.net/support/tracker.php?aid=%ISSUE%</issueLinkTemplate>-->
+                <!--</configuration>-->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

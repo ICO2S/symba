@@ -1,8 +1,7 @@
 package net.sourceforge.fuge.util;
 
-import net.sourceforge.fuge.util.generatedJAXB2.FuGECollectionFuGEType;
+import net.sourceforge.fuge.util.generated.FuGE;
 
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
@@ -14,6 +13,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 /**
  * Copyright Notice
@@ -57,15 +58,16 @@ public class XmlRoundTrip {
 
     /**
      * XmlRoundTrip is an example main() that shows users how to load, validate, and output XML generated
-     * via the AndroMDA build process.
+     * via SyMBA.
      *
      * @param args provide 3 arguments in this order: schema-file input-xml-file output-xml-file
      * @throws Exception if the number of arguments isn't 3.
      */
     public static void main( String[] args ) throws Exception {
-        if ( args.length != 3 )
+        if ( args.length != 3 ) {
             throw new java.lang.Exception(
                     "You must provide 3 arguments in this order: schema-file input-xml-file output-xml-file" );
+        }
 
         // create a JAXBContext capable of handling classes generated in the net.sourceforge.fuge.util.generatedJAXB2
         // package
@@ -86,12 +88,12 @@ public class XmlRoundTrip {
         JAXBElement<?> genericTopLevelElement = ( JAXBElement<?> ) u.unmarshal( new FileInputStream( args[1] ) );
 
         // Get the jaxb root object. In the case of the default setup of the FuGE XSD STK, this is a
-        // FuGECollectionFuGEType object. However, if you are developing a community extension, this may
+        // FuGE object. However, if you are developing a community extension, this may
         // be a different type of object. Please modify as appropriate.
-        FuGECollectionFuGEType rootXML = ( FuGECollectionFuGEType ) genericTopLevelElement.getValue();
+        FuGE rootXML = ( FuGE ) genericTopLevelElement.getValue();
 
         //
-        // Here is where you would perfom any checks or manipulation of the FuGE objects.
+        // Here is where you would perform any checks or manipulation of the FuGE objects.
         //
 
         // As an example, print out the top-level identifier for the FuGE object. If you run the validation against
@@ -111,10 +113,10 @@ public class XmlRoundTrip {
         m.setSchema( schema );
 
         OutputStream os = new FileOutputStream( args[2] );
-        @SuppressWarnings( "unchecked")
+        @SuppressWarnings( "unchecked" )
         JAXBElement element = new JAXBElement( new QName( "http://fuge.sourceforge.net/fuge/1.0", "FuGE" ),
-                        FuGECollectionFuGEType.class,
-                        rootXML );
+                FuGE.class,
+                rootXML );
         m.marshal( element, os );
 
     }

@@ -3,7 +3,9 @@
  ---
  Allyson Lister
  ---
- July 2008
+ June 2011
+
+                <<Please note that this page is now obsolete, as we no longer use AndroMDA in this project.>>
 
 Introduction
 
@@ -26,7 +28,7 @@ AndroMDA Installation
     for Windows):
 
 ---
-$M2_REPO/org/andromda/maven/plugins/andromda-maven-plugin>>>
+$M2_REPO/org/andromda/maven/plugins/andromda-maven-plugin
 ---
 
 * Test Installation

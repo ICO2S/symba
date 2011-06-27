@@ -3,18 +3,18 @@
  ---
  Allyson Lister
  ---
- July 2008
+ June 2011
 
-Download and Install Maven 2.0.7 or Later
+Download and Install Maven 2.2.1 or Later
 
-                Download and install Maven 2.0.7 or later from this site:
+                Download and install Maven 2.2.1 or later from this site:
                 {{{http://maven.apache.org/download.html}http://maven.apache.org/download.html}}
 
 Maven Setup
 
                 Create a directory in your home directory called .m2 with a single file inside called
                 <<<settings.xml>>>. This is what
-                my<<<settings.xml>>>looks like:
+                an example <<<settings.xml>>>looks like:
 
 +---+
                 <settings>
@@ -69,14 +69,16 @@ Environment Variables and Settings for Maven
 
 Test Maven (Part One)
 
-                Test that you've instaled maven correctly by running<<<mvn --version>>>.
+                Test that you've installed maven correctly by running<<<mvn --version>>>.
                 You should see something similar (but not necessarily identical) to the following:
 
 +---+
                 $ mvn --version
-                Maven version: 2.0.7
-                Java version: 1.5.0_08
-                OS name: "linux" version: "2.6.17-12-386" arch: "i386"
+                Maven version: 2.2.1
+                Java version: 1.6.0_24
+                Java home: /usr/lib/jvm/java-6-sun-1.6.0.24/jre
+                Default locale: en_GB, platform encoding: UTF-8
+                OS name: "linux" version: "2.6.38-8-generic-pae" arch: "i386" Family: "unix"
 +---+
 
 Test Maven (Part Two)

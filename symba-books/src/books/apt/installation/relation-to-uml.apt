@@ -3,17 +3,11 @@
  ---
  Allyson Lister
  ---
- July 2008
+ June 2011
 
 What is the relationship between SyMBA and the Object Model?
 
-    In the FuGE and SyMBA development processes, the master version of the FuGE structure is the Object Model, written
-    with UML and, using Maven 2 and AndroMDA, translated into a variety of tools. SyMBA uses both the FuGE XSD STK,
-    whose purpose is to create either a plain FuGE XSD or aid in the creation of specific community
-    extensions of the FuGE-OM, and the FuGE Hibernate STK.
-
-    There are a number of changes made to the officially-sanctioned FuGE-OM as provided in the main download pages
-    that were performed for both the Hibernate STK and SyMBA.
-    These changes are generally to low-level AndroMDA tags and are required to make sure that access to the database
-    is straightforward and clear. A full list of the changes can be found on the page within this documentation entitled
-    {{{fugeom-modifications.html} FuGE-OM Modifications for the Hibernate Implementation}}.
+    In the FuGE development process, the master version of the FuGE structure is the Object Model (FuGE-OM), written
+    with UML and, via Maven 2 and AndroMDA, translated into a variety of tools. One of these translations is the
+    FuGE XSD. SyMBA uses {{{http://confluence.highsource.org/display/HJ3/Home}hyperjaxb3}} to create a hibernate
+    database and a FuGE Java API based on the XSD.

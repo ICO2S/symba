@@ -1,0 +1,109 @@
+This is a document describing how Fuge objects and GWT client-side objects interact.
+
+GWT client-side objects are much simpler than their Fuge counterparts. This reduces the data passed between the
+GWT server and the client. However, we are also forced into this situation by the architecture of GWT apps, which
+disallows any non-standard libraries (outside of the GWT libs) within the client that aren't made within the client
+package.
+
+However, this does necessitate mapping between the two object types.
+
+FuGE Protocol Structure used within SyMBA
+-----------------------------------------
+
+This section details how FuGE objects are structured and created within SyMBA.
+
+Let's take the following example Investigation structure, as reported by the simple GWT client-side objects within
+SyMBA:
+
+Investigation Title: "My Example Investigation"
+Provider: Allyson Lister
++ Experiment Step Name: "My Top-Level Experiment Step"
+    + Experiment Step Name: "Material Transformation Procedure A123"
+        Parameter: "a" "has value" "b" "centimetres"
+        Input Material: Material 1  ; Description: "the starting material"
+        Output Material: Material 2
+    + Experiment Step Name: "Assay Procedure XYZ"
+        Input Material: 15 ml of Material 2
+        Output Data: mydatafile.txt
+
+This is an experimental investigation where there were two steps: first, a material transformation; and second, an
+assay of some kind. The specific types of assay and material transformation are irrelevant for this example. Such an
+investigation will have the following main participants:
+
+FuGE Object     Attribute Name      Attribute Value
+---------------------------------------------------
+FuGE             name               Any required SyMBA constants (e.g. template, completed) + "My Example Investigation"
+Investigation    name               "My Example Investigation"
+Provider         assigned to        The FuGE Contact represented by "Allyson Lister"
+                 software           SyMBA 2
+GenericParameter measurement        A measurement of the correct type: one of Boolean, Atomic, or Complex
+ExternalData     uri                a URI created based on mydatafile.txt
+GenericMaterial  name               "Material 1"
+                 description        "the starting material"
+GenericMaterial  name               "Material 2"
+
+
+These players are then used to build up the hierarchical series of experimental steps. This is how those steps are
+represented in FuGE:
+
+GenericProtocol (My Top-Level Experiment Step)
+    GenericAction at position 0 (References GenericProtocol "Material Transformation Procedure A123")
+    GenericAction at position 1 (References GenericProtocol "Assay Procedure XYZ")
+GenericProtocol (Material Transformation Procedure A123)
+    GenericParameter which represents "a has value b centimetres"
+GenericProtocol (Assay Procedure XYZ)
+
+GenericProtocolApplication (References GenericProtocol (My Top-Level Experiment Step))
+    ActionApplication (References GenericAction at position 0 (References GenericProtocol "Material Transformation Procedure A123"))
+                      (References Child GenericProtocolApplication (References GenericProtocol (Material Transformation Procedure A123)))
+    ActionApplication (References GenericAction at position 1 (References GenericProtocol "Assay Procedure XYZ"))
+                      (References Child GenericProtocolApplication (References GenericProtocol (Assay Procedure XYZ)))
+GenericProtocolApplication (References GenericProtocol (Material Transformation Procedure A123))
+    InputCompleteMaterial (References GenericMaterial "Material 1")
+    OutputMaterial (References GenericMaterial "Material 2")
+GenericProtocolApplication (References GenericProtocol (Assay Procedure XYZ))
+    InputMaterial with GenericMaterialMeasurement 15 ml (References GenericMaterial "Material 2")
+    OutputData (References ExternalData described with URI based on mydatafile.txt)
+
+Notice particularly the mirroring of the GenericProtocol/GenericProtocolApplication structure, and of the placement
+of references to materials and data within the GenericProtocolApplications, and not within the GenericProtocols
+themselves.
+
+Note on FuGE GenericParameters
+------------------------------
+GenericParameters can be created as part of a GenericAction or its related GenericProtocol. There is no reason in
+SyMBA to prefer one over the other. Therefore, all parameters are stored as part of the GenericProtocol.
+
+Note on FuGE GenericMaterials
+-----------------------------
+GenericMaterials can only be added to GenericProtocolApplications - not to protocols. Therefore, template investigations
+need to have some GenericProtocolApplications just to define the required input and output materials. Nothing else
+will be in those GenericProtocolApplications for the templates, however.
+
+
+"Updating" versus creating new FuGE objects
+-------------------------------------------
+The default SyMBA database is versioned, meaning that updates to the investigation metadata result in new versions
+of that investigation being submitted to the database *without* removing or deleting any pre-existing information
+in the database. Below are the different possible ways that metadata will get added to the SyMBA database, and how
+each situation is dealt with.
+
+When a brand-new investigation is begun within the SyMBA user interface, submission to the database simply requires
+that new objects are made for each part of the investigation. No comparison with the existing state of the database
+is required.
+
+When a copy of a template is created within the SyMBA user interface, SyMBA treats this as a brand-new investigation
+and makes new objects for each part of the investigation. No comparison with the existing state of the database
+is required. Further, no link to the originating template is retained. This is because we allow expert
+users to modify templates, and those modifications may make the new version of the template completely different from
+previous version. New versions of templates are stored in the same way as copies of templates and brand-new
+investigations: new objects are made for each part of the investigation. No comparison with the existing state of
+the database is required.
+
+When a pre-existing investigation is selected within the SyMBA user interface, a new version of this investigation
+must be submitted to the database. For every object that has changed as well as its parent object, all the way up
+to the top-level FuGE object, a new identifier is required. However, in order to ensure a link between the older and
+newer versions of the objects, the Endurant (another type of identifier) is kept the same. For every new object,
+a new identifier and Endurant are created, and all of its parent objects will get a new identifier only (the parent
+objects will still retain their original Endurants). For every deleted object, all of its parent objects will get a
+new identifier only (the parent objects will still retain their original Endurants). 

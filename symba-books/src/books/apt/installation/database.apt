@@ -3,7 +3,7 @@
  ---
  Allyson Lister
  ---
- July 2008
+ June 2011
 
 Installing a Supported Database
 
@@ -24,6 +24,9 @@ Installing a Supported Database
                     driver can be downloaded from
                     {{{http://jdbc.postgresql.org/}http://jdbc.postgresql.org/}}
 
+                    If you are running Ubuntu, you may also use apt-get to retrieve PostgreSQL and pgAdminIII
+                    directly from the Ubuntu repositories.
+
 * MySQL
 
                 You can download MySQL from 
@@ -33,3 +36,7 @@ Installing a Supported Database
                 suggested as the GUI for MySQL. If using MySQL, the jdbc driver can be
                 downloaded at:
                 {{{http://dev.mysql.com/downloads/connector/j/3.1.html}http://dev.mysql.com/downloads/connector/j/3.1.html}}
+
+                If you are running Ubuntu, you may also use apt-get to retrieve MySQL and phpMyAdmin
+                directly from the Ubuntu repositories.
+

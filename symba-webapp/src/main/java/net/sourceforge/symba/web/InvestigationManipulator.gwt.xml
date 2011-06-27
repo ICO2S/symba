@@ -1,0 +1,17 @@
+<module>
+    <inherits name="com.google.gwt.user.User"/>
+    <inherits name="com.google.gwt.user.theme.standard.Standard"/>
+
+    <!-- Include GWTUpload library -->
+    <inherits name="gwtupload.GWTUpload"/>
+    <!-- Load dynamically predefined styles in the library when the application starts -->
+    <stylesheet src="Upload.css"/>
+    <entry-point class="net.sourceforge.symba.web.client.InvestigationManipulator"/>
+
+    <!--<servlet path="/upload" class="net.sourceforge.symba.web.server.UploadServlet"/>-->
+
+    <!-- Specify the paths for translatable code                    -->
+    <source path='client'/>
+    <source path='shared'/>
+
+</module>

@@ -11,8 +11,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * To view the full licensing information for this software and ALL other files contained
  * in this distribution, please see LICENSE.txt
  * <p/>
- * Stored within the mapping module to ensure that the Lsid Retrieval works correctly within it.
- * <p/>
  * $LastChangedDate$
  * $LastChangedRevision$
  * $Author$

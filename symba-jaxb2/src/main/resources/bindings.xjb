@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings
+        version="2.1"
+        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations">
+
+    <!-- From http://confluence.highsource.org/display/HJ3/Making+schema-derived+classes+ready+for+JPA :
+    set the local scoping to top level so as to not get the error "The entity class must be a top-level class." -->
+    <jaxb:globalBindings localScoping="toplevel">
+        <jaxb:serializable/>
+    </jaxb:globalBindings>
+
+    <!-- Some table names have been changed so they are easier to read in the schema and SQL statements if you are
+    wandering around the database directly. This is also where the named queries are stored to be added to the
+    final generated java classes via annotations. As all classes are generated as top-level classes,
+    the hypothesis and conclusion elements are present twice in the XSD and will cause clashes unless you
+    change one of their class names. -->
+
+    <jaxb:bindings schemaLocation="xmlSchema.xsd" node="/xsd:schema">
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.FuGEType']">
+            <hj:entity>
+                <orm:table name="FUGE"/>
+                <orm:named-query name="fugeByIdentifier">
+                    <orm:query>select f from net.sourceforge.fuge.util.generated.FuGE f where
+                        f.identifier = :fugeId
+                    </orm:query>
+                </orm:named-query>
+                <orm:named-query name="fugeEndurantByIdentifier">
+                    <orm:query>select f.endurantRef from net.sourceforge.fuge.util.generated.FuGE f
+                        where f.identifier = :fugeId
+                    </orm:query>
+                </orm:named-query>
+                <orm:named-query name="allFuge">
+                    <orm:query>select f from net.sourceforge.fuge.util.generated.FuGE f</orm:query>
+                </orm:named-query>
+                <orm:named-query name="countAllFuge">
+                    <orm:query>select count(f) from net.sourceforge.fuge.util.generated.FuGE f</orm:query>
+                </orm:named-query>
+            </hj:entity>
+        </jaxb:bindings>
+        <!-- Changes to class names due to naming conflicts b/c of the localScoping=toplevel variable in globalBindings -->
+        <jaxb:bindings
+                node="xsd:complexType[@name='FuGE.bio.investigation.HigherLevelAnalysisType']/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[@name='_hypothesis']/xsd:complexType">
+            <jaxb:class name="HigherLevelAnalysisHypothesis"/>
+        </jaxb:bindings>
+        <jaxb:bindings
+                node="xsd:complexType[@name='FuGE.bio.investigation.HigherLevelAnalysisType']/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[@name='_conclusion']/xsd:complexType">
+            <jaxb:class name="HigherLevelAnalysisConclusion"/>
+        </jaxb:bindings>
+        <jaxb:bindings
+                node="xsd:complexType[@name='FuGE.common.protocol.GenericProtocolType']/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[@name='_software']/xsd:complexType">
+            <jaxb:class name="GenericProtocolSoftwareRef"/>
+        </jaxb:bindings>
+        <jaxb:bindings
+                node="xsd:complexType[@name='FuGE.common.protocol.GenericProtocolType']/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[@name='_equipment']/xsd:complexType">
+            <jaxb:class name="GenericProtocolEquipmentRef"/>
+        </jaxb:bindings>
+        <jaxb:bindings
+                node="xsd:complexType[@name='FuGE.common.protocol.GenericEquipmentType']/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[@name='_software']/xsd:complexType">
+            <jaxb:class name="GenericEquipmentSoftwareRef"/>
+        </jaxb:bindings>
+        <jaxb:bindings
+                node="xsd:complexType[@name='FuGE.common.protocol.GenericSoftwareType']/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[@name='_equipment']/xsd:complexType">
+            <jaxb:class name="GenericSoftwareEquipmentRef"/>
+        </jaxb:bindings>
+        <jaxb:bindings
+                node="xsd:complexType[@name='FuGE.bio.conceptualmolecule.SequenceAnnotationSetType']/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[@name='_types']/xsd:complexType">
+            <jaxb:class name="SequenceAnnotationSetSeqType"/>
+        </jaxb:bindings>
+        <jaxb:bindings
+                node="xsd:complexType[@name='FuGE.common.protocol.ParameterizableType']/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[@name='_types']/xsd:complexType">
+            <jaxb:class name="ParameterizableParamType"/>
+        </jaxb:bindings>
+        <!-- Other class customisations to make the class names nicer, while we're at it -->
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.conceptualmolecule.ConceptualMoleculeType']">
+            <jaxb:class name="ConceptualMolecule"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.conceptualmolecule.SequenceAnnotationSetType']">
+            <jaxb:class name="SequenceAnnotationSet"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.conceptualmolecule.SequenceType']">
+            <jaxb:class name="Sequence"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.data.DataPartitionType']">
+            <jaxb:class name="DataPartition"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.data.DataType']">
+            <jaxb:class name="Data"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.data.DimensionElementType']">
+            <jaxb:class name="DimensionElement"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.data.DimensionType']">
+            <jaxb:class name="Dimension"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.data.ExternalDataType']">
+            <jaxb:class name="ExternalData"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.data.GenericDataPartitionType']">
+            <jaxb:class name="GenericDataPartition"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.data.GenericInternalDataType']">
+            <jaxb:class name="GenericInternalData"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.data.InternalDataType']">
+            <jaxb:class name="InternalData"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.data.PartitionPairType']">
+            <jaxb:class name="PartitionPair"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.investigation.FactorType']">
+            <jaxb:class name="Factor"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.investigation.FactorValueType']">
+            <jaxb:class name="FactorValue"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.investigation.HigherLevelAnalysisType']">
+            <jaxb:class name="HigherLevelAnalysis"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.investigation.InvestigationComponentType']">
+            <jaxb:class name="InvestigationComponent"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.investigation.InvestigationType']">
+            <jaxb:class name="Investigation"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.material.GenericMaterialMeasurementType']">
+            <jaxb:class name="GenericMaterialMeasurement"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.material.GenericMaterialType']">
+            <jaxb:class name="GenericMaterial"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.material.MaterialMeasurementType']">
+            <jaxb:class name="MaterialMeasurement"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.bio.material.MaterialType']">
+            <jaxb:class name="Material"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.FuGEType']">
+            <jaxb:class name="FuGE"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.ProviderType']">
+            <jaxb:class name="Provider"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.audit.AuditType']">
+            <jaxb:class name="Audit"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.audit.ContactRoleType']">
+            <jaxb:class name="ContactRole"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.audit.ContactType']">
+            <jaxb:class name="Contact"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.audit.OrganizationType']">
+            <jaxb:class name="Organization"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.audit.PersonType']">
+            <jaxb:class name="Person"/>
+            <hj:entity>
+                <orm:named-query name="allPeople">
+                    <orm:query>select p from net.sourceforge.fuge.util.generated.Person p</orm:query>
+                </orm:named-query>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.audit.SecurityAccessType']">
+            <jaxb:class name="SecurityAccess"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.audit.SecurityGroupType']">
+            <jaxb:class name="SecurityGroup"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.audit.SecurityType']">
+            <jaxb:class name="Security"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.description.DescriptionType']">
+            <jaxb:class name="Description"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.description.NameValueTypeType']">
+            <jaxb:class name="NameValueType"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.description.UriType']">
+            <jaxb:class name="UriType"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.measurement.AtomicValueType']">
+            <jaxb:class name="AtomicValue"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.measurement.BooleanValueType']">
+            <jaxb:class name="BooleanValue"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.measurement.ComplexValueType']">
+            <jaxb:class name="ComplexValue"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.measurement.MeasurementType']">
+            <jaxb:class name="Measurement"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.measurement.RangeType']">
+            <jaxb:class name="Range"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.ontology.DataPropertyType']">
+            <jaxb:class name="DataProperty"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.ontology.ObjectPropertyType']">
+            <jaxb:class name="ObjectProperty"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.ontology.OntologyIndividualType']">
+            <jaxb:class name="OntologyIndividual"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.ontology.OntologyPropertyType']">
+            <jaxb:class name="OntologyProperty"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.ontology.OntologySourceType']">
+            <jaxb:class name="OntologySource"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.ontology.OntologyTermType']">
+            <jaxb:class name="OntologyTerm"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.ActionApplicationType']">
+            <jaxb:class name="ActionApplication"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.ActionType']">
+            <jaxb:class name="Action"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.EquipmentApplicationType']">
+            <jaxb:class name="EquipmentApplication"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.EquipmentType']">
+            <jaxb:class name="Equipment"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.GenericActionType']">
+            <jaxb:class name="GenericAction"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.GenericEquipmentType']">
+            <jaxb:class name="GenericEquipment"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.GenericParameterType']">
+            <jaxb:class name="GenericParameter"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.GenericProtocolApplicationType']">
+            <jaxb:class name="GenericProtocolApplication"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.GenericProtocolType']">
+            <jaxb:class name="GenericProtocol"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.GenericSoftwareType']">
+            <jaxb:class name="GenericSoftware"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.ParameterizableApplicationType']">
+            <jaxb:class name="ParameterizableApplication"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.ParameterizableType']">
+            <jaxb:class name="Parameterizable"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.ParameterPairType']">
+            <jaxb:class name="ParameterPair"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.ParameterType']">
+            <jaxb:class name="Parameter"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.ParameterValueType']">
+            <jaxb:class name="ParameterValue"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.ProtocolApplicationType']">
+            <jaxb:class name="ProtocolApplication"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.ProtocolType']">
+            <jaxb:class name="Protocol"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.SoftwareApplicationType']">
+            <jaxb:class name="SoftwareApplication"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.protocol.SoftwareType']">
+            <jaxb:class name="Software"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.references.BibliographicReferenceType']">
+            <jaxb:class name="BibliographicReference"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.references.DatabaseReferenceType']">
+            <jaxb:class name="DatabaseReference"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.references.DatabaseType']">
+            <jaxb:class name="Database"/>
+        </jaxb:bindings>
+        <!-- Improvements in table names -->
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.AuditCollectionType']">
+            <jaxb:class name="AuditCollection"/>
+            <hj:entity>
+                <orm:table name="AUDIT_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.MaterialCollectionType']">
+            <jaxb:class name="MaterialCollection"/>
+            <hj:entity>
+                <orm:table name="MATERIAL_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.ReferenceableCollectionType']">
+            <jaxb:class name="ReferenceableCollection"/>
+            <hj:entity>
+                <orm:table name="REFERENCEABLE_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.ConceptualMoleculeCollectionType']">
+            <jaxb:class name="ConceptualMoleculeCollection"/>
+            <hj:entity>
+                <orm:table name="CONCEPTUAL_MOLECULE_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.InvestigationCollectionType']">
+            <jaxb:class name="InvestigationCollection"/>
+            <hj:entity>
+                <orm:table name="INVESTIGATION_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.DataCollectionType']">
+            <jaxb:class name="DataCollection"/>
+            <hj:entity>
+                <orm:table name="DATA_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.ProtocolCollectionType']">
+            <jaxb:class name="ProtocolCollection"/>
+            <hj:entity>
+                <orm:table name="PROTOCOL_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.collection.OntologyCollectionType']">
+            <jaxb:class name="OntologyCollection"/>
+            <hj:entity>
+                <orm:table name="ONTOLOGY_COLLECTION"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.IdentifiableType']">
+            <jaxb:class name="Identifiable"/>
+            <hj:entity>
+                <orm:table name="IDENTIFIABLE"/>
+            </hj:entity>
+        </jaxb:bindings>
+        <jaxb:bindings node="xsd:complexType[@name='FuGE.common.DescribableType']">
+            <jaxb:class name="Describable"/>
+            <hj:entity>
+                <orm:table name="DESCRIBABLE"/>
+            </hj:entity>
+        </jaxb:bindings>
+    </jaxb:bindings>
+</jaxb:bindings>

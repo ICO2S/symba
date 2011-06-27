@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<FuGE Endurant_ref="0.9479324934223143" name="My Example Investigation" identifier="0.4078363070409322"
+      xmlns="http://fuge.sourceforge.net/fuge/1.0">
+    <_auditTrail>
+        <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.034"/>
+    </_auditTrail>
+    <MaterialCollection>
+        <GenericMaterial Endurant_ref="0.12463475745190222" name="Cell Culture 17" identifier="ABC23456">
+            <_descriptions>
+                <Description text="An example cell culture."/>
+            </_descriptions>
+        </GenericMaterial>
+        <GenericMaterial Endurant_ref="0.020073032861938844" name="Material 2" identifier="644158905">
+            <_descriptions>
+                <Description text="some material"/>
+            </_descriptions>
+        </GenericMaterial>
+    </MaterialCollection>
+    <InvestigationCollection>
+        <Investigation Endurant_ref="0.5688726933512299" name="My Example Investigation" identifier="12345">
+            <_auditTrail>
+                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:46.989"/>
+            </_auditTrail>
+        </Investigation>
+    </InvestigationCollection>
+    <DataCollection>
+        <ExternalData location="Screenshot-1.png" Endurant_ref="0.1478866964849871" name="Screenshot-1.png"
+                      identifier="0.6944343902451814">
+            <_auditTrail>
+                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.006"/>
+            </_auditTrail>
+        </ExternalData>
+    </DataCollection>
+    <AuditCollection>
+        <Person firstName="Alice" lastName="Smith" email="alice.jones@example.com" Endurant_ref="0.7619883364512875"
+                identifier="23456"/>
+    </AuditCollection>
+    <ProtocolCollection>
+        <GenericProtocol Endurant_ref="0.5288761467113884" name="Step 1" identifier="0.3888076617530435">
+            <GenericAction Protocol_ref="0.8196393364377491" actionOrdinal="0" Endurant_ref="0.6293833992487761"
+                           name="Material Transformation" identifier="0.05170760660991802"/>
+            <GenericAction Protocol_ref="0.5103313346158306" actionOrdinal="0" Endurant_ref="0.760728841778953"
+                           name="Assay Step" identifier="0.522279409925901"/>
+        </GenericProtocol>
+        <GenericProtocol Endurant_ref="0.6215320641154" name="Material Transformation" identifier="0.8196393364377491"/>
+        <GenericProtocol Endurant_ref="0.09768412968387774" name="Assay Step" identifier="0.5103313346158306">
+            <GenericParameter Endurant_ref="0.5004332114439954"
+                              name="ab net.sourceforge.symba.subjectPredicateDivider bc" identifier="0.120510426103704">
+                <AtomicValue value="10">
+                    <_unit OntologyTerm_ref="0.54127829301116"/>
+                </AtomicValue>
+            </GenericParameter>
+        </GenericProtocol>
+        <GenericProtocol Endurant_ref="0.43118487525952354" name="Some other Step (2)"
+                         identifier="0.24022591329282283"/>
+        <GenericProtocol Endurant_ref="0.9054614515570885"
+                         name="net.sourceforge.symba.topProtocol My Example Investigation"
+                         identifier="0.47357680262477275">
+            <GenericAction Protocol_ref="0.3888076617530435" actionOrdinal="0" Endurant_ref="0.36805191140328075"
+                           name="Step 1" identifier="0.45469117455578334"/>
+            <GenericAction Protocol_ref="0.24022591329282283" actionOrdinal="0" Endurant_ref="0.44156191804997535"
+                           name="Some other Step (2)" identifier="0.10034490787676531"/>
+        </GenericProtocol>
+        <GenericSoftware version="8.09" Endurant_ref="0.08568759381115387"
+                         name="SyMBA (http://symba.sourceforge.net) by CISBAN (http://www.cisban.ac.uk)"
+                         identifier="0.2711517954869771"/>
+        <GenericProtocolApplication Protocol_ref="0.3888076617530435" Endurant_ref="0.24749601919263176" name="Step 1"
+                                    identifier="0.4274059399675647">
+            <_auditTrail>
+                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.016"/>
+            </_auditTrail>
+            <ActionApplication ProtocolApplication_ref="0.6936748489356449" Action_ref="0.05170760660991802"
+                               Endurant_ref="0.8894873683879423" name="Material Transformation"
+                               identifier="0.9381580048206541">
+                <_auditTrail>
+                    <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.021"/>
+                </_auditTrail>
+            </ActionApplication>
+            <ActionApplication ProtocolApplication_ref="0.7914686873694574" Action_ref="0.522279409925901"
+                               Endurant_ref="0.7877580982287092" name="Assay Step" identifier="0.3367528013569028">
+                <_auditTrail>
+                    <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.031"/>
+                </_auditTrail>
+            </ActionApplication>
+        </GenericProtocolApplication>
+        <GenericProtocolApplication Protocol_ref="0.8196393364377491" Endurant_ref="0.7048769403489543"
+                                    name="Material Transformation" identifier="0.6936748489356449">
+            <_auditTrail>
+                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.018"/>
+            </_auditTrail>
+            <_outputMaterials Material_ref="644158905"/>
+            <_inputCompleteMaterials Material_ref="ABC23456"/>
+        </GenericProtocolApplication>
+        <GenericProtocolApplication Protocol_ref="0.5103313346158306" Endurant_ref="0.8525936794029937"
+                                    name="Assay Step" identifier="0.7914686873694574">
+            <_auditTrail>
+                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.029"/>
+            </_auditTrail>
+            <_outputData Data_ref="0.6944343902451814"/>
+            <_inputCompleteMaterials Material_ref="644158905"/>
+        </GenericProtocolApplication>
+        <GenericProtocolApplication Protocol_ref="0.24022591329282283" Endurant_ref="0.550744036927487"
+                                    name="Some other Step (2)" identifier="0.6552875814390333">
+            <_auditTrail>
+                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.032"/>
+            </_auditTrail>
+        </GenericProtocolApplication>
+        <GenericProtocolApplication Protocol_ref="0.47357680262477275" Endurant_ref="0.16587193055617"
+                                    name="net.sourceforge.symba.topProtocol My Example Investigation"
+                                    identifier="0.480198665121227">
+            <_auditTrail>
+                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.012"/>
+            </_auditTrail>
+            <ActionApplication ProtocolApplication_ref="0.4274059399675647" Action_ref="0.45469117455578334"
+                               Endurant_ref="0.5724579673755676" name="Step 1" identifier="0.5679318503021538">
+                <_auditTrail>
+                    <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.017"/>
+                </_auditTrail>
+            </ActionApplication>
+            <ActionApplication ProtocolApplication_ref="0.6552875814390333" Action_ref="0.10034490787676531"
+                               Endurant_ref="0.7867481307435953" name="Some other Step (2)"
+                               identifier="0.5714049645501494">
+                <_auditTrail>
+                    <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.033"/>
+                </_auditTrail>
+            </ActionApplication>
+        </GenericProtocolApplication>
+    </ProtocolCollection>
+    <OntologyCollection>
+        <OntologyIndividual termAccession="" term="cm" Endurant_ref="0.783978175685248" name="cm"
+                            identifier="0.54127829301116"/>
+    </OntologyCollection>
+    <Provider Software_ref="0.2711517954869771" Endurant_ref="0.03215892718557445" identifier="0.8756526573447527">
+        <_auditTrail>
+            <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.003"/>
+        </_auditTrail>
+        <ContactRole Contact_ref="23456"/>
+    </Provider>
+</FuGE>

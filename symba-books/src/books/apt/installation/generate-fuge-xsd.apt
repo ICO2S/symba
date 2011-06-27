@@ -30,7 +30,7 @@ Installation and Generation of the FuGE XSD
     [[top-level list item]] Make sure that the <<<JAVA_HOME>>> environment variable is pointing to the directory
     where you installed the JDK.
 
-    [[top-level list item]] <<Maven2.>> Download and install Maven 2.0.7 or later from http://maven.apache.org/download.html
+    [[top-level list item]] <<Maven2.>> Download and install Maven 2.2.1 or later from http://maven.apache.org/download.html
 
     [[top-level list item]] <<Maven2 Setup.>> Create a directory in your home directory called <<<.m2>>> with a single
     file inside called <<<settings.xml>>>. This is what one possible <<<settings.xml>>>looks like, where the local
@@ -71,7 +71,7 @@ Installation and Generation of the FuGE XSD
 
 +--
         $ mvn --version
-        Maven version: 2.0.7
+        Maven version: 2.2.1
         Java version: 1.5.0_08
         OS name: "linux" version: "2.6.17-12-386" arch: "i386"
 +--

@@ -3,20 +3,34 @@
  ---
  Allyson Lister
  ---
- July 2008
+ June 2011
 
-Installing Sun Java 5 or Java 6
+Installing Sun Java 6 JDK
 
-  SyMBA has been tested on both Sun Java 5 and Java 6, so feel free to use whichever version suits you.
+  In the past, SyMBA was tested on both Sun Java 5 and Java 6. Currently, we recommend that you use Java 6.
 
 * Install Sun J2SE Development Kit 6.0 (JDK 6.0)
 
-  Otherwise, if you are using Ubuntu 7.04 or higher (or similar), you can install Sun Java 6 simply with an
-  apt-get command. The following commands show the installation of the binaries, and of the JDK (the latter is
-  required for Tomcat):
+  Otherwise, if you are using earlier versions of Ubuntu, you can install Sun Java 6 simply with an
+  apt-get command:
 
 +---+
-  sudo apt-get install sun-java6-bin
+  sudo apt-get install sun-java6-jdk
++---+
+
+  If you are running a more recent version of Ubuntu such as Natty, you will find the above command fails unless
+  you have the partner repositories enabled in your /etc/apt/sources.list. You open this file (you must have root
+  access to do so), and un-comment the following line by removing the '#':
+
++---+
+  deb http://archive.canonical.com/ubuntu natty partner
++---+
+
+  After you have saved the above change, then you may run the apt-get install command mentioned above after you have
+  propagated the update to the system:
+
++---+
+  sudo apt-get update
   sudo apt-get install sun-java6-jdk
 +---+
 
@@ -26,33 +40,8 @@ Installing Sun Java 5 or Java 6
   sudo update-java-alternatives
 +---+
 
-  <<Full details of the installation of Sun Java on Ubuntu 7.04 or higher is available at
-  {{https://help.ubuntu.com/community/Java}}>>.
-
   Alternatively, you can download the latest Java from
   {{{http://java.sun.com/javase/downloads/index.jsp}Sun directly}}.
-
-* Install Sun J2SE Development Kit 5.0 (JDK 5.0)
-
-  If you are using Ubuntu 7.04 or higher, you can install Sun Java 5 simply with an apt-get command. The following
-  commands show the installation of the binaries, and of the JDK (the latter is required for Tomcat):
-
-+---+
-  sudo apt-get install sun-java5-bin
-  sudo apt-get install sun-java5-jdk
-+---+
-
-  and then optionally set the default version in your system with
-
-+---+
-  sudo update-java-alternatives
-+---+
-
-  <<Full details of the installation of Sun Java on Ubuntu 7.04 or higher is available at
-  {{https://help.ubuntu.com/community/Java}}>>. These instructions are for
-  java 6, so just replace any instance of the number "6" in the instructions with the number "5".
-
-  Alternatively, you can download Java 1.5.x from {{{http://java.sun.com/j2se/1.5.0/download.jsp}Sun directly}}.
 
 * Check Your Installation
 

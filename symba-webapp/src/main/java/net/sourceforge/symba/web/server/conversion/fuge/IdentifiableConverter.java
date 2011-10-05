@@ -12,10 +12,7 @@ import java.util.Date;
  */
 public class IdentifiableConverter {
 
-    public static Identifiable toFuge( Identifiable identifiable,
-                                       String name,
-                                       String identifier,
-                                       String endurant ) {
+    public static Identifiable toFuge( Identifiable identifiable, String name, String identifier, String endurant ) {
         identifiable.setName( name );
         identifiable.setIdentifier( identifier );
         identifiable.setEndurantRef( endurant );
@@ -23,8 +20,7 @@ public class IdentifiableConverter {
         return identifiable;
     }
 
-    public static void addAuditTrail( Identifiable identifiable,
-                                       Person person ) {
+    public static void addAuditTrail( Identifiable identifiable, Person person ) {
         AuditTrail trail = new AuditTrail();
         Audit item = new Audit();
         item.setContactRef( person.getIdentifier() );
@@ -35,9 +31,7 @@ public class IdentifiableConverter {
         identifiable.setAuditTrail( trail );
     }
 
-    // todo replace with proper creation method, e.g. the connection to the LSID server
-
-    public static String createRandom() {
+    public static String createId() {
         return ( ( Double ) Math.random() ).toString();
     }
 

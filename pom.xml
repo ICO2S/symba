@@ -35,7 +35,7 @@
         <application.version>11.06</application.version>
         <dataSource.name>jdbc/${application.id}</dataSource.name>
         <dataSource>java:comp/env/${dataSource.name}</dataSource>
-        <cxf.version>2.2.6</cxf.version>
+        <cxf.version>2.4.2</cxf.version>
         <hibernate.version>3.4.0.GA</hibernate.version>
         <postgresql.driver.version>9.0-801.jdbc4</postgresql.driver.version>
         <junit.version>4.8.2</junit.version>

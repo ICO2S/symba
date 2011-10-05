@@ -1,14 +1,6 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
-import net.sourceforge.fuge.util.generated.AtomicValue;
-import net.sourceforge.fuge.util.generated.BooleanValue;
-import net.sourceforge.fuge.util.generated.ComplexValue;
-import net.sourceforge.fuge.util.generated.GenericParameter;
-import net.sourceforge.fuge.util.generated.ObjectFactory;
-import net.sourceforge.fuge.util.generated.OntologyCollection;
-import net.sourceforge.fuge.util.generated.OntologyIndividual;
-import net.sourceforge.fuge.util.generated.Unit;
-import net.sourceforge.fuge.util.generated.Value;
+import net.sourceforge.fuge.util.generated.*;
 import net.sourceforge.symba.web.client.gui.InputValidator;
 import net.sourceforge.symba.web.shared.ExperimentParameter;
 
@@ -37,7 +29,7 @@ public class GenericParameterConverter {
         // todo extra validation of measurement type?
         GenericParameter parameter = new GenericParameter();
         String name = uiParameter.getSubject() + " " + InputValidator.SUBJECT_PREDICATE_DIVIDER + " " +
-                uiParameter.getPredicate();
+                      uiParameter.getPredicate();
         parameter = ( GenericParameter ) IdentifiableConverter.toFuge( parameter, name, identifier, endurant );
 
         if ( uiParameter.getMeasurementType() == InputValidator.MeasurementType.ATOMIC ) {
@@ -59,9 +51,10 @@ public class GenericParameterConverter {
         } else if ( uiParameter.getMeasurementType() == InputValidator.MeasurementType.COMPLEX ) {
             ComplexValue value = new ComplexValue();
             Value ontologyValue = new Value();
-            String ontoRef = OntologyIndividualConverter
-                    .toFuge( IdentifiableConverter.createRandom(), IdentifiableConverter.createRandom(),
-                            uiParameter.getObjectValue(), allOntology );
+            String ontoRef = OntologyIndividualConverter.toFuge( IdentifiableConverter.createId(),
+                                                                 IdentifiableConverter.createId(),
+                                                                 uiParameter.getObjectValue(),
+                                                                 allOntology );
             ontologyValue.setOntologyTermRef( ontoRef );
             value.setValue( ontologyValue );
             if ( uiParameter.getUnit().trim().length() > 0 ) {
@@ -73,11 +66,11 @@ public class GenericParameterConverter {
         return parameter;
     }
 
-    private static Unit createUnit( OntologyCollection allOntology,
-                                    String unitValue ) {
-        String termId = OntologyIndividualConverter
-                .toFuge( IdentifiableConverter.createRandom(), IdentifiableConverter.createRandom(),
-                        unitValue, allOntology );
+    private static Unit createUnit( OntologyCollection allOntology, String unitValue ) {
+        String termId = OntologyIndividualConverter.toFuge( IdentifiableConverter.createId(),
+                                                            IdentifiableConverter.createId(),
+                                                            unitValue,
+                                                            allOntology );
         Unit unit = new Unit();
         unit.setOntologyTermRef( termId );
         return unit;
@@ -114,8 +107,10 @@ public class GenericParameterConverter {
             for ( JAXBElement element : allOntology.getOntologyTerm() ) {
                 if ( element.getValue() instanceof OntologyIndividual ) {
                     OntologyIndividual oi = ( OntologyIndividual ) element.getValue();
-                    if ( ( ( ComplexValue ) parameter.getMeasurementValue() ).getValue().getOntologyTermRef()
-                            .equals( oi.getIdentifier() ) ) {
+                    if ( ( ( ComplexValue ) parameter.getMeasurementValue() ).getValue()
+                                                                             .getOntologyTermRef()
+                                                                             .equals( oi.getIdentifier() ) )
+                    {
                         uiParameter.setObjectValue( oi.getName() );
                     }
                 }
@@ -123,10 +118,12 @@ public class GenericParameterConverter {
         }
 
         uiParameter.setSubject( parameter.getName().substring( 0,
-                parameter.getName().indexOf( InputValidator.SUBJECT_PREDICATE_DIVIDER ) ).trim() );
+                                                               parameter.getName()
+                                                                        .indexOf( InputValidator.SUBJECT_PREDICATE_DIVIDER ) )
+                                         .trim() );
         uiParameter.setPredicate( parameter.getName().substring(
                 parameter.getName().indexOf( InputValidator.SUBJECT_PREDICATE_DIVIDER ) +
-                        InputValidator.SUBJECT_PREDICATE_DIVIDER.length() ).trim() );
+                InputValidator.SUBJECT_PREDICATE_DIVIDER.length() ).trim() );
 
         return uiParameter;
     }

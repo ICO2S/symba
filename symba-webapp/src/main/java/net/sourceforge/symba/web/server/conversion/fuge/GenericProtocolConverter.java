@@ -21,9 +21,7 @@ public class GenericProtocolConverter {
      * @param name       the name for the GenericProtocol
      * @return the new GenericProtocol
      */
-    public static GenericProtocol toFuge( String identifier,
-                                          String endurant,
-                                          String name ) {
+    public static GenericProtocol toFuge( String identifier, String endurant, String name ) {
         GenericProtocol protocol = new GenericProtocol();
         protocol = ( GenericProtocol ) IdentifiableConverter.toFuge( protocol, name, identifier, endurant );
         return protocol;
@@ -47,8 +45,10 @@ public class GenericProtocolConverter {
         GenericProtocol protocol = toFuge( identifier, endurant, name );
         // add any parameters
         for ( ExperimentParameter uiParameter : uiParameters ) {
-            protocol.getGenericParameter().add( GenericParameterConverter.toFuge( IdentifiableConverter.createRandom(),
-                    IdentifiableConverter.createRandom(), uiParameter, allOntology ) );
+            protocol.getGenericParameter().add( GenericParameterConverter.toFuge( IdentifiableConverter.createId(),
+                                                                                  IdentifiableConverter.createId(),
+                                                                                  uiParameter,
+                                                                                  allOntology ) );
         }
         return protocol;
     }

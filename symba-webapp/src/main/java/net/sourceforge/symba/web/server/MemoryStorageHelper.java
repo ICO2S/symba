@@ -15,10 +15,21 @@ import java.util.HashSet;
  */
 public class MemoryStorageHelper extends StorageHelper {
 
-    private static final Contact  ALICE   = new Contact( "23456", "Alice", "Smith", "alice.jones@example.com" );
-    private static final Contact  BOB     = new Contact( "013265", "Bob", "Reynolds", "bob.reynolds@example.com" );
-    private static final Contact  ZACH    = new Contact( "9561046", "Zach", "Peters", "zach.peters@example.com" );
-    private static final Material CULTURE = new Material( "ABC23456", "Cell Culture 17", "An example cell culture." );
+    private static final Contact  ALICE   = new Contact( IdentifiableConverter.createId( "Person" ),
+                                                         "Alice",
+                                                         "Smith",
+                                                         "alice.jones@example.com" );
+    private static final Contact  BOB     = new Contact( IdentifiableConverter.createId( "Person" ),
+                                                         "Bob",
+                                                         "Reynolds",
+                                                         "bob.reynolds@example.com" );
+    private static final Contact  ZACH    = new Contact( IdentifiableConverter.createId( "Person" ),
+                                                         "Zach",
+                                                         "Peters",
+                                                         "zach.peters@example.com" );
+    private static final Material CULTURE = new Material( IdentifiableConverter.createId( "GenericMaterial" ),
+                                                          "Cell Culture 17",
+                                                          "An example cell culture." );
 
     @Override
     public void setup( @NotNull ApplicationContext context ) {
@@ -38,7 +49,7 @@ public class MemoryStorageHelper extends StorageHelper {
             getInvestigations().clear();
             Investigation investigation = new Investigation( false,
                                                              false,
-                                                             "12345",
+                                                             IdentifiableConverter.createId( "Investigation" ),
                                                              "My Example Investigation",
                                                              "Some hypothesis",
                                                              "Conclusion 1. Conclusion 2.",
@@ -48,7 +59,7 @@ public class MemoryStorageHelper extends StorageHelper {
 
             Investigation basicMicroarrayTemplate = new Investigation( true,
                                                                        false,
-                                                                       "1234567",
+                                                                       IdentifiableConverter.createId( "Investigation" ),
                                                                        "Example Multi-Strain Microarray Investigation",
                                                                        "Examination of the effect of certain conditions on yeast strains over time.",
                                                                        "",

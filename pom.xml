@@ -220,8 +220,8 @@
                  of this, we use the symba namespace to mark them out. -->
 
                 <!-- The location of the webserver hosting the lsid assigner service. The default
-                 is to use the one available at the SyMBA sandbox at bsu.ncl.ac.uk:8081 -->
-                <net.sourceforge.symba.lsid.wsServer>bsu.ncl.ac.uk:8081</net.sourceforge.symba.lsid.wsServer>
+                 is to use the one available at the SyMBA sandbox at symba.ncl.ac.uk:8081 -->
+                <net.sourceforge.symba.lsid.wsServer>symba.ncl.ac.uk:8081</net.sourceforge.symba.lsid.wsServer>
                 <!-- The help email address for your group -->
                 <net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>
 
@@ -364,7 +364,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <net.sourceforge.symba.lsid.wsServer>bsu.ncl.ac.uk:8081</net.sourceforge.symba.lsid.wsServer>
+                <net.sourceforge.symba.lsid.wsServer>symba.ncl.ac.uk:8081</net.sourceforge.symba.lsid.wsServer>
                 <net.sourceforge.symba.webapp.helpEmail>helpdesk@cisban.ac.uk</net.sourceforge.symba.webapp.helpEmail>
                 <net.sourceforge.symba.webapp.softwareName>SyMBA</net.sourceforge.symba.webapp.softwareName>
                 <net.sourceforge.symba.webapp.softwareVersion>${application.version}

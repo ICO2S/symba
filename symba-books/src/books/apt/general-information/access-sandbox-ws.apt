@@ -39,7 +39,7 @@ Accessing the SyMBA Sandbox Web Services
 
   * <<assignLSID().>> The LsidAssigner webservice contains a single method, assignLSID(), which returns an
     auto-generated LSID based on a namespace you specify. There is a sandbox installation of this webservice
-    running on {{http://bsu.ncl.ac.uk:8081/symba-lsid-ws-assigner/services/LsidAssigner?wsdl}}. There are two examples
+    running on {{http://symba.ncl.ac.uk:8081/symba-lsid-ws-assigner/services/LsidAssigner?wsdl}}. There are two examples
     of how to use this webservice.
 
       * <<Via a Java client class.>> You can examine and use the

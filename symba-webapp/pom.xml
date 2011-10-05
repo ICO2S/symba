@@ -34,6 +34,11 @@
             <artifactId>symba-db</artifactId>
             <version>${application.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${application.package}</groupId>
+            <artifactId>symba-lsid-ws-assigner</artifactId>
+            <version>${application.version}</version>
+        </dependency>
         <!-- GWT upload used under the Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0 -->
         <dependency>
             <groupId>com.googlecode.gwtupload</groupId>

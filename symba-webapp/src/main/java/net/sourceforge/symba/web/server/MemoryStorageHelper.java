@@ -1,7 +1,8 @@
 package net.sourceforge.symba.web.server;
 
-import net.sourceforge.symba.web.shared.*;
 import net.sourceforge.symba.web.server.conversion.fuge.FugeCreator;
+import net.sourceforge.symba.web.server.conversion.fuge.IdentifiableConverter;
+import net.sourceforge.symba.web.shared.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 
@@ -14,9 +15,9 @@ import java.util.HashSet;
  */
 public class MemoryStorageHelper extends StorageHelper {
 
-    private static final Contact ALICE = new Contact( "23456", "Alice", "Smith", "alice.jones@example.com" );
-    private static final Contact BOB = new Contact( "013265", "Bob", "Reynolds", "bob.reynolds@example.com" );
-    private static final Contact ZACH = new Contact( "9561046", "Zach", "Peters", "zach.peters@example.com" );
+    private static final Contact  ALICE   = new Contact( "23456", "Alice", "Smith", "alice.jones@example.com" );
+    private static final Contact  BOB     = new Contact( "013265", "Bob", "Reynolds", "bob.reynolds@example.com" );
+    private static final Contact  ZACH    = new Contact( "9561046", "Zach", "Peters", "zach.peters@example.com" );
     private static final Material CULTURE = new Material( "ABC23456", "Cell Culture 17", "An example cell culture." );
 
     @Override
@@ -25,8 +26,8 @@ public class MemoryStorageHelper extends StorageHelper {
     }
 
     /**
-     * If addExampleIfEmpty is true, resets the in-memory investigations to just one example to start out with in
-     * SyMBA, clearing any currently-existing investigations.
+     * If addExampleIfEmpty is true, resets the in-memory investigations to just one example to start out with in SyMBA,
+     * clearing any currently-existing investigations.
      *
      * @param addExampleIfEmpty If this value is true then example entries will be added.
      * @return the list of investigations to send to the client
@@ -35,15 +36,24 @@ public class MemoryStorageHelper extends StorageHelper {
     public HashMap<String, Investigation> fetchAll( boolean addExampleIfEmpty ) {
         if ( addExampleIfEmpty ) {
             getInvestigations().clear();
-            Investigation investigation = new Investigation( false, false, "12345", "My Example Investigation",
-                    "Some hypothesis", "Conclusion 1. Conclusion 2.", ALICE,
-                    new ArrayList<ExperimentStepHolder>() );
+            Investigation investigation = new Investigation( false,
+                                                             false,
+                                                             "12345",
+                                                             "My Example Investigation",
+                                                             "Some hypothesis",
+                                                             "Conclusion 1. Conclusion 2.",
+                                                             ALICE,
+                                                             new ArrayList<ExperimentStepHolder>() );
             add( investigation );
 
-            Investigation basicMicroarrayTemplate = new Investigation( true, false, "1234567",
-                    "Example Multi-Strain Microarray Investigation",
-                    "Examination of the effect of certain conditions on yeast strains over time.", "", ALICE,
-                    makeTemplateMicroarraySteps() );
+            Investigation basicMicroarrayTemplate = new Investigation( true,
+                                                                       false,
+                                                                       "1234567",
+                                                                       "Example Multi-Strain Microarray Investigation",
+                                                                       "Examination of the effect of certain conditions on yeast strains over time.",
+                                                                       "",
+                                                                       ALICE,
+                                                                       makeTemplateMicroarraySteps() );
 
             add( basicMicroarrayTemplate );
         }
@@ -51,8 +61,8 @@ public class MemoryStorageHelper extends StorageHelper {
     }
 
     /**
-     * Resets the in-memory Contacts to initially populate the SyMBA UI. This method also clears
-     * any currently-existing Contacts.
+     * Resets the in-memory Contacts to initially populate the SyMBA UI. This method also clears any currently-existing
+     * Contacts.
      *
      * @return the list of Contacts
      */
@@ -117,10 +127,9 @@ public class MemoryStorageHelper extends StorageHelper {
     }
 
     @NotNull
-    public InvestigationDetail copy( @NotNull String id,
-                                     @NotNull String contactId ) {
+    public InvestigationDetail copy( @NotNull String id, @NotNull String contactId ) {
         Investigation copy = new Investigation( getInvestigations().get( id ) );
-        copy.setId( ( int ) ( Math.random() * 1000 ) + copy.getId() ); //todo need a better way to make a new id
+        copy.setId( IdentifiableConverter.createId( "Investigation" ) );
         copy.setInvestigationTitle( copy.getInvestigationTitle() + " " + ( int ) ( Math.random() * 1000 ) );
         copy.setProvider( getUsers().get( contactId ) );
         // the original may be a template - unset the copy as a template
@@ -149,7 +158,7 @@ public class MemoryStorageHelper extends StorageHelper {
         for ( ExperimentParameter parameter : holder.getCurrent().getParameters() ) {
             getParameterSubjects().add( parameter.getSubject() );
         }
-        if ( !holder.getCurrent().isLeaf() ) {
+        if ( ! holder.getCurrent().isLeaf() ) {
             for ( ExperimentStepHolder innerHolder : holder.getCurrent().getChildren() ) {
                 addSubjects( innerHolder );
             }

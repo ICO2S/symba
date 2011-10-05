@@ -51,8 +51,9 @@ public class GenericParameterConverter {
         } else if ( uiParameter.getMeasurementType() == InputValidator.MeasurementType.COMPLEX ) {
             ComplexValue value = new ComplexValue();
             Value ontologyValue = new Value();
-            String ontoRef = OntologyIndividualConverter.toFuge( IdentifiableConverter.createId(),
-                                                                 IdentifiableConverter.createId(),
+            String ontoRef = OntologyIndividualConverter.toFuge( IdentifiableConverter.createId( "GenericParameter" ),
+                                                                 IdentifiableConverter.createId(
+                                                                         "GenericParameterEndurant" ),
                                                                  uiParameter.getObjectValue(),
                                                                  allOntology );
             ontologyValue.setOntologyTermRef( ontoRef );
@@ -67,8 +68,8 @@ public class GenericParameterConverter {
     }
 
     private static Unit createUnit( OntologyCollection allOntology, String unitValue ) {
-        String termId = OntologyIndividualConverter.toFuge( IdentifiableConverter.createId(),
-                                                            IdentifiableConverter.createId(),
+        String termId = OntologyIndividualConverter.toFuge( IdentifiableConverter.createId( "Unit" ),
+                                                            IdentifiableConverter.createId( "UnitEndurant" ),
                                                             unitValue,
                                                             allOntology );
         Unit unit = new Unit();

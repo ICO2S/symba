@@ -45,8 +45,10 @@ public class GenericProtocolConverter {
         GenericProtocol protocol = toFuge( identifier, endurant, name );
         // add any parameters
         for ( ExperimentParameter uiParameter : uiParameters ) {
-            protocol.getGenericParameter().add( GenericParameterConverter.toFuge( IdentifiableConverter.createId(),
-                                                                                  IdentifiableConverter.createId(),
+            protocol.getGenericParameter().add( GenericParameterConverter.toFuge( IdentifiableConverter.createId(
+                    "GenericProtocol" ),
+                                                                                  IdentifiableConverter.createId(
+                                                                                          "GenericProtocolEndurant" ),
                                                                                   uiParameter,
                                                                                   allOntology ) );
         }

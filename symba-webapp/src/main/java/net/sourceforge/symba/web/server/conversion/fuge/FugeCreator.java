@@ -1,44 +1,25 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
-import net.sourceforge.fuge.util.generated.ActionApplication;
-import net.sourceforge.fuge.util.generated.AuditCollection;
-import net.sourceforge.fuge.util.generated.Conclusion;
-import net.sourceforge.fuge.util.generated.ContactRole;
-import net.sourceforge.fuge.util.generated.DataCollection;
-import net.sourceforge.fuge.util.generated.Description;
-import net.sourceforge.fuge.util.generated.Descriptions;
-import net.sourceforge.fuge.util.generated.ExternalData;
-import net.sourceforge.fuge.util.generated.FuGE;
-import net.sourceforge.fuge.util.generated.GenericAction;
-import net.sourceforge.fuge.util.generated.GenericMaterial;
-import net.sourceforge.fuge.util.generated.GenericProtocol;
-import net.sourceforge.fuge.util.generated.GenericProtocolApplication;
-import net.sourceforge.fuge.util.generated.GenericSoftware;
-import net.sourceforge.fuge.util.generated.Hypothesis;
-import net.sourceforge.fuge.util.generated.InvestigationCollection;
-import net.sourceforge.fuge.util.generated.Material;
-import net.sourceforge.fuge.util.generated.MaterialCollection;
-import net.sourceforge.fuge.util.generated.ObjectFactory;
-import net.sourceforge.fuge.util.generated.OntologyCollection;
-import net.sourceforge.fuge.util.generated.Person;
-import net.sourceforge.fuge.util.generated.ProtocolCollection;
-import net.sourceforge.fuge.util.generated.Provider;
+import net.sourceforge.fuge.util.generated.*;
 import net.sourceforge.symba.web.client.gui.InputValidator;
+import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.ExperimentStep;
 import net.sourceforge.symba.web.shared.ExperimentStepHolder;
-import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import org.jetbrains.annotations.NotNull;
 
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * This is a simple class which creates a brand-new FuGE object for the given client-side Investigation object. It
- * holds no connections to databases and performs no checks of pre-existing objects in any data storage locations.
+ * This is a simple class which creates a brand-new FuGE object for the given client-side Investigation object. It holds
+ * no connections to databases and performs no checks of pre-existing objects in any data storage locations.
  */
 public class FugeCreator {
 
@@ -60,11 +41,9 @@ public class FugeCreator {
             m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
             // todo do we want a validation step here that would notify, but not stop things, if there were a problem?
 
-            @SuppressWarnings( "unchecked" )
-            JAXBElement element = new JAXBElement(
-                    new QName( "http://fuge.sourceforge.net/fuge/1.0", "FuGE" ),
-                    FuGE.class,
-                    fuge );
+            @SuppressWarnings( "unchecked" ) JAXBElement element = new JAXBElement( new QName(
+                    "http://fuge.sourceforge.net/fuge/1.0",
+                    "FuGE" ), FuGE.class, fuge );
             m.marshal( element, sw );
         } catch ( JAXBException e ) {
             e.printStackTrace();
@@ -120,8 +99,8 @@ public class FugeCreator {
 
         // create the main features of the Fuge object itself
         fuge.setName( name );
-        fuge.setEndurantRef( createRandom() );
-        fuge.setIdentifier( createRandom() );
+        fuge.setEndurantRef( IdentifiableConverter.createId( "FuGEEndurant" ) );
+        fuge.setIdentifier( IdentifiableConverter.createId( "FuGE" ) );
 
         // create a software instance for SyMBA
         GenericSoftware symbaSoftware = addSymbaSoftware( allProtocol );
@@ -146,18 +125,17 @@ public class FugeCreator {
     }
 
     /**
-     * We don't add the user as a person in the audit trail for the Material, because this material was
-     * actually created elsewhere and is sitting in the "database" already - we're just linking to it within
-     * this particular Fuge object. This is similar to the way the Contact works. Of course, this class is a
-     * simplistic class that doesn't connect to any database, but this behaviour is mimicked here by
-     * retaining the provided Material id (and the "add" in the method name rather than the "create"). In the
-     * implementation for a database, this behaviour would need to be more complex.
+     * We don't add the user as a person in the audit trail for the Material, because this material was actually created
+     * elsewhere and is sitting in the "database" already - we're just linking to it within this particular Fuge object.
+     * This is similar to the way the Contact works. Of course, this class is a simplistic class that doesn't connect to
+     * any database, but this behaviour is mimicked here by retaining the provided Material id (and the "add" in the
+     * method name rather than the "create"). In the implementation for a database, this behaviour would need to be more
+     * complex.
      *
      * @param allMaterial    the collection to add the materials to
      * @param childrenHolder the user interface object storing all of the materials to add to the fuge object
      */
-    private void addMaterials( MaterialCollection allMaterial,
-                               ArrayList<ExperimentStepHolder> childrenHolder ) {
+    private void addMaterials( MaterialCollection allMaterial, ArrayList<ExperimentStepHolder> childrenHolder ) {
         // the materials need to be added to the collection at this stage, but do not need to be linked
         // to an experimental protocol application yet.
 
@@ -172,7 +150,7 @@ public class FugeCreator {
                         break;
                     }
                 }
-                if ( !alreadyPresent ) {
+                if ( ! alreadyPresent ) {
                     GenericMaterial fugeMaterial = createGenericMaterial( inputMaterial );
                     allMaterial.getMaterial().add( factory.createGenericMaterial( fugeMaterial ) );
                 }
@@ -187,22 +165,22 @@ public class FugeCreator {
                         break;
                     }
                 }
-                if ( !alreadyPresent ) {
+                if ( ! alreadyPresent ) {
                     GenericMaterial fugeMaterial = createGenericMaterial( outputMaterial );
                     allMaterial.getMaterial().add( factory.createGenericMaterial( fugeMaterial ) );
                 }
             }
 
             // run this method for all children of this protocol
-            if ( !child.isLeaf() ) {
+            if ( ! child.isLeaf() ) {
                 addMaterials( allMaterial, child.getChildren() );
             }
         }
     }
 
     /**
-     * the external data files need to be added to the collection at this stage, but do not need to be linked
-     * to an experimental protocol application yet.
+     * the external data files need to be added to the collection at this stage, but do not need to be linked to an
+     * experimental protocol application yet.
      *
      * @param allData        the collection to add the materials to
      * @param person         the person who assigned the data items to this Fuge object
@@ -233,7 +211,7 @@ public class FugeCreator {
             }
 
             // run this method for all children of this protocol
-            if ( !child.isLeaf() ) {
+            if ( ! child.isLeaf() ) {
                 dataIdentifiers = addData( allData, person, child.getChildren() );
             }
         }
@@ -252,13 +230,25 @@ public class FugeCreator {
         // relating to the other protocols. In order for the top-level protocol to be recognised easily as
         // the top one, add InputValidator.TOP_PROTOCOL to the name of the protocol. This will be
         // parsed out when viewing and downloading.
-        GenericProtocol topProtocol = GenericProtocolConverter.toFuge( createRandom(), createRandom(),
-                InputValidator.TOP_PROTOCOL + " " + inv.getInvestigationTitle() );
-        GenericProtocolApplication topGpa = GenericProtocolApplicationConverter
-                .toFuge( createRandom(), createRandom(), topProtocol, person );
+        GenericProtocol topProtocol
+                = GenericProtocolConverter.toFuge( IdentifiableConverter.createId( "GenericProtocol" ),
+                                                   IdentifiableConverter.createId( "GenericProtocolEndurant" ),
+                                                   InputValidator.TOP_PROTOCOL + " " + inv.getInvestigationTitle() );
+        GenericProtocolApplication topGpa = GenericProtocolApplicationConverter.toFuge( IdentifiableConverter.createId(
+                "GenericProtocolApplication" ),
+                                                                                        IdentifiableConverter.createId(
+                                                                                                "GenericProtocolApplicationEndurant" ),
+                                                                                        topProtocol,
+                                                                                        person );
 
-        addChildProtocols( allProtocol, allOntology, topProtocol, topGpa, 0, dataIdentifiers, person,
-                inv.getExperiments() );
+        addChildProtocols( allProtocol,
+                           allOntology,
+                           topProtocol,
+                           topGpa,
+                           0,
+                           dataIdentifiers,
+                           person,
+                           inv.getExperiments() );
 
         // link the top protocol and its gpa to the collection
         allProtocol.getProtocol().add( factory.createGenericProtocol( topProtocol ) );
@@ -281,36 +271,57 @@ public class FugeCreator {
         for ( ExperimentStepHolder childHolder : childrenHolder ) {
             ExperimentStep child = childHolder.getCurrent();
             // create basic protocol
-            GenericProtocol childProtocol = GenericProtocolConverter
-                    .toFuge( createRandom(), createRandom(), child.getTitle(), child.getParameters(), allOntology );
+            GenericProtocol childProtocol = GenericProtocolConverter.toFuge( IdentifiableConverter.createId(
+                    "GenericProtocol" ),
+                                                                             IdentifiableConverter.createId(
+                                                                                     "GenericProtocolEndurant" ),
+                                                                             child.getTitle(),
+                                                                             child.getParameters(),
+                                                                             allOntology );
             // link the protocol to the collection
             allProtocol.getProtocol().add( factory.createGenericProtocol( childProtocol ) );
 
             // add the protocol as an action on the current parent protocol
-            GenericAction action = GenericActionConverter
-                    .toFuge( createRandom(), createRandom(), childProtocol.getName(), childProtocol.getIdentifier(),
-                            ordinal );
+            GenericAction action = GenericActionConverter.toFuge( IdentifiableConverter.createId( "GenericAction" ),
+                                                                  IdentifiableConverter.createId(
+                                                                          "GenericActionEndurant" ),
+                                                                  childProtocol.getName(),
+                                                                  childProtocol.getIdentifier(),
+                                                                  ordinal );
 
             parentProtocol.getAction().add( factory.createGenericAction( action ) );
 
             // If there is a child step, it should definitely have a child GPA.
-            GenericProtocolApplication childGpa = GenericProtocolApplicationConverter
-                    .toFuge( createRandom(), createRandom(), child, dataIdentifiers, childProtocol, person );
+            GenericProtocolApplication childGpa
+                    = GenericProtocolApplicationConverter.toFuge( IdentifiableConverter.createId(
+                    "GenericProtocolApplication" ),
+                                                                  IdentifiableConverter.createId(
+                                                                          "GenericProtocolApplicationEndurant" ),
+                                                                  child,
+                                                                  dataIdentifiers,
+                                                                  childProtocol,
+                                                                  person );
             parentProtocolApplication.getActionApplication().add( createActionApplication( action, childGpa, person ) );
             allProtocol.getProtocolApplication().add( factory.createGenericProtocolApplication( childGpa ) );
 
             // run this method for all children of this protocol
-            if ( !child.isLeaf() ) {
-                addChildProtocols( allProtocol, allOntology, childProtocol, childGpa, 0, dataIdentifiers, person,
-                        child.getChildren() );
+            if ( ! child.isLeaf() ) {
+                addChildProtocols( allProtocol,
+                                   allOntology,
+                                   childProtocol,
+                                   childGpa,
+                                   0,
+                                   dataIdentifiers,
+                                   person,
+                                   child.getChildren() );
             }
 
         }
     }
 
     /**
-     * This method does not recurse through the children of the step variable. It just creates an appropriate
-     * AA for this step.
+     * This method does not recurse through the children of the step variable. It just creates an appropriate AA for
+     * this step.
      *
      * @param associatedAction the action we're referencing
      * @param childGpa         the child protocol application associated with this AA
@@ -321,8 +332,8 @@ public class FugeCreator {
                                                        GenericProtocolApplication childGpa,
                                                        Person person ) {
         ActionApplication aa = new ActionApplication();
-        aa.setIdentifier( createRandom() );
-        aa.setEndurantRef( createRandom() );
+        aa.setIdentifier( IdentifiableConverter.createId( "ActionApplication" ) );
+        aa.setEndurantRef( IdentifiableConverter.createId( "ActionApplicationEndurant" ) );
         aa.setName( associatedAction.getName() );
         aa.setActionRef( associatedAction.getIdentifier() );
         aa.setProtocolApplicationRef( childGpa.getIdentifier() );
@@ -335,7 +346,7 @@ public class FugeCreator {
 
         GenericMaterial material = new GenericMaterial();
         material.setIdentifier( inputMaterial.getId() );
-        material.setEndurantRef( createRandom() );
+        material.setEndurantRef( IdentifiableConverter.createId( "GenericMaterialEndurant" ) );
         material.setName( inputMaterial.getName() );
 
         if ( inputMaterial.getDescription().length() > 0 ) {
@@ -349,12 +360,11 @@ public class FugeCreator {
         return material;
     }
 
-    private ExternalData createExternalData( String dataURI,
-                                             Person person ) {
+    private ExternalData createExternalData( String dataURI, Person person ) {
 
         ExternalData d = new ExternalData();
-        d.setIdentifier( createRandom() );
-        d.setEndurantRef( createRandom() );
+        d.setIdentifier( IdentifiableConverter.createId( "ExternalData" ) );
+        d.setEndurantRef( IdentifiableConverter.createId( "ExternalDataEndurant" ) );
         d.setName( dataURI ); // just put the URI as the name as well as the location, to have something in the name
         d.setLocation( dataURI );
         IdentifiableConverter.addAuditTrail( d, person );
@@ -363,18 +373,17 @@ public class FugeCreator {
     }
 
     /**
-     * This is a "create" rather than an "add" because it will create a provider based on the person argument,
-     * but will not add it to any fuge collection or fuge object.
+     * This is a "create" rather than an "add" because it will create a provider based on the person argument, but will
+     * not add it to any fuge collection or fuge object.
      *
      * @param person        the person to assign as a provider
      * @param symbaSoftware the software to associate with the provider
      * @return the new provider for the given person and software
      */
-    private Provider createProvider( Person person,
-                                     GenericSoftware symbaSoftware ) {
+    private Provider createProvider( Person person, GenericSoftware symbaSoftware ) {
         Provider provider = new Provider();
-        provider.setIdentifier( createRandom() );
-        provider.setEndurantRef( createRandom() );
+        provider.setIdentifier( IdentifiableConverter.createId( "Provider" ) );
+        provider.setEndurantRef( IdentifiableConverter.createId( "ProviderEndurant" ) );
 
         // link the fuge contact to the provider of the new Fuge metadata
         ContactRole roleType = new ContactRole();
@@ -394,10 +403,10 @@ public class FugeCreator {
     private GenericSoftware addSymbaSoftware( ProtocolCollection allProtocol ) {
         // create a fuge Software object describing SyMBA
         GenericSoftware symbaSoftware = new GenericSoftware();
-        symbaSoftware.setIdentifier( createRandom() );
-        symbaSoftware.setEndurantRef( createRandom() );
+        symbaSoftware.setIdentifier( IdentifiableConverter.createId( "GenericSoftware" ) );
+        symbaSoftware.setEndurantRef( IdentifiableConverter.createId( "GenericSoftwareEndurant" ) );
         // todo import the version of SyMBA directly into the code via Spring
-        symbaSoftware.setVersion( "8.09" );
+        symbaSoftware.setVersion( "Version 2" );
         symbaSoftware.setName( "SyMBA (http://symba.sourceforge.net) by CISBAN (http://www.cisban.ac.uk)" );
         // add the software object to the protocol collection
         allProtocol.getSoftware().add( factory.createGenericSoftware( symbaSoftware ) );
@@ -409,9 +418,10 @@ public class FugeCreator {
                                                                                 net.sourceforge.symba.web.shared.Investigation uiInvestigation ) {
         // Convert the main features of the investigation. We are currently only allowing a single Investigation
         // object in the FuGE object per SyMBA investigation.
-        net.sourceforge.fuge.util.generated.Investigation fugeInv = new net.sourceforge.fuge.util.generated.Investigation();
+        net.sourceforge.fuge.util.generated.Investigation fugeInv
+                = new net.sourceforge.fuge.util.generated.Investigation();
         fugeInv.setName( uiInvestigation.getInvestigationTitle() );
-        fugeInv.setEndurantRef( createRandom() );
+        fugeInv.setEndurantRef( IdentifiableConverter.createId( "InvestigationEndurant" ) );
         fugeInv.setIdentifier( uiInvestigation.getId() );
 
         Hypothesis h = new Hypothesis();
@@ -436,20 +446,19 @@ public class FugeCreator {
     /**
      * This person is actually created elsewhere and is sitting in the "database" already - we're just linking to it
      * within this particular Fuge object. This is similar to the way the Material works. Of course, this class is a
-     * simplistic class that doesn't connect to any database, but this behaviour is mimicked here by
-     * retaining the provided Person id (and the "add" in the method name rather than the "create"). In the
-     * implementation for a database, this behaviour would need to be more complex.
+     * simplistic class that doesn't connect to any database, but this behaviour is mimicked here by retaining the
+     * provided Person id (and the "add" in the method name rather than the "create"). In the implementation for a
+     * database, this behaviour would need to be more complex.
      *
      * @param allAudit the collection to add the person to
      * @param uiPerson the user interface object storing the contact to add to the fuge object
      * @return the Fuge Person object
      */
-    private Person addPerson( AuditCollection allAudit,
-                              Contact uiPerson ) {
+    private Person addPerson( AuditCollection allAudit, Contact uiPerson ) {
         // create a fuge person
         Person person = new Person();
         person.setIdentifier( uiPerson.getId() );
-        person.setEndurantRef( createRandom() );
+        person.setEndurantRef( IdentifiableConverter.createId( "PersonEndurant" ) );
         person.setFirstName( uiPerson.getFirstName() );
         person.setLastName( uiPerson.getLastName() );
         person.setEmail( uiPerson.getEmailAddress() );

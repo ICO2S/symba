@@ -104,8 +104,6 @@
             <id>fgibson_sf</id>
             <name>Frank Gibson</name>
             <email>fgibson_sf@users.sourceforge.net</email>
-            <organization>CARMEN, Newcastle University</organization>
-            <organizationUrl>http://www.carmen.org.uk</organizationUrl>
             <roles>
                 <role>Past Developer</role>
             </roles>
@@ -174,16 +172,16 @@
         mvn deploy:deploy-file -DgroupId=owlapi -DartifactId=api -Dversion=2.2.0 -Dpackaging=jar -DrepositoryId=carmen \
         -Durl=scp://carmen.ncl.ac.uk/var/www/maven/repo/ -Dfile=/path/to/file
         -->
-        <repository>
-            <id>carmen</id>
-            <name>Carmen release repository</name>
-            <url>scp://carmen.ncl.ac.uk/var/www/maven/repo/</url>
-        </repository>
-        <snapshotRepository>
-            <id>carmen-snapshot</id>
-            <name>Carmen snapshot / alpha release repository</name>
-            <url>scp://carmen.ncl.ac.uk/var/www/maven/repo-snapshot/</url>
-        </snapshotRepository>
+        <!--<repository>-->
+        <!--<id>carmen</id>-->
+        <!--<name>Carmen release repository</name>-->
+        <!--<url>scp://carmen.ncl.ac.uk/var/www/maven/repo/</url>-->
+        <!--</repository>-->
+        <!--<snapshotRepository>-->
+        <!--<id>carmen-snapshot</id>-->
+        <!--<name>Carmen snapshot / alpha release repository</name>-->
+        <!--<url>scp://carmen.ncl.ac.uk/var/www/maven/repo-snapshot/</url>-->
+        <!--</snapshotRepository>-->
     </distributionManagement>
 
     <organization>

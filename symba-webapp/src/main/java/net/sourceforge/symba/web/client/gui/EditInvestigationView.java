@@ -8,7 +8,10 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import net.sourceforge.symba.web.client.gui.panel.*;
+import net.sourceforge.symba.web.client.gui.panel.EditableStepView;
+import net.sourceforge.symba.web.client.gui.panel.InvestigationDetailsPanel;
+import net.sourceforge.symba.web.client.gui.panel.ReadableStepView;
+import net.sourceforge.symba.web.client.gui.panel.SymbaController;
 import net.sourceforge.symba.web.shared.ExperimentStepHolder;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
@@ -26,8 +29,8 @@ public class EditInvestigationView extends VerticalPanel {
     }
 
     public static final String INVESTIGATION_EXPLANATION = "An <strong>investigation</strong> consists of one or " +
-            "more experiments. Investigations are containers for all experiments that relate to a " +
-            "<strong>single</strong> hypothesis and conclusion.";
+                                                           "more experiments. Investigations are containers for all experiments that relate to a " +
+                                                           "<strong>single</strong> hypothesis and conclusion.";
 
     private static enum SaveType {
         SAVE_ONLY, SET_AS_TEMPLATE
@@ -37,20 +40,20 @@ public class EditInvestigationView extends VerticalPanel {
 
     private final CheckBox completedCheckBox;
     private final CheckBox setAsTemplateCheckBox;
-    private final Button saveButton;
-    private final Button saveAndFinishButton;
-    private final Button cancelButton;
-    private final Button addSubStepButton;
-    private final String addChildImageUrl;
-    private final String copyStepImageUrl;
+    private final Button   saveButton;
+    private final Button   saveAndFinishButton;
+    private final Button   cancelButton;
+    private final Button   addSubStepButton;
+    private final String   addChildImageUrl;
+    private final String   copyStepImageUrl;
 
-    private FlexTable stepsTable;
+    private       FlexTable                 stepsTable;
     private final InvestigationDetailsPanel investigationDetailsPanel;
 
     private final Investigation investigation;
 
     private enum ActionType {
-        ADD( 0 ), COPY( 1 ), SELECT( 2 ), UNDEFINED( -2 );
+        ADD( 0 ), COPY( 1 ), SELECT( 2 ), UNDEFINED( - 2 );
 
         private final int value;
 
@@ -83,8 +86,6 @@ public class EditInvestigationView extends VerticalPanel {
             investigation = selectedInvestigation;
         } else {
             investigation = new Investigation();
-            investigation.createId();
-            investigation.getProvider().createId();
             viewType = ViewType.NEW_INVESTIGATION;
         }
 
@@ -152,8 +153,9 @@ public class EditInvestigationView extends VerticalPanel {
         // display itself.
         //
         if ( GWT.isScript() ) {
-            String baseApp = GWT.getModuleBaseURL()
-                    .substring( 0, GWT.getModuleBaseURL().lastIndexOf( GWT.getModuleName() ) );
+            String baseApp = GWT.getModuleBaseURL().substring( 0,
+                                                               GWT.getModuleBaseURL()
+                                                                  .lastIndexOf( GWT.getModuleName() ) );
             addChildImageUrl = baseApp + "/images/addChild30x30.png";
             copyStepImageUrl = baseApp + "/images/copyStep30x15.png";
         } else {
@@ -202,7 +204,7 @@ public class EditInvestigationView extends VerticalPanel {
         add( explanation );
         add( investigationDetailsPanel );
         add( protocolWrapper );
-        if ( !investigation.isTemplate() ) {
+        if ( ! investigation.isTemplate() ) {
             add( completedCheckBox );
         }
         add( setAsTemplateCheckBox );
@@ -275,7 +277,7 @@ public class EditInvestigationView extends VerticalPanel {
                     // no need to keep any file statuses at this point
                     controller.setEastWidgetUserStatus(
                             "<p>Modifications to <strong>" + investigation.getInvestigationTitle() +
-                                    "</strong> cancelled.</p>" );
+                            "</strong> cancelled.</p>" );
                 } else {
                     // no need to keep any file statuses at this point
                     controller.setEastWidgetUserStatus( "<p>Creation of new investigation cancelled.</p>" );
@@ -286,32 +288,27 @@ public class EditInvestigationView extends VerticalPanel {
 
     }
 
-    private void setAsTemplate( final String id,
-                                final String title,
-                                final boolean finish ) {
-        controller.getRpcService().setInvestigationAsTemplate( id,
-                new AsyncCallback<ArrayList<InvestigationDetail>>() {
-                    public void onFailure( Throwable throwable ) {
-                        Window.alert( "Saving of Investigation " + title +
-                                " as a template failed: " + Arrays.toString( throwable.getStackTrace() ) );
-                        controller
-                                .setEastWidgetUserStatus( "<p><strong>Saving of Investigation " + title +
-                                        "as a template failed.</p>" );
-                    }
+    private void setAsTemplate( final String id, final String title, final boolean finish ) {
+        controller.getRpcService().setInvestigationAsTemplate( id, new AsyncCallback<ArrayList<InvestigationDetail>>() {
+            public void onFailure( Throwable throwable ) {
+                Window.alert( "Saving of Investigation " + title + " as a template failed: " + Arrays.toString(
+                        throwable.getStackTrace() ) );
+                controller.setEastWidgetUserStatus(
+                        "<p><strong>Saving of Investigation " + title + "as a template failed.</p>" );
+            }
 
-                    public void onSuccess( ArrayList<InvestigationDetail> results ) {
-                        controller.setStoredInvestigationDetails( results );
-                        // no need to keep any directions at this point
-                        if ( finish ) {
-                            controller.setCenterWidgetAsListExperiments();
-                        } else {
-                            controller.setCenterWidgetAsEditExperiment( id );
-                        }
-                        controller
-                                .setEastWidgetUserStatus(
-                                        "<p><strong>" + title + "</strong> has been set as a template.</p>" );
-                    }
-                } );
+            public void onSuccess( ArrayList<InvestigationDetail> results ) {
+                controller.setStoredInvestigationDetails( results );
+                // no need to keep any directions at this point
+                if ( finish ) {
+                    controller.setCenterWidgetAsListExperiments();
+                } else {
+                    controller.setCenterWidgetAsEditExperiment( id );
+                }
+                controller.setEastWidgetUserStatus(
+                        "<p><strong>" + title + "</strong> has been set as a template.</p>" );
+            }
+        } );
     }
 
     //
@@ -330,9 +327,7 @@ public class EditInvestigationView extends VerticalPanel {
      * @param depth    the hierarchical depth of the current step
      * @return the new value of the row count
      */
-    public int displayStepData( List<ExperimentStepHolder> data,
-                                Integer rowValue,
-                                Integer depth ) {
+    public int displayStepData( List<ExperimentStepHolder> data, Integer rowValue, Integer depth ) {
 
         for ( ExperimentStepHolder holder : data ) {
 //            System.err
@@ -348,26 +343,34 @@ public class EditInvestigationView extends VerticalPanel {
             }
 
             ReadableStepView readableStepView;
-            if ( !investigation.isReadOnly() ) {
-                ClickHandler myHandler = new MakeEditableHandler( rowValue, depth + ActionType.SELECT.getValue() + 1,
-                        investigation.isCompleted() );
+            if ( ! investigation.isReadOnly() ) {
+                ClickHandler myHandler = new MakeEditableHandler( rowValue,
+                                                                  depth + ActionType.SELECT.getValue() + 1,
+                                                                  investigation.isCompleted() );
                 readableStepView = new ReadableStepView( holder.getCurrent().getTitle(),
-                        holder.getCurrent().getFileInfo(), holder.getCurrent().getParameters(),
-                        holder.getCurrent().getInputMaterials(), holder.getCurrent().getOutputMaterials(), myHandler );
+                                                         holder.getCurrent().getFileInfo(),
+                                                         holder.getCurrent().getParameters(),
+                                                         holder.getCurrent().getInputMaterials(),
+                                                         holder.getCurrent().getOutputMaterials(),
+                                                         myHandler );
             } else {
                 readableStepView = new ReadableStepView( holder.getCurrent().getTitle(),
-                        holder.getCurrent().getFileInfo(), holder.getCurrent().getParameters(),
-                        holder.getCurrent().getInputMaterials(), holder.getCurrent().getOutputMaterials() );
+                                                         holder.getCurrent().getFileInfo(),
+                                                         holder.getCurrent().getParameters(),
+                                                         holder.getCurrent().getInputMaterials(),
+                                                         holder.getCurrent().getOutputMaterials() );
             }
             stepsTable.setWidget( rowValue, depth + ActionType.SELECT.getValue() + 1, readableStepView );
 
             // make just this cell a different style if it has been modified
             if ( holder.isModified() ) {
-                stepsTable.getCellFormatter()
-                        .addStyleName( rowValue, depth + ActionType.SELECT.getValue() + 1, "cell-modified" );
+                stepsTable.getCellFormatter().addStyleName( rowValue,
+                                                            depth + ActionType.SELECT.getValue() + 1,
+                                                            "cell-modified" );
             } else {
-                stepsTable.getCellFormatter()
-                        .removeStyleName( rowValue, depth + ActionType.SELECT.getValue() + 1, "cell-modified" );
+                stepsTable.getCellFormatter().removeStyleName( rowValue,
+                                                               depth + ActionType.SELECT.getValue() + 1,
+                                                               "cell-modified" );
             }
 
             if ( depth == 0 || ( depth % 2 == 0 ) ) {
@@ -377,7 +380,7 @@ public class EditInvestigationView extends VerticalPanel {
             }
 
             rowValue++;
-            if ( !holder.getCurrent().isLeaf() ) {
+            if ( ! holder.getCurrent().isLeaf() ) {
                 rowValue = displayStepData( holder.getCurrent().getChildren(), rowValue, depth + 1 );
             }
         }
@@ -466,9 +469,9 @@ public class EditInvestigationView extends VerticalPanel {
             // todo allow read-only investigations to be removed or modified by their owners only.
             boolean response = Window.confirm(
                     "Setting this Investigation as a template will first save its current state, REMOVE " +
-                            "any links to files, and mark it as read-only. A template can then be copied " +
-                            "by you and other users, thus sharing common aspects of " +
-                            "Investigations. Are you sure you wish to continue?" );
+                    "any links to files, and mark it as read-only. A template can then be copied " +
+                    "by you and other users, thus sharing common aspects of " +
+                    "Investigations. Are you sure you wish to continue?" );
             if ( response ) {
                 if ( doSave( SaveType.SET_AS_TEMPLATE, finish ) ) {
                     controller.setEastWidgetUserStatus( "<p>Saving as template successful.</p>" );
@@ -490,13 +493,13 @@ public class EditInvestigationView extends VerticalPanel {
 
     /**
      * @param saveType whether it is saved as a normal experiment or as a template
-     * @param finish   if true, then return the user to the list experiments page (Save and Finish). If false,
-     *                 the user wishes to continue editing.
+     * @param finish   if true, then return the user to the list experiments page (Save and Finish). If false, the user
+     *                 wishes to continue editing.
      * @return false if there was an error prior to attempting to load in the database (and therefore no attempt to save
-     *         in the database was made), true if the RPC call was run, irrespective of the final outcome of that RPC call.
+     *         in the database was made), true if the RPC call was run, irrespective of the final outcome of that RPC
+     *         call.
      */
-    private boolean doSave( final SaveType saveType,
-                            final boolean finish ) {
+    private boolean doSave( final SaveType saveType, final boolean finish ) {
 
         String emptyValues = investigationDetailsPanel.makeErrorMessages();
         if ( emptyValues.length() > 1 ) {
@@ -504,7 +507,7 @@ public class EditInvestigationView extends VerticalPanel {
             return false;
         }
 
-        if ( !investigationDetailsPanel.updateModifiedDetails( investigation ) ) {
+        if ( ! investigationDetailsPanel.updateModifiedDetails( investigation ) ) {
             // there was an error saving the investigation details. Return before we attempt to update in the database
             return false;
         }
@@ -515,36 +518,44 @@ public class EditInvestigationView extends VerticalPanel {
         // the "template" flag was saved as we went along, so nothing extra to do here.
 
         // todo ensure Identifier has changed before this step, if necessary
-        controller.getRpcService()
-                .updateInvestigation( investigation, new AsyncCallback<ArrayList<InvestigationDetail>>() {
-                    public void onSuccess( ArrayList<InvestigationDetail> updatedDetails ) {
-                        final String title = investigation.getInvestigationTitle();
-                        final String id = investigation.getId();
-                        controller.setStoredInvestigationDetails( updatedDetails );
-                        if ( finish ) {
-                            controller.setCenterWidgetAsListExperiments();
-                            controller.setEastWidgetUserStatus( "<p><strong>" + title + "</strong> saved.</p>" );
-                        } else {
-                            controller.setCenterWidgetAsEditExperiment( id );
-                            controller.setEastWidgetUserStatus( "<p>Saving <strong>" + title + "</strong>...</p>" );
-                        }
+        controller.getRpcService().updateInvestigation( investigation,
+                                                        new AsyncCallback<ArrayList<InvestigationDetail>>() {
+                                                            public void onSuccess( ArrayList<InvestigationDetail> updatedDetails ) {
+                                                                final String title
+                                                                        = investigation.getInvestigationTitle();
+                                                                final String id = investigation.getId();
+                                                                controller.setStoredInvestigationDetails( updatedDetails );
+                                                                if ( finish ) {
+                                                                    controller.setCenterWidgetAsListExperiments();
+                                                                    controller.setEastWidgetUserStatus(
+                                                                            "<p><strong>" + title +
+                                                                            "</strong> saved.</p>" );
+                                                                } else {
+                                                                    controller.setCenterWidgetAsEditExperiment( id );
+                                                                    controller.setEastWidgetUserStatus(
+                                                                            "<p>Saving <strong>" + title +
+                                                                            "</strong>...</p>" );
+                                                                }
 
-                        if ( saveType == SaveType.SET_AS_TEMPLATE ) {
-                            setAsTemplate( id, title, finish );
-                        }
-                    }
+                                                                if ( saveType == SaveType.SET_AS_TEMPLATE ) {
+                                                                    setAsTemplate( id, title, finish );
+                                                                }
+                                                            }
 
-                    public void onFailure( Throwable caught ) {
-                        String savedTitle = "unknown title";
-                        if ( investigation.getInvestigationTitle() != null &&
-                                investigation.getInvestigationTitle().length() > 0 ) {
-                            savedTitle = investigation.getInvestigationTitle();
-                        }
-                        Window.alert(
-                                "Error updating investigation " + savedTitle + " stack trace: " + caught.toString() );
-                        caught.printStackTrace( System.err );
-                    }
-                } );
+                                                            public void onFailure( Throwable caught ) {
+                                                                String savedTitle = "unknown title";
+                                                                if ( investigation.getInvestigationTitle() != null &&
+                                                                     investigation.getInvestigationTitle().length() >
+                                                                     0 )
+                                                                {
+                                                                    savedTitle = investigation.getInvestigationTitle();
+                                                                }
+                                                                Window.alert(
+                                                                        "Error updating investigation " + savedTitle +
+                                                                        " stack trace: " + caught.toString() );
+                                                                caught.printStackTrace( System.err );
+                                                            }
+                                                        } );
         return true;
     }
 
@@ -552,9 +563,7 @@ public class EditInvestigationView extends VerticalPanel {
         private int row, column;
         private boolean completed;
 
-        public MakeEditableHandler( int row,
-                                    int column,
-                                    boolean completed ) {
+        public MakeEditableHandler( int row, int column, boolean completed ) {
             this.row = row;
             this.column = column;
             this.completed = completed;
@@ -562,8 +571,14 @@ public class EditInvestigationView extends VerticalPanel {
 
         public void onClick( ClickEvent clickEvent ) {
             EditableStepView view = new EditableStepView( controller,
-                    ( ReadableStepView ) stepsTable.getWidget( row, column ), stepsTable,
-                    investigation, row, column, this, completed );
+                                                          ( ReadableStepView ) stepsTable.getWidget( row,
+                                                                                                     column ),
+                                                          stepsTable,
+                                                          investigation,
+                                                          row,
+                                                          column,
+                                                          this,
+                                                          completed );
             view.getStepTitle().setFocus( true );
 
         }

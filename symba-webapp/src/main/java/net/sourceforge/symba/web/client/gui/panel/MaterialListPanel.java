@@ -1,7 +1,10 @@
 package net.sourceforge.symba.web.client.gui.panel;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -21,7 +24,7 @@ public class MaterialListPanel extends HorizontalPanel {
         ASSIGN_TO_EXPERIMENT, CREATE_ONLY
     }
 
-    private static final String SAVE_TEXT = "Save New Material";
+    private static final String SAVE_TEXT        = "Save New Material";
     private static final String SAVE_TEXT_UPDATE = "Update Material";
     private final SelectorPanel selector;
 
@@ -56,10 +59,10 @@ public class MaterialListPanel extends HorizontalPanel {
 
     private class CreatorPanel extends VerticalPanel {
 
-        private final TextBox nameBox;
+        private final TextBox  nameBox;
         private final TextArea descriptionBox;
-        private final Button saveButton;
-        private String originalId;
+        private final Button   saveButton;
+        private       String   originalId;
 
         public CreatorPanel( final SymbaController controller ) {
 
@@ -130,9 +133,7 @@ public class MaterialListPanel extends HorizontalPanel {
 
             // otherwise, it's OK to save the material
             final Material material = new Material();
-            if ( originalId.length() == 0 ) {
-                material.createId();
-            } else {
+            if ( ! originalId.isEmpty() ) {
                 material.setId( originalId );
             }
             material.setName( nameBox.getText().trim() );
@@ -142,48 +143,57 @@ public class MaterialListPanel extends HorizontalPanel {
 
             if ( isValidMaterial( material, originalId, controller ) ) {
                 if ( originalId.length() == 0 ) {
-                    controller.getRpcService()
-                            .addOrUpdateMaterial( material, new AsyncCallback<HashMap<String, Material>>() {
-                                public void onFailure( Throwable caught ) {
-                                    Window.alert(
-                                            "Failed to store material: " + material.getName() + "\n" +
-                                                    caught.getMessage() );
-                                }
+                    controller.getRpcService().addOrUpdateMaterial( material,
+                                                                    new AsyncCallback<HashMap<String, Material>>() {
+                                                                        public void onFailure( Throwable caught ) {
+                                                                            Window.alert( "Failed to store material: " +
+                                                                                          material.getName() + "\n" +
+                                                                                          caught.getMessage() );
+                                                                        }
 
-                                public void onSuccess( HashMap<String, Material> result ) {
-                                    controller.setStoredMaterials( result );
-                                    selector.getSelectedMaterials().add( material );
-                                    selector.showListBox();
-                                    selector.countLabel.setText( selector.getMaterialsDisplayCount( true ) );
-                                    // clear any values
-                                    nameBox.setText( "" );
-                                    setVisible( false );
-                                }
-                            } );
+                                                                        public void onSuccess( HashMap<String, Material> result ) {
+                                                                            controller.setStoredMaterials( result );
+                                                                            selector.getSelectedMaterials().add(
+                                                                                    material );
+                                                                            selector.showListBox();
+                                                                            selector.countLabel
+                                                                                    .setText( selector.getMaterialsDisplayCount(
+                                                                                            true ) );
+                                                                            // clear any values
+                                                                            nameBox.setText( "" );
+                                                                            setVisible( false );
+                                                                        }
+                                                                    } );
                 } else {
-                    controller.getRpcService()
-                            .addOrUpdateMaterial( material, new AsyncCallback<HashMap<String, Material>>() {
-                                public void onFailure( Throwable caught ) {
-                                    Window.alert( "Failed to update material: " + material.getName() + "\n" +
-                                            caught.getMessage() );
-                                }
+                    controller.getRpcService().addOrUpdateMaterial( material,
+                                                                    new AsyncCallback<HashMap<String, Material>>() {
+                                                                        public void onFailure( Throwable caught ) {
+                                                                            Window.alert(
+                                                                                    "Failed to update material: " +
+                                                                                    material.getName() + "\n" +
+                                                                                    caught.getMessage() );
+                                                                        }
 
-                                public void onSuccess( HashMap<String, Material> result ) {
-                                    controller.setStoredMaterials( result );
-                                    // remove the original material from the selected list, if present
-                                    for ( Material current : selector.getSelectedMaterials() ) {
-                                        if ( current.getId().equals( material.getId() ) ) {
-                                            selector.getSelectedMaterials().remove( current );
-                                            break;
-                                        }
-                                    }
-                                    selector.getSelectedMaterials().add( material );
-                                    selector.showListBox();
-                                    // clear any values
-                                    nameBox.setText( "" );
-                                    setVisible( false );
-                                }
-                            } );
+                                                                        public void onSuccess( HashMap<String, Material> result ) {
+                                                                            controller.setStoredMaterials( result );
+                                                                            // remove the original material from the selected list, if present
+                                                                            for ( Material current : selector.getSelectedMaterials() ) {
+                                                                                if ( current.getId()
+                                                                                            .equals( material.getId() ) )
+                                                                                {
+                                                                                    selector.getSelectedMaterials()
+                                                                                            .remove( current );
+                                                                                    break;
+                                                                                }
+                                                                            }
+                                                                            selector.getSelectedMaterials().add(
+                                                                                    material );
+                                                                            selector.showListBox();
+                                                                            // clear any values
+                                                                            nameBox.setText( "" );
+                                                                            setVisible( false );
+                                                                        }
+                                                                    } );
                 }
                 return material.getId();
             } else {
@@ -192,13 +202,12 @@ public class MaterialListPanel extends HorizontalPanel {
             }
         }
 
-        private boolean isValidMaterial( Material material,
-                                         String originalId,
-                                         SymbaController controller ) {
+        private boolean isValidMaterial( Material material, String originalId, SymbaController controller ) {
             // basic validation: check that the name isn't already in the list
             for ( Material storedMaterial : controller.getStoredMaterials().values() ) {
-                if ( storedMaterial.getName().equals( material.getName() ) &&
-                        !storedMaterial.getId().equals( originalId ) ) {
+                if ( storedMaterial.getName().equals( material.getName() ) && ! storedMaterial.getId().equals(
+                        originalId ) )
+                {
                     Window.alert( "You may not use the name of an existing material to create a new material" );
                     return false;
                 }
@@ -209,16 +218,16 @@ public class MaterialListPanel extends HorizontalPanel {
 
     private class SelectorPanel extends VerticalPanel {
 
-        private static final String ADD_ICON = "/images/plus-noword.png";
-        private static final String COPY_ICON = "/images/new_window.png";
+        private static final String ADD_ICON   = "/images/plus-2noword.png";
+        private static final String COPY_ICON  = "/images/new_window.png";
         private static final String CLEAR_ICON = "/images/clear.png";
 
         private final Label countLabel, expandedMaterialLabel;
-        private final ListBox expandedMaterialBox;
+        private final ListBox             expandedMaterialBox;
         private final ArrayList<Material> selectedMaterials;
-        private final String materialType;
-        private CreatorPanel creator;
-        private final SymbaController controller;
+        private final String              materialType;
+        private       CreatorPanel        creator;
+        private final SymbaController     controller;
 
         private SelectorPanel( final CreatorPanel creator,
                                final SymbaController controller,
@@ -330,8 +339,8 @@ public class MaterialListPanel extends HorizontalPanel {
                     // clear buttons
                     if ( getSelectedMaterialIds().size() == 1 ) {
                         creator.setVisible( true );
-                        creator.editMaterial(
-                                controller.getStoredMaterials().get( getSelectedMaterialIds().get( 0 ) ) );
+                        creator.editMaterial( controller.getStoredMaterials()
+                                                        .get( getSelectedMaterialIds().get( 0 ) ) );
                         copyMaterialHandler.enable();
                         copyImage.removeStyleName( "images-opaque" );
                         clearMaterialsHandler.enable();
@@ -439,34 +448,36 @@ public class MaterialListPanel extends HorizontalPanel {
             @Override
             protected boolean runClickMethod( ClickEvent event ) {
                 // if the set of clickable materials isn't visible yet, make it visible.
-                if ( !expandedMaterialBox.isVisible() ) {
+                if ( ! expandedMaterialBox.isVisible() ) {
                     showListBox();
                 } else {
                     // If a single material has been chosen, then allow it to be copied and put into the
                     // creator panel.
                     if ( getSelectedMaterialIds().size() == 1 ) {
-                        Material original = controller.getStoredMaterials()
-                                .get( getSelectedMaterialIds().get( 0 ) );
+                        Material original = controller.getStoredMaterials().get( getSelectedMaterialIds().get( 0 ) );
                         final Material copy = new Material( "",
-                                original.getName() + " " +
-                                        ( Integer.toString( Random.nextInt() ).substring( 1, 4 ) ),
-                                original.getDescription() );
-                        copy.createId();
-                        controller.getRpcService()
-                                .addOrUpdateMaterial( copy, new AsyncCallback<HashMap<String, Material>>() {
-                                    public void onFailure( Throwable caught ) {
-                                        Window.alert( "Failed to store material: " + copy.getName() + "\n" +
-                                                caught.getMessage() );
-                                    }
+                                                            original.getName() + " " +
+                                                            ( Integer.toString( Random.nextInt() ).substring( 1, 4 ) ),
+                                                            original.getDescription() );
+                        controller.getRpcService().addOrUpdateMaterial( copy,
+                                                                        new AsyncCallback<HashMap<String, Material>>() {
+                                                                            public void onFailure( Throwable caught ) {
+                                                                                Window.alert(
+                                                                                        "Failed to store material: " +
+                                                                                        copy.getName() + "\n" +
+                                                                                        caught.getMessage() );
+                                                                            }
 
-                                    public void onSuccess( HashMap<String, Material> result ) {
-                                        controller.setStoredMaterials( result );
-                                        selector.getSelectedMaterials().add( copy );
-                                        creator.editMaterial( copy );
-                                        selector.showListBox();
-                                        selector.countLabel.setText( getMaterialsDisplayCount( false ) );
-                                    }
-                                } );
+                                                                            public void onSuccess( HashMap<String, Material> result ) {
+                                                                                controller.setStoredMaterials( result );
+                                                                                selector.getSelectedMaterials().add(
+                                                                                        copy );
+                                                                                creator.editMaterial( copy );
+                                                                                selector.showListBox();
+                                                                                selector.countLabel.setText(
+                                                                                        getMaterialsDisplayCount( false ) );
+                                                                            }
+                                                                        } );
                     } else {
                         // if >1 material (or no materials) has been chosen, force the user to just select one
                         Window.alert( "Please choose exactly one material to copy." );

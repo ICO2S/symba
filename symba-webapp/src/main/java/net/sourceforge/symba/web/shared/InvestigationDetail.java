@@ -5,24 +5,21 @@ import com.google.gwt.user.client.ui.HTML;
 import java.io.Serializable;
 
 /**
- * The JAXB-created XML code for FuGE cannot be used within the client-side GWT code. Therefore,
- * Investigation and InvestigationDetail (a summary of what's in Investigation) are used instead on
- * the client side.
+ * The JAXB-created XML code for FuGE cannot be used within the client-side GWT code. Therefore, Investigation and
+ * InvestigationDetail (a summary of what's in Investigation) are used instead on the client side.
  * <p/>
- * A limited version of Investigation, with just a minimal amount of data for a "summary" view without
- * having to pass huge objects around
+ * A limited version of Investigation, with just a minimal amount of data for a "summary" view without having to pass
+ * huge objects around
  */
 public class InvestigationDetail implements Serializable {
     private boolean template, completed;
-    private String id;
-    private String investigationTitle;
+    private String  id;
+    private String  investigationTitle;
     private Contact provider;
 
     @SuppressWarnings( "unused" )
     public InvestigationDetail() {
-        Contact contact = new Contact();
-        contact.createId();
-        new InvestigationDetail( false, false, "0", investigationTitle, contact );
+        new InvestigationDetail( false, false, "0", investigationTitle, new Contact() );
     }
 
     public InvestigationDetail( boolean template,
@@ -41,9 +38,13 @@ public class InvestigationDetail implements Serializable {
         return template;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getInvestigationTitle() { return investigationTitle; }
+    public String getInvestigationTitle() {
+        return investigationTitle;
+    }
 
     public Contact getProvider() {
         return provider;

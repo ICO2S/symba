@@ -39,6 +39,7 @@
         <hibernate.version>3.4.0.GA</hibernate.version>
         <postgresql.driver.version>9.0-801.jdbc4</postgresql.driver.version>
         <junit.version>4.8.2</junit.version>
+        <spring.version>3.0.1.RELEASE</spring.version>
     </properties>
 
     <issueManagement>

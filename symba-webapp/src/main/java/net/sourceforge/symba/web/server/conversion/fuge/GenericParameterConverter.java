@@ -81,8 +81,8 @@ public class GenericParameterConverter {
     public static ExperimentParameter toSymba( final GenericParameter parameter,
                                                final OntologyCollection allOntology ) {
         ExperimentParameter uiParameter = new ExperimentParameter();
-        Unit unit = parameter.getMeasurement().getValue().getUnit();
-        if ( unit != null ) {
+        if ( parameter.getMeasurement() != null ) {
+            Unit unit = parameter.getMeasurement().getValue().getUnit();
             for ( JAXBElement element : allOntology.getOntologyTerm() ) {
                 if ( element.getValue() instanceof OntologyIndividual ) {
                     OntologyIndividual oi = ( OntologyIndividual ) element.getValue();

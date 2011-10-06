@@ -7,24 +7,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * The "component" interface of a whole-part design pattern, allowing changeable and arbitrarily-deep levels
- * of complexity.
+ * The "component" interface of a whole-part design pattern, allowing changeable and arbitrarily-deep levels of
+ * complexity.
  */
 public class ExperimentStep implements Serializable {
 
-    private String databaseId;
-    private String title;
+    private String                         databaseId;
+    private String                         title;
     private ArrayList<ExperimentParameter> parameters;
-    private ArrayList<Material> inputMaterials;
-    private ArrayList<Material> outputMaterials;
-    private HashMap<String, String> fileInfo;
+    private ArrayList<Material>            inputMaterials;
+    private ArrayList<Material>            outputMaterials;
+    private HashMap<String, String>        fileInfo;
 
     // todo parameters etc. go here
+
+    private static final String DEFAULT_ID = "0";
 
     private ArrayList<ExperimentStepHolder> children;
 
     public ExperimentStep() {
-        this.databaseId = "0"; // todo proper identification creation here or in createDatabaseId
+        this.databaseId = DEFAULT_ID;
         this.title = "Empty Experiment Step";
         this.fileInfo = new HashMap<String, String>();
         this.children = new ArrayList<ExperimentStepHolder>();
@@ -51,18 +53,19 @@ public class ExperimentStep implements Serializable {
     }
 
     /**
-     * copy constructor
-     * You get an UnsatisfiedLinkError if you try to run createDatabaseId() here, so if you wish to change the
-     * databaseId you will need to do it outside this constructor.
+     * copy constructor You get an UnsatisfiedLinkError if you try to run createDatabaseId() here, so if you wish to
+     * change the databaseId you will need to do it outside this constructor.
      *
      * @param step the step to copy.
      */
     public ExperimentStep( ExperimentStep step ) {
-        this( step.getDatabaseId(), step.getTitle(), new HashMap<String, String>( step.getFileInfo() ),
-                new ArrayList<ExperimentStepHolder>( step.getChildren() ),
-                new ArrayList<ExperimentParameter>( step.getParameters() ),
-                new ArrayList<Material>( step.getInputMaterials() ),
-                new ArrayList<Material>( step.getOutputMaterials() ) );
+        this( step.getDatabaseId(),
+              step.getTitle(),
+              new HashMap<String, String>( step.getFileInfo() ),
+              new ArrayList<ExperimentStepHolder>( step.getChildren() ),
+              new ArrayList<ExperimentParameter>( step.getParameters() ),
+              new ArrayList<Material>( step.getInputMaterials() ),
+              new ArrayList<Material>( step.getOutputMaterials() ) );
     }
 
     public String getDatabaseId() {
@@ -146,10 +149,10 @@ public class ExperimentStep implements Serializable {
     }
 
     /**
-     * Copies the information stored in this step except for the databaseId. Therefore this copy does include the
-     * ENTIRE child hierarchy. What this will NOT add is the files, as it is not expected that files should be copied
-     * (unless the user wishes this). Instead, it is the structure of the experimental step, and its parameters,
-     * which should be copied.
+     * Copies the information stored in this step except for the databaseId. Therefore this copy does include the ENTIRE
+     * child hierarchy. What this will NOT add is the files, as it is not expected that files should be copied (unless
+     * the user wishes this). Instead, it is the structure of the experimental step, and its parameters, which should be
+     * copied.
      *
      * @return the copy of the Experiment step
      */
@@ -169,6 +172,10 @@ public class ExperimentStep implements Serializable {
             step.getChildren().get( step.getChildren().size() - 1 ).setModified( true );
         }
         return step;
+    }
+
+    public boolean hasValidId() {
+        return ! databaseId.equals( DEFAULT_ID ) && ! databaseId.isEmpty();
     }
 
     /**

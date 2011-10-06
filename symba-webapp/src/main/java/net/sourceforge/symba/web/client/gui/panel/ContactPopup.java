@@ -16,8 +16,7 @@ public class ContactPopup extends PopupPanel {
 
     private final AddContactPanel addContactPanel;
 
-    public ContactPopup( final SymbaController controller,
-                         final ContactView callingPanel ) {
+    public ContactPopup( final SymbaController controller, final ContactView callingPanel ) {
         super( true ); // set auto-hide property
 
         addContactPanel = new AddContactPanel( controller, callingPanel );
@@ -25,8 +24,7 @@ public class ContactPopup extends PopupPanel {
 
         // set the position to the center of the window
         setPopupPositionAndShow( new PopupPanel.PositionCallback() {
-            public void setPosition( int offsetWidth,
-                                     int offsetHeight ) {
+            public void setPosition( int offsetWidth, int offsetHeight ) {
                 int left = ( Window.getClientWidth() - offsetWidth ) / 2;
                 int top = ( Window.getClientHeight() - offsetHeight ) / 2;
                 setPopupPosition( left, top );
@@ -36,8 +34,7 @@ public class ContactPopup extends PopupPanel {
     }
 
     /**
-     * Populate the form with the information from this user. This makes the action an update rather than a new
-     * contact
+     * Populate the form with the information from this user. This makes the action an update rather than a new contact
      *
      * @param toUpdate the contact to update
      */
@@ -46,14 +43,13 @@ public class ContactPopup extends PopupPanel {
     }
 
     private class AddContactPanel extends VerticalPanel {
-        private static final String SAVE_TEXT = "Save Contact";
+        private static final String SAVE_TEXT   = "Save Contact";
         private static final String UPDATE_TEXT = "Update Contact";
         private final TextBox firstBox, lastBox, emailBox;
         private final Button saveButton;
-        private String existingId;
+        private       String existingId;
 
-        public AddContactPanel( final SymbaController controller,
-                                final ContactView callingPanel ) {
+        public AddContactPanel( final SymbaController controller, final ContactView callingPanel ) {
 
             firstBox = new TextBox();
             lastBox = new TextBox();
@@ -135,11 +131,9 @@ public class ContactPopup extends PopupPanel {
 
             // otherwise, it's OK to save the contact
             final Contact contact = new Contact();
-            if ( existingId.length() == 0 ) {
-                // do not create a new id - that's up to the implementation as to how to deal with it. Keeping
-                // the existing id is a marker that an earlier version existed.
-                contact.createId();
-            } else {
+            // do not create a new id - that's up to the implementation as to how to deal with it. Keeping
+            // the existing id is a marker that an earlier version existed.
+            if ( existingId.length() > 0 ) {
                 contact.setId( existingId );
             }
             contact.setFirstName( first.getText().trim() );

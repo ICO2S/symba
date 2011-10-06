@@ -58,7 +58,13 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-instrument</artifactId>
-            <version>3.0.1.RELEASE</version>
+            <version>${spring.version}</version>
+        </dependency>
+        <!--The following is needed to ensure that connections to the database work over GWT -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <!--<dependency>-->
         <!--<groupId>commons-logging</groupId>-->

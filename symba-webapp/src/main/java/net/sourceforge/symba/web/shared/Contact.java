@@ -1,7 +1,5 @@
 package net.sourceforge.symba.web.shared;
 
-import com.google.gwt.user.client.Random;
-
 import java.io.Serializable;
 
 public class Contact implements Serializable {
@@ -10,8 +8,10 @@ public class Contact implements Serializable {
     private String lastName;
     private String emailAddress;
 
+    private static final String DEFAULT_ID = "0";
+
     public Contact() {
-        this.id = "0";
+        this.id = DEFAULT_ID;
         this.firstName = "";
         this.lastName = "";
         this.emailAddress = "";
@@ -20,36 +20,50 @@ public class Contact implements Serializable {
 //        new Contact( "0", "", "", "" );
     }
 
-    public Contact( String id,
-                    String firstName,
-                    String lastName,
-                    String emailAddress ) {
+    public Contact( String id, String firstName, String lastName, String emailAddress ) {
         this.id = id;
         this.firstName = firstName.trim();
         this.lastName = lastName.trim();
         this.emailAddress = emailAddress.trim();
     }
 
-    public String getId() { return id; }
-
-    public void setId( String id ) { this.id = id; }
-
-    public void createId() {
-        // todo better ID creation
-        setId( Integer.toString( Random.nextInt() ) );
+    public String getId() {
+        return id;
     }
 
-    public String getFirstName() { return firstName; }
+    public void setId( String id ) {
+        this.id = id;
+    }
 
-    public void setFirstName( String firstName ) { this.firstName = firstName; }
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public String getLastName() { return lastName; }
+    public void setFirstName( String firstName ) {
+        this.firstName = firstName;
+    }
 
-    public void setLastName( String lastName ) { this.lastName = lastName; }
+    public String getLastName() {
+        return lastName;
+    }
 
-    public String getEmailAddress() { return emailAddress; }
+    public void setLastName( String lastName ) {
+        this.lastName = lastName;
+    }
 
-    public void setEmailAddress( String emailAddress ) { this.emailAddress = emailAddress; }
+    public String getEmailAddress() {
+        return emailAddress;
+    }
 
-    public String getFullName() { return (firstName + " " + lastName).trim(); }
+    public void setEmailAddress( String emailAddress ) {
+        this.emailAddress = emailAddress;
+    }
+
+    public String getFullName() {
+        return ( firstName + " " + lastName ).trim();
+    }
+
+    public boolean hasValidId() {
+        return ! id.equals( DEFAULT_ID ) && ! id.isEmpty();
+    }
 }

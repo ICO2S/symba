@@ -1,7 +1,5 @@
 package net.sourceforge.symba.web.shared;
 
-import com.google.gwt.user.client.Random;
-
 import java.io.Serializable;
 
 public class Material implements Serializable {
@@ -11,15 +9,15 @@ public class Material implements Serializable {
     private String description;
     //todo add measurement, which can be used for input materials.
 
+    private static final String DEFAULT_ID = "0";
+
     public Material() {
-        id = "";
+        id = DEFAULT_ID;
         name = "";
         description = "";
     }
 
-    public Material( String id,
-                     String name,
-                     String description ) {
+    public Material( String id, String name, String description ) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -31,11 +29,6 @@ public class Material implements Serializable {
 
     public void setId( String id ) {
         this.id = id;
-    }
-
-    public void createId() {
-        // todo better ID creation
-        setId( Integer.toString( Random.nextInt() ) );
     }
 
     public String getName() {
@@ -52,5 +45,9 @@ public class Material implements Serializable {
 
     public void setDescription( String description ) {
         this.description = description;
+    }
+
+    public boolean hasValidId() {
+        return ! id.equals( DEFAULT_ID ) && ! id.isEmpty();
     }
 }

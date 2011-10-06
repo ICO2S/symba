@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * This class provides the business logic for accessing the SymbaDao and all implementations of that class.
- * This is where annotations such as @Transactional will occur. In order for @Transactional to be effective,
- * the method that calls the transactional method MUST be external to this class.
+ * This class provides the business logic for accessing the SymbaDao and all implementations of that class. This is
+ * where annotations such as @Transactional will occur. In order for @Transactional to be effective, the method that
+ * calls the transactional method MUST be external to this class.
  * <p/>
  * As objects which are lazy loading will only be populated within the transaction they were queried from, this is where
  * all setup, processing and modification of database objects for other classes in this module will occur.
@@ -39,5 +39,10 @@ public class FugeDatabaseController {
     @Transactional( readOnly = true )
     public List<Person> fetchAllPeople() {
         return symbaDao.fetchAllPeople();
+    }
+
+    @Transactional( readOnly = false )
+    public boolean savePerson( Person person ) {
+        return symbaDao.addNewPerson( person );
     }
 }

@@ -1,139 +1,174 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<FuGE Endurant_ref="0.9479324934223143" name="My Example Investigation" identifier="0.4078363070409322"
+<FuGE identifier="urn:lsid:cisban.cisbs.org:FuGE:843e7567-9e30-438f-a7a9-bf73ec9de597"
+      name="net.sourceforge.symba.template Example Multi-Strain Microarray Investigation"
+      Endurant_ref="urn:lsid:cisban.cisbs.org:FuGEEndurant:98a1dcae-57b9-4d89-bf90-98d24b3fa5d2"
       xmlns="http://fuge.sourceforge.net/fuge/1.0">
     <_auditTrail>
-        <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.034"/>
+        <Audit date="2011-10-06T11:24:54.884" action="CREATE"
+               Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
     </_auditTrail>
-    <MaterialCollection>
-        <GenericMaterial Endurant_ref="0.12463475745190222" name="Cell Culture 17" identifier="ABC23456">
-            <_descriptions>
-                <Description text="An example cell culture."/>
-            </_descriptions>
-        </GenericMaterial>
-        <GenericMaterial Endurant_ref="0.020073032861938844" name="Material 2" identifier="644158905">
-            <_descriptions>
-                <Description text="some material"/>
-            </_descriptions>
-        </GenericMaterial>
-    </MaterialCollection>
+    <MaterialCollection/>
     <InvestigationCollection>
-        <Investigation Endurant_ref="0.5688726933512299" name="My Example Investigation" identifier="12345">
+        <Investigation identifier="urn:lsid:cisban.cisbs.org:Investigation:de1a969c-c18d-417d-8a7a-c825cee7c555"
+                       name="Example Multi-Strain Microarray Investigation"
+                       Endurant_ref="urn:lsid:cisban.cisbs.org:InvestigationEndurant:2cebc129-2acd-427a-9554-ed936b4ceb62">
             <_auditTrail>
-                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:46.989"/>
+                <Audit date="2011-10-06T11:24:54.610" action="CREATE"
+                       Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
             </_auditTrail>
+            <_hypothesis>
+                <Description text="Examination of the effect of certain conditions on yeast strains over time."/>
+            </_hypothesis>
+            <_conclusion>
+                <Description text=""/>
+            </_conclusion>
         </Investigation>
     </InvestigationCollection>
-    <DataCollection>
-        <ExternalData location="Screenshot-1.png" Endurant_ref="0.1478866964849871" name="Screenshot-1.png"
-                      identifier="0.6944343902451814">
-            <_auditTrail>
-                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.006"/>
-            </_auditTrail>
-        </ExternalData>
-    </DataCollection>
+    <DataCollection/>
     <AuditCollection>
-        <Person firstName="Alice" lastName="Smith" email="alice.jones@example.com" Endurant_ref="0.7619883364512875"
-                identifier="23456"/>
+        <Person lastName="Smith" firstName="Alice" email="alice.jones@example.com"
+                identifier="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:PersonEndurant:91309d67-6563-46c4-b335-0877b184a85b"/>
     </AuditCollection>
     <ProtocolCollection>
-        <GenericProtocol Endurant_ref="0.5288761467113884" name="Step 1" identifier="0.3888076617530435">
-            <GenericAction Protocol_ref="0.8196393364377491" actionOrdinal="0" Endurant_ref="0.6293833992487761"
-                           name="Material Transformation" identifier="0.05170760660991802"/>
-            <GenericAction Protocol_ref="0.5103313346158306" actionOrdinal="0" Endurant_ref="0.760728841778953"
-                           name="Assay Step" identifier="0.522279409925901"/>
+        <GenericProtocol identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:e9ff42e4-319d-4e08-ac61-7fd9cb7c4482"
+                         name="Experiment Run for Strain X"
+                         Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolEndurant:d6affa58-f9d3-4a3d-99b8-7ff34b1e9431">
+            <GenericParameter
+                    identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:806ff573-3b0b-4217-8067-76e4dd6cfdd5"
+                    name="Strain net.sourceforge.symba.subjectPredicateDivider hasIdentifier"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolEndurant:2999f5ff-00d3-460f-9d39-133bf18ab537"/>
+            <GenericAction Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:88864218-1f1b-482a-a3ed-9dd3bae91e30"
+                           actionOrdinal="0"
+                           identifier="urn:lsid:cisban.cisbs.org:GenericAction:23e60f16-be4a-4f10-8da6-0226018b45a8"
+                           name="Microarray Time Series Point X"
+                           Endurant_ref="urn:lsid:cisban.cisbs.org:GenericActionEndurant:8a2fde5b-bcbe-4f1d-b9f5-eb02c3a9c180"/>
         </GenericProtocol>
-        <GenericProtocol Endurant_ref="0.6215320641154" name="Material Transformation" identifier="0.8196393364377491"/>
-        <GenericProtocol Endurant_ref="0.09768412968387774" name="Assay Step" identifier="0.5103313346158306">
-            <GenericParameter Endurant_ref="0.5004332114439954"
-                              name="ab net.sourceforge.symba.subjectPredicateDivider bc" identifier="0.120510426103704">
-                <AtomicValue value="10">
-                    <_unit OntologyTerm_ref="0.54127829301116"/>
-                </AtomicValue>
-            </GenericParameter>
+        <GenericProtocol identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:88864218-1f1b-482a-a3ed-9dd3bae91e30"
+                         name="Microarray Time Series Point X"
+                         Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolEndurant:897a2269-6ebe-4fea-aee2-14469cf47c29">
+            <GenericParameter
+                    identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:05e515b9-f40c-4289-87cf-3a23cbe570db"
+                    name="TimeAfterInoculation net.sourceforge.symba.subjectPredicateDivider is"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolEndurant:3c60229b-9a4c-464d-96c8-759f189bc292"/>
+            <GenericParameter
+                    identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:0eee3d64-425d-4f6f-87a6-80a2263f300b"
+                    name="InoculationTemperature net.sourceforge.symba.subjectPredicateDivider is"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolEndurant:6548abc5-d0cf-4ecb-bb9c-6c97d7ea09c1"/>
+            <GenericAction Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:f7d83397-3ab5-4f6b-8d7e-a59e84a24dd9"
+                           actionOrdinal="0"
+                           identifier="urn:lsid:cisban.cisbs.org:GenericAction:e4b35055-6e26-4d42-931c-0ec5c2dc2019"
+                           name="Microarray Assay Repeat X"
+                           Endurant_ref="urn:lsid:cisban.cisbs.org:GenericActionEndurant:5aafca85-dbf7-4d4d-ae5d-edae7775d00c"/>
         </GenericProtocol>
-        <GenericProtocol Endurant_ref="0.43118487525952354" name="Some other Step (2)"
-                         identifier="0.24022591329282283"/>
-        <GenericProtocol Endurant_ref="0.9054614515570885"
-                         name="net.sourceforge.symba.topProtocol My Example Investigation"
-                         identifier="0.47357680262477275">
-            <GenericAction Protocol_ref="0.3888076617530435" actionOrdinal="0" Endurant_ref="0.36805191140328075"
-                           name="Step 1" identifier="0.45469117455578334"/>
-            <GenericAction Protocol_ref="0.24022591329282283" actionOrdinal="0" Endurant_ref="0.44156191804997535"
-                           name="Some other Step (2)" identifier="0.10034490787676531"/>
+        <GenericProtocol identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:f7d83397-3ab5-4f6b-8d7e-a59e84a24dd9"
+                         name="Microarray Assay Repeat X"
+                         Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolEndurant:584b2eb6-1279-4a09-a3e9-4674796733df">
+            <GenericParameter
+                    identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:50aafb14-643d-478a-8c4b-d6f251eafd30"
+                    name="RepeatNumber net.sourceforge.symba.subjectPredicateDivider is"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolEndurant:f9ca3840-dbcf-46ae-a845-69067d8c542a"/>
+            <GenericParameter
+                    identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:bb871e30-5ced-4528-a4ed-ac1958a2dd40"
+                    name="MicroarrayChip net.sourceforge.symba.subjectPredicateDivider hasBrand"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolEndurant:c7212dfa-4ae8-4374-9b6c-3950c18c280d"/>
+            <GenericParameter
+                    identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:6e286ee7-66b1-462d-b7cd-435192eab962"
+                    name="MicroarrayChip net.sourceforge.symba.subjectPredicateDivider hasModel"
+                    Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolEndurant:aa8381d4-3469-489a-aafb-7d2ced4609c1"/>
         </GenericProtocol>
-        <GenericSoftware version="8.09" Endurant_ref="0.08568759381115387"
+        <GenericProtocol identifier="urn:lsid:cisban.cisbs.org:GenericProtocol:1e138a82-307b-405d-a5cd-da25d945a88d"
+                         name="net.sourceforge.symba.topProtocol Example Multi-Strain Microarray Investigation"
+                         Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolEndurant:094d559f-d752-4b3a-8ef0-006c369c71e6">
+            <GenericAction Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:e9ff42e4-319d-4e08-ac61-7fd9cb7c4482"
+                           actionOrdinal="0"
+                           identifier="urn:lsid:cisban.cisbs.org:GenericAction:5f3d8119-0156-4cf1-9e30-bfc7a0839107"
+                           name="Experiment Run for Strain X"
+                           Endurant_ref="urn:lsid:cisban.cisbs.org:GenericActionEndurant:7989a209-10cb-4b30-9fbf-3a5086f1d575"/>
+        </GenericProtocol>
+        <GenericSoftware version="Version 2"
+                         identifier="urn:lsid:cisban.cisbs.org:GenericSoftware:04a8c3cc-ef51-44f0-a16e-b3b32ea44c9a"
                          name="SyMBA (http://symba.sourceforge.net) by CISBAN (http://www.cisban.ac.uk)"
-                         identifier="0.2711517954869771"/>
-        <GenericProtocolApplication Protocol_ref="0.3888076617530435" Endurant_ref="0.24749601919263176" name="Step 1"
-                                    identifier="0.4274059399675647">
+                         Endurant_ref="urn:lsid:cisban.cisbs.org:GenericSoftwareEndurant:c3cf6774-f4e4-4597-82d9-7404cd6dac1c"/>
+        <GenericProtocolApplication
+                Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:e9ff42e4-319d-4e08-ac61-7fd9cb7c4482"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:ef9ce73a-defd-4196-a18f-e0e787719623"
+                name="Experiment Run for Strain X"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolApplicationEndurant:cc8bdb03-305c-474e-b0f0-511183aeda77">
             <_auditTrail>
-                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.016"/>
+                <Audit date="2011-10-06T11:24:54.746" action="CREATE"
+                       Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
             </_auditTrail>
-            <ActionApplication ProtocolApplication_ref="0.6936748489356449" Action_ref="0.05170760660991802"
-                               Endurant_ref="0.8894873683879423" name="Material Transformation"
-                               identifier="0.9381580048206541">
+            <ActionApplication Action_ref="urn:lsid:cisban.cisbs.org:GenericAction:23e60f16-be4a-4f10-8da6-0226018b45a8"
+                               ProtocolApplication_ref="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:93c87b6f-ddcd-4123-9e63-c0dfe1ad5d90"
+                               identifier="urn:lsid:cisban.cisbs.org:ActionApplication:fd6e89ea-969e-494f-81d6-24e956e0accf"
+                               name="Microarray Time Series Point X"
+                               Endurant_ref="urn:lsid:cisban.cisbs.org:ActionApplicationEndurant:d42ccde6-7ab9-4062-8fae-5134b90c9455">
                 <_auditTrail>
-                    <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.021"/>
+                    <Audit date="2011-10-06T11:24:54.813" action="CREATE"
+                           Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
                 </_auditTrail>
             </ActionApplication>
-            <ActionApplication ProtocolApplication_ref="0.7914686873694574" Action_ref="0.522279409925901"
-                               Endurant_ref="0.7877580982287092" name="Assay Step" identifier="0.3367528013569028">
+        </GenericProtocolApplication>
+        <GenericProtocolApplication
+                Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:88864218-1f1b-482a-a3ed-9dd3bae91e30"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:93c87b6f-ddcd-4123-9e63-c0dfe1ad5d90"
+                name="Microarray Time Series Point X"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolApplicationEndurant:800cf484-b613-4f7c-b0f5-00b038c7ec86">
+            <_auditTrail>
+                <Audit date="2011-10-06T11:24:54.803" action="CREATE"
+                       Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
+            </_auditTrail>
+            <ActionApplication Action_ref="urn:lsid:cisban.cisbs.org:GenericAction:e4b35055-6e26-4d42-931c-0ec5c2dc2019"
+                               ProtocolApplication_ref="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:98277e79-e982-4dd1-bdd2-40dcc6d3d6cf"
+                               identifier="urn:lsid:cisban.cisbs.org:ActionApplication:887bdf14-1088-4941-aded-316b67c804fd"
+                               name="Microarray Assay Repeat X"
+                               Endurant_ref="urn:lsid:cisban.cisbs.org:ActionApplicationEndurant:dc740628-7f59-4cac-ba21-9208ce4159fd">
                 <_auditTrail>
-                    <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.031"/>
+                    <Audit date="2011-10-06T11:24:54.883" action="CREATE"
+                           Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
                 </_auditTrail>
             </ActionApplication>
         </GenericProtocolApplication>
-        <GenericProtocolApplication Protocol_ref="0.8196393364377491" Endurant_ref="0.7048769403489543"
-                                    name="Material Transformation" identifier="0.6936748489356449">
+        <GenericProtocolApplication
+                Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:f7d83397-3ab5-4f6b-8d7e-a59e84a24dd9"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:98277e79-e982-4dd1-bdd2-40dcc6d3d6cf"
+                name="Microarray Assay Repeat X"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolApplicationEndurant:b0170068-bdbb-4e3b-9529-d28156368d1f">
             <_auditTrail>
-                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.018"/>
-            </_auditTrail>
-            <_outputMaterials Material_ref="644158905"/>
-            <_inputCompleteMaterials Material_ref="ABC23456"/>
-        </GenericProtocolApplication>
-        <GenericProtocolApplication Protocol_ref="0.5103313346158306" Endurant_ref="0.8525936794029937"
-                                    name="Assay Step" identifier="0.7914686873694574">
-            <_auditTrail>
-                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.029"/>
-            </_auditTrail>
-            <_outputData Data_ref="0.6944343902451814"/>
-            <_inputCompleteMaterials Material_ref="644158905"/>
-        </GenericProtocolApplication>
-        <GenericProtocolApplication Protocol_ref="0.24022591329282283" Endurant_ref="0.550744036927487"
-                                    name="Some other Step (2)" identifier="0.6552875814390333">
-            <_auditTrail>
-                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.032"/>
+                <Audit date="2011-10-06T11:24:54.874" action="CREATE"
+                       Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
             </_auditTrail>
         </GenericProtocolApplication>
-        <GenericProtocolApplication Protocol_ref="0.47357680262477275" Endurant_ref="0.16587193055617"
-                                    name="net.sourceforge.symba.topProtocol My Example Investigation"
-                                    identifier="0.480198665121227">
+        <GenericProtocolApplication
+                Protocol_ref="urn:lsid:cisban.cisbs.org:GenericProtocol:1e138a82-307b-405d-a5cd-da25d945a88d"
+                identifier="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:dc33c15b-d5ef-4dbb-9889-34d49c618c03"
+                name="net.sourceforge.symba.topProtocol Example Multi-Strain Microarray Investigation"
+                Endurant_ref="urn:lsid:cisban.cisbs.org:GenericProtocolApplicationEndurant:6b68f254-5e83-4430-b95b-2b98a7b5ed63">
             <_auditTrail>
-                <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.012"/>
+                <Audit date="2011-10-06T11:24:54.700" action="CREATE"
+                       Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
             </_auditTrail>
-            <ActionApplication ProtocolApplication_ref="0.4274059399675647" Action_ref="0.45469117455578334"
-                               Endurant_ref="0.5724579673755676" name="Step 1" identifier="0.5679318503021538">
+            <ActionApplication Action_ref="urn:lsid:cisban.cisbs.org:GenericAction:5f3d8119-0156-4cf1-9e30-bfc7a0839107"
+                               ProtocolApplication_ref="urn:lsid:cisban.cisbs.org:GenericProtocolApplication:ef9ce73a-defd-4196-a18f-e0e787719623"
+                               identifier="urn:lsid:cisban.cisbs.org:ActionApplication:c1a57d8e-ff57-4399-aa49-3ec41e5177a0"
+                               name="Experiment Run for Strain X"
+                               Endurant_ref="urn:lsid:cisban.cisbs.org:ActionApplicationEndurant:774b3a02-b88a-412a-9aaf-9b5f53a1ca1c">
                 <_auditTrail>
-                    <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.017"/>
-                </_auditTrail>
-            </ActionApplication>
-            <ActionApplication ProtocolApplication_ref="0.6552875814390333" Action_ref="0.10034490787676531"
-                               Endurant_ref="0.7867481307435953" name="Some other Step (2)"
-                               identifier="0.5714049645501494">
-                <_auditTrail>
-                    <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.033"/>
+                    <Audit date="2011-10-06T11:24:54.756" action="CREATE"
+                           Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
                 </_auditTrail>
             </ActionApplication>
         </GenericProtocolApplication>
     </ProtocolCollection>
-    <OntologyCollection>
-        <OntologyIndividual termAccession="" term="cm" Endurant_ref="0.783978175685248" name="cm"
-                            identifier="0.54127829301116"/>
-    </OntologyCollection>
-    <Provider Software_ref="0.2711517954869771" Endurant_ref="0.03215892718557445" identifier="0.8756526573447527">
+    <OntologyCollection/>
+    <Provider Software_ref="urn:lsid:cisban.cisbs.org:GenericSoftware:04a8c3cc-ef51-44f0-a16e-b3b32ea44c9a"
+              identifier="urn:lsid:cisban.cisbs.org:Provider:b2d423fe-44b2-447f-9b2e-be85ce689d4b"
+              Endurant_ref="urn:lsid:cisban.cisbs.org:ProviderEndurant:904e7270-f7d2-4ee9-bc9d-18cb859b62a3">
         <_auditTrail>
-            <Audit Contact_ref="23456" action="CREATE" date="2010-03-29T13:21:47.003"/>
+            <Audit date="2011-10-06T11:24:54.669" action="CREATE"
+                   Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
         </_auditTrail>
-        <ContactRole Contact_ref="23456"/>
+        <ContactRole Contact_ref="urn:lsid:cisban.cisbs.org:Person:b050796b-d746-4aa0-9419-0a7b849f82bc"/>
     </Provider>
 </FuGE>

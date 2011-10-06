@@ -106,24 +106,29 @@ public class MemoryStorageHelper extends StorageHelper {
         return getParameterSubjects();
     }
 
+    // for the add* methods, ids don't need to be added to as they are added (if required) when FugeCreator is called.
+
+
     @NotNull
     public HashMap<String, Contact> addContact( @NotNull Contact contact ) {
+        // If it is a new contact, then there won't be an identifier yet.
+        // we need to add one, as people also exist outside any given FuGE object
+        if ( ! contact.hasValidId() ) IdentifiableConverter.createId( "Person" );
         getUsers().put( contact.getId(), contact );
         return getUsers();
     }
 
     @NotNull
     public HashMap<String, Material> addMaterial( @NotNull Material material ) {
+        // If it is a new material, then there won't be an identifier yet.
+        // we need to add one, as materials also exist outside any given FuGE object
+        if ( ! material.hasValidId() ) IdentifiableConverter.createId( "GenericMaterial" );
         getMaterials().put( material.getId(), material );
         return getMaterials();
     }
 
     @NotNull
     public Investigation add( @NotNull Investigation investigation ) {
-
-        if ( investigation.getId().trim().equals( "" ) ) {
-            investigation.setId( String.valueOf( getInvestigations().size() ) );
-        }
         getInvestigations().put( investigation.getId(), investigation );
         return investigation;
 

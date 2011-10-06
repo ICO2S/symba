@@ -54,4 +54,12 @@
         <servlet-name>uploadServlet</servlet-name>
         <url-pattern>*.gupld</url-pattern>
     </servlet-mapping>
+
+    <!-- Required for database implementation, see http://forums.dzone.com/java/246-jdbc-not-bound-context.html -->
+    <resource-ref>
+        <description>SyMBA data source</description>
+        <res-ref-name>jdbc/symba</res-ref-name>
+        <res-type>org.springframework.jdbc.datasource.DriverManagerDataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
 </web-app>

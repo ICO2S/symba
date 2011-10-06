@@ -34,7 +34,8 @@ public class PostgresSymbaDaoImpl implements SymbaDao {
         if ( fuge == null ) {
             System.out.print( "-" );
             fuge = ( FuGE ) entityManager.createNamedQuery( "fugeByIdentifier" )
-                    .setParameter( "fugeId", fugeId ).getSingleResult();
+                                         .setParameter( "fugeId", fugeId )
+                                         .getSingleResult();
             if ( fuge == null ) {
                 fuge = new FuGE();
                 fuge.setIdentifier( fugeId );
@@ -55,8 +56,17 @@ public class PostgresSymbaDaoImpl implements SymbaDao {
     public boolean isFugePresent( @NotNull String fugeId ) {
 
         List<String> endurant = ( List<String> ) entityManager.createNamedQuery( "fugeEndurantByIdentifier" )
-                .setParameter( "fugeId", fugeId ).getResultList();
-        return !( endurant.isEmpty() );
+                                                              .setParameter( "fugeId", fugeId )
+                                                              .getResultList();
+        return ! ( endurant.isEmpty() );
+    }
+
+    public boolean isIdPresent( @NotNull String id ) {
+
+        List<String> endurant = ( List<String> ) entityManager.createNamedQuery( "anyEndurantByIdentifier" )
+                                                              .setParameter( "anyId", id )
+                                                              .getResultList();
+        return ! ( endurant.isEmpty() );
     }
 
     public boolean addNewFugeEntry( @NotNull FuGE fuge ) {
@@ -89,5 +99,22 @@ public class PostgresSymbaDaoImpl implements SymbaDao {
     public List<Person> fetchAllPeople() {
         return entityManager.createNamedQuery( "allPeople" ).getResultList();
     }
+
+    public boolean addNewPerson( @NotNull Person person ) {
+        if ( person.getIdentifier() == null || person.getIdentifier().length() == 0 ) {
+            return false;
+        }
+
+        if ( isIdPresent( person.getIdentifier() ) ) {
+            return false;
+        }
+
+        System.err.println( "Persisting a new Person object with id " + person.getIdentifier() );
+        entityManager.persist( person );
+        System.err.println( "Persisting complete for " + person.getIdentifier() );
+
+        return true;
+    }
+
 
 }

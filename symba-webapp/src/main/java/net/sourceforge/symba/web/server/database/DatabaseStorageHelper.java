@@ -2,6 +2,7 @@ package net.sourceforge.symba.web.server.database;
 
 import net.sourceforge.symba.database.controller.FugeDatabaseController;
 import net.sourceforge.symba.web.server.StorageHelper;
+import net.sourceforge.symba.web.server.conversion.fuge.FugeCreator;
 import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import net.sourceforge.symba.web.shared.InvestigationDetail;
@@ -19,20 +20,21 @@ import java.util.HashSet;
 public class DatabaseStorageHelper extends StorageHelper {
 
     Interface2DatabaseController interface2db;
-    FugeDatabaseController dbBasics;
+    FugeDatabaseController       dbBasics;
+    FugeCreator                  converter;
 
     @Override
     public void setup( @NotNull ApplicationContext context ) {
-        interface2db = context
-                .getBean( "interface2db", Interface2DatabaseController.class );
+        interface2db = context.getBean( "interface2db", Interface2DatabaseController.class );
         dbBasics = context.getBean( "dbBasics", FugeDatabaseController.class );
+        converter = new FugeCreator();
         System.err.println( "successfully created interface2db and dbBasics" );
 
     }
 
     /**
-     * Retrieve all investigations from the database to initially populate the SyMBA UI. This method also clears
-     * any currently-existing investigations prior to retrieving the up-to-date list from the database.
+     * Retrieve all investigations from the database to initially populate the SyMBA UI. This method also clears any
+     * currently-existing investigations prior to retrieving the up-to-date list from the database.
      *
      * @param addExampleIfEmpty If there are no entries at all in the database, if this value is true then an example
      *                          entry will be added.
@@ -47,8 +49,8 @@ public class DatabaseStorageHelper extends StorageHelper {
     }
 
     /**
-     * Retrieve all people from the database to initially populate the SyMBA UI. This method also clears
-     * any currently-existing people prior to retrieving the up-to-date list from the database.
+     * Retrieve all people from the database to initially populate the SyMBA UI. This method also clears any
+     * currently-existing people prior to retrieving the up-to-date list from the database.
      *
      * @return the list of people (converted to UI Contacts) to send to the client
      */
@@ -62,7 +64,7 @@ public class DatabaseStorageHelper extends StorageHelper {
     @NotNull
     @Override
     public HashMap<String, Material> fetchAllMaterials() {
-        return new HashMap<String, Material>(); 
+        return new HashMap<String, Material>();
     }
 
     @NotNull
@@ -73,7 +75,9 @@ public class DatabaseStorageHelper extends StorageHelper {
 
     @NotNull
     public HashMap<String, Contact> addContact( Contact contact ) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        dbBasics.savePerson( converter.symbaContactToFugePerson( contact ) );
+        getUsers().put( contact.getId(), contact );
+        return getUsers();
     }
 
     @NotNull
@@ -95,8 +99,7 @@ public class DatabaseStorageHelper extends StorageHelper {
     }
 
     @NotNull
-    public InvestigationDetail copy( @NotNull String id,
-                                     @NotNull String contactId ) {
+    public InvestigationDetail copy( @NotNull String id, @NotNull String contactId ) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

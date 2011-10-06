@@ -333,6 +333,11 @@
             <jaxb:class name="Identifiable"/>
             <hj:entity>
                 <orm:table name="IDENTIFIABLE"/>
+                <orm:named-query name="anyEndurantByIdentifier">
+                    <orm:query>select i.endurantRef from net.sourceforge.fuge.util.generated.Identifiable i
+                        where i.identifier = :anyId
+                    </orm:query>
+                </orm:named-query>
             </hj:entity>
         </jaxb:bindings>
         <jaxb:bindings node="xsd:complexType[@name='FuGE.common.DescribableType']">

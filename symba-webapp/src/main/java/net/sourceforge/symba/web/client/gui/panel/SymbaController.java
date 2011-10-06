@@ -127,8 +127,6 @@ public class SymbaController extends DockPanel {
 
     public void setCenterWidgetAsEditExperiment() {
         Investigation investigation = new Investigation();
-        investigation.createId();
-        investigation.getProvider().createId();
         EditInvestigationView view = new EditInvestigationView( this,
                                                                 investigation,
                                                                 EditInvestigationView.ViewType.NEW_INVESTIGATION );

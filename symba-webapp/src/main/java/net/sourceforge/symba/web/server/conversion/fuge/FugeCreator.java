@@ -54,6 +54,13 @@ public class FugeCreator {
 
     }
 
+    /**
+     * The assumption is that, if there is a valid identifier for any fuge object, then that is the identifier that is
+     * meant to be used. Therefore, any updates to fuge identifiers must happen prior to this method call.
+     *
+     * @param inv the investigation to convert
+     * @return the new FuGE object
+     */
     @NotNull
     public FuGE toFuge( @NotNull final net.sourceforge.symba.web.shared.Investigation inv ) {
 
@@ -98,9 +105,10 @@ public class FugeCreator {
         addInvestigation( allInvestigation, person, inv );
 
         // create the main features of the Fuge object itself
+        // as this is a fuge *creation* class, we don't need to check if there is already an identifier or endurant.
         fuge.setName( name );
-        fuge.setEndurantRef( IdentifiableConverter.createId( "FuGEEndurant" ) );
         fuge.setIdentifier( IdentifiableConverter.createId( "FuGE" ) );
+        fuge.setEndurantRef( IdentifiableConverter.createId( "FuGEEndurant" ) );
 
         // create a software instance for SyMBA
         GenericSoftware symbaSoftware = addSymbaSoftware( allProtocol );
@@ -271,13 +279,12 @@ public class FugeCreator {
         for ( ExperimentStepHolder childHolder : childrenHolder ) {
             ExperimentStep child = childHolder.getCurrent();
             // create basic protocol
-            GenericProtocol childProtocol = GenericProtocolConverter.toFuge( IdentifiableConverter.createId(
-                    "GenericProtocol" ),
-                                                                             IdentifiableConverter.createId(
-                                                                                     "GenericProtocolEndurant" ),
-                                                                             child.getTitle(),
-                                                                             child.getParameters(),
-                                                                             allOntology );
+            String id;
+            if ( child.hasValidId() ) id = child.getDatabaseId();
+            else id = IdentifiableConverter.createId( "GenericProtocol" );
+
+            GenericProtocol childProtocol = GenericProtocolConverter.toFuge( id, IdentifiableConverter.createId(
+                    "GenericProtocolEndurant" ), child.getTitle(), child.getParameters(), allOntology );
             // link the protocol to the collection
             allProtocol.getProtocol().add( factory.createGenericProtocol( childProtocol ) );
 
@@ -422,7 +429,8 @@ public class FugeCreator {
                 = new net.sourceforge.fuge.util.generated.Investigation();
         fugeInv.setName( uiInvestigation.getInvestigationTitle() );
         fugeInv.setEndurantRef( IdentifiableConverter.createId( "InvestigationEndurant" ) );
-        fugeInv.setIdentifier( uiInvestigation.getId() );
+        if ( uiInvestigation.hasValidId() ) fugeInv.setIdentifier( uiInvestigation.getId() );
+        else fugeInv.setIdentifier( IdentifiableConverter.createId( "Investigation" ) );
 
         Hypothesis h = new Hypothesis();
         Description d = new Description();
@@ -456,12 +464,7 @@ public class FugeCreator {
      */
     private Person addPerson( AuditCollection allAudit, Contact uiPerson ) {
         // create a fuge person
-        Person person = new Person();
-        person.setIdentifier( uiPerson.getId() );
-        person.setEndurantRef( IdentifiableConverter.createId( "PersonEndurant" ) );
-        person.setFirstName( uiPerson.getFirstName() );
-        person.setLastName( uiPerson.getLastName() );
-        person.setEmail( uiPerson.getEmailAddress() );
+        Person person = symbaContactToFugePerson( uiPerson );
         // todo organisation
         // add to the Audit collection
         allAudit.getContact().add( factory.createPerson( person ) );
@@ -470,9 +473,15 @@ public class FugeCreator {
         return person;
     }
 
-    // todo replace with proper creation method, e.g. the connection to the LSID server
+    public Person symbaContactToFugePerson( Contact contact ) {
+        Person person = new Person();
+        if ( contact.hasValidId() ) person.setIdentifier( contact.getId() );
+        else person.setIdentifier( IdentifiableConverter.createId( "Person" ) );
+        person.setEndurantRef( IdentifiableConverter.createId( "PersonEndurant" ) );
+        person.setFirstName( contact.getFirstName() );
+        person.setLastName( contact.getLastName() );
+        person.setEmail( contact.getEmailAddress() );
+        return person;
 
-    private String createRandom() {
-        return ( ( Double ) Math.random() ).toString();
     }
 }

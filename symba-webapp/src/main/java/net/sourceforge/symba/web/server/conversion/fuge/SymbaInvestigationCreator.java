@@ -1,17 +1,10 @@
 package net.sourceforge.symba.web.server.conversion.fuge;
 
-import net.sourceforge.fuge.util.generated.ActionApplication;
-import net.sourceforge.fuge.util.generated.FuGE;
-import net.sourceforge.fuge.util.generated.GenericAction;
-import net.sourceforge.fuge.util.generated.GenericProtocol;
-import net.sourceforge.fuge.util.generated.GenericProtocolApplication;
-import net.sourceforge.fuge.util.generated.Person;
-import net.sourceforge.fuge.util.generated.Protocol;
-import net.sourceforge.fuge.util.generated.ProtocolApplication;
+import net.sourceforge.fuge.util.generated.*;
 import net.sourceforge.symba.web.client.gui.InputValidator;
+import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.ExperimentStep;
 import net.sourceforge.symba.web.shared.ExperimentStepHolder;
-import net.sourceforge.symba.web.shared.Contact;
 import net.sourceforge.symba.web.shared.Investigation;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,12 +22,26 @@ public class SymbaInvestigationCreator {
 
         String investigationId = fuge.getInvestigationCollection().getInvestigation().get( 0 ).getIdentifier();
         String investigationName = fuge.getInvestigationCollection().getInvestigation().get( 0 ).getName();
-        String hyp = fuge.getInvestigationCollection().getInvestigation().get( 0 ).getHypothesis().getDescription()
-                .getText();
-        String conclusion = fuge.getInvestigationCollection().getInvestigation().get( 0 ).getHypothesis()
-                .getDescription().getText();
-        return new Investigation( template, completed, investigationId, investigationName, hyp, conclusion,
-                initProvider( fuge ), initExperiments( fuge ) );
+        String hyp = fuge.getInvestigationCollection()
+                         .getInvestigation()
+                         .get( 0 )
+                         .getHypothesis()
+                         .getDescription()
+                         .getText();
+        String conclusion = fuge.getInvestigationCollection()
+                                .getInvestigation()
+                                .get( 0 )
+                                .getHypothesis()
+                                .getDescription()
+                                .getText();
+        return new Investigation( template,
+                                  completed,
+                                  investigationId,
+                                  investigationName,
+                                  hyp,
+                                  conclusion,
+                                  initProvider( fuge ),
+                                  initExperiments( fuge ) );
 
     }
 
@@ -46,14 +53,16 @@ public class SymbaInvestigationCreator {
                 if ( contact.getIdentifier().equals( fuge.getProvider().getContactRole().getContactRef() ) ) {
                     // match found to the contact value
                     // todo allow people to have organisations.
-                    return new Contact( contact.getIdentifier(), contact.getFirstName(), contact.getLastName(),
-                            contact.getEmail() );
+                    return new Contact( contact.getIdentifier(),
+                                        contact.getFirstName(),
+                                        contact.getLastName(),
+                                        contact.getEmail() );
                 }
             }
         }
         // no matching contact found in the AuditCollection. This shouldn't happen. Make an empty contact if it does.
         Contact c = new Contact();
-        c.setId( createRandom() ); // don't use the built-in createId method, as it uses a GWT-specific library.
+        c.setId( IdentifiableConverter.createId( "Person" ) ); // don't use the built-in createId method, as it uses a GWT-specific library.
         return c;
     }
 
@@ -82,7 +91,8 @@ public class SymbaInvestigationCreator {
 
         // find the associated top-level GPA: there will only ever be one
         GenericProtocolApplication topGpa = getGpaByProtocolRef( topProtocol.getIdentifier(),
-                fuge.getProtocolCollection().getProtocolApplication() );
+                                                                 fuge.getProtocolCollection()
+                                                                     .getProtocolApplication() );
 
         // we now have a top protocol. Start there, and build up the steps as we go.
         // the top protocol is a placeholder, and not created by the user at all, therefore it doesn't need
@@ -92,7 +102,8 @@ public class SymbaInvestigationCreator {
         for ( int iii = 0; iii < topProtocol.getAction().size(); iii++ ) {
             for ( int jjj = 0; jjj < topProtocol.getAction().size(); jjj++ ) {
                 if ( topProtocol.getAction().get( iii ).getValue() instanceof GenericAction &&
-                        topProtocol.getAction().get( iii ).getValue().getActionOrdinal() == iii ) {
+                     topProtocol.getAction().get( iii ).getValue().getActionOrdinal() == iii )
+                {
                     GenericAction childAction = ( GenericAction ) topProtocol.getAction().get( iii ).getValue();
 
                     ExperimentStep step = new ExperimentStep();
@@ -100,10 +111,11 @@ public class SymbaInvestigationCreator {
 
                     // information (including parameters) stored in the GenericProtocol associated with this Action
                     GenericProtocol referencedChildProtocol = getProtocol( childAction.getProtocolRef(),
-                            fuge.getProtocolCollection().getProtocol() );
+                                                                           fuge.getProtocolCollection().getProtocol() );
                     if ( referencedChildProtocol != null ) {
-                        step = GenericProtocolConverter
-                                .toSymba( step, referencedChildProtocol, fuge.getOntologyCollection() );
+                        step = GenericProtocolConverter.toSymba( step,
+                                                                 referencedChildProtocol,
+                                                                 fuge.getOntologyCollection() );
                     }
 
                     // external data and materials: from the GenericProtocolApplication referenced by the
@@ -117,10 +129,11 @@ public class SymbaInvestigationCreator {
                             // this tells us the next protocol/step to add as a child of the current step, as well
                             // as the name of the GPA referenced by this AA.
                             step = GenericProtocolApplicationConverter.toSymba( step,
-                                    getGpa( childAa.getProtocolApplicationRef(),
-                                            fuge.getProtocolCollection().getProtocolApplication() ),
-                                    fuge.getDataCollection(),
-                                    fuge.getMaterialCollection() );
+                                                                                getGpa( childAa.getProtocolApplicationRef(),
+                                                                                        fuge.getProtocolCollection()
+                                                                                            .getProtocolApplication() ),
+                                                                                fuge.getDataCollection(),
+                                                                                fuge.getMaterialCollection() );
                         }
                     }
 
@@ -132,8 +145,7 @@ public class SymbaInvestigationCreator {
         return stepList;
     }
 
-    private GenericProtocol getProtocol( String id,
-                                         List<JAXBElement<? extends Protocol>> protocols ) {
+    private GenericProtocol getProtocol( String id, List<JAXBElement<? extends Protocol>> protocols ) {
         for ( JAXBElement element : protocols ) {
             if ( element.getValue() instanceof GenericProtocol ) {
                 GenericProtocol gp = ( GenericProtocol ) element.getValue();
@@ -169,10 +181,5 @@ public class SymbaInvestigationCreator {
             }
         }
         return null;
-    }
-
-    // todo replace with proper creation method, e.g. the connection to the LSID server
-    private String createRandom() {
-        return ( ( Double ) Math.random() ).toString();
     }
 }

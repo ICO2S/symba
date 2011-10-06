@@ -20,7 +20,7 @@
         <property name="driverClassName" value="org.postgresql.Driver"/>
         <property name="username" value="symba"/>
         <property name="password" value="symba"/>
-        <property name="url" value="jdbc:postgresql://localhost:5433/symba"/>
+        <property name="url" value="jdbc:postgresql://localhost:5432/symba"/>
     </bean>
 
     <bean name="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -28,6 +28,7 @@
         <property name="persistenceUnitName" value="net.sourceforge.fuge.util.generated"/>
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect"/>
                 <property name="generateDdl" value="true"/>
                 <property name="showSql" value="true"/>
             </bean>

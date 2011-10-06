@@ -22,15 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * This class provides additional business logic for accessing the SymbaDao and all implementations of that class.
- * This is where annotations such as @Transactional will occur. In order for @Transactional to be effective,
- * the method that calls the transactional method MUST be external to this class.
+ * This class provides additional business logic for accessing the SymbaDao and all implementations of that class. This
+ * is where annotations such as @Transactional will occur. In order for @Transactional to be effective, the method that
+ * calls the transactional method MUST be external to this class.
  * <p/>
  * As objects which are lazily loaded will only be populated within the transaction they were queried from, this is
  * where all setup, processing and modification of database objects to GWT server objects will occur.
  */
 public class Interface2DatabaseController {
-    private static final String FUGE_ID = "0.4078363070409322";
+    private static final String FUGE_ID   = "urn:lsid:cisban.cisbs.org:FuGE:843e7567-9e30-438f-a7a9-bf73ec9de597";
     private static final String FUGE_FILE = "SimpleExampleInvestigation.xml";
 
     @NotNull
@@ -47,21 +47,23 @@ public class Interface2DatabaseController {
             System.err.println( "FuGE list is empty" );
             // Load an example FuGE investigation into the database, and all accompanying contacts, materials, etc.
             // (if not already present)
-            if ( !dbBasics.isFugePresent( FUGE_ID ) ) {
+            if ( ! dbBasics.isFugePresent( FUGE_ID ) ) {
                 // parse the example file into the FuGE object
                 try {
                     JAXBContext jc = JAXBContext.newInstance( "net.sourceforge.fuge.util.generated" );
 
                     // create an unmarshaller
                     Unmarshaller u = jc.createUnmarshaller();
-                    JAXBElement<?> genericTopLevelElement = ( JAXBElement<?> ) u
-                            .unmarshal( new FileInputStream( new File(
-                                    StorageHelper.class.getClassLoader()
-                                            .getResource( FUGE_FILE ).toURI() ) ) );
+                    JAXBElement<?> genericTopLevelElement
+                            = ( JAXBElement<?> ) u.unmarshal( new FileInputStream( new File( StorageHelper.class.getClassLoader()
+                                                                                                                .getResource(
+                                                                                                                        FUGE_FILE )
+                                                                                                                .toURI() ) ) );
                     FuGE fuge = ( FuGE ) genericTopLevelElement.getValue();
 
                     // add the new FuGE entry
                     dbBasics.createFuge( fuge );
+                    fugeList.add( fuge );
                 } catch ( JAXBException e ) {
                     e.printStackTrace();
                 } catch ( FileNotFoundException e ) {
@@ -86,8 +88,10 @@ public class Interface2DatabaseController {
         HashMap<String, Contact> uiPeople = new HashMap<String, Contact>();
         List<Person> dbPeople = dbBasics.fetchAllPeople();
         for ( Person dbPerson : dbPeople ) {
-            Contact uiPerson = new Contact( dbPerson.getIdentifier(), dbPerson.getFirstName(), dbPerson.getLastName(),
-                    dbPerson.getEmail() );
+            Contact uiPerson = new Contact( dbPerson.getIdentifier(),
+                                            dbPerson.getFirstName(),
+                                            dbPerson.getLastName(),
+                                            dbPerson.getEmail() );
             uiPeople.put( uiPerson.getId(), uiPerson );
         }
         return uiPeople;

@@ -33,7 +33,7 @@ public class HelpClickHandler implements ClickHandler {
 
         try {
             final String finalPrefix = prefix;
-            new RequestBuilder( RequestBuilder.GET, "/MainHelp.html" ).sendRequest( "", new RequestCallback() {
+            new RequestBuilder( RequestBuilder.GET, prefix + "/MainHelp.html" ).sendRequest( "", new RequestCallback() {
                 @Override
                 public void onResponseReceived( Request req, Response resp ) {
                     String text = resp.getText();

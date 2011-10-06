@@ -8,22 +8,21 @@ import net.sourceforge.symba.web.client.gui.handlers.*;
 
 public class SymbaHeader extends HorizontalPanel {
 
-    private static final String HOME_ICON = "/images/lion-plus-text.jpg";
-    private static final String ADD_EXPERIMENT = "/images/plus.png";
+    private static final String HOME_ICON       = "/images/lion-plus-text.jpg";
+    private static final String ADD_EXPERIMENT  = "/images/plus.png";
     private static final String LIST_EXPERIMENT = "/images/article.png";
-    private static final String DOWNLOAD_FILE = "/images/arrow_down.png";
-    private static final String GET_HELP = "/images/help.png";
-    private static final String NO_USER = "Not logged in";
+    private static final String DOWNLOAD_FILE   = "/images/arrow_down.png";
+    private static final String GET_HELP        = "/images/help.png";
+    private static final String NO_USER         = "Not logged in";
 
     private final Image addExpImage, listExpImage, downloadFileImage, helpFileImage;
-    private final AddExperimentClickHandler addExpHandler;
+    private final AddExperimentClickHandler   addExpHandler;
     private final ListExperimentsClickHandler listExpHandler;
-    private final DownloadClickHandler downloadHandler;
-    private final VerticalPanel loginStatus;
-    private SymbaController controller;
+    private final DownloadClickHandler        downloadHandler;
+    private final VerticalPanel               loginStatus;
+    private       SymbaController             controller;
 
-    public SymbaHeader( SymbaController controller,
-                        HomePanel home ) {
+    public SymbaHeader( SymbaController controller, HomePanel home ) {
         this.controller = controller;
 
         //

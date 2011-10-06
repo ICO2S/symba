@@ -2,7 +2,8 @@ package net.sourceforge.symba.web.client.gui.panel;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.Widget;
 import net.sourceforge.symba.web.client.InvestigationsServiceAsync;
 import net.sourceforge.symba.web.client.gui.EditInvestigationView;
 import net.sourceforge.symba.web.client.gui.SummariseInvestigationView;
@@ -23,10 +24,10 @@ public class SymbaController extends DockPanel {
 
     // the type of widget in the non-center panels will not change, though they may not always be visible.
     private final HelpPanel eastWidget;
-    private boolean eastSet;
-    
+    private       boolean   eastSet;
+
     private final SymbaHeader northWidget;
-    private final HomePanel homePanel;
+    private final HomePanel   homePanel;
 
     // Who the user is logged in as
     private Contact user;
@@ -46,8 +47,8 @@ public class SymbaController extends DockPanel {
     // The type of the Widget in the center panel might change
     private Widget centerWidget;
     private static final String BASIC_EDITING_HELP = "<p>Upload files by clicking on the experimental step you wish" +
-            " to associate with those files. You can upload multiple files in sequence by clicking on the file " +
-            "\"Browse\" button multiple times.</p>";
+                                                     " to associate with those files. You can upload multiple files in sequence by clicking on the file " +
+                                                     "\"Browse\" button multiple times.</p>";
 
     /**
      * Creates an dock panel with the default layout for the SyMBA pages.
@@ -69,7 +70,7 @@ public class SymbaController extends DockPanel {
         user = new Contact();
 
         // the center widget starts out as a HomePanel, but will change
-        homePanel = new HomePanel(this);
+        homePanel = new HomePanel( this );
         centerWidget = homePanel;
         northWidget = new SymbaHeader( this, homePanel );
         SymbaFooter southWidget = new SymbaFooter();
@@ -90,6 +91,7 @@ public class SymbaController extends DockPanel {
 
     /**
      * Set the user for this session to be the one provided as an argument
+     *
      * @param user the user logged into this session
      */
     public void setUser( Contact user ) {
@@ -110,9 +112,9 @@ public class SymbaController extends DockPanel {
     }
 
     /**
-     * The center part of the dock does not have a remove() method directly accessible. Therefore we can be sure
-     * that there will always be something in the center panel. If the widget coming in doesn't match the
-     * current widget in the center panel, remove the current center and add the new one.
+     * The center part of the dock does not have a remove() method directly accessible. Therefore we can be sure that
+     * there will always be something in the center panel. If the widget coming in doesn't match the current widget in
+     * the center panel, remove the current center and add the new one.
      *
      * @param widget the widget to add
      */
@@ -120,14 +122,16 @@ public class SymbaController extends DockPanel {
         remove( centerWidget );
         centerWidget = widget;
         add( widget, DockPanel.CENTER );
+        centerWidget.addStyleName( "center-style" );
     }
 
     public void setCenterWidgetAsEditExperiment() {
         Investigation investigation = new Investigation();
         investigation.createId();
         investigation.getProvider().createId();
-        EditInvestigationView view = new EditInvestigationView( this, investigation,
-                EditInvestigationView.ViewType.NEW_INVESTIGATION );
+        EditInvestigationView view = new EditInvestigationView( this,
+                                                                investigation,
+                                                                EditInvestigationView.ViewType.NEW_INVESTIGATION );
         setCenterWidget( view );
         showEastWidget( "", BASIC_EDITING_HELP );
     }
@@ -139,11 +143,12 @@ public class SymbaController extends DockPanel {
             }
 
             public void onSuccess( Investigation result ) {
-                EditInvestigationView view = new EditInvestigationView( SymbaController.this, result,
-                        EditInvestigationView.ViewType.EXISTING_INVESTIGATION );
+                EditInvestigationView view = new EditInvestigationView( SymbaController.this,
+                                                                        result,
+                                                                        EditInvestigationView.ViewType.EXISTING_INVESTIGATION );
                 setCenterWidget( view );
                 showEastWidget( "<p>Display of Investigation <strong>" + result.getInvestigationTitle() +
-                        "</strong> complete.</p>", BASIC_EDITING_HELP );
+                                "</strong> complete.</p>", BASIC_EDITING_HELP );
             }
         } );
     }
@@ -160,11 +165,11 @@ public class SymbaController extends DockPanel {
     }
 
     /**
-     * Unlike the version of showEastWidget() which accepts arguments, this method will assume all values
-     * for the components of the east widget are set, and simply ensures that the widget is visible.
+     * Unlike the version of showEastWidget() which accepts arguments, this method will assume all values for the
+     * components of the east widget are set, and simply ensures that the widget is visible.
      */
     public void showEastWidget() {
-        if ( !eastSet ) {
+        if ( ! eastSet ) {
             add( eastWidget, DockPanel.EAST );
             // set default east panel width
             setCellWidth( eastWidget, DEFAULT_EAST_WIDTH );
@@ -194,17 +199,16 @@ public class SymbaController extends DockPanel {
     }
 
     /**
-     * Adds or updates the east widget. First, you change the values within HelpPanel as appropriate.
-     * Then, if the east widget is not yet visible, make it visible.
+     * Adds or updates the east widget. First, you change the values within HelpPanel as appropriate. Then, if the east
+     * widget is not yet visible, make it visible.
      * <p/>
-     * Please note that this is nothing more than a convenience method for the simple parts of the east
-     * widget, but not for all parts of that widget.
+     * Please note that this is nothing more than a convenience method for the simple parts of the east widget, but not
+     * for all parts of that widget.
      *
      * @param htmlStatus     the html status to display in the East panel.
      * @param htmlDirections the directions for symba at this point in time.
      */
-    public void showEastWidget( String htmlStatus,
-                                String htmlDirections ) {
+    public void showEastWidget( String htmlStatus, String htmlDirections ) {
         // as each set method shows its panel, whichever set method is called last will have its panel opened.
         // Therefore, if either string is empty, set that one first. By default, display the directions last so that
         // they show.
@@ -224,7 +228,7 @@ public class SymbaController extends DockPanel {
 
     public void setCenterWidgetAsListExperiments() {
         SummariseInvestigationView investigateView = new SummariseInvestigationView( this,
-                SummariseInvestigationView.ViewType.EXTENDED );
+                                                                                     SummariseInvestigationView.ViewType.EXTENDED );
         investigateView.setInvestigationDetails( getStoredInvestigationDetails() );
         setCenterWidget( investigateView );
 
@@ -284,7 +288,7 @@ public class SymbaController extends DockPanel {
 
             public void onFailure( Throwable caught ) {
                 Window.alert( "Error fetching investigation list: " + caught.getMessage() +
-                        Arrays.toString( caught.getStackTrace() ) );
+                              Arrays.toString( caught.getStackTrace() ) );
             }
         } );
     }
@@ -297,7 +301,7 @@ public class SymbaController extends DockPanel {
 
             public void onFailure( Throwable caught ) {
                 Window.alert( "Error fetching parameter subjects: " + caught.getMessage() +
-                        Arrays.toString( caught.getStackTrace() ) );
+                              Arrays.toString( caught.getStackTrace() ) );
             }
         } );
     }
@@ -316,7 +320,7 @@ public class SymbaController extends DockPanel {
 
     public void cancelAll() {
         setCenterWidget( homePanel );
-        showEastWidget("", "");
+        showEastWidget( "", "" );
         showSymbaStatus();
     }
 }

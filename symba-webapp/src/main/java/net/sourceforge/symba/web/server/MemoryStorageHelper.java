@@ -15,6 +15,10 @@ import java.util.HashSet;
  */
 public class MemoryStorageHelper extends StorageHelper {
 
+    private static final Contact  GUEST   = new Contact( IdentifiableConverter.createId( "Person" ),
+                                                         "Guest",
+                                                         "Account",
+                                                         "guest@example.com" );
     private static final Contact  ALICE   = new Contact( IdentifiableConverter.createId( "Person" ),
                                                          "Alice",
                                                          "Smith",
@@ -23,10 +27,6 @@ public class MemoryStorageHelper extends StorageHelper {
                                                          "Bob",
                                                          "Reynolds",
                                                          "bob.reynolds@example.com" );
-    private static final Contact  ZACH    = new Contact( IdentifiableConverter.createId( "Person" ),
-                                                         "Zach",
-                                                         "Peters",
-                                                         "zach.peters@example.com" );
     private static final Material CULTURE = new Material( IdentifiableConverter.createId( "GenericMaterial" ),
                                                           "Cell Culture 17",
                                                           "An example cell culture." );
@@ -80,9 +80,9 @@ public class MemoryStorageHelper extends StorageHelper {
     @NotNull
     public HashMap<String, Contact> fetchAllUsers() {
         getUsers().clear();
+        getUsers().put( GUEST.getId(), GUEST );
         getUsers().put( ALICE.getId(), ALICE );
         getUsers().put( BOB.getId(), BOB );
-        getUsers().put( ZACH.getId(), ZACH );
         return getUsers();
     }
 

@@ -26,9 +26,9 @@
             <version>2.2.0</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>uk.ac.manchester.cs</groupId>-->
-            <!--<artifactId>factplusplus</artifactId>-->
-            <!--<version>1.1.11</version>-->
+        <!--<groupId>uk.ac.manchester.cs</groupId>-->
+        <!--<artifactId>factplusplus</artifactId>-->
+        <!--<version>1.1.11</version>-->
         <!--</dependency>-->
         <!-- mvn deploy:deploy-file -DrepositoryId=carmen -DgroupId=org.mindswap -DartifactId=pellet-core -Dversion=2.0.0-rc5 -Dpackaging=jar -Dfile=/home/allyson/Apps/pellet-2.0.0-rc5/lib/pellet-core.jar -Durl=scp://carmen.ncl.ac.uk/var/www/maven/repo/-->
         <dependency>
@@ -57,15 +57,15 @@
         <pluginManagement>
             <plugins>
                 <!--
-                Added to force java 1.5 to be used by mvn.
+                Added to force java 1.6 to be used by mvn.
                 See http://galaxy.andromda.org/forum/viewtopic.php?t=2638
                 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <source>1.5</source>
-                        <target>1.5</target>
+                        <source>1.6</source>
+                        <target>1.6</target>
                     </configuration>
                 </plugin>
             </plugins>

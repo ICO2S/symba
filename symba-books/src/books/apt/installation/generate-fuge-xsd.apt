@@ -25,7 +25,7 @@ Installation and Generation of the FuGE XSD
     Please read through this section and ensure that you either install the missing software, or double-check that
     you already have the correct version of the software installed.
 
-    [[1]]<<Java.>> Install J2SE Development Kit 5.0 (JDK 5.0) from http://java.sun.com/j2se/1.5.0/download.jsp
+    [[1]]<<Java.>> Install J2SE Development Kit 6.0 (JDK 6.0) from http://java.sun.com/j2se/1.6.0/download.jsp
 
     [[top-level list item]] Make sure that the <<<JAVA_HOME>>> environment variable is pointing to the directory
     where you installed the JDK.
@@ -72,7 +72,7 @@ Installation and Generation of the FuGE XSD
 +--
         $ mvn --version
         Maven version: 2.2.1
-        Java version: 1.5.0_08
+        Java version: 1.6.0_26
         OS name: "linux" version: "2.6.17-12-386" arch: "i386"
 +--
 

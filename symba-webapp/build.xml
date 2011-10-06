@@ -19,10 +19,14 @@
         <copy todir="war/WEB-INF/lib" file="${m2.repo}/net/sourceforge/symba/symba-db/8.09/symba-db-8.09.jar"/>
         <copy todir="war/WEB-INF/lib" file="${m2.repo}/net/sourceforge/symba/symba-jaxb2/8.09/symba-jaxb2-8.09.jar"/>
         <copy todir="war/WEB-INF/lib" file="${m2.repo}/com/intellij/annotations/5.1/annotations-5.1.jar"/>
-        <copy todir="war/WEB-INF/lib" file="${m2.repo}/org/springframework/spring-core/3.0.1.RELEASE/spring-core-3.0.1.RELEASE.jar"/>
-        <copy todir="war/WEB-INF/lib" file="${m2.repo}/org/springframework/spring-beans/3.0.1.RELEASE/spring-beans-3.0.1.RELEASE.jar"/>
-        <copy todir="war/WEB-INF/lib" file="${m2.repo}/org/springframework/spring-tx/3.0.1.RELEASE/spring-tx-3.0.1.RELEASE.jar"/>
-        <copy todir="war/WEB-INF/lib" file="${m2.repo}/org/springframework/spring-context/3.0.1.RELEASE/spring-context-3.0.1.RELEASE.jar"/>
+        <copy todir="war/WEB-INF/lib"
+              file="${m2.repo}/org/springframework/spring-core/3.0.1.RELEASE/spring-core-3.0.1.RELEASE.jar"/>
+        <copy todir="war/WEB-INF/lib"
+              file="${m2.repo}/org/springframework/spring-beans/3.0.1.RELEASE/spring-beans-3.0.1.RELEASE.jar"/>
+        <copy todir="war/WEB-INF/lib"
+              file="${m2.repo}/org/springframework/spring-tx/3.0.1.RELEASE/spring-tx-3.0.1.RELEASE.jar"/>
+        <copy todir="war/WEB-INF/lib"
+              file="${m2.repo}/org/springframework/spring-context/3.0.1.RELEASE/spring-context-3.0.1.RELEASE.jar"/>
         <copy todir="war/WEB-INF/lib" file="${m2.repo}/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar"/>
     </target>
 
@@ -30,7 +34,7 @@
         <mkdir dir="war/WEB-INF/classes"/>
         <javac srcdir="src" includes="**" encoding="utf-8"
                destdir="war/WEB-INF/classes"
-               source="1.5" target="1.5" nowarn="true"
+               source="1.6" target="1.6" nowarn="true"
                debug="true" debuglevel="lines,vars,source">
             <classpath refid="project.class.path"/>
         </javac>

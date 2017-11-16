@@ -63,11 +63,11 @@
             <name>Official Maven 2 Repository</name>
             <url>http://repo1.maven.org/maven2/</url>
         </repository>
-        <repository>
+	<!--<repository>
             <id>java.net</id>
             <url>http://download.java.net/maven/1/</url>
             <layout>legacy</layout>
-        </repository>
+	</repository>-->
     </repositories>
     <build>
         <!--<defaultGoal>compiler:compile</defaultGoal>-->
